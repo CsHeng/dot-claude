@@ -88,9 +88,9 @@ These commands may modify system state and require user confirmation.
 
 #### Java and Basic File Operations
 - `Bash(java:*)` - Java program execution
-- `Bash(rm :*)`, `Bash(rmdir :*)` - Delete files and directories
-- `Bash(mv :*)`, `Bash(cp :*)` - Move and copy files
-- `Bash(chown :*)`, `Bash(chmod -R :*)` - Modify file permissions (recursive)
+- `Bash(rm:*)`, `Bash(rmdir:*)` - Delete files and directories
+- `Bash(mv:*)`, `Bash(cp:*)` - Move and copy files
+- `Bash(chown:*)`, `Bash(chmod -R :*)` - Modify file permissions (recursive)
 
 #### Git Write Operations
 - `git add:*`, `git commit:*`, `git push:*`, `git pull:*`
@@ -122,7 +122,7 @@ These commands may modify system state and require user confirmation.
 - `wget --post-data:*`, `wget --method:*`
 
 #### Remote Operations
-- `ssh :* :*`, `scp :* :*`, `rsync :*`
+- `ssh:*:*`, `scp:*:*`, `rsync:*`
 
 #### Permission Modifications
 - `chmod +x :*`, `chmod 755 :*`, `chmod 644 :*`
@@ -133,7 +133,7 @@ These commands may modify system state and require user confirmation.
 
 ⚠️ **Important**: Always use `:*` for prefix matching, not `*`
 
-- ✅ **Correct**: `Bash(rm :*)`, `Bash(git status:*)`, `Bash(npm run:*)`
+- ✅ **Correct**: `Bash(rm:*)`, `Bash(git status:*)`, `Bash(npm run:*)`
 - ❌ **Incorrect**: `Bash(rm *)`, `Bash(git status *)`, `Bash(npm run *)`
 
 The `:*` syntax matches any arguments after the specified command prefix, while `*` is not supported and will cause validation errors.
@@ -171,28 +171,28 @@ Deny (Highest Priority) > Ask > Allow (Lowest Priority)
 // Global settings
 {
   "permissions": {
-    "deny": ["Bash(rm :*)"],
-    "allow": ["Bash(ls :*)"]
+    "deny": ["Bash(rm:*)"],
+    "allow": ["Bash(ls:*)"]
   }
 }
 
 // Project settings
 {
   "permissions": {
-    "allow": ["Bash(rm -rf :*)"]
+    "allow": ["Bash(rm -rf:*)"]
   }
 }
 ```
-**Result**: `Bash(rm -rf :*)` will be rejected because global deny has higher priority
+**Result**: `Bash(rm -rf:*)` will be rejected because global deny has higher priority
 
 #### Example 2: Multiple Permission Sources
 ```json
-// Global allow: ["Bash(ls :*)", "Bash(cat :*)"]
-// Project allow: ["Bash(grep :*)", "Bash(find :*)"]
-// Global deny: ["Bash(dd :*)"]
+// Global allow: ["Bash(ls:*)", "Bash(cat:*)"]
+// Project allow: ["Bash(grep:*)", "Bash(find:*)"]
+// Global deny: ["Bash(dd:*)"]
 ```
-**Final allow**: `["Bash(ls :*)", "Bash(cat :*)", "Bash(grep :*)", "Bash(find :*)"]`
-**Final deny**: `["Bash(dd :*)"]` (overrides all allow)
+**Final allow**: `["Bash(ls:*)", "Bash(cat:*)", "Bash(grep:*)", "Bash(find:*)"]`
+**Final deny**: `["Bash(dd:*)"]` (overrides all allow)
 
 ### Project Override
 Projects can override or extend these settings in `.claude/settings.local.json`, project settings will be merged with global settings.

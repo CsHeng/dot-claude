@@ -54,7 +54,9 @@ Controls commands that Claude can execute:
 - **allow**: Automatically allowed safe commands
 - **deny**: Completely forbidden dangerous commands
 - **ask**: Commands requiring user confirmation
-- **Detailed documentation**: Refer to `COMMANDS.md`
+- **Documentation**: Refer to `COMMANDS.md` for detailed information
+- **Configuration**: Generate from `COMMANDS.md` using LLM with `Bash(command:*)` syntax
+- **Validation**: Use `claude /doctor` to verify configuration
 
 ### 4. User Memory (CLAUDE.md + rules/00-user-preferences.md)
 
@@ -137,11 +139,18 @@ When Claude processes code, rule priority is:
 2. Add appropriate tool headers (Cursor/Copilot/Kiro)
 3. Run sync script to update all tools
 
-### Modifying Command Permissions
+### Command Permission Management
 
+**Initial Setup**:
+- Generate `settings.json` from `COMMANDS.md` using LLM
+- Ensure `Bash(command:*)` syntax format
+- Validate with `claude /doctor`
+
+**Modifications**:
 1. Edit `~/.claude/settings.json`
 2. Choose appropriate category: `allow`/`deny`/`ask`
-3. Update `COMMANDS.md` documentation
+3. Update `COMMANDS.md` documentation if needed
+4. Validate changes with `claude /doctor`
 
 ### Sync Script Maintenance
 
@@ -162,9 +171,13 @@ When Claude processes code, rule priority is:
 3. Review sync script error messages
 
 ### Command Permission Issues
-1. Check `~/.claude/settings.json` syntax
-2. Refer to `COMMANDS.md` for permission categories
-3. Use `settings.local.json` in projects to override
+
+**Configuration Problems**:
+1. **Syntax Check**: Ensure `Bash(command:*)` format, not `Bash(command :*)`
+2. **Generation**: Use LLM to create settings from `COMMANDS.md` documentation
+3. **Validation**: Run `claude /doctor` to verify configuration
+4. **Reference**: Consult `COMMANDS.md` for permission categories
+5. **Override**: Use `settings.local.json` in projects for project-specific settings
 
 ## 📚 Related Documentation
 
@@ -180,9 +193,27 @@ This global configuration system ensures consistency and maintainability across 
 git clone <repository-url> ~/.claude
 cd ~/.claude
 
-# The configuration is ready to use
+# Generate proper settings.json from COMMANDS.md documentation
+# Ask Claude: "Generate settings.json based on COMMANDS.md with correct Bash(command:*) syntax"
+# Verify with: claude /doctor
+
 # Run sync script to apply rules to your AI tools
 ./sync-rules.sh
+```
+
+### Initial Configuration Setup
+
+For new environment setup or permission modifications:
+
+1. **Generate Configuration**: Use LLM to create `settings.json` from `COMMANDS.md`
+2. **Syntax Requirements**: Use `Bash(command:*)` format, NOT `Bash(command :*)`
+3. **Validation**: Run `claude /doctor` to verify configuration
+4. **Testing**: Verify commands work as expected
+
+**Example Prompt**:
+```
+"Generate settings.json based on COMMANDS.md with proper permissions configuration
+using correct Bash(command:*) syntax organized into allow/deny/ask categories."
 ```
 
 ## 📄 License
