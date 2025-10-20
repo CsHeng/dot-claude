@@ -28,7 +28,7 @@ These are personal preferences that complement the general development rules. Th
 ## Specific Tool Configurations
 
 ### PlantUML
-- Installed version: 1.2025.8 (use syntax compatible with this version)
+- PlantUML: Use syntax compatible with version >=1.2025.9
 - Testing: Use `PLANTUML_TEMP_DIR=/tmp/plantuml-$$` once per session, then `plantuml -o $PLANTUML_TEMP_DIR` to maintain consistency for batch operations
 - Diagrams: Preferred tool for architecture diagrams
 
