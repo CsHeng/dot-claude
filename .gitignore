@@ -10,7 +10,7 @@
 settings.json.bak
 
 # Claude working directories and runtime files (ignore contents, but .gitkeep preserves structure)
-.claude/
+.claude/settings.local.json
 debug/
 file-history/
 ide/
@@ -21,8 +21,8 @@ statsig/
 todos/
 session-env/
 history.jsonl
-settings.json*
+./settings.json*
 
 # Only track specific configuration files
-# Keep: CLAUDE.md, rules/, sync-rules.sh, README.md, COMMANDS.md, .mise.toml
+# Keep: CLAUDE.md, rules/, sync-rules.sh, README.md, docs/permissions.md, .mise.toml
 # Ignore everything else

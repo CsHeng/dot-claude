@@ -12,7 +12,7 @@ PROJECT_ROOT="$(dirname "$SCRIPT_DIR")"
 GENERAL_RULES_DIR="$HOME/.claude/rules"
 PROJECT_RULES_DIR="${PROJECT_ROOT}/.claude/rules"
 # Documentation files to sync
-DOCUMENTATION_FILES=("$HOME/.claude/README.md" "$HOME/.claude/COMMANDS.md")
+DOCUMENTATION_FILES=("$HOME/.claude/README.md" "$HOME/.claude/docs/permissions.md")
 
 # Target directories
 CURSOR_ROOT_DIR="${PROJECT_ROOT}/.cursor"
