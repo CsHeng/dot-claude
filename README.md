@@ -9,7 +9,8 @@ A comprehensive configuration management system for Claude AI and other AI devel
 ├── CLAUDE.md                     # Main user memory file
 ├── settings.json                 # Command permissions configuration
 ├── sync-rules.sh                 # Rules synchronization script
-├── COMMANDS.md                   # Command permissions documentation
+├── docs/
+│   └── permissions.md           # Command permissions documentation
 ├── README.md                     # This file
 ├── rules/                        # Common rules library
 │   ├── 00-user-preferences.md
@@ -54,8 +55,8 @@ Controls commands that Claude can execute:
 - **allow**: Automatically allowed safe commands
 - **deny**: Completely forbidden dangerous commands
 - **ask**: Commands requiring user confirmation
-- **Documentation**: Refer to `COMMANDS.md` for detailed information
-- **Configuration**: Generate from `COMMANDS.md` using LLM with `Bash(command:*)` syntax
+- **Documentation**: Refer to `docs/permissions.md` for detailed information
+- **Configuration**: Generate from `docs/permissions.md` using LLM with `Bash(command:*)` syntax
 - **Validation**: Use `claude /doctor` to verify configuration
 
 ### 4. User Memory (CLAUDE.md + rules/00-user-preferences.md)
@@ -111,17 +112,20 @@ vim ~/.claude/settings.json
 
 ### Project-specific Configuration
 
-Projects can override or extend global settings in `.claude/settings.local.json`:
+Projects automatically override global settings through the precedence hierarchy. Create `.claude/settings.json` in your project root:
 
 ```json
 {
   "permissions": {
+    "defaultMode": "plan",
     "allow": [
       "Bash(project-specific-command:*)"
     ]
   }
 }
 ```
+
+Project settings take precedence over global user settings and should be committed to git for team synchronization.
 
 ## 📋 Rules Hierarchy
 
@@ -142,14 +146,14 @@ When Claude processes code, rule priority is:
 ### Command Permission Management
 
 **Initial Setup**:
-- Generate `settings.json` from `COMMANDS.md` using LLM
+- Generate `settings.json` from `docs/permissions.md` using LLM
 - Ensure `Bash(command:*)` syntax format
 - Validate with `claude /doctor`
 
 **Modifications**:
 1. Edit `~/.claude/settings.json`
 2. Choose appropriate category: `allow`/`deny`/`ask`
-3. Update `COMMANDS.md` documentation if needed
+3. Update `docs/permissions.md` documentation if needed
 4. Validate changes with `claude /doctor`
 
 ### Sync Script Maintenance
@@ -174,14 +178,14 @@ When Claude processes code, rule priority is:
 
 **Configuration Problems**:
 1. **Syntax Check**: Ensure `Bash(command:*)` format, not `Bash(command :*)`
-2. **Generation**: Use LLM to create settings from `COMMANDS.md` documentation
+2. **Generation**: Use LLM to create settings from `docs/permissions.md` documentation
 3. **Validation**: Run `claude /doctor` to verify configuration
-4. **Reference**: Consult `COMMANDS.md` for permission categories
-5. **Override**: Use `settings.local.json` in projects for project-specific settings
+4. **Reference**: Consult `docs/permissions.md` for permission categories
+5. **Override**: Create `.claude/settings.json` in projects for project-specific settings (committed to git)
 
 ## 📚 Related Documentation
 
-- **COMMANDS.md**: Detailed command permissions documentation
+- **docs/permissions.md**: Detailed command permissions documentation
 - **Individual rule files**: Specific development guidelines and standards
 
 This global configuration system ensures consistency and maintainability across all projects and AI development tools.
@@ -193,8 +197,8 @@ This global configuration system ensures consistency and maintainability across 
 git clone <repository-url> ~/.claude
 cd ~/.claude
 
-# Generate proper settings.json from COMMANDS.md documentation
-# Ask Claude: "Generate settings.json based on COMMANDS.md with correct Bash(command:*) syntax"
+# Generate proper settings.json from docs/permissions.md documentation
+# Ask Claude: "Generate settings.json based on docs/permissions.md with correct Bash(command:*) syntax"
 # Verify with: claude /doctor
 
 # Run sync script to apply rules to your AI tools
@@ -205,14 +209,14 @@ cd ~/.claude
 
 For new environment setup or permission modifications:
 
-1. **Generate Configuration**: Use LLM to create `settings.json` from `COMMANDS.md`
+1. **Generate Configuration**: Use LLM to create `settings.json` from `docs/permissions.md`
 2. **Syntax Requirements**: Use `Bash(command:*)` format, NOT `Bash(command :*)`
 3. **Validation**: Run `claude /doctor` to verify configuration
 4. **Testing**: Verify commands work as expected
 
 **Example Prompt**:
 ```
-"Generate settings.json based on COMMANDS.md with proper permissions configuration
+"Generate settings.json based on docs/permissions.md with proper permissions configuration
 using correct Bash(command:*) syntax organized into allow/deny/ask categories."
 ```
 
