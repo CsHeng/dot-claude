@@ -28,7 +28,7 @@ inclusion: always
 ### Clean Architecture Patterns
 - Structure code using layered approach: handlers → services → repositories → domain models
 - Apply domain-driven design principles for complex business logic
-- Use constructor functions for dependency injection, avoid global state
+- Use constructor functions for dependency injection
 - Create small, purpose-specific interfaces rather than large ones
 
 ## Project Structure Patterns

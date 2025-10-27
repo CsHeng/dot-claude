@@ -1,8 +1,18 @@
 [env]
-# Claude Code public
+# Claude Code common configuration
 API_TIMEOUT_MS = "3000000"
 CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC = "1"
+BASH_DEFAULT_TIMEOUT_MS = "60000" # Default timeout for bash commands in milliseconds
+BASH_MAX_OUTPUT_LENGTH = "10000" # Max output length in characters
+BASH_MAX_TIMEOUT_MS = "3000000" # Max timeout for bash commands in milliseconds
+#CLAUDE_BASH_MAINTAIN_PROJECT_WORKING_DIR = "1"
 
+# Claude Code Model settings
 #ANTHROPIC_DEFAULT_HAIKU_MODEL = "glm-4.5-air"
+#ANTHROPIC_DEFAULT_OPUS_MODEL = "glm-4.5"
 #ANTHROPIC_DEFAULT_SONNET_MODEL = "glm-4.6"
-#ANTHROPIC_DEFAULT_OPUS_MODEL = "glm-4.6"
+#ANTHROPIC_MODEL = "glm-4.6"
+
+# personal Claude Code configuration, should be in .mise.local.toml
+#ANTHROPIC_BASE_URL = "http://10.1.1.11:3000/"
+#ANTHROPIC_AUTH_TOKEN = "sk-your-key"

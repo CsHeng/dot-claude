@@ -23,7 +23,7 @@ inclusion: always
 - Use descriptive names that reveal intent and purpose
 - Prefer `calculateTotalPrice()` over `calc()` or `getTotal()`
 - Boolean variables should be questions: `isValid`, `hasPermission`, `canExecute`
-- Avoid abbreviations unless universally understood (`url`, `id`, `api`)
+- Don't use abbreviations unless universally understood (`url`, `id`, `api`)
 
 ### Constants and Configuration
 - Replace magic numbers with named constants
@@ -88,7 +88,7 @@ inclusion: always
 - Include examples for public APIs
 
 ### When NOT to Comment
-- Avoid comments that restate the code
+- Don't write comments that restate the code
 - Don't use comments to explain poorly named variables or functions
 - Remove outdated or misleading comments immediately
 
@@ -141,7 +141,7 @@ inclusion: always
 - Delete merged branches promptly
 
 ## Communication Guidelines
-- Verify information before presenting; avoid speculation
+- Present verified information; don't speculate
 - Reference actual project files, not generated content
 - Focus on implementation over explanations unless requested
 - No apologies or understanding confirmations in code/docs
