@@ -68,7 +68,7 @@ fileMatchPattern: '**/*.sh'
 
 ### Function Design & Return Values
 - Return data via echo + status via return code
-- Pass data via parameters, avoid global variables
+- Pass data via parameters, don't use global variables
 - Declare all local variables at function start
 - Return early to reduce nesting
 
@@ -101,7 +101,7 @@ fileMatchPattern: '**/*.sh'
 
 ### Function Design Principles
 - Declare all local variables at function start
-- Pass data via parameters, avoid global variables
+- Pass data via parameters, don't use global variables
 - Return data via echo, status via return code
 
 ## Performance and Optimization

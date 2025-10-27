@@ -24,7 +24,7 @@ fileMatchPattern: '**/*.go'
 - Clean Architecture: Apply Clean Architecture with clear separation of concerns
 - Interface-Driven: Use interface-driven development with explicit dependency injection
 - Composition: Prioritize composition over inheritance with small, focused interfaces
-- Domain Models: Use constructor functions for dependency injection, avoid global state
+- Domain Models: Use constructor functions for dependency injection
 - Business Logic: Keep business logic separate from framework-specific code
 
 ## Project Structure

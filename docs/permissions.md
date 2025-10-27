@@ -29,23 +29,21 @@ These commands are considered safe and do not modify system state or cause destr
 #### Basic Network Tools
 - `ping -c:*`, `ping -w:*` - Limited count ping
 - `netstat`, `ss`, `lsof -i:*` - Network connection viewing
-- `curl --:*` - curl information queries (--help, --version, etc.)
-- `wget --:*` - wget information queries (--help, --version, etc.)
-
-*Note: Commands with `--:*` pattern cover all -- flags for the tool, consolidating --help and --version permissions.*
 
 #### Process and System Monitoring
 - `ps aux:*`, `ps -ef:*` - Process lists
 - `top -n:*`, `htop --version` - System monitoring
 
 #### Development Tools
-- `terraform plan/validate/fmt/show` - Terraform read-only operations
-- `docker images/ps/network ls/volume ls` - Docker information viewing
-- `kubectl get/describe/config view/version` - Kubernetes read-only operations
+- `terraform validate:*`, `terraform fmt:*` - Terraform validation and formatting
+- `terraform show:*`, `terraform state list:*`, `terraform graph:*` - Terraform state viewing
+- `docker ps:*`, `docker network ls:*`, `docker volume ls:*` - Docker information viewing
+- `docker system df:*`, `docker info:*`, `docker version:*` - Docker system information
+- `kubectl config view:*`, `kubectl version:*`, `kubectl cluster-info:*` - Kubernetes configuration
 - `pip list/show/check`, `pip --:*` - Python tools (pip with -- flags)
 - `npm list/view`, `npm --:*` - Node.js tools (npm with -- flags)
 - `yarn list/info`, `yarn --:*` - Yarn tools (yarn with -- flags)
-- `go version`, `go mod download/verify/tidy/why` - Go tools
+- `go version:*`, `go mod verify:*`, `go mod tidy:*`, `go mod why:*` - Go tools (excluding downloads)
 - `rustc --:*`, `cargo --:*` - Rust tools (with -- flags)
 
 #### Data Processing
@@ -69,7 +67,6 @@ These commands are considered safe and do not modify system state or cause destr
 - `history:*`, `fc -l:*` - History viewing
 
 #### Specific Tools
-- `Bash(plantuml:*)` - PlantUML diagram generation
 - `Bash(grep:*)`, `Bash(find:*)` - Search and find
 - `Bash(gdiff:*)` - GNU diff
 - `Bash(mkdir:*)`, `Bash(chmod:*)` - Directory creation and permission setting
@@ -85,9 +82,45 @@ These commands are destructive or potentially dangerous, completely forbidden fr
 
 ### ❓ Commands Requiring Confirmation (ask)
 
-These commands may modify system state and require user confirmation.
+These commands may modify system state, take a long time to execute, or require user confirmation.
 
-#### Java and Basic File Operations
+#### Infrastructure as Code (Long-running operations)
+- `terraform plan:*` - Can take minutes to complete
+- `terraform apply:*`, `terraform destroy:*`, `terraform import:*`
+- `terraform taint:*`, `terraform state rm:*`
+
+#### Container Management (Potentially long operations)
+- `docker images:*` - May hang on daemon issues or large registries
+- `docker run:*`, `docker rmi:*`, `docker rm:*`
+- `docker stop:*`, `docker kill:*`, `docker build:*`
+- `docker compose up:*`, `docker compose down:*`, `docker compose restart:*`
+
+#### Kubernetes (Cluster-dependent operations)
+- `kubectl get:*` - Depends on cluster connectivity, can be slow
+- `kubectl describe:*` - Can be very verbose and slow
+- `kubectl apply:*`, `kubectl delete:*`, `kubectl create:*`
+- `kubectl edit:*`, `kubectl exec:*`, `kubectl logs:*`
+
+#### Network Operations (May hang indefinitely)
+- `curl --:*` - Network requests, may timeout or hang
+- `wget --:*` - Network downloads, may timeout or hang
+- `ssh --:*`, `scp --:*` - Remote operations, may hang
+- `rsync:*` - Remote file synchronization
+
+#### Package Management (Network-dependent)
+- `mise install:*`, `mise uninstall:*`, `mise use:*` - May hang during installation
+- `go mod download:*` - Network-dependent module downloads
+- `pip install:*`, `pip uninstall:*`, `python -m pip install:*`
+- `npm install:*`, `npm uninstall:*`, `npm run:*`
+- `yarn add:*`, `yarn remove:*`, `yarn install:*`, `yarn run:*`
+- `go get:*`, `cargo install:*`, `cargo uninstall:*`, `cargo build:*`
+
+#### Network Requests (HTTP methods)
+- `curl -X POST:*`, `curl -X PUT:*`, `curl -X DELETE:*`
+- `curl -d:*`, `curl --data:*`
+- `wget --post-data:*`, `wget --method:*`
+
+#### File System Operations
 - `Bash(java:*)` - Java program execution
 - `Bash(rm:*)`, `Bash(rmdir:*)` - Delete files and directories
 - `Bash(mv:*)`, `Bash(cp:*)` - Move and copy files
@@ -99,34 +132,11 @@ These commands may modify system state and require user confirmation.
 - `git checkout:*`, `git switch:*`, `git restore:*`
 - `git stash:*`, `git clean:*`
 
-#### Containers and Orchestration
-- `docker run:*`, `docker rmi:*`, `docker rm:*`
-- `docker stop:*`, `docker kill:*`, `docker build:*`
-- `docker compose up:*`, `docker compose down:*`, `docker compose restart:*`
-- `kubectl apply:*`, `kubectl delete:*`, `kubectl create:*`
-- `kubectl edit:*`, `kubectl exec:*`, `kubectl logs:*`
-
-#### Infrastructure as Code
-- `terraform apply:*`, `terraform destroy:*`, `terraform import:*`
-- `terraform taint:*`, `terraform state rm:*`
-
-#### Package Managers
-- `pip install:*`, `pip uninstall:*`, `python -m pip install:*`
-- `npm install:*`, `npm uninstall:*`, `npm run:*`
-- `yarn add:*`, `yarn remove:*`, `yarn install:*`, `yarn run:*`
-- `go get:*`, `cargo install:*`, `cargo uninstall:*`, `cargo build:*`
-- `mise install:*`, `mise uninstall:*`, `mise use:*`
-
-#### Network Requests
-- `curl -X POST:*`, `curl -X PUT:*`, `curl -X DELETE:*`
-- `curl -d:*`, `curl --data:*`
-- `wget --post-data:*`, `wget --method:*`
-
-#### Remote Operations
-- `ssh --:*`, `scp --:*`, `rsync:*` - SSH/SCP with -- flags, and rsync
-
-#### System Scripting
+#### System Scripting and Tools
 - `osascript -e:*` - AppleScript execution (single line)
+- `codex:*` - Code generation tool
+- `plantuml:*` - Diagram generation tool
+- `claude --help`, `qwen --help`, `gemini --help` - AI tool help commands
 
 #### Permission Modifications
 - `chmod +x :*`, `chmod 755 :*`, `chmod 644 :*`
@@ -327,6 +337,7 @@ Generate Claude Code settings.json based on docs/permissions.md with:
 5. **Technology stack**: Different tools require different permissions
 
 ### Project Override
+
 Projects automatically override user settings through the precedence hierarchy. Simply create `.claude/settings.json` in your project root and commit it to git.
 
 ### Adjusting Permissions

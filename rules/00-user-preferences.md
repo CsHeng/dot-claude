@@ -71,7 +71,7 @@ These are personal preferences that complement the general development rules. Th
 - Diagrams: Use PlantUML for architecture diagrams
 - Comments: Explain why rather than what
 - Updates: Update related documentation when code or rules change
-- Formatting: Use sparing and minimal formatting - avoid excessive use of bold markers (`**`) in documentation
+- Formatting: Use sparing and minimal formatting - do not use bold markers (`**`) in documentation
 - Lists: Default to unordered lists (`-` or `*`). Use ordered lists only when items have clear sequential relationships
 
 ### Logging Format

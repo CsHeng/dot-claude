@@ -269,7 +269,7 @@ class CircuitBreaker:
 
 ### User-Facing Error Messages
 - Provide clear, actionable error messages
-- Avoid technical jargon in user messages
+- Don't use technical jargon in user messages
 - Include guidance for error resolution
 - Localize error messages for international users
 
