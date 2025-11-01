@@ -1,4 +1,4 @@
-# Claude User Memory
+# User Memory
 
 ## Rules Directory
 

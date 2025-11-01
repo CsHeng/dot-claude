@@ -69,44 +69,241 @@ verify_markdown_count() {
     echo "$count"
 }
 
-generate_qwen_memory() {
-    local memory_file="$HOME/.qwen/QWEN.md"
+generate_tool_memory() {
+    local tool_name="$1"
+    local memory_file="$2"
+    local claudemd_file="$HOME/.claude/CLAUDE.md"
+
     ensure_directory "$(dirname "$memory_file")"
-    cat > "$memory_file" <<'EOF'
-# Qwen CLI User Memory
 
-## Available Rules
+    # Check if CLAUDE.md exists
+    if [[ ! -f "$claudemd_file" ]]; then
+        log_error "CLAUDE.md not found at $claudemd_file"
+        return 1
+    fi
 
-Development guidelines available in `rules/` directory:
+    # Read CLAUDE.md content and adapt it for the specific tool
+    local tool_memory_content
+    tool_memory_content=$(adapt_claude_memory_for_tool "$tool_name" "$memory_file" "$claudemd_file")
 
-- `00-user-preferences.md`
-- `01-general-development.md`
-- `02-architecture-patterns.md`
-- `03-security-guidelines.md`
-- `04-testing-strategy.md`
-- `05-error-handling.md`
-- `10-python-guidelines.md`
-- `11-go-guidelines.md`
-- `12-shell-guidelines.md`
-- `13-docker-guidelines.md`
-- `14-networking-guidelines.md`
-- `20-development-tools.md`
-- `21-code-quality.md`
-- `22-logging-standards.md`
-- `23-workflow-patterns.md`
+    # Write the adapted content to the target memory file
+    echo "$tool_memory_content" > "$memory_file"
 
-## Quick Start
+    log_success "$tool_name memory file generated: $memory_file"
+}
 
-```bash
-qwen -p "$(cat ~/.qwen/rules/00-user-preferences.md)"
+adapt_claude_memory_for_tool() {
+    local tool_name="$1"
+    local claudemd_file="$2"
 
-qwen -p "$(cat ~/.qwen/rules/00-user-preferences.md ~/.qwen/rules/10-python-guidelines.md)"
+    # Determine tool-specific replacements
+    local tool_cli_name=""
+    local tool_memory_file=""
+    local tool_agents_file=""
+    local tool_settings_ref=""
 
-qwen -i -p "$(cat ~/.qwen/rules/01-general-development.md)"
-```
+    case "$tool_name" in
+        qwen)
+            tool_cli_name="Qwen CLI"
+            tool_memory_file="QWEN.md"
+            tool_agents_file="AGENTS.md"
+            tool_settings_ref="@~/.qwen/settings.json"
+            ;;
+        codex)
+            tool_cli_name="Codex CLI"
+            tool_memory_file="CODEX.md"
+            tool_agents_file="AGENTS.md"
+            tool_settings_ref="@~/.codex/settings.json"
+            ;;
+        droid)
+            tool_cli_name="Factory/Droid CLI"
+            tool_memory_file="DROID.md"
+            tool_agents_file="AGENTS.md"
+            tool_settings_ref="@~/.factory/settings.json"
+            ;;
+        *)
+            log_error "Unknown tool: $tool_name"
+            return 1
+            ;;
+    esac
 
-EOF
-    log_success "Qwen memory file refreshed"
+    # Read and adapt the content
+    python3 - "$tool_name" "$tool_cli_name" "$tool_memory_file" "$tool_agents_file" "$tool_settings_ref" "$claudemd_file" <<'PYCODE'
+import sys
+import re
+
+tool_name = sys.argv[1] if len(sys.argv) > 1 else ""
+tool_cli_name = sys.argv[2] if len(sys.argv) > 2 else ""
+tool_memory_file = sys.argv[3] if len(sys.argv) > 3 else ""
+tool_agents_file = sys.argv[4] if len(sys.argv) > 4 else ""
+tool_settings_ref = sys.argv[5] if len(sys.argv) > 5 else ""
+claudemd_file = sys.argv[6] if len(sys.argv) > 6 else ""
+
+# Read CLAUDE.md content
+with open(claudemd_file, 'r', encoding='utf-8') as f:
+    content = f.read()
+
+# Replace tool-specific references
+replacements = {
+    r'# User Memory': f'# {tool_cli_name} User Memory',
+    r'Claude Code': tool_cli_name,
+    r'@CLAUDE\.md': f'@{tool_memory_file}',
+    r'Load `@CLAUDE\.md`': f'Load `@{tool_memory_file}`',
+    r'Keep `@CLAUDE\.md` in context': f'Keep `@{tool_memory_file}` in context',
+    r'Memory index.*`@CLAUDE\.md`.*Mapping of rule files for fast lookup': f'Memory index | `@{tool_memory_file}` | Mapping of rule files for fast lookup',
+    r'Shared permission policy.*`@\.claude/settings\.json`': f'Shared permission policy | {tool_settings_ref}',
+    r'Follow the instructions below whenever you operate within this configuration': f'Follow the instructions below whenever you operate with {tool_cli_name}',
+    r'Reference specific rule files in prompts.*reference `@rules/04-testing-strategy\.md` to write pytest cases': f'Reference specific rule files in prompts, for example:\n  ```bash\n  {tool_cli_name.lower().replace(" ", "").replace("/", "")} "Follow testing strategy from @rules/04-testing-strategy.md to write pytest cases"\n  ```',
+    r'AGENTS\.md.*notify the user so they can refresh `AGENTS\.md`': f'{tool_agents_file}. If you notice rule updates that are not reflected here, notify the user so they can refresh `{tool_agents_file}`.',
+}
+
+# Apply replacements
+for pattern, replacement in replacements.items():
+    content = re.sub(pattern, replacement, content, flags=re.MULTILINE)
+
+# Add tool-specific execution guidelines section if not present
+if '## Execution Guidelines' in content:
+    # Replace tool-specific execution guidelines
+    execution_guidelines = {
+        r'PlantUML diagrams.*PlantUML ≥ 1\.2025\.9\.': f'PlantUML diagrams: validate with `plantuml --check-syntax <path>` (PlantUML ≥ 1.2025.9).',
+        r'Shell scripts.*@rules/12-shell-guidelines\.md\.': f'Shell scripts: run the appropriate syntax check (`bash -n`, `sh -n`, or `zsh -n`) before proposing changes; ensure traps and strict mode adhere to `@rules/12-shell-guidelines.md`.',
+    }
+
+    for pattern, replacement in execution_guidelines.items():
+        content = re.sub(pattern, replacement, content, flags=re.MULTILINE | re.DOTALL)
+
+print(content)
+PYCODE
+}
+
+generate_tool_agents_md() {
+    local tool_name="$1"
+    local target_file="$2"
+    local agents_md_file="$HOME/.claude/AGENTS.md"
+    local general_rules_dir="$HOME/.claude/rules"
+
+    ensure_directory "$(dirname "$target_file")"
+
+    # Check if AGENTS.md exists
+    if [[ ! -f "$agents_md_file" ]]; then
+        log_error "AGENTS.md not found at $agents_md_file"
+        return 1
+    fi
+
+    # Determine tool-specific replacements
+    local tool_cli_name=""
+    local tool_memory_file=""
+    local tool_rules_dir=""
+    local tool_settings_ref=""
+
+    case "$tool_name" in
+        qwen)
+            tool_cli_name="Qwen CLI"
+            tool_memory_file="QWEN.md"
+            tool_rules_dir="$HOME/.qwen/rules"
+            tool_settings_ref="@~/.qwen/settings.json"
+            ;;
+        codex)
+            tool_cli_name="Codex CLI"
+            tool_memory_file="CODEX.md"
+            tool_rules_dir="$HOME/.codex/rules"
+            tool_settings_ref="@~/.codex/settings.json"
+            ;;
+        droid)
+            tool_cli_name="Factory/Droid CLI"
+            tool_memory_file="DROID.md"
+            tool_rules_dir="$HOME/.factory/rules"
+            tool_settings_ref="@~/.factory/settings.json"
+            ;;
+        *)
+            log_error "Unknown tool for AGENTS.md generation: $tool_name"
+            return 1
+            ;;
+    esac
+
+    # Read rule files for the tool
+    local rule_files=()
+    if [[ -d "$tool_rules_dir" ]]; then
+        while IFS= read -r file; do
+            rule_files+=("$file")
+        done < <(find "$tool_rules_dir" -maxdepth 1 -name "*.md" -type f -print | LC_ALL=C sort)
+    fi
+
+    # Generate tool-specific AGENTS.md
+    local generated_content
+    generated_content=$(python3 - "$tool_name" "$tool_cli_name" "$tool_memory_file" "$tool_settings_ref" "$agents_md_file" "$tool_rules_dir" "${rule_files[@]}" <<'PYCODE'
+import sys
+import re
+import os
+
+tool_name = sys.argv[1] if len(sys.argv) > 1 else ""
+tool_cli_name = sys.argv[2] if len(sys.argv) > 2 else ""
+tool_memory_file = sys.argv[3] if len(sys.argv) > 3 else ""
+tool_settings_ref = sys.argv[4] if len(sys.argv) > 4 else ""
+agents_md_file = sys.argv[5] if len(sys.argv) > 5 else ""
+tool_rules_dir = sys.argv[6] if len(sys.argv) > 6 else ""
+rule_files = sys.argv[7:] if len(sys.argv) > 7 else []
+
+def rule_heading(file_path):
+    try:
+        with open(file_path, 'r', encoding='utf-8') as f:
+            for line in f:
+                line = line.strip()
+                if line.startswith('# '):
+                    return line[2:].strip()
+        # If no heading found, derive from filename
+        base = os.path.basename(file_path)
+        name = os.path.splitext(base)[0]
+        if re.match(r'^\d{2}-(.+)$', name):
+            return re.sub(r'-', ' ', re.match(r'^\d{2}-(.+)$', name).group(1)).title()
+        return name.replace('-', ' ').title()
+    except:
+        return os.path.basename(file_path)
+
+# Read the base AGENTS.md content
+with open(agents_md_file, 'r', encoding='utf-8') as f:
+    content = f.read()
+
+# Replace tool-specific references
+replacements = {
+    r'# Agent Operating Guide': f'# {tool_cli_name} Agent Operating Guide',
+    r'Claude Code': tool_cli_name,
+    r'@CLAUDE\.md': f'@{tool_memory_file}',
+    r'Load `@CLAUDE\.md`': f'Load `@{tool_memory_file}`',
+    r'Keep `@CLAUDE\.md` in context': f'Keep `@{tool_memory_file}` in context',
+    r'Memory index.*`@CLAUDE\.md`.*Mapping of rule files for fast lookup': f'Memory index | `@{tool_memory_file}` | Mapping of rule files for fast lookup',
+    r'Shared permission policy.*`@\.claude/settings\.json`': f'Shared permission policy | {tool_settings_ref}',
+    r'Follow the instructions below whenever you operate within this configuration': f'Follow the instructions below whenever you operate with {tool_cli_name}',
+    r'Primary agents.*Claude Code.*Qwen CLI.*Factory/Droid CLI': f'Primary agents: {tool_cli_name}',
+    r'Shared context.*~/.claude/rules/\*\.md': f'Shared context: {tool_rules_dir}/*.md',
+}
+
+# Apply replacements
+for pattern, replacement in replacements.items():
+    content = re.sub(pattern, replacement, content, flags=re.MULTILINE)
+
+# Update the quick reference table
+content = re.sub(
+    r'\|.*Memory index.*\|.*@CLAUDE\.md.*\|.*Mapping of rule files for fast lookup.*\|',
+    f'| Memory index | `@{tool_memory_file}` | Mapping of rule files for fast lookup |',
+    content
+)
+
+# Update the final line about refreshing
+content = re.sub(
+    r'If you notice rule updates that are not reflected here, notify the user so they can refresh `AGENTS\.md`',
+    f'If you notice rule updates that are not reflected here, notify the user so they can refresh `AGENTS.md`',
+    content
+)
+
+print(content)
+PYCODE
+)
+
+    # Write the generated content to the target file
+    echo "$generated_content" > "$target_file"
+
+    log_success "$tool_cli_name AGENTS.md generated: $target_file"
 }
 
 dry_run_report() {
