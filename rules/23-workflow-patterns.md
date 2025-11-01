@@ -1,6 +1,6 @@
 # Workflow Patterns and Development Practices
 
-Guidelines for development workflows, tool preferences, and coding practices that should be integrated into Claude memory.
+Guidelines for development workflows, tool preferences, and coding practices that should be integrated into AI memory.
 
 ## Development Workflow Preferences
 
@@ -259,7 +259,7 @@ Something went wrong
 
 ## Memory Integration Topics
 
-### Tool Preferences to Store in Claude Memory
+### Tool Preferences to Store in AI Memory
 1. **Package Management**: UV for Python, Go modules for Go
 2. **Code Quality**: Ruff for Python, golangci-lint for Go
 3. **Build Tools**: Docker multi-arch builds, Make standardized targets

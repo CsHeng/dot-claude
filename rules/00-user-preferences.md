@@ -11,7 +11,7 @@ inclusion: always
 
 # User Preferences and Personal Development Settings
 
-These are personal preferences that complement the general development rules. This file serves as both Claude Memory and is synchronized to other AI tools for consistent behavior.
+These are personal preferences that complement the general development rules. This file serves as AI Memory and is synchronized to other AI tools for consistent behavior.
 
 ## Tool Version Preferences
 

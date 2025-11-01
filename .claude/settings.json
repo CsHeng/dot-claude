@@ -146,11 +146,7 @@
       "Bash(curl --:*)",
       "Bash(wget --:*)",
       "Bash(ssh --:*)",
-      "Bash(scp --:*)",
-      "Bash(codex:*)",
-      "Bash(claude --help)",
-      "Bash(qwen --help)",
-      "Bash(gemini --help)"
+      "Bash(scp --:*)"
     ]
   }
 }

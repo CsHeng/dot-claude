@@ -1,14 +1,23 @@
-# Custom Command Directory (`~/.claude/commands/`)
+# Command Layout Overview (`~/.claude/commands/`)
 
-Stores personal Claude custom slash commands. Each Markdown file becomes a command named after the filename (without extension). Executable files with a shebang are also supported.
+The commands directory now centers on the `/config-sync:*` slash-command suite that lives under `config-sync/`. These commands orchestrate all rule, permission, settings, and command synchronization across Qwen, Factory/Droid, Codex, and OpenCode.
 
-## Current Commands
-- `review-shell-syntax.md` – Reviews a shell script, references shell guidelines, and runs syntax checks before reporting results.
-- `sync-droid-commands.md` – Slash command wrapper that runs `~/.claude/sync-user-commands.sh` with optional arguments to refresh Droid CLI commands.
-- `draft-commit-message.md` – Collects `git status`/`git diff` output, proposes a commit message, and waits for human confirmation before any commit.
+## Directory Structure
+```
+~/.claude/commands/
+├── config-sync/        # Slash commands implemented as Markdown specs
+│   ├── core/           # High-level orchestrators (sync, analyze, verify)
+│   ├── adapters/       # Tool-specific adapters and helpers
+│   ├── lib/            # Shared guidance for helper routines
+│   └── scripts/        # Bash helpers referenced by command snippets
+├── draft-commit-message.md
+└── review-shell-syntax.md
+```
 
-## Guidelines
-- Keep filenames concise; nested directories are flattened when syncing into Droid CLI (via `sync-user-commands.sh`).
-- Use only frontmatter keys supported by both Claude and Droid (`description`, `argument-hint`).
-- Use `$ARGUMENTS` instead of positional placeholders so all supported agents behave consistently.
-- After modifying commands, run `./sync-user-commands.sh` to mirror them into `~/.factory/commands/`.
+## Minimal Command Guidelines
+- Each command file must include YAML frontmatter with at least `name`, `description`, and (optionally) `argument-hint`.
+- Use slash names (`config-sync:sync`, etc.) to avoid collisions and clarify intent.
+- Reference other commands via their slash name (`/config-sync:adapt-permissions`) rather than direct file paths.
+- Additional personal commands (like `draft-commit-message.md`) can continue to live at the top level.
+
+For a detailed rundown of every `/config-sync:*` command see [`docs/config-sync-commands.md`](./config-sync-commands.md).
