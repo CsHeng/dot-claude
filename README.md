@@ -9,16 +9,22 @@ This configuration system operates on three hierarchical levels:
 ### 📁 File Structure
 ```
 ~/.claude/
+├── 📄 AGENTS.md                    # Agent-facing operating guide
 ├── 📄 CLAUDE.md                    # Claude's memory index
 ├── ⚙️  settings.json               # Personal preferences & environment
 ├── ⚙️  .claude/settings.json       # Cross-project shared settings
-├── 🔄 sync-rules.sh                # IDE tools synchronization
-├── 🔄 sync-rules-for-qwen.sh       # Qwen CLI synchronization
+├── 🔄 sync-project-rules.sh        # Project-level Cursor & VS Code Copilot sync
+├── 🔄 sync-user-rules.sh           # User-level rule sync (Qwen/Droid/Codex)
+├── 🔄 sync-user-commands.sh        # Claude→Droid custom command sync
+├── 📦 lib/rule-sync-common.sh      # Shared sync helper functions
 ├── 📊 statusline.sh                # Custom statusline script
-├── 📚 CLI-USAGE.md                 # CLI usage guide
 ├── 📚 docs/
 │   ├── 📋 settings.md              # Settings configuration guide
-│   └── 🔐 permissions.md           # Command permissions reference
+│   ├── 🔐 permissions.md           # Command permissions reference
+│   ├── 🔄 qwen-cli.md              # Qwen CLI usage guide
+│   ├── 🔄 sync-user-rules.md       # User-level rule sync reference
+│   ├── 🔄 sync-user-commands.md    # Custom command sync reference
+│   └── 🔄 sync-project-rules.md    # Project-level sync reference
 ├── 📚 README.md                    # This file
 ├── 📚 .mise.toml                   # Environment configuration
 └── 📚 rules/                       # Master rules library
@@ -45,24 +51,29 @@ This configuration system operates on three hierarchical levels:
 
 ## 🎯 Core Components
 
-### 1. **Hierarchical Settings System**
+### 1. **Agent vs Human Documentation**
+- **AGENTS.md**: Agent-focused operating guide. Load this with the relevant files in `rules/` to keep automated assistants aligned with the latest standards.
+- **README.md & docs/**: Human-facing documentation covering configuration, maintenance, and extension of this environment.
+
+### 2. **Hierarchical Settings System**
 - **Global Settings** (`~/.claude/settings.json`): Personal preferences, timeouts, environment variables
 - **Shared Settings** (`~/.claude/.claude/settings.json`): Cross-project permissions and safety rules
 - **Project Settings** (`{project}/.claude/settings.json`): Project-specific overrides (committed to git)
 
-### 2. **Unified Rules Library** (`rules/`)
+### 3. **Unified Rules Library** (`rules/`)
 Central collection of development guidelines automatically loaded by AI assistants:
 - **User Preferences**: Personal development settings and tool configurations
 - **Language Guidelines**: Python, Go, Shell, Docker, Networking standards
 - **Development Practices**: Architecture, security, testing, error handling patterns
 - **Tool Configuration**: Development tools, code quality, logging, workflow standards
 
-### 3. **Multi-Tool Synchronization**
-- **IDE Tools**: `sync-rules.sh` → Cursor, Copilot, Kiro
-- **CLI Tools**: `sync-rules-for-qwen.sh` → Qwen CLI with memory index
-- **Smart Detection**: Prevents polluting directories with intelligent project detection
+### 4. **Sync Utilities**
+- **Project IDE Tools**: `sync-project-rules.sh` → Cursor & VS Code Copilot (per-project execution)
+- **User Rules**: `sync-user-rules.sh` → Qwen CLI, Factory/Droid CLI, Codex CLI (interactive multi-select)
+- **User Commands**: `sync-user-commands.sh` → Mirrors personal Claude custom commands into Droid CLI with compatibility sanitization
+- **Shared Helpers**: `lib/rule-sync-common.sh` centralizes logging and copy logic
 
-### 4. **Permission Management**
+### 5. **Permission Management**
 Three-tier permission system for command execution:
 - **allow**: Safe commands that run automatically
 - **ask**: Commands requiring user confirmation (network operations, package management)
@@ -80,9 +91,10 @@ cd ~/.claude
 # Ask Claude: "Generate settings.json based on docs/settings.md and docs/permissions.md"
 # Verify with: claude /doctor
 
-# 3. Synchronize rules to all tools
-./sync-rules.sh                    # IDE tools (Cursor, Copilot, Kiro)
-./sync-rules-for-qwen.sh           # Qwen CLI
+# 3. Synchronize rule and command context
+./sync-user-rules.sh               # Prompts for Qwen/Droid/Codex targets
+./sync-user-commands.sh            # Mirrors personal Claude commands into Droid CLI
+# (copy sync-project-rules.sh into each project and run there)
 
 # 4. Start using unified configuration
 qwen -p "$(cat ~/.qwen/rules/00-user-preferences.md)"
@@ -90,8 +102,8 @@ qwen -p "$(cat ~/.qwen/rules/00-user-preferences.md)"
 
 ### New Project Integration
 ```bash
-# 1. Copy sync script to project
-cp ~/.claude/sync-rules.sh /path/to/project/.claude/
+# 1. Copy project sync script to project
+cp ~/.claude/sync-project-rules.sh /path/to/project/.claude/
 
 # 2. Create project-specific settings
 cat > /path/to/project/.claude/settings.json << 'EOF'
@@ -107,7 +119,7 @@ cat > /path/to/project/.claude/settings.json << 'EOF'
 EOF
 
 # 3. Run synchronization
-cd /path/to/project && .claude/sync-rules.sh
+cd /path/to/project && .claude/sync-project-rules.sh
 ```
 
 ## 🔧 Configuration Management
@@ -142,11 +154,12 @@ vim ~/.claude/rules/01-general-development.md
 # Update permissions
 vim ~/.claude/.claude/settings.json
 
-# Sync to IDE tools (run from project)
-~/.claude/sync-rules.sh
+# Sync to IDE tools (run inside project)
+/path/to/project/.claude/sync-project-rules.sh
 
 # Sync to CLI tools
-cd ~/.claude && ./sync-rules-for-qwen.sh
+cd ~/.claude && ./sync-user-rules.sh
+cd ~/.claude && ./sync-user-commands.sh --verify-only
 ```
 
 ### CLI Tool Usage
@@ -183,8 +196,8 @@ qwen -p "Debug issue using: $(cat ~/.qwen/rules/05-error-handling.md)
 cat ~/.claude/settings.json | jq .
 
 # Verify sync status
-./sync-rules.sh --verify-only
-./sync-rules-for-qwen.sh --verify-only
+./sync-user-rules.sh --verify-only
+/path/to/project/.claude/sync-project-rules.sh --verify-only
 
 # Doctor check
 claude /doctor
@@ -209,16 +222,19 @@ jq . ~/.claude/settings.json
 jq . ~/.claude/.claude/settings.json
 
 # Test sync
-./sync-rules.sh --dry-run
-./sync-rules-for-qwen.sh --dry-run
+./sync-user-rules.sh --dry-run
+/path/to/project/.claude/sync-project-rules.sh --dry-run
 ```
 
 ## 📚 Documentation
 
-- **[Settings Guide](docs/settings.md)**: Comprehensive configuration and hierarchy
-- **[Permissions Reference](docs/permissions.md)**: Command categories and examples
-- **[CLI Usage](CLI-USAGE.md)**: Detailed CLI tool instructions
-- **[Individual Rules](rules/)**: Specific development guidelines
+- **[Settings Guide](docs/settings.md)** – Configuration hierarchy and precedence
+- **[Permissions Reference](docs/permissions.md)** – Command allow/ask/deny catalogs
+- **[Qwen CLI Usage](docs/qwen-cli.md)** – How to run Qwen with synced rules
+- **[User Rule Sync](docs/sync-user-rules.md)** – Targets, flags, and behavior
+- **[User Command Sync](docs/sync-user-commands.md)** – Droid-compatible command mirroring
+- **[Project Rule Sync](docs/sync-project-rules.md)** – IDE-focused distribution
+- **[Individual Rules](rules/)** – Language and workflow-specific guidance
 
 ## 🎯 Benefits
 

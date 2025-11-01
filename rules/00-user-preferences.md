@@ -28,9 +28,7 @@ These are personal preferences that complement the general development rules. Th
 ## Specific Tool Configurations
 
 ### PlantUML
-- PlantUML: Use syntax compatible with version >=1.2025.9
-- Testing: Use `PLANTUML_TEMP_DIR=/tmp/plantuml-$$` once per session, then `plantuml -o $PLANTUML_TEMP_DIR` to maintain consistency for batch operations
-- Diagrams: Preferred tool for architecture diagrams
+- Use PlantUML >=1.2025.9, validate with `plantuml --check-syntax <path>`, prefer it for architecture diagrams
 
 ### Docker and Containerization
 - Host Access: Use `172.17.0.1` instead of `host.docker.internal`

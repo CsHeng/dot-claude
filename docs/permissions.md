@@ -1,6 +1,6 @@
 # Claude Global Command Permissions Configuration
 
-Command permissions configuration documentation in `~/.claude/settings.json`.
+Command permissions configuration documentation in `~/.claude/settings.json`. Agents should rely on `AGENTS.md` for operational guidance; this reference is for humans configuring or auditing permission layers.
 
 ## 📋 Command Categories
 
