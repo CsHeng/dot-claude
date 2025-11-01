@@ -1,6 +1,6 @@
 # Claude Code Settings Configuration
 
-Comprehensive guide to configuring Claude Code settings, including file locations, override hierarchy, and best practices.
+Comprehensive guide to configuring Claude Code settings, including file locations, override hierarchy, and best practices. Agents should refer to `AGENTS.md` for their operating instructions; this document is intended for human operators maintaining the configuration.
 
 ## 📁 Settings File Locations and Purposes
 

@@ -143,6 +143,7 @@ fileMatchPattern: '**/*.sh'
 - Test error conditions and edge cases
 - Use subshells for isolated testing
 - Implement dry-run modes where appropriate
+- Run `bash -n "$script"` (or `sh -n`/`zsh -n`) to validate syntax before execution
 
 ### Debugging Techniques
 - Use `set -x` for debugging execution flow
