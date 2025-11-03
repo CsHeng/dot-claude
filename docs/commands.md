@@ -14,6 +14,8 @@ The commands directory now centers on the `/config-sync:*` slash-command suite t
 └── review-shell-syntax.md
 ```
 
+> Note: Tool adapters intentionally exclude the internal `config-sync/` module when synchronizing commands to external CLIs so that orchestration logic stays Claude-local.
+
 ## Minimal Command Guidelines
 - Each command file must include YAML frontmatter with at least `name`, `description`, and (optionally) `argument-hint`.
 - Use slash names (`config-sync:sync`, etc.) to avoid collisions and clarify intent.

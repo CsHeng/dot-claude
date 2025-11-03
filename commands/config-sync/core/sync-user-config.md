@@ -1,7 +1,7 @@
 ---
 name: "config-sync:sync-user-config"
 description: Complete configuration sync from Claude to target tools
-argument-hint: --target=<droid|qwen|codex|opencode|all> [--component=<rules|permissions|commands|settings|all>]
+argument-hint: --target=<droid|qwen|opencode|codex|all> [--component=<rules|permissions|commands|settings|memory|all>]
 ---
 
 ## Task
@@ -16,9 +16,9 @@ Use Claude Code's intelligence to orchestrate comprehensive configuration synchr
    - Settings: `settings.json`, `docs/settings.md`
 
 2. Parse target specification:
-   - Extract target tool(s) from `--target` argument
-   - Extract component(s) from `--component` argument if specified
-   - Default to all components if not specified
+   - If command arguments are missing, prompt the user to interactively select target tool(s) and component(s)
+   - Extract target tool(s) from the comma-separated `--target` argument once gathered
+   - Extract component(s) from the comma-separated `--component` argument if specified
 
 3. Analyze target tool capabilities:
    - Review target tool's configuration structure
@@ -61,7 +61,7 @@ Use Claude Code's intelligence to orchestrate comprehensive configuration synchr
 ## Synchronization Workflow
 
 ### Phase 1: Analysis and Planning
-1. Parse command arguments: `--target=<tool>` and `--component=<type>`
+1. Parse command arguments: `--target=<tool[,tool]|all>` and `--component=<type[,type]|all>`
 2. Inventory Claude configuration files to be synchronized
 3. Analyze target tool capabilities and existing configurations
 4. Create sync plan with conflict resolution strategy
@@ -205,6 +205,7 @@ Command Adaptation (delegate to `adapt-commands.md`):
      - Creating backups of existing commands
      - Compatibility validation and testing
      - Dual format support for OpenCode (JSON/markdown)
+   - Excludes the internal `config-sync` command module (Claude-only functionality)
 
 ### Adaptation Command Integration
 - adapt-permissions.md: Handles all permission-related adaptations

@@ -1,7 +1,7 @@
 ---
 name: "config-sync:codex"
 description: OpenAI Codex CLI specific operations with minimal configuration
-argument-hint: --action=<sync|analyze|verify> --component=<rules|permissions|commands|settings|memory|all>
+argument-hint: --action=<sync|analyze|verify> --component=<rules,permissions,commands,settings,memory|all>
 ---
 
 # Config-Sync Codex Command
@@ -11,12 +11,12 @@ Handle OpenAI Codex CLI-specific configuration synchronization with minimal setu
 
 ## Usage
 ```bash
-/config-sync:codex --action=<operation> --component=<type|all>
+/config-sync:codex --action=<operation> --component=<type[,type]|all>
 ```
 
 ### Arguments
 - `--action`: Operation (sync, analyze, verify)
-- `--component`: Component type (rules, permissions, commands, settings, memory) or "all"
+- `--component`: One or more component types (comma-separated: rules,permissions,commands,settings,memory) or "all"
 
 ## Quick Examples
 
@@ -33,6 +33,11 @@ Handle OpenAI Codex CLI-specific configuration synchronization with minimal setu
 ### Sync only rules with sandbox documentation
 ```bash
 /config-sync:codex --action=sync --component=rules
+```
+
+### Sync permissions and settings together
+```bash
+/config-sync:codex --action=sync --component=permissions,settings
 ```
 
 ## OpenAI Codex CLI Features

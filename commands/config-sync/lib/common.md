@@ -28,6 +28,6 @@ Use `scripts/backup.sh` to expose a `create_backup <source> <destRoot>` function
 
 ## Executor Utilities
 
-`scripts/executor.sh` should expose helpers for safe file writes, e.g. `write_with_checksum`, `render_template`, or `copy_with_sanitization` depending on your automation approach.
+`scripts/executor.sh` should expose helpers for safe file writes, e.g. `write_with_checksum`, `render_template`, or `sync_with_sanitization` depending on your automation approach.
 
 These utilities are intentionally abstract so the plugin can operate across different environments. When wiring this plugin into your own workflows, implement the functions above to match your preferred automation stack.
