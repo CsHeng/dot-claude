@@ -51,7 +51,7 @@ copy_markdown_rules() {
     for source_dir in "${source_dirs[@]}"; do
         [[ -d "$source_dir" ]] || continue
         while IFS= read -r -d '' file; do
-            cp "$file" "$target_dir/$(basename "$file")"
+            rsync -a --quiet "$file" "$target_dir/$(basename "$file")"
             total=$((total + 1))
         done < <(find "$source_dir" -maxdepth 1 -name "*.md" -type f -print0)
     done
@@ -479,7 +479,7 @@ command_copy_file() {
     if [[ "$dest" == *.md ]]; then
         command_sanitize_markdown "$src" "$dest" _warnings
     else
-        cp "$src" "$dest"
+        rsync -a --quiet "$src" "$dest"
     fi
 
     echo "$dest"

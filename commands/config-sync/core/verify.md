@@ -1,7 +1,7 @@
 ---
 name: "config-sync:verify"
 description: Verify configuration sync completeness and correctness
-argument-hint: --target=<droid|qwen|codex|opencode|all> [--component=<rules|permissions|commands|settings|memory|all>] [--detailed] [--fix]
+argument-hint: --target=<droid,qwen,codex,opencode|all> [--component=<rules,permissions,commands,settings,memory|all>] [--detailed] [--fix]
 ---
 
 # Config-Sync Verify Command
@@ -11,12 +11,12 @@ Comprehensively verify that configuration synchronization was successful and com
 
 ## Usage
 ```bash
-/config-sync:verify --target=<tool|all> [options]
+/config-sync:verify --target=<tool[,tool]|all> [options]
 ```
 
 ### Arguments
-- `--target`: Target tool (droid, qwen, codex, opencode) or "all"
-- `--component`: Specific component to verify (optional, defaults to all)
+- `--target`: One or more target tools (comma-separated: droid,qwen,opencode) or `all`
+- `--component`: Specific component(s) to verify (comma-separated list, defaults to all)
 - `--detailed`: Include detailed verification and recommendations
 - `--fix`: Attempt to automatically fix common issues found
 
@@ -27,19 +27,18 @@ Comprehensively verify that configuration synchronization was successful and com
 # Source common utilities
 source "$(dirname "${BASH_SOURCE[0]}")/../lib/common.sh"
 
-# Parse arguments
-TARGET=""
-COMPONENT=""
+TARGET_SPEC="all"
+COMPONENT_SPEC="all"
 DETAILED=false
 FIX=false
 
 while [[ $# -gt 0 ]]; do
     case $1 in
         --target=*)
-            TARGET="${1#*=}"
+            TARGET_SPEC="${1#*=}"
             ;;
         --component=*)
-            COMPONENT="${1#*=}"
+            COMPONENT_SPEC="${1#*=}"
             ;;
         --detailed)
             DETAILED=true
@@ -55,9 +54,14 @@ while [[ $# -gt 0 ]]; do
     shift
 done
 
-# Validate target
-if [[ "$TARGET" == "all" ]]; then
-    TARGETS=("droid" "qwen" "codex" "opencode")
+# Expand comma-separated selections using shared helpers
+mapfile -t TARGETS < <(parse_target_list "$TARGET_SPEC")
+mapfile -t COMPONENTS < <(parse_component_list "$COMPONENT_SPEC")
+
+if [[ ${#TARGETS[@]} -eq 0 ]]; then
+    echo "No valid targets supplied" >&2
+    exit 1
+fi
 else
     validate_target "$TARGET" || exit 1
     TARGETS=("$TARGET")
@@ -247,15 +251,15 @@ verify_rules_files() {
     if [[ ! -f "${rule_files[0]}" ]]; then
         issues_ref+=("No rule files found")
         if [[ "$FIX" == "true" ]] && [[ -d "$CLAUDE_RULES_DIR" ]]; then
-            # Copy basic rule files
-            local copied=0
+            # Sync basic rule files
+            local synced=0
             for rule_file in "$CLAUDE_RULES_DIR"/*.md; do
                 [[ -f "$rule_file" ]] || continue
-                cp "$rule_file" "$rules_dir/"
-                ((copied++))
+                rsync -a --quiet "$rule_file" "$rules_dir/"
+                ((synced++))
             done
-            if [[ $copied -gt 0 ]]; then
-                fixes_ref+=("Copied $copied rule files from Claude")
+            if [[ $synced -gt 0 ]]; then
+                fixes_ref+=("Synced $synced rule files from Claude")
             fi
         fi
     else
@@ -488,8 +492,8 @@ verify_commands_files() {
     if [[ ! -f "${cmd_files[0]}" ]]; then
         issues_ref+=("No command files found")
         if [[ "$FIX" == "true" ]] && [[ -d "$CLAUDE_COMMANDS_DIR" ]]; then
-            # Copy and adapt commands based on tool requirements
-            local copied=0
+            # Sync and adapt commands based on tool requirements
+            local synced=0
             for cmd_file in "$CLAUDE_COMMANDS_DIR"/*.md; do
                 [[ -f "$cmd_file" ]] || continue
 
@@ -498,20 +502,20 @@ verify_commands_files() {
 
                 case "$tool" in
                     "droid")
-                        cp "$cmd_file" "$target_file.md"
+                        rsync -a --quiet "$cmd_file" "$target_file.md"
                         ;;
                     "qwen")
                         # Simple conversion to TOML
                         convert_simple_markdown_to_toml "$cmd_file" "$target_file.toml"
                         ;;
                     "codex"|"opencode")
-                        cp "$cmd_file" "$target_file.md"
+                        rsync -a --quiet "$cmd_file" "$target_file.md"
                         ;;
                 esac
-                ((copied++))
+                ((synced++))
             done
-            if [[ $copied -gt 0 ]]; then
-                fixes_ref+=("Copied and adapted $copied command files")
+            if [[ $synced -gt 0 ]]; then
+                fixes_ref+=("Synced and adapted $synced command files")
             fi
         fi
     else
@@ -856,4 +860,9 @@ This command integrates with:
 ### Verify specific component
 ```bash
 /config-sync:verify --target=droid --component=permissions
+```
+
+### Verify shared rules across multiple tools
+```bash
+/config-sync:verify --target=droid,qwen --component=rules
 ```

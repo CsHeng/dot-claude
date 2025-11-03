@@ -8,11 +8,11 @@ This directory contains intelligent commands that use Claude Code as the single 
 
 #### `/config-sync:sync`
 **Purpose**: Directly synchronize specific configuration components
-**Usage**: `/config-sync:sync --target=<tool> --component=<rules|permissions|commands|settings|memory|all> [--dry-run] [--force] [--verify]`
+**Usage**: `/config-sync:sync --target=<tool[,tool]|all> --component=<rules,permissions,commands,settings,memory|all> [--dry-run] [--force] [--verify]`
 
 #### `/config-sync:sync-user-config`
 **Purpose**: Complete configuration sync from Claude to target tools
-**Usage**: `/config-sync:sync-user-config --target=<tool> --component=<type>`
+**Usage**: `/config-sync:sync-user-config --target=<tool[,tool]|all> --component=<type[,type]|all>`
 
 **Examples**:
 ```bash
@@ -54,7 +54,7 @@ This directory contains intelligent commands that use Claude Code as the single 
 
 #### `/config-sync:verify`
 **Purpose**: Verify configuration sync completeness and correctness
-**Usage**: `/config-sync:verify --target=<tool>`
+**Usage**: `/config-sync:verify --target=<tool[,tool]|all> [--component=<type[,type]|all>]`
 
 **Examples**:
 ```bash
@@ -67,7 +67,7 @@ This directory contains intelligent commands that use Claude Code as the single 
 
 #### `/config-sync:analyze`
 **Purpose**: Analyze target tool capabilities, configuration state, and sync requirements
-**Usage**: `/config-sync:analyze --target=<tool|all> [--detailed] [--format=<markdown|table|json>]`
+**Usage**: `/config-sync:analyze --target=<tool[,tool]|all> [--detailed] [--format=<markdown|table|json>]`
 
 **Examples**:
 ```bash
@@ -151,6 +151,7 @@ This directory contains intelligent commands that use Claude Code as the single 
 - Custom task templates
 - Adapted for universal compatibility
 - Claude-specific features removed
+- Internal `config-sync` module remains Claude-only; adapters skip syncing that directory to target tools
 
 ### Settings
 - Environment variables and preferences

@@ -1,0 +1,289 @@
+@startuml Config-Sync Sequence Diagram
+
+!theme plain
+title Config-Sync System: Time Sequence Flow
+scale 1.0
+
+' Define styles with better contrast
+skinparam actor {
+    BackgroundColor #4A90E2
+    BorderColor #2E5C8A
+    FontColor White
+}
+
+skinparam participant {
+    BackgroundColor #52C41A
+    BorderColor #389E0D
+    FontColor White
+}
+
+skinparam database {
+    BackgroundColor #FA8C16
+    BorderColor #D46B08
+    FontColor White
+}
+
+skinparam sequence {
+    ArrowColor #333333
+    ArrowFontColor #333333
+    LifeLineBorderColor #333333
+    LifeLineBackgroundColor #F5F5F5
+}
+
+skinparam note {
+    BackgroundColor #F0F0F0
+    BorderColor #999999
+    FontColor #333333
+}
+
+' Actors and Participants
+actor "User" as user
+participant "Core Sync" as core_sync
+participant "Permission Adapter" as perm_adapter
+participant "Memory Adapter" as memory_adapter
+participant "Droid Adapter" as droid
+participant "Qwen Adapter" as qwen
+participant "Codex Adapter" as codex
+participant "OpenCode Adapter" as opencode
+
+participant "Claude Config" as claude_config
+participant "Droid CLI" as droid_tool
+participant "Qwen CLI" as qwen_tool
+participant "Codex CLI" as codex_tool
+participant "OpenCode" as opencode_tool
+
+' == INITIAL SETUP SEQUENCE ==
+autonumber 1
+
+group Initial Setup - Sync All Tools
+    user -> core_sync: /config-sync:sync-user-config --target=all
+    activate core_sync
+
+    note over core_sync
+      parse_target_list("all") ⇒ droid,qwen,codex,opencode
+      parse_component_list("all") ⇒ commands,rules,settings,permissions,memory
+    end note
+
+    core_sync -> claude_config: Read configuration files
+    activate claude_config
+    claude_config --> core_sync: rules, commands, settings, memory
+    deactivate claude_config
+
+    note over core_sync: Create backup directories\nfor all target tools
+
+    par Parallel Sync to Multiple Tools
+        core_sync -> droid: Sync rules & commands\n(excludes config-sync module)
+        activate droid
+
+        core_sync -> qwen: Sync rules & commands\n(excludes config-sync module)
+        activate qwen
+
+        core_sync -> codex: Sync rules & commands\n(excludes config-sync module)
+        activate codex
+
+        core_sync -> opencode: Sync rules & commands\n(excludes config-sync module)
+        activate opencode
+    end
+
+    == Permission Adaptation ==
+    core_sync -> perm_adapter: Adapt permissions for all tools
+    activate perm_adapter
+
+    par Parallel Permission Processing
+        perm_adapter -> droid: Map to allowlist/denylist
+        perm_adapter -> qwen: Generate permission guidelines
+        perm_adapter -> codex: Set sandbox levels
+        perm_adapter -> opencode: Map to operation-based
+    end
+
+    perm_adapter --> core_sync: Permission adaptation complete
+    deactivate perm_adapter
+
+    == Memory Synchronization ==
+    core_sync -> memory_adapter: Sync memory files
+    activate memory_adapter
+
+    par Parallel Memory Processing
+        memory_adapter -> droid: Create DROID.md + AGENTS.md
+        memory_adapter -> qwen: Create QWEN.md + AGENTS.md
+        memory_adapter -> codex: Create CODEX.md + AGENTS.md
+        memory_adapter -> opencode: Create OPENCODE.md + AGENTS.md
+    end
+
+    memory_adapter --> core_sync: Memory sync complete
+    deactivate memory_adapter
+
+    == Complete Tool Adapters ==
+    droid -> droid_tool: Write ~/.factory/ configuration
+    activate droid_tool
+    droid_tool --> droid: Success
+    deactivate droid_tool
+    droid --> core_sync: Droid sync complete
+    deactivate droid
+
+    qwen -> qwen_tool: Write ~/.qwen/ configuration
+    activate qwen_tool
+    qwen_tool --> qwen: Success
+    deactivate qwen_tool
+    qwen --> core_sync: Qwen sync complete
+    deactivate qwen
+
+    codex -> codex_tool: Write ~/.codex/ configuration
+    activate codex_tool
+    codex_tool --> codex: Success
+    deactivate codex_tool
+    codex --> core_sync: Codex sync complete
+    deactivate codex
+
+    opencode -> opencode_tool: Write ~/.config/opencode/ configuration
+    activate opencode_tool
+    opencode_tool --> opencode: Success
+    deactivate opencode_tool
+    opencode --> core_sync: OpenCode sync complete
+    deactivate opencode
+
+    core_sync --> user: ✅ All tools synchronized successfully
+    deactivate core_sync
+end
+
+' == VERIFICATION SEQUENCE ==
+group Verification Phase
+    user -> core_sync: /config-sync:verify --target=all --component=all --detailed
+    activate core_sync
+
+    note over core_sync
+      Users can provide comma-separated target/component lists
+      parse_target_list()/parse_component_list() expand before verification
+    end note
+
+    par Parallel Verification
+        core_sync -> droid: Verify configuration integrity
+        activate droid
+        droid -> droid_tool: Check files exist & valid
+        activate droid_tool
+        droid_tool --> droid: Verification results
+        deactivate droid_tool
+        droid --> core_sync: Droid verification complete
+        deactivate droid
+
+        core_sync -> qwen: Verify configuration integrity
+        activate qwen
+        qwen -> qwen_tool: Check files exist & valid
+        activate qwen_tool
+        qwen_tool --> qwen: Verification results
+        deactivate qwen_tool
+        qwen --> core_sync: Qwen verification complete
+        deactivate qwen
+
+        core_sync -> codex: Verify configuration integrity
+        activate codex
+        codex -> codex_tool: Check files exist & valid
+        activate codex_tool
+        codex_tool --> codex: Verification results
+        deactivate codex_tool
+        codex --> core_sync: Codex verification complete
+        deactivate codex
+
+        core_sync -> opencode: Verify configuration integrity
+        activate opencode
+        opencode -> opencode_tool: Check files exist & valid
+        activate opencode_tool
+        opencode_tool --> opencode: Verification results
+        deactivate opencode_tool
+        opencode --> core_sync: OpenCode verification complete
+        deactivate opencode
+    end
+
+    core_sync --> user: 📊 Verification report with results
+    deactivate core_sync
+end
+
+' == UPDATE SEQUENCE ==
+group Targeted Update
+    user -> core_sync: /config-sync:sync --target=droid --component=permissions
+    activate core_sync
+
+    core_sync -> claude_config: Read current permissions
+    activate claude_config
+    claude_config --> core_sync: Permission settings
+    deactivate claude_config
+
+    core_sync -> perm_adapter: Adapt permissions for Droid
+    activate perm_adapter
+    perm_adapter -> droid: Map permissions to Droid format
+    activate droid
+    droid -> droid_tool: Update ~/.factory/settings.json
+    activate droid_tool
+    droid_tool --> droid: Update successful
+    deactivate droid_tool
+    droid --> perm_adapter: Permissions applied
+    deactivate droid
+    perm_adapter --> core_sync: Permission adaptation complete
+    deactivate perm_adapter
+
+    core_sync --> user: ✅ Droid permissions updated
+    deactivate core_sync
+end
+
+' == ANALYSIS SEQUENCE ==
+group Analysis Phase
+    user -> core_sync: /config-sync:analyze --target=all --format=table
+    activate core_sync
+
+    par Parallel Analysis
+        core_sync -> droid: Check installation & config
+        activate droid
+        droid --> core_sync: Droid status report
+        deactivate droid
+
+        core_sync -> qwen: Check installation & config
+        activate qwen
+        qwen --> core_sync: Qwen status report
+        deactivate qwen
+
+        core_sync -> codex: Check installation & config
+        activate codex
+        codex --> core_sync: Codex status report
+        deactivate codex
+
+        core_sync -> opencode: Check installation & config
+        activate opencode
+        opencode --> core_sync: OpenCode status report
+        deactivate opencode
+    end
+
+    core_sync --> user: 📋 Analysis table with tool status
+    deactivate core_sync
+end
+
+' Notes for timing and duration
+note over user, opencode_tool
+    **Timing Estimates**
+    • Initial setup: 2-5 minutes
+    • Targeted update: 30-60 seconds
+    • Verification: 1-2 minutes
+    • Analysis: 30-60 seconds
+
+    **Parallel Processing**
+    • All tool adapters run in parallel
+    • Reduces total sync time significantly
+    • Independent tool operations
+end note
+
+note right of perm_adapter
+    **Permission Mapping Logic**
+    • Claude allow/ask/deny → Tool-specific formats
+    • Security-first approach
+    • Risk assessment for each tool
+    • Format conversion: JSON → TOML → Guidelines
+end note
+
+note right of memory_adapter
+    **Memory Adaptation**
+    • CLAUDE.md → Tool-specific memory files
+    • AGENTS.md → Universal agent instructions
+    • Context preservation
+    • Tool-specific customization
+end note
+
+@enduml

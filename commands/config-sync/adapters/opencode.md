@@ -1,7 +1,7 @@
 ---
 name: "config-sync:opencode"
 description: OpenCode specific operations with JSON format and external references
-argument-hint: --action=<sync|analyze|verify> --component=<rules|permissions|commands|settings|memory|all>
+argument-hint: --action=<sync|analyze|verify> --component=<rules,permissions,commands,settings,memory|all>
 ---
 
 # Config-Sync OpenCode Command
@@ -11,12 +11,12 @@ Handle OpenCode-specific configuration synchronization with JSON format and exte
 
 ## Usage
 ```bash
-/config-sync:opencode --action=<operation> --component=<type|all>
+/config-sync:opencode --action=<operation> --component=<type[,type]|all>
 ```
 
 ### Arguments
 - `--action`: Operation (sync, analyze, verify)
-- `--component`: Component type (rules, permissions, commands, settings, memory) or "all"
+- `--component`: One or more component types (comma-separated: rules,permissions,commands,settings,memory) or "all"
 
 ## Quick Examples
 
@@ -33,6 +33,11 @@ Handle OpenCode-specific configuration synchronization with JSON format and exte
 ### Sync only permissions with operation-based config
 ```bash
 /config-sync:opencode --action=sync --component=permissions
+```
+
+### Sync rules and commands together
+```bash
+/config-sync:opencode --action=sync --component=rules,commands
 ```
 
 ## OpenCode Features

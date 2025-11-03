@@ -47,7 +47,15 @@ get_target_config_dir() {
     droid)   printf '%s\n' "$HOME/.factory" ;;
     qwen)    printf '%s\n' "$HOME/.qwen" ;;
     codex)   printf '%s\n' "$HOME/.codex" ;;
-    opencode) printf '%s\n' "$HOME/.config/opencode" ;;
+    opencode)
+      local config_dir="${XDG_CONFIG_HOME:-$HOME/.config}/opencode"
+      local legacy_dir="$HOME/.opencode"
+      if [[ -d "$config_dir" || ! -d "$legacy_dir" ]]; then
+        printf '%s\n' "$config_dir"
+      else
+        printf '%s\n' "$legacy_dir"
+      fi
+      ;;
   esac
 }
 
@@ -57,7 +65,7 @@ get_target_rules_dir() {
     droid)   printf '%s\n' "$HOME/.factory/rules" ;;
     qwen)    printf '%s\n' "$HOME/.qwen/rules" ;;
     codex)   printf '%s\n' "$HOME/.codex/rules" ;;
-    opencode) printf '%s\n' "$HOME/.config/opencode/rules" ;;
+    opencode) printf '%s\n' "$(get_target_config_dir opencode)/rules" ;;
   esac
 }
 
@@ -67,6 +75,112 @@ get_target_commands_dir() {
     droid)   printf '%s\n' "$HOME/.factory/commands" ;;
     qwen)    printf '%s\n' "$HOME/.qwen/commands" ;;
     codex)   printf '%s\n' "$HOME/.codex/commands" ;;
-    opencode) printf '%s\n' "$HOME/.config/opencode/command" ;;
+    opencode)
+      local base="$(get_target_config_dir opencode)"
+      if [[ -d "$base/command" || ! -d "$base/commands" ]]; then
+        printf '%s\n' "$base/command"
+      else
+        printf '%s\n' "$base/commands"
+      fi
+      ;;
   esac
+}
+
+
+parse_target_list() {
+  local raw="$1"
+  local trimmed
+  trimmed="$(printf '%s' "$raw" | tr '[:upper:]' '[:lower:]')"
+  trimmed="${trimmed// /}"
+
+  local valid_targets=("droid" "qwen" "codex" "opencode")
+
+  if [[ -z "$trimmed" ]]; then
+    log_error "No target specified"
+    return 1
+  fi
+
+  if [[ "$trimmed" == "all" ]]; then
+    printf '%s\n' "${valid_targets[@]}"
+    return 0
+  fi
+
+  IFS=',' read -ra parts <<< "$trimmed"
+  declare -A seen=()
+  local result=()
+
+  for part in "${parts[@]}"; do
+    [[ -z "$part" ]] && continue
+    if [[ "$part" == "all" ]]; then
+      printf '%s\n' "${valid_targets[@]}"
+      return 0
+    fi
+    case "$part" in
+      droid|qwen|codex|opencode) ;;
+      *)
+        log_error "Invalid target specified: $part"
+        return 1
+        ;;
+    esac
+    if [[ -z "${seen[$part]:-}" ]]; then
+      result+=("$part")
+      seen["$part"]=1
+    fi
+  done
+
+  if [[ ${#result[@]} -eq 0 ]]; then
+    log_error "No valid targets found in: $raw"
+    return 1
+  fi
+
+  printf '%s\n' "${result[@]}"
+}
+
+parse_component_list() {
+  local raw="$1"
+  local trimmed
+  trimmed="$(printf '%s' "$raw" | tr '[:upper:]' '[:lower:]')"
+  trimmed="${trimmed// /}"
+
+  local valid_components=("commands" "rules" "settings" "permissions" "memory")
+
+  if [[ -z "$trimmed" ]]; then
+    log_error "No component specified"
+    return 1
+  fi
+
+  if [[ "$trimmed" == "all" ]]; then
+    printf '%s\n' "${valid_components[@]}"
+    return 0
+  fi
+
+  IFS=',' read -ra parts <<< "$trimmed"
+  declare -A seen=()
+  local result=()
+
+  for part in "${parts[@]}"; do
+    [[ -z "$part" ]] && continue
+    if [[ "$part" == "all" ]]; then
+      printf '%s\n' "${valid_components[@]}"
+      return 0
+    fi
+    case "$part" in
+      commands|rules|settings|permissions|memory) ;;
+      *)
+        log_error "Invalid component specified: $part"
+        return 1
+        ;;
+    esac
+    if [[ -z "${seen[$part]:-}" ]]; then
+      result+=("$part")
+      seen["$part"]=1
+    fi
+  done
+
+  if [[ ${#result[@]} -eq 0 ]]; then
+    log_error "No valid components found in: $raw"
+    return 1
+  fi
+
+  printf '%s\n' "${result[@]}"
 }

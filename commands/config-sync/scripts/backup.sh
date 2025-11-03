@@ -19,9 +19,10 @@ create_backup() {
   local backup_path="$backup_root/${name}.${timestamp}.bak"
 
   if [[ -d "$source_path" ]]; then
-    cp -a "$source_path" "$backup_path"
+    mkdir -p "$backup_path"
+    rsync -a --quiet "$source_path"/ "$backup_path"/
   else
-    cp "$source_path" "$backup_path"
+    rsync -a --quiet "$source_path" "$backup_path"
   fi
 
   echo "[backup] created $backup_path" >&2

@@ -1,7 +1,7 @@
 ---
 name: "config-sync:analyze"
 description: Analyze target tool capabilities and configuration state
-argument-hint: --target=<droid|qwen|codex|opencode|all> [--detailed] [--format=<json|markdown|table>]
+argument-hint: --target=<droid,qwen,codex,opencode|all> [--detailed] [--format=<json|markdown|table>]
 ---
 
 # Config-Sync Analyze Command
@@ -11,11 +11,11 @@ Comprehensively analyze target tool capabilities, current configuration state, a
 
 ## Usage
 ```bash
-/config-sync:analyze --target=<tool|all> [options]
+/config-sync:analyze --target=<tool[,tool]|all> [options]
 ```
 
 ### Arguments
-- `--target`: Target tool (droid, qwen, codex, opencode) or "all"
+- `--target`: One or more target tools (comma-separated: droid,qwen,opencode) or `all`
 - `--detailed`: Include detailed analysis and recommendations
 - `--format`: Output format (json, markdown, table) - default: markdown
 
@@ -29,6 +29,11 @@ Comprehensively analyze target tool capabilities, current configuration state, a
 ### Detailed analysis of specific tool
 ```bash
 /config-sync:analyze --target=qwen --detailed
+```
+
+### Compare multiple tools at once
+```bash
+/config-sync:analyze --target=droid,qwen --format=table
 ```
 
 ### Table format summary

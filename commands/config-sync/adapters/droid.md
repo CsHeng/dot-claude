@@ -1,7 +1,7 @@
 ---
 name: "config-sync:droid"
 description: Droid CLI specific operations and configuration
-argument-hint: --action=<sync|analyze|verify> --component=<rules|permissions|commands|settings|memory|all>
+argument-hint: --action=<sync|analyze|verify> --component=<rules,commands,settings,memory|all>
 ---
 
 # Config-Sync Droid Command
@@ -11,12 +11,12 @@ Handle Droid CLI-specific configuration synchronization with full compatibility 
 
 ## Usage
 ```bash
-/config-sync:droid --action=<operation> --component=<type|all>
+/config-sync:droid --action=<operation> --component=<type[,type]|all>
 ```
 
 ### Arguments
 - `--action`: Operation (sync, analyze, verify)
-- `--component`: Component type (rules, permissions, commands, settings, memory) or "all"
+- `--component`: One or more component types (comma-separated: rules,commands,settings,memory) or "all"
 
 ## Quick Examples
 
@@ -35,16 +35,16 @@ Handle Droid CLI-specific configuration synchronization with full compatibility 
 /config-sync:droid --action=verify
 ```
 
-### Sync only permissions
+### Sync rules and commands together
 ```bash
-/config-sync:droid --action=sync --component=permissions
+/config-sync:droid --action=sync --component=rules,commands
 ```
 
 ## Droid CLI Features
 
 ### Command Format
 - **Compatible**: Markdown with YAML frontmatter (same as Claude)
-- **No conversion needed**: Direct copy possible
+- **No conversion needed**: Direct sync possible
 - **Features**: Full feature parity
 
 ### Permission System
@@ -62,7 +62,7 @@ Handle Droid CLI-specific configuration synchronization with full compatibility 
 
 1. **Backup**: Create backup of existing configuration
 2. **Adapt**: Update tool references and syntax
-3. **Copy**: Transfer files with proper permissions
+3. **Sync**: Transfer files with proper permissions
 4. **Verify**: Ensure completeness and correctness
 
 ## Common Issues

@@ -1,10 +1,13 @@
 ---
 description: Propose a commit message from current git status (no commit)
 argument-hint: [optional-summary-notes]
-allowed-tools: Bash(git status --short), Bash(git diff --cached), Bash(git diff)
+is_background: false
+allowed-tools: Bash(git rev-parse --git-dir), Bash(git status --short), Bash(git diff --cached), Bash(git diff)
 ---
 
 ## Context gathering
+- First verify we're in a git repository: `git rev-parse --git-dir`
+  - If this fails (not a git repository), exit with a clear message: "Error: Not in a git repository. This command can only be used in directories with git initialized."
 - Run the following commands and include their outputs in your reasoning (do not modify the working tree):
   - `git status --short`
   - `git diff --cached`
