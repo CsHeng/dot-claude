@@ -2,7 +2,7 @@
 name: "doc-gen:android-app"
 description: Adapter for Android application documentation bootstrap/maintenance
 argument-hint: --mode=<bootstrap|maintain> --repo=<path> --docs=<path> --core=<path> [--demo=<path>]
-allowed-tools: Read, Bash(rg:*), Bash(ls:*), Bash(find:*), Bash(tree:*), Bash(cat:*)
+allowed-tools: Read, Write, ApplyPatch, Bash(rg:*), Bash(ls:*), Bash(find:*), Bash(tree:*), Bash(cat:*), Bash(plantuml --check-syntax:*)
 ---
 
 ## Scope
@@ -10,9 +10,10 @@ Capture the architecture and business flows of Android apps built with Kotlin or
 
 ## Mandatory outputs
 - **Actor matrix**: table with these minimum actors—End User, Android App UI, ViewModel layer, Repository/Data layer, Backend Services, Background Workers, Third-party SDKs (analytics, push, etc.). Add project-specific actors as needed. Populate the table in README with code references (for example `app/src/main/java/.../UserCenterViewModel.kt`).
-- **Validated PlantUML**: at least one sequence or activity diagram covering a high-value flow (onboarding, authentication, download, or push notification). Run `plantuml --check-syntax <file>` and record the exact command result (pass/fail, timestamp) in README.
+- **Validated PlantUML**: at least one sequence or activity diagram covering a high-value flow (onboarding, authentication, download, or push notification). Run `plantuml --check-syntax <file>`, append the raw output to `<docs target>/_reports/plantuml.log`, and quote the result in README.
 - **Critical flows summary**: describe the entry points, core modules, and side effects for the prioritized flows listed below.
-- **TODO backlog**: break down into architecture, feature modules, operations, and PlantUML tasks. Every entry uses `TODO(doc-gen):` plus a path in parentheses.
+- **TODO backlog & ledger**: break down into architecture, feature modules, operations, and PlantUML tasks. Every entry uses `TODO(doc-gen):` plus a path in parentheses **and** sets `automation=auto`. If human validation is recommended, add `review_required=true` and explain why in the notes. Mirror the same structure in `<docs target>/_reports/todo.json` so the orchestrator can track status.
+- **Reports bundle**: ensure `<docs target>/_reports/parameters.json`, `_reports/todo.json`, `_reports/plantuml.log`, and (for delta scope) `_reports/changes.txt` receive adapter-specific details—e.g., add adapter name, default diagram inventory, recommended directories.
 
 ## Preparation checklist
 1. Map Gradle modules with `find <core> -maxdepth 2 -name build.gradle*`.
@@ -20,6 +21,12 @@ Capture the architecture and business flows of Android apps built with Kotlin or
 3. Locate dependency injection setup (Hilt, Dagger, Koin) and note root components and feature modules.
 4. Detect background execution frameworks (WorkManager, Coroutines, AlarmManager, JobScheduler).
 5. List key third-party SDKs (analytics, push, payments) from Gradle files.
+
+## Automation defaults
+- Treat all deliverables this adapter covers as `automation=auto`; generate full drafts (architecture, feature narratives, operations, diagrams) and mark each TODO item as completed (`[x]`) during the run.
+- If further review is recommended, set `review_required=true` and summarize the outstanding questions in both TODO notes and README open questions—do not leave the item unchecked.
+- Reserve `automation=manual` only for exceptional gaps (e.g., missing source, external approval) and accompany the entry with detailed rationale. These cases should be rare for Android app projects.
+- When running in `delta` scope, only emit new TODO entries for modules touched in the change list and still mark each processed item as `[x]` once the fresh draft is generated.
 
 ## Architecture overview guidance
 - Draw a module map showing `app/` plus each library under `library/`. Include responsibilities and cross-module dependencies.
@@ -54,7 +61,7 @@ Summaries for each flow go in README; corresponding TODOs must name source files
 ## PlantUML expectations
 - Maintain an alias registry at the top of every diagram. Use consistent aliases throughout.
 - Prefix section headers with IDs (`== A. Onboarding ==`), and reference those IDs in README/TODO.
-- After running `plantuml --check-syntax`, capture the output message (e.g., `SUCCESS: plantuml --check-syntax ...`) in README under the PlantUML section.
+- After running `plantuml --check-syntax`, append the output message (e.g., `SUCCESS: plantuml --check-syntax ...`) to `<docs target>/_reports/plantuml.log` and quote the same line in README under the PlantUML section.
 
 ## Documentation structure (staging)
 When bootstrapping, recommend this layout inside `docs-bootstrap/` (adjust names if the human prefers a different scheme):

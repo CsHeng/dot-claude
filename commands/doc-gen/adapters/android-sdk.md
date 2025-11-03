@@ -2,7 +2,7 @@
 name: "doc-gen:android-sdk"
 description: Adapter for Android SDK documentation bootstrap/maintenance
 argument-hint: --mode=<bootstrap|maintain> --repo=<path> --docs=<path> --core=<path> [--demo=<path>]
-allowed-tools: Read, Bash(rg:*), Bash(ls:*), Bash(find:*), Bash(tree:*), Bash(cat:*)
+allowed-tools: Read, Write, ApplyPatch, Bash(rg:*), Bash(ls:*), Bash(find:*), Bash(tree:*), Bash(cat:*), Bash(plantuml --check-syntax:*)
 ---
 
 ## Scope
@@ -10,9 +10,10 @@ Focus on Android libraries distributed to external apps. Capture public APIs, in
 
 ## Mandatory outputs
 - **Actor matrix** (README) with at least: Host App, SDK Public API, SDK Core/Internal, Backend Services, Telemetry/Analytics Pipeline, Sample/Demo App, Background Scheduler/WorkManager. Include repository-relative file references.
-- **Validated PlantUML**: at least one diagram covering initialization or event tracking. Run `plantuml --check-syntax <diagram>` and document the command output in README.
+- **Validated PlantUML**: at least one diagram covering initialization or event tracking. Run `plantuml --check-syntax <diagram>`, append the raw output to `<docs target>/_reports/plantuml.log`, and echo the same line in README.
 - **Integration checklist**: step-by-step host integration covering Gradle setup, permissions, manifest updates, initialization code, Proguard/R8 rules, verification steps.
-- **TODO backlog**: use `TODO(doc-gen):` format with paths for API docs, sample updates, telemetry flows, publishing configuration, and diagram tasks.
+- **TODO backlog & ledger**: use `TODO(doc-gen):` format with paths for API docs, sample updates, telemetry flows, publishing configuration, and diagram tasks. Every entry must set `automation=auto`; when a human review is advisable, add `review_required=true` and capture context in the notes. Mirror the items into `<docs target>/_reports/todo.json`.
+- **Reports bundle**: enrich `<docs target>/_reports/parameters.json` and `_reports/todo.json` with adapter metadata (e.g., sdk-version sources, sample paths). For delta scope, ensure `_reports/changes.txt` reflects which modules were analyzed or skipped.
 
 ## Preparation checklist
 1. Enumerate Gradle modules (`find <core> -maxdepth 2 -name build.gradle*`).
@@ -20,6 +21,12 @@ Focus on Android libraries distributed to external apps. Capture public APIs, in
 3. Inspect publishing configuration (groupId, artifactId, versioning) and distribution channels.
 4. Locate sample or demo apps demonstrating integration.
 5. Document min/target SDK versions and required host dependencies.
+
+## Automation defaults
+- Treat all SDK deliverables (module inventory, initialization flow, threading model, integration checklists, diagrams) as `automation=auto` and mark TODO entries `[x]` once drafts are generated.
+- If something warrants human validation, set `review_required=true` and elaborate in the notes plus README open questions—tasks remain marked complete.
+- Use `automation=manual` only when automation is impossible (e.g., access-controlled partner materials). Such cases should be rare and must include exhaustive rationale.
+- In `delta` scope, only surface TODO entries for APIs or modules touched in the change list and still complete them during the run.
 
 ## Architecture coverage
 - Layer diagram: Public API facade, internal core, networking layer, persistence/cache, telemetry/analytics, utilities.
@@ -48,7 +55,7 @@ Focus on Android libraries distributed to external apps. Capture public APIs, in
   - `docs-bootstrap/diagrams/B01_event_pipeline.puml` (event capture → queue → upload).  
   - `docs-bootstrap/diagrams/C01_error_reporting.puml` (exception collection → processing → callback).  
 - Maintain alias registry at top; prefix sections with IDs (`== A. Initialization ==`).  
-- Record validation results verbatim in README (e.g., `SUCCESS: plantuml --check-syntax docs-bootstrap/diagrams/A01_sdk_initialization.puml`).
+- Record validation results verbatim in README (e.g., `SUCCESS: plantuml --check-syntax docs-bootstrap/diagrams/A01_sdk_initialization.puml`) and append each line to `<docs target>/_reports/plantuml.log`.
 
 ## Documentation structure recommendations
 ```

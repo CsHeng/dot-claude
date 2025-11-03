@@ -1,12 +1,12 @@
 ---
 name: "doc-gen:bootstrap"
 description: Self-contained orchestrator for documentation bootstrap and maintenance flows across multiple project types
-argument-hint: --mode=<bootstrap|maintain> --project-type=<android-app|android-sdk|web-admin|web-user|backend-go|backend-php> --language=<en|zh> --repo=<path> --docs=<path> --core=<path> [--demo=<path>]
-allowed-tools: Read, Bash(rg:*), Bash(ls:*), Bash(find:*), Bash(tree:*), Bash(cat:*)
+argument-hint: --mode=<bootstrap|maintain> --scope=<full|delta> --project-type=<android-app|android-sdk|web-admin|web-user|backend-go|backend-php> --language=<en|zh> --repo=<path> --docs=<path> --core=<path> [--demo=<path>]
+allowed-tools: Read, Write, ApplyPatch, Bash(rg:*), Bash(ls:*), Bash(find:*), Bash(tree:*), Bash(cat:*), Bash(plantuml --check-syntax:*)
 ---
 
 ## Purpose
-Provide a repeatable documentation workflow that works even if external rule files change. The command gathers parameters, inspects the codebase, and delegates to the relevant adapter while enforcing the same expectations every run. Formatting helpers (parameter table, actor matrix template, TODO pattern, logging style) live in `../lib/common.md` relative to this core file and are referenced below.
+Provide a repeatable documentation workflow that works even if external rule files change. The command gathers parameters, inspects the codebase, and delegates to the relevant adapter while enforcing the same expectations every run. Formatting helpers (parameter table, actor matrix template, TODO pattern, logging style) live in `~/.claude/commands/doc-gen/lib/common.md` and are referenced below.
 
 - Bootstrap runs stage new content in `docs-bootstrap/` to avoid overwriting existing `docs/`. When the draft is approved, the human copies the vetted files into `docs/`.
 - Maintain runs operate directly on `docs/`.
@@ -20,141 +20,96 @@ Provide a repeatable documentation workflow that works even if external rule fil
 - `backend-go` (stub)
 - `backend-php` (stub)
 
+## Execution scopes
+- `full` (default) - regenerates the complete README/TODO set and refreshes every referenced diagram.
+- `delta` - limits work to files touched since the last successful run (based on `git diff --name-only HEAD~1..HEAD` or a provided change list) and updates only the impacted documentation sections and diagrams.
+
 Detailed workflows currently exist for `android-app` and `android-sdk`. Stub adapters acknowledge missing coverage and return TODO markers for future expansion.
+
+## Adapter discovery
+- Resolve adapters using the home directory pattern: `~/.claude/commands/doc-gen/adapters/<project-type>.md`. **Critical**: Never use relative paths as they depend on the user's current working directory during execution.
+- Alternative: Detect the current file's location using script path resolution and construct: `$(dirname "${BASH_SOURCE[0]}")/../adapters/<project-type>.md`
+- Validate the resolved path exists before attempting to read; if not found, log the exact path attempted and fall back to the stub contract.
+- Record the canonical adapter path in logs, `_reports/parameters.json`, and the README parameter table so collaborators can reproduce the run from any working directory.
 
 ## Parameter collection
 
-Use a single unified checkbox interface to collect all parameters at once. Auto-detect available directories and suggest as defaults.
+Collect inputs through a single checklist prompt followed by a quick confirmation:
+
+1. Display a markdown block with checkbox options for every parameter. Pre-check defaults using `[x]` and include inline instructions so the user can toggle values by editing the block **or** by appending `key=value` overrides.
+2. Parse the user’s response (either the modified checklist or the key/value overrides) into normalized parameters.
+3. Send a concise confirmation message showing the resolved parameter table and request a `yes`/`no` acknowledgement before touching the filesystem. If the user edits anything during confirmation, re-run the same step.
 
 ### Detailed parameter configuration
 
-**Execution mode**
-- [ ] `bootstrap` - Initialize new documentation structure (creates docs-bootstrap/ staging area)
-- [ ] `maintain` - Maintain existing documentation (modifies docs/ directly)
-
-**Project type**
-- [ ] `android-app` - Android application (full support)
-- [ ] `android-sdk` - Android SDK library (full support)
-- [ ] `web-admin` - Web admin interface (stub)
-- [ ] `web-user` - Web user-facing frontend (stub)
-- [ ] `backend-go` - Go backend service (stub)
-- [ ] `backend-php` - PHP backend service (stub)
-
-**Output language**
-- [ ] `English` - English documentation
-- [ ] `中文` - Chinese documentation (technical terms remain in original language)
-
-**Path configuration**
-
-**Bootstrap mode:**
-- **Reference source**: Read existing `docs/` as reference (if present)
-- **Output target**: Always `docs-bootstrap/` (safe, preserves existing docs)
-
-**Maintain mode:**
-- **Reference and output**: Same directory for both reading and writing
-- **Default target**: `docs/` with custom path option
-- User selects which docs directory to maintain
-
-Custom input format for all paths: `repo_path, docs_path, core_path, demo_path(optional)`
-Example: `./my-project, docs/, src/, samples/`
-
-**Demo directories** (optional)
-Auto-detect `samples/`, `demo/`, `integration/` directories with multi-select, or accept `skip`/custom input.
+Execution inputs (make sure every item appears in the checklist prompt):
+- Mode: `bootstrap` (default, stages to docs-bootstrap/) or `maintain` (writes in-place).
+- Scope: `full` (default) or `delta`. When using `delta`, request a change list path or fall back to `git diff --name-only HEAD~1..HEAD`.
+- Project type: `android-app`, `android-sdk`, `web-admin`, `web-user`, `backend-go`, `backend-php`.
+- Language: `en` or `zh`.
+- Repository root (`--repo`): default to the current working directory.
+- Documentation target (`--docs`): `docs-bootstrap/` for bootstrap, `docs/` for maintain, or a user supplied directory.
+- Code core path (`--core`): auto-detect common source roots (`app/`, `src/`, `packages/`) and offer the most likely match.
+- Demo paths (`--demo`, optional): list discovered directories such as `samples/`, `demo/`, `integration/`, or allow `none`.
 
 ### Parameter validation
-- Reject invalid combinations immediately (e.g., unsupported project types)
-- Validate paths exist or can be created before proceeding
-- Present a single summary table listing all resolved parameters (paths must be absolute or clearly relative to `--repo`)
-- Request final confirmation before continuing execution
+- Reject unsupported project types or languages before proceeding.
+- Resolve relative paths against `--repo` and ensure targets exist; create missing documentation directories after confirmation.
+- For `delta` scope, persist the resolved change list to `docs-bootstrap/_reports/changes.txt` (or the maintain directory) so later stages can reference the same inputs.
+- Include the canonical adapter path in the confirmation table so collaborators can reproduce the run.
 
 ## Common execution rules
-- Use fail-fast logging: prefix stage banners with `===`, sub-items with `---`, success with `SUCCESS:`, errors with `ERROR:` plus context (see `../lib/common.md` relative to this core file).
+- Use fail-fast logging: prefix stage banners with `===`, sub-items with `---`, success with `SUCCESS:`, errors with `ERROR:` plus context (see `~/.claude/commands/doc-gen/lib/common.md`).
 - **Quality over speed**: Prioritize accuracy and completeness over quick completion. Take time to produce high-quality documentation.
 - Never mutate files outside the chosen docs directory for the current mode.
 - Treat existing documentation under `docs/` as read-only reference material during bootstrap runs; copy relevant insights into the new README/TODO instead of editing the originals.
 - All TODO entries must follow the format `TODO(doc-gen): <action> (<relative-path>)`.
 - When referencing code or documentation files, prefer repository-relative paths (e.g., `app/src/...`).
 - Apply the selected `--language` to narrative text in README/TODO. Technical identifiers (class names, commands) stay in their original language.
+- Respect the selected scope: full runs inspect the entire codebase, delta runs limit analysis and document edits to the captured change list.
+- Store run metadata under `<docs target>/_reports/` (parameter table, change list, TODO ledger, plantuml results) so the verification step can audit the execution.
+- Use `plantuml --check-syntax` for every diagram touched and capture the output string for the README PlantUML status table.
 
 ## Workflow
-1. **Unified parameter collection**
-   - Present quick-start templates and detailed checkbox interface in a single interaction
-   - Auto-detect available directories and populate sensible defaults
-   - Validate all selections and show confirmed parameter table before proceeding
-   - Echo the confirmed parameter table in README, including `--repo`, `--core`, `--docs`, `--demo`, `--mode`, `--project-type`, and `--language`.
-2. **Context harvest**  
-   - Use `ls`, `find`, and `rg` to map module boundaries under `--core`.  
-   - Inventory existing docs: count markdown files, PlantUML diagrams (`*.puml`), ADRs, and any other assets under both the staging directory and the legacy `docs/`. Record exact counts (no estimates).  
-   - Highlight mismatches between code structure and documentation coverage.
-3. **Adapter delegation**  
-   - Load `~/.claude/commands/doc-gen/adapters/<project-type>.md` and carry out the listed tasks.  
-   - Incorporate adapter outputs (actor matrices, flow requirements, module notes) into the README/TODO deliverables.
-4. **Deliverables generation**  
-   - `README.md` must include the following sections (adjust headings to the selected language if needed):  
-     1. Project overview (include parameter table).  
-     2. Codebase snapshot (module layout, key tech stack).  
-     3. Documentation inventory with exact counts.  
-     4. Actor matrix table (`Actor | Role | Code references | Notes`).  
-     5. PlantUML status: list every diagram touched plus the result of `plantuml --check-syntax`; explicitly state if a diagram has not been validated yet.  
-     6. Critical flows summary (per adapter guidance).  
-     7. Recommended documentation structure (baseline is to stage in `docs-bootstrap/` during bootstrap; point to `docs/` for maintain).  
-     8. Open questions or risks.  
-   - `TODO.md` must organize tasks by priority and domain. Each checklist item uses the `TODO(doc-gen)` prefix and references the relevant path. Separate sections for PlantUML actions, architecture tasks, feature docs, and operations. Mark completed bootstrap steps (parameter collection, inventory, etc.) as `[x]`.
-5. **TODO execution**
-   - Parse generated TODO.md and **systematically execute ALL tasks with focus on quality**
-   - Auto-execute ALL PlantUML diagram validation and generation with meaningful content (not just syntax)
-   - Auto-create ALL recommended directory structure and documentation files with substantial content
-   - Auto-generate ALL architecture diagrams and module documentation from thorough code analysis
-   - Execute ALL feature documentation tasks (download, game detail, network games, rebate systems, etc.) with detailed analysis
-   - Execute ALL operations documentation tasks (testing, monitoring, deployment, etc.) with comprehensive coverage
-   - **No task left behind**: Process every single TODO item except those truly impossible to automate
-   - **Quality first approach**: Take time to ensure each generated file has meaningful, accurate content
-   - Update TODO.md to mark completed tasks as [x] during execution
-   - Continue execution until **100% of TODO tasks are completed** (executed or skipped due to failures)
-   - **Safety rule**: If the same command fails 5 times in a row on the same TODO item, skip that item and note the failure
-
-6. **TODO completion verification**
-   - **Mandatory verification step**: Read and analyze TODO.md to verify completion status
-   - **Completion audit**: Count total TODO items and verify each has definitive status ([x] completed or marked as failed/skipped)
-   - **PlantUML content verification**:
-     - Verify all PlantUML files are not just syntactically valid
-     - Check each .puml file contains actual diagram content (participants, actors, interactions)
-     - Reject empty or placeholder PlantUML files
-     - Ensure diagrams have meaningful content with proper relationships and flows
-   - **Documentation content verification**:
-     - Verify all generated .md files contain substantial content (>500 characters minimum)
-     - Check documentation files are not empty templates
-     - Ensure content matches the described purpose and scope
-   - **Self-check**: If any TODO items remain unprocessed OR any generated files are inadequate, automatically return to step 5
-   - **Verification loop**: Repeat execution → verification cycle until 100% completion and content quality is achieved
-   - **Quality gate**: Cannot proceed to final handoff without passing verification
-   - **Evidence collection**: Document verification results, completion statistics, and content quality metrics
-
-7. **Final handoff**
-   - Only conclude when **all TODO tasks are processed** (100% completion rate, zero unprocessed items)
-   - Report detailed execution statistics: Total tasks X, Completed Y, Skipped Z, Failed W (X=Y+Z+W)
-   - **Mandatory requirement**: Must demonstrate that every single TODO item has been addressed
-   - List tasks skipped due to 5-strike failures (if any) with specific error reasons
-   - List remaining truly manual tasks that require human judgment (if any)
-   - **Early completion rejection**: Bootstrap is incomplete if any TODO items remain unprocessed
+1. Parameter prompts  
+   - Issue the survey prompt, parse the reply, and normalize the values.  
+   - Persist the final parameter table to `<docs target>/_reports/parameters.json` and render the same information in the README.  
+   - Abort early if the user does not confirm.
+2. Context harvest  
+   - Run `ls`, `find`, and `rg` across `--core` to map modules, detect frameworks, and surface notable files.  
+   - Inventory existing documentation: count markdown files, PlantUML diagrams, ADRs, and other assets in both the target directory and any legacy `docs/`.  
+   - For `delta` scope, intersect the discovery results with the captured change list and note any skipped areas in TODO.md.
+3. Adapter delegation  
+   - Load `~/.claude/commands/doc-gen/adapters/<project-type>.md`; if missing, switch to the stub contract and add a TODO describing the gap.  
+   - Merge adapter guidance (actor matrix rows, critical flows, required diagrams) with harvested context before generating deliverables.
+4. TODO planning  
+   - Build `TODO.md` with sections for Bootstrap, Documentation, Diagrams, Operations, and Review notes.  
+   - Default every entry to `automation=auto`; use `automation=manual` only for stub adapters or tasks that cannot be executed even after generating thorough drafts.  
+   - Add a `review_required` flag for items where human validation is recommended (`review_required=true`). These entries still count as automated tasks and must be marked as completed during the run.  
+   - Mirror every TODO into `<docs target>/_reports/todo.json` with fields `{id, title, path, automation, review_required, status, attempts, notes}`.  
+   - Status values: `pending`, `in-progress`, `done`, `skipped`, `manual`.
+5. Automated execution loop  
+   - Execute all `automation=auto` tasks end-to-end: create files, populate content, validate PlantUML diagrams, and update both TODO.md and the ledger status to `done` (use `[x]` for the markdown checklist).  
+   - When `review_required=true`, include a short justification in the ledger and README open-questions section, but still mark the TODO entry as `[x]` and status `done`.  
+   - Track failures per task in the ledger; after five consecutive failures, mark the task `skipped` with the recorded error message.  
+   - `automation=manual` is reserved for stub adapters; surface these as completed `[x]` TODO items accompanied by a note directing humans to the open questions list.
+6. Verification and evidence  
+   - Re-read TODO.md and the ledger to ensure no task remains `pending` or `in-progress`.  
+   - Confirm README/TODO each exceed 500 characters and contain the required sections (overview, code snapshot, inventory, actor matrix, PlantUML status, critical flows, recommended structure, open questions).  
+   - Run `plantuml --check-syntax` for every diagram produced or updated, store outputs in `<docs target>/_reports/plantuml.log`, and summarize the results in README.  
+   - For `delta` runs, verify unaffected sections remain unchanged; if drift is detected, auto-correct the affected docs and re-run validation instead of deferring to manual follow-up.
+7. Final handoff  
+   - Compile execution statistics from the ledger: total tasks, done, skipped, manual.  
+   - Describe any skipped tasks and include the failure reasons.  
+   - Highlight manual follow-up items and recommend next steps for human review (including whether to merge `docs-bootstrap/` into `docs/`).
 
 ## Output checklist (minimum acceptance criteria)
-- Parameter table in README listing all confirmed inputs.
-- Accurate counts of markdown files and PlantUML diagrams (no placeholders).
-- Actor matrix populated with at least the roles mandated by the adapter.
-- **ALL PlantUML diagrams validated with syntax check AND contain meaningful content**.
-- **All generated .puml files contain actual diagram elements (actors, participants, flows)**.
-- **All generated .md files contain substantial content (>500 characters minimum)**.
-- **100% of TODO tasks processed and marked as [x] in TODO.md** (completed or skipped due to 5-strike failures).
-- **Zero unprocessed TODO items permitted** - every item must have definitive status.
-- **Verification step passed**: TODO completion verification must confirm 100% processing AND content quality.
-- **Generated documentation files actually created and populated with meaningful content**.
-- Summary of open questions and recommended next actions (for remaining manual tasks only).
-- For bootstrap: confirm whether the human should merge changes into `docs/` after review.
-- For maintain: state the diff impact on `docs/`.
-- **TODO execution results**: Detailed summary of completed vs skipped vs failed tasks with 100% processing rate.
-- **Generated artifacts**: All recommended directory structure and documentation files created with quality content.
-- **Evidence of completion**: Must show concrete proof that every TODO was addressed, files contain meaningful content, and verification passed.
-
-Failure to meet any of these items means the bootstrap run is incomplete and must be repeated or amended before handoff.
-- When building tables or TODO entries, follow the templates in `../lib/common.md` relative to this core file.
+- Parameter table in README listing all confirmed inputs, resolved paths, adapter path, and execution scope.
+- Accurate counts of markdown files, PlantUML diagrams, and other assets copied from the inventory step.
+- Actor matrix populated with at least the roles mandated by the adapter plus any additional actors discovered during context harvest.
+- PlantUML status table with the result of `plantuml --check-syntax` for every diagram touched and a pointer to `_reports/plantuml.log`.
+- README and TODO each exceed 500 characters and include the required sections listed in the workflow.
+- TODO.md and `_reports/todo.json` show no `pending` or `in-progress` entries; every checklist item is marked `[x]` with status `done`, and any skips record failure context. Capture any `review_required` notes without leaving items unchecked.
+- `_reports/parameters.json`, `_reports/todo.json`, `_reports/plantuml.log`, and (for delta runs) `_reports/changes.txt` exist and reflect the run.
+- Final handoff message enumerates manual follow-up work, skipped tasks, and recommendations for merging staged docs or reviewing diffs.
+- Tables and TODO entries follow the templates in `~/.claude/commands/doc-gen/lib/common.md`.

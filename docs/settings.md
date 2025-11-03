@@ -59,7 +59,7 @@ Claude Code uses a hierarchical settings system with multiple configuration file
 - Useful for project-specific API endpoints, database connections, etc.
 
 #### Configuration Merge Example
-```json
+```jsonc
 // Global settings (~/.claude/settings.json)
 {
   "permissions": {
