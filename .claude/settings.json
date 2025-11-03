@@ -118,7 +118,8 @@
       "Bash([ :*)",
       "Bash([[ :*)",
       "Bash(history:*)",
-      "Bash(fc -l:*)"
+      "Bash(fc -l:*)",
+      "Bash(plantuml:*)"
     ],
     "deny": [
       "Bash(dd :*)",
@@ -137,7 +138,6 @@
       "Glob(**/.github/instructions/**)"
     ],
     "ask": [
-      "Bash(plantuml:*)",
       "Bash(terraform plan:*)",
       "Bash(docker images:*)",
       "Bash(kubectl get:*)",

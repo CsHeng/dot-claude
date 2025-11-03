@@ -45,6 +45,7 @@ These commands are considered safe and do not modify system state or cause destr
 - `yarn list/info`, `yarn --:*` - Yarn tools (yarn with -- flags)
 - `go version:*`, `go mod verify:*`, `go mod tidy:*`, `go mod why:*` - Go tools (excluding downloads)
 - `rustc --:*`, `cargo --:*` - Rust tools (with -- flags)
+- `plantuml:*` - Diagram generation tool
 
 #### Data Processing
 - `sort`, `uniq`, `cut`, `awk`, `sed -n:*`, `tr` - Text processing
@@ -135,7 +136,6 @@ These commands may modify system state, take a long time to execute, or require 
 #### System Scripting and Tools
 - `osascript -e:*` - AppleScript execution (single line)
 - `codex:*` - Code generation tool
-- `plantuml:*` - Diagram generation tool
 - `claude --help`, `qwen --help`, `gemini --help` - AI tool help commands
 
 #### Permission Modifications
@@ -184,7 +184,7 @@ Deny (Highest Priority) > Ask > Allow (Lowest Priority)
 ### Practical Examples
 
 #### Example 1: Project vs User Settings
-```json
+```jsonc
 // User settings (~/.claude/settings.json) - Personal preferences
 {
   "permissions": {
@@ -219,7 +219,7 @@ Deny (Highest Priority) > Ask > Allow (Lowest Priority)
 - Project's `defaultMode: "plan"` overrides user preferences
 
 #### Example 2: Multi-Project Team Setup
-```json
+```jsonc
 // User settings - Base configuration for all projects
 {
   "permissions": {
@@ -260,7 +260,7 @@ Deny (Highest Priority) > Ask > Allow (Lowest Priority)
 - **Consistency**: User always has basic git and file operations across projects
 
 #### Example 3: Security-First Project Configuration
-```json
+```jsonc
 // Project settings - High security financial application (.claude/settings.json)
 {
   "permissions": {

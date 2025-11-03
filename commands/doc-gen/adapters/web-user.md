@@ -4,4 +4,4 @@ description: Stub adapter for web user-facing frontend documentation workflow
 argument-hint: --mode=<bootstrap|maintain> --repo=<path> --docs=<path> --core=<path>
 ---
 
-Detailed guidance for `web-user` projects is not yet available. Record TODO items covering landing pages, marketing funnels, checkout flows, and content delivery pipelines. Reference the core workflow for asset sweeps, module mapping, and PlantUML validation. Output interim notes using the selected `--language`.
+Detailed guidance for `web-user` projects is not yet available. Record TODO items covering landing pages, marketing funnels, checkout flows, and content delivery pipelines. Tag each entry with `automation=manual`, mark it as `[x] (manual follow-up required)`, and ensure `_reports/todo.json` captures outstanding work. Add a stub reminder to `<docs target>/_reports/parameters.json`. Reference the core workflow for asset sweeps, module mapping, and PlantUML validation. Output interim notes using the selected `--language`.
