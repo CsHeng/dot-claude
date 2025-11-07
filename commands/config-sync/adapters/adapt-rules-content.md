@@ -26,7 +26,7 @@ Analyze and adapt Claude-specific references in rule files to make them universa
 ## Claude-Specific References Found
 
 ### Current References:
-1. `00-user-preferences.md`:
+1. `00-memory-rules.md`:
    - "This file serves as both Claude Memory and is synchronized to other AI tools for consistent behavior."
 
 2. `23-workflow-patterns.md`:

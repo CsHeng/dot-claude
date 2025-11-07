@@ -5,9 +5,9 @@ Comprehensive tool preferences and configurations for optimal development workfl
 ## Tool Management
 
 ### Primary Tool Manager: mise
-- **Purpose**: Language versions, environment variables, and PATH management
-- **Configuration**: `.mise.toml` or `.tool-versions` files
-- **Benefits**: Consistent tool versions across projects and team members
+- Purpose: Language versions, environment variables, and PATH management
+- Configuration: `.mise.toml` or `.tool-versions` files
+- Benefits: Consistent tool versions across projects and team members
 
 #### mise Configuration
 ```toml

@@ -4,15 +4,15 @@ The config-sync command suite refers to these shared helper concepts when outlin
 
 ## Validation Helpers
 
-- **validate_target <name>** – Ensure target is one of `droid`, `qwen`, `codex`, `opencode`, or `all`.
-- **validate_component <name>** – Confirm component value is `rules`, `permissions`, `commands`, `settings`, or `memory`.
-- **check_tool_installed <name>** – Verify required CLI is available in `PATH`.
+- validate_target <name> – Ensure target is one of `droid`, `qwen`, `codex`, `opencode`, or `all`.
+- validate_component <name> – Confirm component value is `rules`, `permissions`, `commands`, `settings`, or `memory`.
+- check_tool_installed <name> – Verify required CLI is available in `PATH`.
 
 ## Path Resolution
 
-- **get_target_config_dir <tool>** – Return base config directory for the tool.
-- **get_target_rules_dir <tool>** – Resolve rule destination path.
-- **get_target_commands_dir <tool>** – Resolve command destination path.
+- get_target_config_dir <tool> – Return base config directory for the tool.
+- get_target_rules_dir <tool> – Resolve rule destination path.
+- get_target_commands_dir <tool> – Resolve command destination path.
 
 ## Logging
 
@@ -20,7 +20,7 @@ Provide lightweight wrappers such as `log_info`, `log_success`, `log_warning`, a
 
 ## Environment Setup
 
-- **setup_plugin_environment** – Export commonly used paths, ensure `scripts/` helpers are on `PATH`, and create temporary working directories.
+- setup_plugin_environment – Export commonly used paths, ensure `scripts/` helpers are on `PATH`, and create temporary working directories.
 
 ## Backup Utilities
 

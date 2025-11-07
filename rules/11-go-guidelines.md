@@ -34,8 +34,8 @@ fileMatchPattern: '**/*.go'
   - `pkg/` - Public reusable packages
   - `configs/` - Configuration files
   - `tests/` - Test utilities and integration tests
-- **Import Order**: Standard library → third-party → local packages
-- **Binaries**: Place binaries in `./bin/` directory
+- Import Order: Standard library → third-party → local packages
+- Binaries: Place binaries in `./bin/` directory
 
 ## Code Quality Standards
 - Function Design: Write short, focused functions with single responsibility

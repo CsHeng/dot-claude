@@ -5,22 +5,21 @@ Guidelines for development workflows, tool preferences, and coding practices tha
 ## Development Workflow Preferences
 
 ### Change Management Philosophy
-- **Incremental Development**: Make changes file by file to enable incremental review
-- **Explicit Implementation**: Only implement explicitly requested changes
-- **Preservation Principle**: Preserve existing code structures and functionalities
-- **Complete Edits**: Provide complete edits in single chunks per file
+- Incremental Development: Make changes file by file to enable incremental review
+- Explicit Implementation: Only implement explicitly requested changes
+- Preservation Principle: Preserve existing code structures and functionalities
+- Complete Edits: Provide complete edits in single chunks per file
 
 ### Code Preservation Standards
-- **Always Preserve Comments**: NEVER remove existing comments when modifying code
-- **Update Comments**: Update comments to reflect code changes - never remove them
-- **Match Style**: Match existing comment style, format, and tone in the file
-- **Maintain Language**: Maintain original comment language unless explicitly required to change
+- Always Preserve Comments: NEVER remove existing comments when modifying code
+- Update Comments: Update comments to reflect code changes - never remove them
+- Match Style: Match existing comment style, format, and tone in the file
+- Maintain Language: Maintain original comment language unless explicitly required to change
 
 ### Testing Philosophy
-- **Initial Development**: Do NOT add tests during initial development
-- **Production-Ready Testing**: Tests are added manually after code stabilizes and reaches production-ready state
-- **Behavior-First Testing**: Focus on testing behavior, not implementation
-- **Manual Test Addition**: Tests are added manually after stabilization, not automatically
+- Clear Requirements: Use RGR (Red-Green-Refactor) - test first, minimal implementation, refactor
+- Unclear/Exploratory: Implement first, add tests after stabilization
+- Behavior-First Testing: Focus on testing behavior, not implementation
 
 ## Tool Preferences and Configuration
 
@@ -152,9 +151,9 @@ Current state: container=myapp status=running health=unhealthy
 ## Documentation Standards
 
 ### Diagram Format Preference
-- **Primary Format**: PlantUML for all flowcharts and architecture diagrams
-- **Testing**: Use `plantuml -o /tmp` for PlantUML grammar testing
-- **Integration**: Update corresponding markdown documentation when code or rules change
+- Primary Format: PlantUML for all flowcharts and architecture diagrams
+- Testing: Use `plantuml -o /tmp` for PlantUML grammar testing
+- Integration: Update corresponding markdown documentation when code or rules change
 
 ### Documentation Updates
 - When code changes, update related documentation
@@ -169,22 +168,22 @@ Current state: container=myapp status=running health=unhealthy
 ```
 
 ### Log Configuration Requirements
-- **Handler**: Both console and file output
-- **Level**: INFO (default)
-- **Components**:
+- Handler: Both console and file output
+- Level: INFO (default)
+- Components:
   - Timezone (+0800)
   - Timestamp (YYYY-MM-DD HH:MM:SS)
   - Level (INFO, WARN, ERROR)
   - File and line number (file.go(line))
   - Separator (|)
   - Message
-- **Additional**: Include request ID for request-related logs
-- **Security**: Never log sensitive information
+- Additional: Include request ID for request-related logs
+- Security: Never log sensitive information
 
 ## Configuration Management
 
 ### Environment Variables Philosophy
-- **NEVER hardcode** API keys, secrets, or credentials in source code
+- NEVER hardcode API keys, secrets, or credentials in source code
 - Store sensitive data in `.env` files or configuration files
 - Use separate configuration files for different environments (dev, staging, prod)
 - Use environment variables for all configuration that varies between environments
@@ -260,16 +259,16 @@ Something went wrong
 ## Memory Integration Topics
 
 ### Tool Preferences to Store in AI Memory
-1. **Package Management**: UV for Python, Go modules for Go
-2. **Code Quality**: Ruff for Python, golangci-lint for Go
-3. **Build Tools**: Docker multi-arch builds, Make standardized targets
-4. **Testing Frameworks**: pytest for Python, table-driven tests for Go
-5. **Environment Management**: mise for tool version management
-6. **Documentation**: PlantUML for diagrams, markdown for documentation
-7. **Logging**: Structured logging with specific format requirements
-8. **Debug Output**: Consistent prefix-based debug formatting
-9. **Security**: Environment variables for secrets, never hardcode credentials
-10. **Development Philosophy**: Fail-fast, preserve comments, test after stabilization
+1. Package Management: UV for Python, Go modules for Go
+2. Code Quality: Ruff for Python, golangci-lint for Go
+3. Build Tools: Docker multi-arch builds, Make standardized targets
+4. Testing Frameworks: pytest for Python, table-driven tests for Go
+5. Environment Management: mise for tool version management
+6. Documentation: PlantUML for diagrams, markdown for documentation
+7. Logging: Structured logging with specific format requirements
+8. Debug Output: Consistent prefix-based debug formatting
+9. Security: Environment variables for secrets, never hardcode credentials
+10. Development Philosophy: Fail-fast, preserve comments, test after stabilization
 
 ### Project Structure Preferences
 - Class-based architecture for Python

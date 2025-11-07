@@ -43,27 +43,27 @@ Handle Droid CLI-specific configuration synchronization with full compatibility 
 ## Droid CLI Features
 
 ### Command Format
-- **Compatible**: Markdown with YAML frontmatter (same as Claude)
-- **No conversion needed**: Direct sync possible
-- **Features**: Full feature parity
+- Compatible: Markdown with YAML frontmatter (same as Claude)
+- No conversion needed: Direct sync possible
+- Features: Full feature parity
 
 ### Permission System
-- **Format**: JSON allowlist/denylist
-- **Mapping**: Claude permissions → Droid lists
-- **Security**: Conservative approach (ask → deny)
+- Format: JSON allowlist/denylist
+- Mapping: Claude permissions → Droid lists
+- Security: Conservative approach (ask → deny)
 
 ### Configuration Structure
-- **Settings**: `settings.json`, `config.json`
-- **Commands**: `commands/` directory
-- **Rules**: `rules/` directory
-- **Memory**: `DROID.md`, `AGENTS.md`
+- Settings: `settings.json`, `config.json`
+- Commands: `commands/` directory
+- Rules: `rules/` directory
+- Memory: `DROID.md`, `AGENTS.md`
 
 ## Synchronization Process
 
-1. **Backup**: Create backup of existing configuration
-2. **Adapt**: Update tool references and syntax
-3. **Sync**: Transfer files with proper permissions
-4. **Verify**: Ensure completeness and correctness
+1. Backup: Create backup of existing configuration
+2. Adapt: Update tool references and syntax
+3. Sync: Transfer files with proper permissions
+4. Verify: Ensure completeness and correctness
 
 ## Common Issues
 

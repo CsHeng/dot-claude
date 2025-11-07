@@ -1,7 +1,9 @@
 ---
+name: "commands:review-shell-syntax"
 description: Review shell script syntax and guideline compliance
 argument-hint: [path/to/script.sh]
 allowed-tools: Read, Bash(bash -n:*), Bash(sh -n:*), Bash(zsh -n:*)
+is_background: false
 ---
 
 ## Goal

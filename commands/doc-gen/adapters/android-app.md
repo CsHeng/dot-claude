@@ -9,11 +9,11 @@ allowed-tools: Read, Write, ApplyPatch, Bash(rg:*), Bash(ls:*), Bash(find:*), Ba
 Capture the architecture and business flows of Android apps built with Kotlin or Java. The staged deliverables live in whichever docs directory the orchestrator selected. Use the chosen language for narrative sections; keep code identifiers in their native form.
 
 ## Mandatory outputs
-- **Actor matrix**: table with these minimum actors—End User, Android App UI, ViewModel layer, Repository/Data layer, Backend Services, Background Workers, Third-party SDKs (analytics, push, etc.). Add project-specific actors as needed. Populate the table in README with code references (for example `app/src/main/java/.../UserCenterViewModel.kt`).
-- **Validated PlantUML**: at least one sequence or activity diagram covering a high-value flow (onboarding, authentication, download, or push notification). Run `plantuml --check-syntax <file>`, append the raw output to `<docs target>/_reports/plantuml.log`, and quote the result in README.
-- **Critical flows summary**: describe the entry points, core modules, and side effects for the prioritized flows listed below.
-- **TODO backlog & ledger**: break down into architecture, feature modules, operations, and PlantUML tasks. Every entry uses `TODO(doc-gen):` plus a path in parentheses **and** sets `automation=auto`. If human validation is recommended, add `review_required=true` and explain why in the notes. Mirror the same structure in `<docs target>/_reports/todo.json` so the orchestrator can track status.
-- **Reports bundle**: ensure `<docs target>/_reports/parameters.json`, `_reports/todo.json`, `_reports/plantuml.log`, and (for delta scope) `_reports/changes.txt` receive adapter-specific details—e.g., add adapter name, default diagram inventory, recommended directories.
+- Actor matrix: table with these minimum actors—End User, Android App UI, ViewModel layer, Repository/Data layer, Backend Services, Background Workers, Third-party SDKs (analytics, push, etc.). Add project-specific actors as needed. Populate the table in README with code references (for example `app/src/main/java/.../UserCenterViewModel.kt`).
+- Validated PlantUML: at least one sequence or activity diagram covering a high-value flow (onboarding, authentication, download, or push notification). Run `plantuml --check-syntax <file>`, append the raw output to `<docs target>/_reports/plantuml.log`, and quote the result in README.
+- Critical flows summary: describe the entry points, core modules, and side effects for the prioritized flows listed below.
+- TODO backlog & ledger: break down into architecture, feature modules, operations, and PlantUML tasks. Every entry uses `TODO(doc-gen):` plus a path in parentheses and sets `automation=auto`. If human validation is recommended, add `review_required=true` and explain why in the notes. Mirror the same structure in `<docs target>/_reports/todo.json` so the orchestrator can track status.
+- Reports bundle: ensure `<docs target>/_reports/parameters.json`, `_reports/todo.json`, `_reports/plantuml.log`, and (for delta scope) `_reports/changes.txt` receive adapter-specific details—e.g., add adapter name, default diagram inventory, recommended directories.
 
 ## Preparation checklist
 1. Map Gradle modules with `find <core> -maxdepth 2 -name build.gradle*`.
@@ -25,7 +25,7 @@ Capture the architecture and business flows of Android apps built with Kotlin or
 ## Automation defaults
 - Treat all deliverables this adapter covers as `automation=auto`; generate full drafts (architecture, feature narratives, operations, diagrams) and mark each TODO item as completed (`[x]`) during the run.
 - If further review is recommended, set `review_required=true` and summarize the outstanding questions in both TODO notes and README open questions—do not leave the item unchecked.
-- Reserve `automation=manual` only for exceptional gaps (e.g., missing source, external approval) and accompany the entry with detailed rationale. These cases should be rare for Android app projects.
+- Reserve `automation=manual` only for exceptional gaps (e.g., missing source, external approval) and accompany the entry with detailed rationale. These cases must be rare for Android app projects.
 - When running in `delta` scope, only emit new TODO entries for modules touched in the change list and still mark each processed item as `[x]` once the fresh draft is generated.
 
 ## Architecture overview guidance
@@ -43,17 +43,17 @@ For each major feature area (Login/Authentication, Download Management, Game Det
 - Add TODO entries referencing concrete source files.
 
 ## Critical flows to cover
-1. **User onboarding/authentication**  
+1. User onboarding/authentication  
    - Entry: `SplashActivity`, `LoginActivity`, or equivalent.  
    - Track ViewModel interactions, repository calls, token storage, analytics events.  
    - Generate PlantUML (suggest `docs-bootstrap/diagrams/A01_user_onboarding.puml` or similar).
-2. **Download management**  
+2. Download management  
    - Entry: `DownloadActivity`, services in `library/ndownload/`.  
    - Trace queueing, persistence, notification updates, and background workers.
-3. **Push notification / background event handling**  
+3. Push notification / background event handling  
    - Entry: FirebaseMessagingService or custom receivers.  
    - Cover background-to-UI handoff, deep links, user acknowledgement.
-4. **Offline sync / caching (if present)**  
+4. Offline sync / caching (if present)  
    - Document WorkManager jobs, conflict resolution, data merge strategies.
 
 Summaries for each flow go in README; corresponding TODOs must name source files needing documentation.

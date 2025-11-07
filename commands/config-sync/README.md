@@ -4,11 +4,11 @@ Centralizes Claude Code configuration synchronization flows into a single plugin
 
 ## Components
 
-- **commands/** – Slash command definitions (orchestrator, adapters, verification, analysis)
-- **lib/common.md** – Shared helper references used by command snippets
-- **scripts/** – Shell helpers (`executor.sh`, `backup.sh`) invoked by automation snippets
-- **settings.json** – Default options for sync orchestration
-- **.claude-plugin/plugin.json** – Plugin manifest metadata
+- commands/ – Slash command definitions (orchestrator, adapters, verification, analysis)
+- lib/common.md – Shared helper references used by command snippets
+- scripts/ – Shell helpers (`executor.sh`, `backup.sh`) invoked by automation snippets
+- settings.json – Default options for sync orchestration
+- .claude-plugin/plugin.json – Plugin manifest metadata
 
 ## Primary Commands
 
@@ -25,10 +25,10 @@ Centralizes Claude Code configuration synchronization flows into a single plugin
 
 ## Supported Targets
 
-- **Factory/Droid CLI** – Markdown commands, JSON permissions
-- **Qwen CLI** – TOML command conversion, documentation-based permissions
-- **OpenAI Codex CLI** – Minimal configuration with sandbox levels
-- **OpenCode** – JSON command format with operation-based permissions
+- Factory/Droid CLI – Markdown commands, JSON permissions
+- Qwen CLI – TOML command conversion, documentation-based permissions
+- OpenAI Codex CLI – Minimal configuration with sandbox levels
+- OpenCode – JSON command format with operation-based permissions
 
 ## Usage
 
