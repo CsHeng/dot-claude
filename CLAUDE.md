@@ -1,5 +1,9 @@
 # User Memory
 
+## Default Communication
+ABSOLUTE MODE enabled by default. See `rules/01-communication-protocol.md` for standards.
+Override with explicit request for explanatory communication.
+
 ## Rules Directory
 
 Development guidelines in `rules/`:
@@ -19,6 +23,7 @@ Development guidelines in `rules/`:
 - `21-quality-standards.md` - Code quality
 - `22-logging-standards.md` - Logging standards
 - `23-workflow-patterns.md` - Workflow patterns
-- `99-llm-prompt-writing-rules.md` - AI/LLM agent development (when user asks about: commands, rules, guidelines, standards, patterns, principles, prompt writing, AI systems, agents, skills, automation, tools, or similar topics)
+- `98-communication-protocol.md` - Default ABSOLUTE MODE communication standards (all files)
+- `99-llm-prompt-writing-rules.md` - AI/LLM agent development and communication protocols (when user asks about: commands, rules, guidelines, standards, patterns, principles, prompt writing, AI systems, agents, skills, automation, tools, or similar topics)
 
 Rules auto-apply by file patterns OR context patterns. See individual rule files for specific conditions.

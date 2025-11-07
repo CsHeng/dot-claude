@@ -89,6 +89,10 @@ Automatically loaded by Claude Code:
 - `22-logging-standards.md` - Logging standards
 - `23-workflow-patterns.md` - Workflow patterns
 
+**AI & LLM Rules:**
+- `98-communication-protocol.md` - Default ABSOLUTE MODE communication standards
+- `99-llm-prompt-writing-rules.md` - AI/LLM agent development
+
 Rules auto-apply by file patterns. See `rules/00-memory-rules.md` for details.
 
 ### **Permission System**
@@ -117,9 +121,16 @@ Three-tier command control in settings files:
 - **Target**: Qwen, Factory/Droid, Codex, OpenCode
 - **Method**: `/config-sync:*` slash commands
 - **Scope**: Full configuration (rules, permissions, commands, memory)
+- **Features**: PlantUML integration, documentation generation
 - **Usage**: One-time setup per tool
 
 📖 **[CLI Sync Commands](docs/config-sync-commands.md)**
+
+### **Additional Commands**
+- `/draft-commit-message` - Generate git commit messages from current changes
+- `/review-shell-syntax` - Validate shell script syntax and guideline compliance
+- `/review-llm-prompts` - Review Claude Code prompt files for rule compliance
+- `/doc-gen:*` - Documentation generation system with project-type adapters
 
 ## 📋 Daily Usage
 
