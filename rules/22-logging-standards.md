@@ -10,19 +10,19 @@ Comprehensive standards for logging, monitoring, and observability across all ap
 ```
 
 ### Format Components
-- **Timezone**: +0800 (or appropriate timezone)
-- **Timestamp**: 2025-08-06 15:22:30 (YYYY-MM-DD HH:MM:SS)
-- **Level**: INFO (default levels: DEBUG, INFO, WARN, ERROR, FATAL)
-- **File and Line**: main.go(180) (filename.extension(line_number))
-- **Separator**: | (pipe character)
-- **Message**: Descriptive message (clear, actionable information)
+- Timezone: +0800 (or appropriate timezone)
+- Timestamp: 2025-08-06 15:22:30 (YYYY-MM-DD HH:MM:SS)
+- Level: INFO (default levels: DEBUG, INFO, WARN, ERROR, FATAL)
+- File and Line: main.go(180) (filename.extension(line_number))
+- Separator: | (pipe character)
+- Message: Descriptive message (clear, actionable information)
 
 ### Log Level Guidelines
-- **DEBUG**: Detailed diagnostic information for development
-- **INFO**: General information about application flow
-- **WARN**: Unexpected situations that don't prevent the application from continuing
-- **ERROR**: Error events that might still allow the application to continue
-- **FATAL**: Very severe error events that will presumably lead the application to abort
+- DEBUG: Detailed diagnostic information for development
+- INFO: General information about application flow
+- WARN: Unexpected situations that don't prevent the application from continuing
+- ERROR: Error events that might still allow the application to continue
+- FATAL: Very severe error events that will presumably lead the application to abort
 
 ## Implementation by Language
 

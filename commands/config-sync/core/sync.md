@@ -2,6 +2,8 @@
 name: "config-sync:sync"
 description: Synchronize Claude Code configuration to target AI tools
 argument-hint: --target=<droid,qwen,codex,opencode|all> --component=<rules,permissions,commands,settings,memory|all> [--dry-run] [--force] [--verify]
+allowed-tools: Read, Write, Edit, Bash, Glob
+is_background: false
 ---
 
 # Config-Sync Main Command
@@ -48,62 +50,62 @@ Orchestrate synchronization of Claude Code configuration components to one or mo
 /config-sync:sync --target=all --component=all --force
 ```
 
-## ⚠️ CRITICAL: Workflow for Qwen CLI
+## CRITICAL: Workflow for Qwen CLI
 
-**For Qwen CLI specifically, ALWAYS use the adapter command directly:**
+For Qwen CLI specifically, ALWAYS use the adapter command directly:
 
 ```bash
 # Use this command for Qwen - it preserves settings!
 /config-sync:adapters:qwen --action=sync --component=all
 
 # NEVER use these commands for Qwen - they overwrite settings!
-# /config-sync:sync --target=qwen --component=settings  # ❌ BAD
-# rsync -a settings.json ~/.qwen/settings.json            # ❌ VERY BAD
+# /config-sync:sync --target=qwen --component=settings  # BAD
+# rsync -a settings.json ~/.qwen/settings.json            # VERY BAD
 ```
 
-**Reason**: The Qwen adapter includes logic to preserve existing API keys and configuration, while the core sync will blindly overwrite files.
+Reason: The Qwen adapter includes logic to preserve existing API keys and configuration, while the core sync will blindly overwrite files.
 
 ## Implementation Details
 
 This command orchestrates the synchronization process:
 
-1. **Validation**: Checks source and target availability
-2. **Adaptation**: Converts formats for each target tool using **tool-specific adapters**
-3. **Execution**: Performs file operations with backup
-4. **Verification**: Ensures sync completeness
+1. Validation: Checks source and target availability
+2. Adaptation: Converts formats for each target tool using tool-specific adapters
+3. Execution: Performs file operations with backup
+4. Verification: Ensures sync completeness
 
-### ⚠️ IMPORTANT: Settings File Handling
+### IMPORTANT: Settings File Handling
 
-**NEVER directly overwrite existing settings files** - always use tool-specific adapters:
+NEVER directly overwrite existing settings files - always use tool-specific adapters:
 
-- **Qwen CLI**: Use `/config-sync:adapters:qwen` which preserves existing settings
-- **Other tools**: Use their respective adapters that handle settings properly
+- Qwen CLI: Use `/config-sync:adapters:qwen` which preserves existing settings
+- Other tools: Use their respective adapters that handle settings properly
 
-**Exception**: Only overwrite settings if `--force` flag is explicitly used and user has been warned
+Exception: Only overwrite settings if `--force` flag is explicitly used and user has been warned
 
 ### Target Tool Support
 
 #### Droid CLI
-- **Format**: Markdown with frontmatter (compatible)
-- **Permissions**: Allowlist/denylist mapping
-- **Features**: Full compatibility
+- Format: Markdown with frontmatter (compatible)
+- Permissions: Allowlist/denylist mapping
+- Features: Full compatibility
 
 #### Qwen CLI
-- **Format**: TOML conversion required
-- **Namespaces**: Command organization
-- **Features**: Multi-modal support
-- **Settings**: Preserves existing configuration (only creates if missing)
-- **⚠️ CRITICAL**: Always use the `/config-sync:adapters:qwen` command - NEVER overwrite settings.json manually
+- Format: TOML conversion required
+- Namespaces: Command organization
+- Features: Multi-modal support
+- Settings: Preserves existing configuration (only creates if missing)
+- CRITICAL: Always use the `/config-sync:adapters:qwen` command - NEVER overwrite settings.json manually
 
 #### OpenAI Codex CLI
-- **Format**: Simple Markdown
-- **Permissions**: Sandbox configuration
-- **Features**: Minimal setup
+- Format: Simple Markdown
+- Permissions: Sandbox configuration
+- Features: Minimal setup
 
 #### OpenCode
-- **Format**: JSON with metadata
-- **Permissions**: Operation-based
-- **Features**: External references
+- Format: JSON with metadata
+- Permissions: Operation-based
+- Features: External references
 
 ## Error Handling
 

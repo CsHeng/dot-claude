@@ -13,16 +13,16 @@ inclusion: always
 
 ## Testing Philosophy
 
-### Testing Principles
+### Core Principle
 - Write tests only when explicitly required or when code reaches production-ready state
 - Focus on testing behavior, not implementation details
-- Test all error scenarios, edge cases, and happy paths
-- Keep tests simple, readable, and maintainable
 
-### Test Timing Strategy
-- During Initial Development: Focus on functionality, skip comprehensive testing
-- Code Stabilization: Add tests manually after code reaches production-ready state
-- Production Deployment: Ensure comprehensive test coverage for critical components
+### Hybrid Approach: Choose Based on Requirement Clarity
+- Clear Requirements: Use RGR (Red-Green-Refactor)
+  1. Red: Write failing test
+  2. Green: Write minimal code to pass
+  3. Refactor: Clean up while tests pass
+- Unclear/Exploratory: Implement first, add tests after stabilization
 
 ## Test Organization
 

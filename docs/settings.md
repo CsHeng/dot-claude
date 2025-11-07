@@ -195,8 +195,8 @@ See [docs/permissions.md](permissions.md) for comprehensive permission lists and
 ## 📚 Related Documentation
 
 - [Permissions Configuration](permissions.md) - Comprehensive permission lists and examples
-- [Development Guidelines](../rules/01-general-development.md) - Development standards
-- [Security Guidelines](../rules/03-security-guidelines.md) - Security best practices
+- [Development Guidelines](../rules/01-development-standards.md) - Development standards
+- [Security Guidelines](../rules/03-security-standards.md) - Security best practices
 
 ## 🆘 Troubleshooting
 

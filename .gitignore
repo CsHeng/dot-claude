@@ -1,6 +1,10 @@
 # Editor directories
 .idea/
 .vscode/
+.codex/
+.cursor/
+.github/
+.kiro/
 
 # macOS system files
 .DS_Store

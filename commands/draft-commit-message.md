@@ -1,4 +1,5 @@
 ---
+name: "commands:draft-commit-message"
 description: Propose a commit message from current git status (no commit)
 argument-hint: [optional-summary-notes]
 is_background: false

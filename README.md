@@ -69,12 +69,12 @@ cd /path/to/project
 Automatically loaded by Claude Code:
 
 **Core Rules:**
-- `00-user-preferences.md` - Personal preferences (all files)
-- `01-general-development.md` - General standards (all files)
+- `00-memory-rules.md` - Personal preferences (all files)
+- `01-development-standards.md` - General standards (all files)
 - `02-architecture-patterns.md` - Architecture patterns
-- `03-security-guidelines.md` - Security practices
+- `03-security-standards.md` - Security practices
 - `04-testing-strategy.md` - Testing approaches
-- `05-error-handling.md` - Error handling
+- `05-error-patterns.md` - Error handling
 
 **Language-Specific Rules:**
 - `10-python-guidelines.md` - Python (`**/*.py`)
@@ -84,12 +84,12 @@ Automatically loaded by Claude Code:
 - `14-networking-guidelines.md` - Network patterns
 
 **Tool & Process Rules:**
-- `20-development-tools.md` - Tool configuration
-- `21-code-quality.md` - Code quality
+- `20-tool-standards.md` - Tool configuration
+- `21-quality-standards.md` - Code quality
 - `22-logging-standards.md` - Logging standards
 - `23-workflow-patterns.md` - Workflow patterns
 
-Rules auto-apply by file patterns. See `rules/00-user-preferences.md` for details.
+Rules auto-apply by file patterns. See `rules/00-memory-rules.md` for details.
 
 ### **Permission System**
 Three-tier command control in settings files:
@@ -126,7 +126,7 @@ Three-tier command control in settings files:
 ### For Claude Code Development
 ```bash
 # Edit rules (Claude loads automatically)
-vim ~/.claude/rules/01-general-development.md
+vim ~/.claude/rules/01-development-standards.md
 
 # Update permissions
 vim ~/.claude/.claude/settings.json

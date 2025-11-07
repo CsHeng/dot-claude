@@ -19,6 +19,7 @@ These are personal preferences that complement the general development rules. Th
 - Python: Prefer 3.13+ versions with modern type annotation syntax `X | None`
 - Go: Prefer 1.23+ versions, use `go run` instead of `go build` during development
 - Shell: Prefer `#!/bin/zsh` for interactive scripts during development
+- Lua: Use `luac -p <path>` to validate syntax, prefer Lua 5.4+ with modern features
 
 ### Virtual Environment Management
 - Python: Single `.venv` directory at project root
@@ -29,6 +30,10 @@ These are personal preferences that complement the general development rules. Th
 
 ### PlantUML
 - Use PlantUML >=1.2025.9, validate with `plantuml --check-syntax <path>`, prefer it for architecture diagrams
+
+### DBML (Database Markup Language)
+- Use dbml2sql for syntax validation, validate with `dbml2sql <path>`
+- Use original table names in Ref statements, do not use table aliases (as syntax)
 
 ### Docker and Containerization
 - Host Access: Use `172.17.0.1` instead of `host.docker.internal`

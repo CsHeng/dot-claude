@@ -82,7 +82,7 @@ inclusion: always
 ## Documentation and Comments
 
 ### When to Comment
-- Explain **why** decisions were made, not **what** the code does
+- Explain why decisions were made, not what the code does
 - Document complex algorithms and business logic
 - Add context for non-obvious side effects or dependencies
 - Include examples for public APIs

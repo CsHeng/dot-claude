@@ -316,6 +316,14 @@ sync_settings() {
     return 0
   fi
 
+  if [[ -f "$settings_file" ]]; then
+    log_info "Creating backup of existing settings..."
+    if ! backup_file "$settings_file"; then
+      log_error "✗ Failed to create settings backup"
+      return 1
+    fi
+  fi
+
   # Factory/Droid settings - basic configuration
   if [[ -f "$settings_file" ]]; then
     log_info "Updating existing settings file"
@@ -492,11 +500,11 @@ This file contains adapted memory content from Claude Code configuration, custom
 Your development rules have been synchronized to: \`rules/\`
 
 The following rule categories are available and automatically loaded:
-- General development standards (01-general-development.md)
+- General development standards (01-development-standards.md)
 - Architecture patterns (02-architecture-patterns.md)
-- Security guidelines (03-security-guidelines.md)
+- Security guidelines (03-security-standards.md)
 - Testing strategy (04-testing-strategy.md)
-- Error handling (05-error-handling.md)
+- Error handling (05-error-patterns.md)
 - Language-specific guidelines (python, go, shell, docker)
 
 ### DROID-Specific Adaptations

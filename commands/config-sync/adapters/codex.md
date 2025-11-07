@@ -43,34 +43,34 @@ Handle OpenAI Codex CLI-specific configuration synchronization with minimal setu
 ## OpenAI Codex CLI Features
 
 ### Command Format
-- **Simple**: Basic Markdown (no frontmatter)
-- **Minimal**: Stripped-down functionality
-- **Focus**: Code generation capabilities
+- Simple: Basic Markdown (no frontmatter)
+- Minimal: Stripped-down functionality
+- Focus: Code generation capabilities
 
 ### Permission System
-- **Sandbox**: Three access levels
+- Sandbox: Three access levels
   - `read-only`: No modifications
   - `workspace-write`: Workspace access
   - `danger-full-access`: Full access
 
 ### Configuration
-- **Format**: TOML configuration
-- **Minimal**: Basic settings only
-- **Authentication**: API key required
+- Format: TOML configuration
+- Minimal: Basic settings only
+- Authentication: API key required
 
 ## Synchronization Process
 
-1. **Simplify**: Remove complex Claude features
-2. **Convert**: Adapt to basic Markdown
-3. **Configure**: Set sandbox permissions
-4. **Document**: Add limitation notes
+1. Simplify: Remove complex Claude features
+2. Convert: Adapt to basic Markdown
+3. Configure: Set sandbox permissions
+4. Document: Add limitation notes
 
 ## Limitations
 
-- **No formal permission system**
-- **Minimal configuration options**
-- **Simple command structure**
-- **No MCP server support**
+- No formal permission system
+- Minimal configuration options
+- Simple command structure
+- No MCP server support
 
 ## Integration
 

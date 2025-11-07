@@ -49,18 +49,18 @@ Comprehensively analyze target tool capabilities, current configuration state, a
 - Configuration directory existence (use the helper mapping below)
 
 ### Configuration Directory Map
-- **Factory/Droid CLI** → `~/.factory`
-- **Qwen CLI** → `~/.qwen`
-- **Codex CLI** → `~/.codex`
-- **OpenCode** → `~/.config/opencode`
+- Factory/Droid CLI → `~/.factory`
+- Qwen CLI → `~/.qwen`
+- Codex CLI → `~/.codex`
+- OpenCode → `~/.config/opencode`
 
 Use `get_target_config_dir` and other helpers from `config-sync/lib/common.sh` when resolving paths so the correct directories are inspected.
 
 ### Key Configuration Files
-- **Factory/Droid CLI**: `settings.json`, `config.json`
-- **Qwen CLI**: `settings.json`
-- **Codex CLI**: `config.toml`
-- **OpenCode**: `opencode.json` (plus `user-settings.json` if present)
+- Factory/Droid CLI: `settings.json`, `config.json`
+- Qwen CLI: `settings.json`
+- Codex CLI: `config.toml`
+- OpenCode: `opencode.json` (plus `user-settings.json` if present)
 
 ### Configuration Capabilities
 - File format support (JSON, TOML, Markdown)

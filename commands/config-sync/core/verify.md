@@ -696,8 +696,8 @@ create_basic_memory_file() {
 # $tool_name User Memory
 
 ## Tool Configuration
-- **Tool**: $tool_name CLI
-- **Source**: Synchronized from Claude Code
+- Tool: $tool_name CLI
+- Source: Synchronized from Claude Code
 
 ## Status
 This is a basic memory file created during verification.
@@ -782,11 +782,11 @@ for tool in "${TARGETS[@]}"; do
 
     # Summary for this tool
     if [[ $tool_issues -eq 0 ]]; then
-        echo "✅ **$tool**: No issues found"
+        echo "✅ $tool: No issues found"
     else
-        echo "❌ **$tool**: $tool_issues issue(s) found"
+        echo "❌ $tool: $tool_issues issue(s) found"
         if [[ "$FIX" == "true" ]]; then
-            echo "🔧 **Fixes Applied**: Check individual component logs above"
+            echo "🔧 Fixes Applied: Check individual component logs above"
         fi
     fi
 
@@ -799,14 +799,14 @@ echo "## Verification Summary"
 echo ""
 
 if [[ $total_issues -eq 0 ]]; then
-    echo "🎉 **All checks passed!** Configuration synchronization is complete and correct."
+    echo "🎉 All checks passed! Configuration synchronization is complete and correct."
 else
-    echo "⚠️ **Issues Found**: $total_issues total issue(s)"
+    echo "⚠️ Issues Found: $total_issues total issue(s)"
     if [[ "$FIX" == "true" ]]; then
-        echo "🔧 **Auto-fix Applied**: Some issues may have been automatically resolved"
-        echo "💡 **Recommendation**: Run verification again to check remaining issues"
+        echo "🔧 Auto-fix Applied: Some issues may have been automatically resolved"
+        echo "💡 Recommendation: Run verification again to check remaining issues"
     else
-        echo "💡 **Recommendation**: Run with --fix flag to automatically resolve common issues"
+        echo "💡 Recommendation: Run with --fix flag to automatically resolve common issues"
     fi
 fi
 
