@@ -42,6 +42,6 @@ Run commands directly from Claude Code:
 
 ## Development Notes
 
-- Helper scripts are intentionally minimal and should be customized per environment.
+- Helper scripts are intentionally minimal and is customized per environment.
 - Commands reference shared functions documented in `lib/common.md`.
 - The legacy command copies in `~/.claude/commands/` remain until the new plugin suite is fully validated.

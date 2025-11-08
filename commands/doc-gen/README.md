@@ -1,3 +1,8 @@
+name: "/doc-gen:readme"
+description: "Doc Gen plugin overview and usage reference"
+disable-model-invocation: true
+---
+
 # Doc Gen Plugin
 
 Provides the `/doc-gen:*` command namespace for architecture documentation workflows. The plugin separates shared orchestration logic from project-type adapters so that future updates remain modular.

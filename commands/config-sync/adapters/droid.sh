@@ -421,7 +421,7 @@ with open('$cmd_file', 'r', encoding='utf-8') as f:
 if content.startswith('---'):
     print(f'✓ Valid frontmatter: $cmd_file')
 else:
-    print(f'⚠ No frontmatter: $cmd_file')
+    print(f'WARNING: No frontmatter: $cmd_file')
 
 # Basic validation
 if len(content.strip()) == 0:

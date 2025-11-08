@@ -89,7 +89,7 @@ verify_tool_installation() {
     local issues=()
 
     if check_tool_installed "$tool"; then
-        log_info "✅ $tool is installed and accessible"
+        log_info "OK $tool is installed and accessible"
     else
         issues+=("Tool not installed or not in PATH")
         if [[ "$FIX" == "true" ]]; then
@@ -98,7 +98,7 @@ verify_tool_installation() {
     fi
 
     if [[ ${#issues[@]} -gt 0 ]]; then
-        log_error "❌ Installation issues for $tool:"
+        log_error "Error: Installation issues for $tool:"
         for issue in "${issues[@]}"; do
             log_error "   - $issue"
         done
@@ -127,7 +127,7 @@ verify_configuration_structure() {
             fixes+=("Created configuration directory")
         fi
     else
-        log_info "✅ Configuration directory exists: $config_dir"
+        log_info "OK Configuration directory exists: $config_dir"
 
         # Check if directory is writable
         if [[ ! -w "$config_dir" ]]; then
@@ -159,20 +159,20 @@ verify_configuration_structure() {
                 fixes+=("Created $subdir directory")
             fi
         else
-            log_info "✅ $subdir directory exists: $subdir_path"
+            log_info "OK $subdir directory exists: $subdir_path"
         fi
     done
 
     # Apply fixes if requested
     if [[ ${#fixes[@]} -gt 0 ]]; then
-        log_info "🔧 Applied fixes for $tool:"
+        log_info "Fixes applied for $tool:"
         for fix in "${fixes[@]}"; do
             log_info "   - $fix"
         done
     fi
 
     if [[ ${#issues[@]} -gt 0 ]]; then
-        log_error "❌ Structure issues for $tool:"
+        log_error "Error: Structure issues for $tool:"
         for issue in "${issues[@]}"; do
             log_error "   - $issue"
         done
@@ -212,14 +212,14 @@ verify_component_files() {
 
     # Apply fixes if requested
     if [[ ${#fixes[@]} -gt 0 ]]; then
-        log_info "🔧 Applied fixes for $tool:$component:"
+        log_info "Fixes applied for $tool:$component:"
         for fix in "${fixes[@]}"; do
             log_info "   - $fix"
         done
     fi
 
     if [[ ${#issues[@]} -gt 0 ]]; then
-        log_error "❌ $component issues for $tool:"
+        log_error "Error: $component issues for $tool:"
         for issue in "${issues[@]}"; do
             log_error "   - $issue"
         done
@@ -264,7 +264,7 @@ verify_rules_files() {
         fi
     else
         local rule_count=$(ls "$rules_dir"/*.md 2>/dev/null | wc -l)
-        log_info "✅ Found $rule_count rule files"
+        log_info "OK Found $rule_count rule files"
 
         # Check rule file content
         if [[ "$DETAILED" == "true" ]]; then
@@ -520,7 +520,7 @@ verify_commands_files() {
         fi
     else
         local cmd_count=$(find "$commands_dir" -type f | wc -l)
-        log_info "✅ Found $cmd_count command files"
+        log_info "OK Found $cmd_count command files"
 
         # Validate command formats based on tool
         if [[ "$DETAILED" == "true" ]]; then
@@ -782,11 +782,11 @@ for tool in "${TARGETS[@]}"; do
 
     # Summary for this tool
     if [[ $tool_issues -eq 0 ]]; then
-        echo "✅ $tool: No issues found"
+        echo "OK $tool: No issues found"
     else
-        echo "❌ $tool: $tool_issues issue(s) found"
+        echo "Issues $tool: $tool_issues issue(s) found"
         if [[ "$FIX" == "true" ]]; then
-            echo "🔧 Fixes Applied: Check individual component logs above"
+            echo "Fixes Applied: Check individual component logs above"
         fi
     fi
 
@@ -799,14 +799,14 @@ echo "## Verification Summary"
 echo ""
 
 if [[ $total_issues -eq 0 ]]; then
-    echo "🎉 All checks passed! Configuration synchronization is complete and correct."
+    echo "All checks passed! Configuration synchronization is complete and correct."
 else
-    echo "⚠️ Issues Found: $total_issues total issue(s)"
+    echo "Issues Found: $total_issues total issue(s)"
     if [[ "$FIX" == "true" ]]; then
-        echo "🔧 Auto-fix Applied: Some issues may have been automatically resolved"
-        echo "💡 Recommendation: Run verification again to check remaining issues"
+        echo "Auto-fix Applied: Some issues may have been automatically resolved"
+        echo "Recommendation: Run verification again to check remaining issues"
     else
-        echo "💡 Recommendation: Run with --fix flag to automatically resolve common issues"
+        echo "Recommendation: Run with --fix flag to automatically resolve common issues"
     fi
 fi
 

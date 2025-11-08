@@ -87,7 +87,7 @@ docs-bootstrap/
     ├── B01_download_flow.puml
     └── C01_push_notifications.puml
 ```
-Call out any existing files under `docs/` that should be merged after review (for example, `docs/VIEWS.md`). Include those merge recommendations in README → Recommended structure.
+Call out any existing files under `docs/` that is merged after review (for example, `docs/VIEWS.md`). Include those merge recommendations in README → Recommended structure.
 
 ## Exit criteria
 - README contains parameter table, module snapshot, documentation inventory, actor matrix, PlantUML validation results, flow summaries, recommended structure, and open questions.

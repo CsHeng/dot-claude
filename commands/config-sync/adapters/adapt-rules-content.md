@@ -30,7 +30,7 @@ Analyze and adapt Claude-specific references in rule files to make them universa
    - "This file serves as both Claude Memory and is synchronized to other AI tools for consistent behavior."
 
 2. `23-workflow-patterns.md`:
-   - "Guidelines for development workflows, tool preferences, and coding practices that should be integrated into Claude memory."
+   - "Guidelines for development workflows, tool preferences, and coding practices that is integrated into Claude memory."
    - "### Tool Preferences to Store in Claude Memory"
 
 ## Adaptation Strategy
@@ -46,17 +46,17 @@ Analyze and adapt Claude-specific references in rule files to make them universa
 #### For Factory/Droid CLI:
 - "Claude Memory" → "Droid Memory"
 - "Claude Code" → "Factory/Droid CLI"
-- References should align with DROID.md
+- References align with DROID.md
 
 #### For Qwen CLI:
 - "Claude Memory" → "Qwen Memory"
 - "Claude Code" → "Qwen CLI"
-- References should align with QWEN.md
+- References align with QWEN.md
 
 #### For Codex CLI:
 - "Claude Memory" → "Codex Memory"
 - "Claude Code" → "Codex CLI"
-- References should align with CODEX.md
+- References align with CODEX.md
 
 #### For Universal (all tools):
 - "Claude Memory" → "AI Memory"

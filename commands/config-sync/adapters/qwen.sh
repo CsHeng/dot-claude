@@ -391,7 +391,7 @@ try:
         toml.load(f)
     print(f'✓ Valid TOML: $toml_file')
 except ImportError:
-    print(f'⚠ Cannot verify TOML (toml module not installed): $toml_file')
+    print(f'WARNING: Cannot verify TOML (toml module not installed): $toml_file')
 except Exception as e:
     print(f'✗ Invalid TOML: $toml_file - {e}')
     sys.exit(1)

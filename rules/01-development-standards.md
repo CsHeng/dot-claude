@@ -22,7 +22,7 @@ inclusion: always
 ### Variables and Functions
 - Use descriptive names that reveal intent and purpose
 - Prefer `calculateTotalPrice()` over `calc()` or `getTotal()`
-- Boolean variables should be questions: `isValid`, `hasPermission`, `canExecute`
+- Boolean variables is questions: `isValid`, `hasPermission`, `canExecute`
 - Don't use abbreviations unless universally understood (`url`, `id`, `api`)
 
 ### Constants and Configuration
@@ -34,9 +34,9 @@ inclusion: always
 ## Function Design
 
 ### Single Responsibility
-- Each function should have one clear purpose
+- Each function has one clear purpose
 - If you need "and" to describe what a function does, split it
-- Functions should be small (typically 10-20 lines)
+- Functions is small (typically 10-20 lines)
 - Extract complex conditionals into well-named helper functions
 
 ### Parameters and Return Values

@@ -51,7 +51,7 @@ Options:
   --verbose     Show detailed output
   --help        Show this help message
 
-⚠️  CRITICAL: For Qwen CLI, use the adapter directly:
+WARNING:  CRITICAL: For Qwen CLI, use the adapter directly:
   /config-sync:adapters:qwen --action=sync --component=all
 EOF
 }

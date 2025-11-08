@@ -837,7 +837,7 @@ run_sync_orchestration() {
         # Verify sync
         verify_sync_for_tool "$target_tool"
 
-        echo "✅ **$target_tool**: Sync completed"
+        echo "SUCCESS: $target_tool: Sync completed"
     done
 
     # Generate final report

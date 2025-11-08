@@ -354,7 +354,7 @@ timeout = 30
 memory_limit = "512MB"
 EOF
 
-    log_warning "⚠️  IMPORTANT: Edit $target_file to set your OpenAI API key"
+    log_warning "WARNING:  IMPORTANT: Edit $target_file to set your OpenAI API key"
     log_success "Settings configuration created: $target_file"
 }
 
@@ -564,10 +564,10 @@ analyze_codex() {
 
     # Check installation
     if command -v codex &> /dev/null; then
-        echo "✅ Codex CLI: $(which codex)"
+        echo "SUCCESS: Codex CLI: $(which codex)"
         codex --version 2>/dev/null || echo "Version information not available"
     else
-        echo "❌ Codex CLI: Not installed"
+        echo "ERROR: Codex CLI: Not installed"
     fi
 
     echo
@@ -575,34 +575,34 @@ analyze_codex() {
 
     # Check config directory
     if [[ -d "$CODEX_CONFIG_DIR" ]]; then
-        echo "✅ Config directory: $CODEX_CONFIG_DIR"
+        echo "SUCCESS: Config directory: $CODEX_CONFIG_DIR"
 
         # List configuration files
         for file in "$CODEX_SETTINGS_FILE" "$CODEX_CONFIG_DIR/permissions.toml" "$CODEX_CONFIG_DIR/CODEX.md" "$CODEX_CONFIG_DIR/AGENTS.md"; do
             if [[ -f "$file" ]]; then
-                echo "✅ $(basename "$file"): Exists ($(stat -f%z "$file" 2>/dev/null || echo "unknown") bytes)"
+                echo "SUCCESS: $(basename "$file"): Exists ($(stat -f%z "$file" 2>/dev/null || echo "unknown") bytes)"
             else
-                echo "❌ $(basename "$file"): Missing"
+                echo "ERROR: $(basename "$file"): Missing"
             fi
         done
 
         # Check rules
         if [[ -d "$CODEX_CONFIG_DIR/rules" ]]; then
             local rule_count=$(find "$CODEX_CONFIG_DIR/rules" -name "*.md" -type f | wc -l)
-            echo "✅ Rules: $rule_count files"
+            echo "SUCCESS: Rules: $rule_count files"
         else
-            echo "❌ Rules directory: Missing"
+            echo "ERROR: Rules directory: Missing"
         fi
 
         # Check commands
         if [[ -d "$CODEX_COMMANDS_DIR" ]]; then
             local cmd_count=$(find "$CODEX_COMMANDS_DIR" -name "*.md" -type f | wc -l)
-            echo "✅ Commands: $cmd_count files"
+            echo "SUCCESS: Commands: $cmd_count files"
         else
-            echo "❌ Commands directory: Missing"
+            echo "ERROR: Commands directory: Missing"
         fi
     else
-        echo "❌ Config directory: Not found"
+        echo "ERROR: Config directory: Not found"
     fi
 
     echo
@@ -618,7 +618,7 @@ analyze_codex() {
 
     if command -v codex &> /dev/null && [[ -f "$CODEX_SETTINGS_FILE" ]]; then
         if ! grep -q "api_key.*[^\"[:space:]]" "$CODEX_SETTINGS_FILE"; then
-            echo "⚠️  Set your OpenAI API key in $CODEX_SETTINGS_FILE"
+            echo "WARNING:  Set your OpenAI API key in $CODEX_SETTINGS_FILE"
         fi
     fi
 }
@@ -634,68 +634,68 @@ verify_codex() {
 
     # Verify installation
     if ! command -v codex &> /dev/null; then
-        echo "❌ Codex CLI is not installed"
+        echo "ERROR: Codex CLI is not installed"
         ((errors += 1))
         return $errors
     else
-        echo "✅ Codex CLI is installed"
+        echo "SUCCESS: Codex CLI is installed"
     fi
 
     # Verify config directory
     if [[ ! -d "$CODEX_CONFIG_DIR" ]]; then
-        echo "❌ Config directory missing: $CODEX_CONFIG_DIR"
+        echo "ERROR: Config directory missing: $CODEX_CONFIG_DIR"
         ((errors += 1))
     else
-        echo "✅ Config directory exists"
+        echo "SUCCESS: Config directory exists"
     fi
 
     # Verify settings file
     if [[ ! -f "$CODEX_SETTINGS_FILE" ]]; then
-        echo "❌ Settings file missing: $CODEX_SETTINGS_FILE"
+        echo "ERROR: Settings file missing: $CODEX_SETTINGS_FILE"
         ((errors += 1))
     else
-        echo "✅ Settings file exists"
+        echo "SUCCESS: Settings file exists"
 
         # Check API key
         if ! grep -q "api_key.*[^\"[:space:]]" "$CODEX_SETTINGS_FILE"; then
-            echo "⚠️  API key not configured"
+            echo "WARNING:  API key not configured"
             ((warnings += 1))
         else
-            echo "✅ API key is configured"
+            echo "SUCCESS: API key is configured"
         fi
     fi
 
     # Verify rules directory and files
     if [[ ! -d "$CODEX_CONFIG_DIR/rules" ]]; then
-        echo "❌ Rules directory missing"
+        echo "ERROR: Rules directory missing"
         ((errors += 1))
     else
         local rule_count=$(find "$CODEX_CONFIG_DIR/rules" -name "*.md" -type f | wc -l)
         if [[ $rule_count -eq 0 ]]; then
-            echo "⚠️  No rules files found"
+            echo "WARNING:  No rules files found"
             ((warnings += 1))
         else
-            echo "✅ Rules directory: $rule_count files"
+            echo "SUCCESS: Rules directory: $rule_count files"
         fi
     fi
 
     # Verify commands directory
     if [[ ! -d "$CODEX_COMMANDS_DIR" ]]; then
-        echo "⚠️  Commands directory missing"
+        echo "WARNING:  Commands directory missing"
         ((warnings += 1))
     else
         local cmd_count=$(find "$CODEX_COMMANDS_DIR" -name "*.md" -type f | wc -l)
-        echo "✅ Commands directory: $cmd_count files"
+        echo "SUCCESS: Commands directory: $cmd_count files"
     fi
 
     echo
     if [[ $errors -gt 0 ]]; then
-        echo "❌ Verification failed with $errors error(s)"
+        echo "ERROR: Verification failed with $errors error(s)"
         echo "Run: codex.sh --action=sync --component=all"
     elif [[ $warnings -gt 0 ]]; then
-        echo "⚠️  Verification completed with $warnings warning(s)"
+        echo "WARNING:  Verification completed with $warnings warning(s)"
     else
-        echo "✅ Verification completed successfully"
+        echo "SUCCESS: Verification completed successfully"
     fi
 
     return $errors

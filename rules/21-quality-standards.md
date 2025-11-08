@@ -5,10 +5,10 @@ Comprehensive standards for maintaining high code quality across all projects an
 ## Linting and Formatting Standards
 
 ### Universal Code Quality Principles
-- Consistency: All code should follow consistent style and formatting
-- Readability: Code should be self-documenting and easy to understand
-- Maintainability: Code should be easy to modify and extend
-- Testability: Code should be structured to enable effective testing
+- Consistency: All code follows consistent style and formatting
+- Readability: Code is self-documenting and easy to understand
+- Maintainability: Code is easy to modify and extend
+- Testability: Code is structured to enable effective testing
 
 ### Python Code Quality (Ruff)
 ```toml
@@ -181,7 +181,7 @@ ignore = [
     "D104",   # missing docstring in public package
     "D105",   # missing docstring in magic method
     "D107",   # missing docstring in __init__
-    "D401",   # first line should be in imperative mood
+    "D401",   # first line is in imperative mood
     "D415",   # first line should end with a period, question mark, or exclamation point
     "ANN101", # missing type annotation for self in method
     "ANN102", # missing type annotation for cls in classmethod
@@ -688,7 +688,7 @@ issues:
         - gomnd
 
     # Exclude certain revive issues
-    - text: "exported (type|function|var|method|const) (.+) should have comment"
+    - text: "exported (type|function|var|method|const) (.+) has comment"
       linters:
         - revive
 

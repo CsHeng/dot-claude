@@ -295,7 +295,7 @@ ignore = [
     "D104",   # missing docstring in public package
     "D105",   # missing docstring in magic method
     "D107",   # missing docstring in __init__
-    "D401",   # first line should be in imperative mood
+    "D401",   # first line is in imperative mood
     "S101",   # use of assert detected
     "S311",   # standard pseudo-random generators are not suitable for cryptographic purposes
     "S603",   # subprocess call - check for execution of untrusted input

@@ -1,6 +1,6 @@
 # Workflow Patterns and Development Practices
 
-Guidelines for development workflows, tool preferences, and coding practices that should be integrated into AI memory.
+Guidelines for development workflows, tool preferences, and coding practices that is integrated into AI memory.
 
 ## Development Workflow Preferences
 

@@ -496,10 +496,10 @@ analyze_opencode() {
 
     # Check installation
     if command -v opencode &> /dev/null; then
-        echo "✅ OpenCode CLI: $(which opencode)"
+        echo "SUCCESS: OpenCode CLI: $(which opencode)"
         opencode --version 2>/dev/null || echo "Version information not available"
     else
-        echo "❌ OpenCode CLI: Not installed"
+        echo "ERROR: OpenCode CLI: Not installed"
     fi
 
     echo
@@ -507,11 +507,11 @@ analyze_opencode() {
 
     # Check config directory
     if [[ -d "$OPENCODE_CONFIG_DIR" ]]; then
-        echo "✅ Config directory: $OPENCODE_CONFIG_DIR"
+        echo "SUCCESS: Config directory: $OPENCODE_CONFIG_DIR"
 
         # Check main config file
         if [[ -f "$OPENCODE_CONFIG_FILE" ]]; then
-            echo "✅ Main config: $OPENCODE_CONFIG_FILE"
+            echo "SUCCESS: Main config: $OPENCODE_CONFIG_FILE"
 
             if command -v jq &>  /dev/null; then
                 local model=$(jq -r '.model // "default"' "$OPENCODE_CONFIG_FILE" 2>/dev/null)
@@ -520,37 +520,37 @@ analyze_opencode() {
                 echo "  Theme: $theme"
             fi
         else
-            echo "❌ Main config: Missing"
+            echo "ERROR: Main config: Missing"
         fi
 
         # Check AGENTS.md
         if [[ -f "$OPENCODE_CONFIG_DIR/AGENTS.md" ]]; then
-            echo "✅ AGENTS.md: Exists ($(stat -f%z "$OPENCODE_CONFIG_DIR/AGENTS.md" 2>/dev/null || echo "unknown") bytes)"
+            echo "SUCCESS: AGENTS.md: Exists ($(stat -f%z "$OPENCODE_CONFIG_DIR/AGENTS.md" 2>/dev/null || echo "unknown") bytes)"
         else
-            echo "❌ AGENTS.md: Missing"
+            echo "ERROR: AGENTS.md: Missing"
         fi
 
         # Check rules
         if [[ -d "$OPENCODE_RULES_DIR" ]]; then
             local rule_count=$(find "$OPENCODE_RULES_DIR" -type f -name "*.md" 2>/dev/null | wc -l)
             if [[ $rule_count -gt 0 ]]; then
-                echo "✅ Rules: $rule_count files"
+                echo "SUCCESS: Rules: $rule_count files"
             else
-                echo "❌ Rules: No files found"
+                echo "ERROR: Rules: No files found"
             fi
         else
-            echo "❌ Rules: Directory missing ($OPENCODE_RULES_DIR)"
+            echo "ERROR: Rules: Directory missing ($OPENCODE_RULES_DIR)"
         fi
 
         # Check commands
         if [[ -d "$OPENCODE_COMMANDS_DIR" ]]; then
             local cmd_count=$(find "$OPENCODE_COMMANDS_DIR" -name "*.md" -type f | wc -l)
-            echo "✅ Commands: $cmd_count markdown files"
+            echo "SUCCESS: Commands: $cmd_count markdown files"
         else
-            echo "❌ Commands directory: Missing"
+            echo "ERROR: Commands directory: Missing"
         fi
     else
-        echo "❌ Config directory: Not found"
+        echo "ERROR: Config directory: Not found"
     fi
 
     echo
@@ -584,87 +584,87 @@ verify_opencode() {
 
     # Verify installation
     if ! command -v opencode &> /dev/null; then
-        echo "❌ OpenCode CLI is not installed"
+        echo "ERROR: OpenCode CLI is not installed"
         ((errors += 1))
         return $errors
     else
-        echo "✅ OpenCode CLI is installed"
+        echo "SUCCESS: OpenCode CLI is installed"
     fi
 
     # Verify config directory
     if [[ ! -d "$OPENCODE_CONFIG_DIR" ]]; then
-        echo "❌ Config directory missing: $OPENCODE_CONFIG_DIR"
+        echo "ERROR: Config directory missing: $OPENCODE_CONFIG_DIR"
         ((errors += 1))
     else
-        echo "✅ Config directory exists"
+        echo "SUCCESS: Config directory exists"
     fi
 
     # Verify main configuration file
     if [[ ! -f "$OPENCODE_CONFIG_FILE" ]]; then
-        echo "❌ Main configuration file missing: $OPENCODE_CONFIG_FILE"
+        echo "ERROR: Main configuration file missing: $OPENCODE_CONFIG_FILE"
         ((errors += 1))
     else
-        echo "✅ Main configuration file exists"
+        echo "SUCCESS: Main configuration file exists"
 
         # Validate JSON syntax
         if command -v jq &> /dev/null; then
             if jq empty "$OPENCODE_CONFIG_FILE" 2>/dev/null; then
-                echo "✅ Configuration file has valid JSON syntax"
+                echo "SUCCESS: Configuration file has valid JSON syntax"
             else
-                echo "❌ Configuration file has invalid JSON syntax"
+                echo "ERROR: Configuration file has invalid JSON syntax"
                 ((errors += 1))
             fi
         else
-            echo "⚠️  jq not available - cannot validate JSON syntax"
+            echo "WARNING:  jq not available - cannot validate JSON syntax"
             ((warnings += 1))
         fi
     fi
 
     # Verify AGENTS.md (primary memory reference)
     if [[ ! -f "$OPENCODE_CONFIG_DIR/AGENTS.md" ]]; then
-        echo "❌ AGENTS.md missing (primary memory reference)"
+        echo "ERROR: AGENTS.md missing (primary memory reference)"
         ((errors += 1))
     else
-        echo "✅ AGENTS.md exists"
+        echo "SUCCESS: AGENTS.md exists"
     fi
 
     # Verify rules directory and files
     if [[ ! -d "$OPENCODE_RULES_DIR" ]]; then
-        echo "⚠️  Rules directory missing: $OPENCODE_RULES_DIR"
+        echo "WARNING:  Rules directory missing: $OPENCODE_RULES_DIR"
         ((warnings += 1))
     else
         local rule_count
         rule_count=$(find "$OPENCODE_RULES_DIR" -type f -name "*.md" 2>/dev/null | wc -l)
         if [[ $rule_count -eq 0 ]]; then
-            echo "⚠️  No rules files found in $OPENCODE_RULES_DIR"
+            echo "WARNING:  No rules files found in $OPENCODE_RULES_DIR"
             ((warnings += 1))
         else
-            echo "✅ Rules directory: $rule_count files"
+            echo "SUCCESS: Rules directory: $rule_count files"
         fi
     fi
 
     # Verify commands directory
     if [[ ! -d "$OPENCODE_COMMANDS_DIR" ]]; then
-        echo "⚠️  Commands directory missing"
+        echo "WARNING:  Commands directory missing"
         ((warnings += 1))
     else
         local cmd_count=$(find "$OPENCODE_COMMANDS_DIR" -name "*.md" -type f | wc -l)
         if [[ $cmd_count -eq 0 ]]; then
-            echo "⚠️  No markdown command files found"
+            echo "WARNING:  No markdown command files found"
             ((warnings += 1))
         else
-            echo "✅ Commands directory: $cmd_count markdown files"
+            echo "SUCCESS: Commands directory: $cmd_count markdown files"
         fi
     fi
 
     echo
     if [[ $errors -gt 0 ]]; then
-        echo "❌ Verification failed with $errors error(s)"
+        echo "ERROR: Verification failed with $errors error(s)"
         echo "Run: opencode.sh --action=sync --component=all"
     elif [[ $warnings -gt 0 ]]; then
-        echo "⚠️  Verification completed with $warnings warning(s)"
+        echo "WARNING:  Verification completed with $warnings warning(s)"
     else
-        echo "✅ Verification completed successfully"
+        echo "SUCCESS: Verification completed successfully"
     fi
 
     return $errors
