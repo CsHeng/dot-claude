@@ -2,6 +2,7 @@
 name: "config-sync:codex"
 description: OpenAI Codex CLI specific operations with minimal configuration
 argument-hint: --action=<sync|analyze|verify> --component=<rules,permissions,commands,settings,memory|all>
+disable-model-invocation: true
 ---
 
 # Config-Sync Codex Command

@@ -556,7 +556,7 @@ generate_adaptation_report() {
     echo "## Verification"
     echo "1. Review generated permission configuration"
     echo "2. Test functionality in target tool"
-    echo "3. Run \`/config-sync:verify --target=$TARGET\` to validate setup"
+    echo "3. Run \`/config-sync:cli --action=verify --target=$TARGET\` to validate setup"
     echo ""
 
     if [[ "$DRY_RUN" == false ]]; then

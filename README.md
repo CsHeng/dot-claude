@@ -11,7 +11,7 @@ This system treats **Claude Code as the primary source of truth** for:
 
 From this central configuration, we sync to:
 - **IDE Tools**: Cursor, VS Code Copilot (via `sync-project-rules.sh`)
-- **CLI Tools**: Qwen, Factory/Droid, Codex, OpenCode (via `/config-sync:*` commands)
+- **CLI Tools**: Qwen, Factory/Droid, Codex, OpenCode (via `/config-sync:cli`)
 
 ## 📁 Essential Files
 
@@ -54,13 +54,13 @@ cd /path/to/project
 ### 3. Sync to CLI Tools (Optional)
 ```bash
 # Analyze available CLI tools
-/config-sync:analyze --target=all
+/config-sync:cli --action=analyze --target=all
 
 # Sync configuration to installed tools
-/config-sync:sync-user-config --target=all
+/config-sync:cli --action=sync --target=all
 
 # Verify sync worked
-/config-sync:verify --target=all
+/config-sync:cli --action=verify --target=all
 ```
 
 ## 🔧 Configuration Components
@@ -119,7 +119,7 @@ Three-tier command control in settings files:
 
 ### CLI Tool Sync
 - **Target**: Qwen, Factory/Droid, Codex, OpenCode
-- **Method**: `/config-sync:*` slash commands
+- **Method**: `/config-sync:cli --action=<sync|analyze|verify|adapt|plan|report>`
 - **Scope**: Full configuration (rules, permissions, commands, memory)
 - **Features**: PlantUML integration, documentation generation
 - **Usage**: One-time setup per tool
@@ -154,7 +154,7 @@ vim ~/.claude/.claude/settings.json
 ### For CLI Tools
 ```bash
 # After major configuration changes
-/config-sync:sync-user-config --target=all
+/config-sync:cli --action=sync --target=all
 ```
 
 ## 🛠️ Maintenance
@@ -178,7 +178,7 @@ claude /doctor
 /path/to/project/.claude/sync-project-rules.sh --verify-only
 
 # Verify CLI sync
-/config-sync:verify --target=all
+/config-sync:cli --action=verify --target=all
 ```
 
 ## 🔍 Troubleshooting
@@ -187,7 +187,7 @@ claude /doctor
 |-------|----------|
 | Rules not loading | Check file naming, run `claude /doctor` |
 | IDE sync not working | Verify script location, check project structure |
-| CLI sync failed | Run `/config-sync:analyze --target=<tool>` |
+| CLI sync failed | Run `/config-sync:cli --action=analyze --target=<tool>` |
 | Permission denied | Check `Bash(command:*)` syntax in settings |
 
 ## 📚 Documentation

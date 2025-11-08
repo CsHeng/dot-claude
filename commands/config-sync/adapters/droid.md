@@ -2,6 +2,7 @@
 name: "config-sync:droid"
 description: Droid CLI specific operations and configuration
 argument-hint: --action=<sync|analyze|verify> --component=<rules,commands,settings,memory|all>
+disable-model-invocation: true
 ---
 
 # Config-Sync Droid Command

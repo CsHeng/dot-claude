@@ -38,7 +38,7 @@ skinparam note {
 
 ' Actors and Participants
 actor "User" as user
-participant "Core Sync" as core_sync
+participant "config-sync CLI" as cli
 participant "Permission Adapter" as perm_adapter
 participant "Memory Adapter" as memory_adapter
 participant "Droid Adapter" as droid
@@ -56,37 +56,37 @@ participant "OpenCode" as opencode_tool
 autonumber 1
 
 group Initial Setup - Sync All Tools
-    user -> core_sync: /config-sync:sync-user-config --target=all
-    activate core_sync
+    user -> cli: /config-sync:cli --action=sync --target=all --components=all
+    activate cli
 
-    note over core_sync
+    note over cli
       parse_target_list("all") ⇒ droid,qwen,codex,opencode
       parse_component_list("all") ⇒ commands,rules,settings,permissions,memory
     end note
 
-    core_sync -> claude_config: Read configuration files
+    cli -> claude_config: Read configuration files
     activate claude_config
-    claude_config --> core_sync: rules, commands, settings, memory
+    claude_config --> cli: rules, commands, settings, memory
     deactivate claude_config
 
-    note over core_sync: Create backup directories\nfor all target tools
+    note over cli: Create backup directories\nfor all target tools
 
     par Parallel Sync to Multiple Tools
-        core_sync -> droid: Sync rules & commands\n(excludes config-sync module)
+        cli -> droid: Sync rules & commands\n(excludes config-sync module)
         activate droid
 
-        core_sync -> qwen: Sync rules & commands\n(excludes config-sync module)
+        cli -> qwen: Sync rules & commands\n(excludes config-sync module)
         activate qwen
 
-        core_sync -> codex: Sync rules & commands\n(excludes config-sync module)
+        cli -> codex: Sync rules & commands\n(excludes config-sync module)
         activate codex
 
-        core_sync -> opencode: Sync rules & commands\n(excludes config-sync module)
+        cli -> opencode: Sync rules & commands\n(excludes config-sync module)
         activate opencode
     end
 
     == Permission Adaptation ==
-    core_sync -> perm_adapter: Adapt permissions for all tools
+    cli -> perm_adapter: Adapt permissions for all tools
     activate perm_adapter
 
     par Parallel Permission Processing
@@ -96,11 +96,11 @@ group Initial Setup - Sync All Tools
         perm_adapter -> opencode: Map to operation-based
     end
 
-    perm_adapter --> core_sync: Permission adaptation complete
+    perm_adapter --> cli: Permission adaptation complete
     deactivate perm_adapter
 
     == Memory Synchronization ==
-    core_sync -> memory_adapter: Sync memory files
+    cli -> memory_adapter: Sync memory files
     activate memory_adapter
 
     par Parallel Memory Processing
@@ -110,7 +110,7 @@ group Initial Setup - Sync All Tools
         memory_adapter -> opencode: Create OPENCODE.md + AGENTS.md
     end
 
-    memory_adapter --> core_sync: Memory sync complete
+    memory_adapter --> cli: Memory sync complete
     deactivate memory_adapter
 
     == Complete Tool Adapters ==
@@ -118,97 +118,97 @@ group Initial Setup - Sync All Tools
     activate droid_tool
     droid_tool --> droid: Success
     deactivate droid_tool
-    droid --> core_sync: Droid sync complete
+    droid --> cli: Droid sync complete
     deactivate droid
 
     qwen -> qwen_tool: Write ~/.qwen/ configuration
     activate qwen_tool
     qwen_tool --> qwen: Success
     deactivate qwen_tool
-    qwen --> core_sync: Qwen sync complete
+    qwen --> cli: Qwen sync complete
     deactivate qwen
 
     codex -> codex_tool: Write ~/.codex/ configuration
     activate codex_tool
     codex_tool --> codex: Success
     deactivate codex_tool
-    codex --> core_sync: Codex sync complete
+    codex --> cli: Codex sync complete
     deactivate codex
 
     opencode -> opencode_tool: Write ~/.config/opencode/ configuration
     activate opencode_tool
     opencode_tool --> opencode: Success
     deactivate opencode_tool
-    opencode --> core_sync: OpenCode sync complete
+    opencode --> cli: OpenCode sync complete
     deactivate opencode
 
-    core_sync --> user: ✅ All tools synchronized successfully
-    deactivate core_sync
+    cli --> user: ✅ All tools synchronized successfully
+    deactivate cli
 end
 
 ' == VERIFICATION SEQUENCE ==
 group Verification Phase
-    user -> core_sync: /config-sync:verify --target=all --component=all --detailed
-    activate core_sync
+    user -> cli: /config-sync:cli --action=verify --target=all --components=all --detailed
+    activate cli
 
-    note over core_sync
+    note over cli
       Users can provide comma-separated target/component lists
       parse_target_list()/parse_component_list() expand before verification
     end note
 
     par Parallel Verification
-        core_sync -> droid: Verify configuration integrity
+        cli -> droid: Verify configuration integrity
         activate droid
         droid -> droid_tool: Check files exist & valid
         activate droid_tool
         droid_tool --> droid: Verification results
         deactivate droid_tool
-        droid --> core_sync: Droid verification complete
+        droid --> cli: Droid verification complete
         deactivate droid
 
-        core_sync -> qwen: Verify configuration integrity
+        cli -> qwen: Verify configuration integrity
         activate qwen
         qwen -> qwen_tool: Check files exist & valid
         activate qwen_tool
         qwen_tool --> qwen: Verification results
         deactivate qwen_tool
-        qwen --> core_sync: Qwen verification complete
+        qwen --> cli: Qwen verification complete
         deactivate qwen
 
-        core_sync -> codex: Verify configuration integrity
+        cli -> codex: Verify configuration integrity
         activate codex
         codex -> codex_tool: Check files exist & valid
         activate codex_tool
         codex_tool --> codex: Verification results
         deactivate codex_tool
-        codex --> core_sync: Codex verification complete
+        codex --> cli: Codex verification complete
         deactivate codex
 
-        core_sync -> opencode: Verify configuration integrity
+        cli -> opencode: Verify configuration integrity
         activate opencode
         opencode -> opencode_tool: Check files exist & valid
         activate opencode_tool
         opencode_tool --> opencode: Verification results
         deactivate opencode_tool
-        opencode --> core_sync: OpenCode verification complete
+        opencode --> cli: OpenCode verification complete
         deactivate opencode
     end
 
-    core_sync --> user: 📊 Verification report with results
-    deactivate core_sync
+    cli --> user: 📊 Verification report with results
+    deactivate cli
 end
 
 ' == UPDATE SEQUENCE ==
 group Targeted Update
-    user -> core_sync: /config-sync:sync --target=droid --component=permissions
-    activate core_sync
+    user -> cli: /config-sync:cli --action=sync --target=droid --components=permissions
+    activate cli
 
-    core_sync -> claude_config: Read current permissions
+    cli -> claude_config: Read current permissions
     activate claude_config
-    claude_config --> core_sync: Permission settings
+    claude_config --> cli: Permission settings
     deactivate claude_config
 
-    core_sync -> perm_adapter: Adapt permissions for Droid
+    cli -> perm_adapter: Adapt permissions for Droid
     activate perm_adapter
     perm_adapter -> droid: Map permissions to Droid format
     activate droid
@@ -218,42 +218,42 @@ group Targeted Update
     deactivate droid_tool
     droid --> perm_adapter: Permissions applied
     deactivate droid
-    perm_adapter --> core_sync: Permission adaptation complete
+    perm_adapter --> cli: Permission adaptation complete
     deactivate perm_adapter
 
-    core_sync --> user: ✅ Droid permissions updated
-    deactivate core_sync
+    cli --> user: ✅ Droid permissions updated
+    deactivate cli
 end
 
 ' == ANALYSIS SEQUENCE ==
 group Analysis Phase
-    user -> core_sync: /config-sync:analyze --target=all --format=table
-    activate core_sync
+    user -> cli: /config-sync:cli --action=analyze --target=all --format=table
+    activate cli
 
     par Parallel Analysis
-        core_sync -> droid: Check installation & config
+        cli -> droid: Check installation & config
         activate droid
-        droid --> core_sync: Droid status report
+        droid --> cli: Droid status report
         deactivate droid
 
-        core_sync -> qwen: Check installation & config
+        cli -> qwen: Check installation & config
         activate qwen
-        qwen --> core_sync: Qwen status report
+        qwen --> cli: Qwen status report
         deactivate qwen
 
-        core_sync -> codex: Check installation & config
+        cli -> codex: Check installation & config
         activate codex
-        codex --> core_sync: Codex status report
+        codex --> cli: Codex status report
         deactivate codex
 
-        core_sync -> opencode: Check installation & config
+        cli -> opencode: Check installation & config
         activate opencode
-        opencode --> core_sync: OpenCode status report
+        opencode --> cli: OpenCode status report
         deactivate opencode
     end
 
-    core_sync --> user: 📋 Analysis table with tool status
-    deactivate core_sync
+    cli --> user: 📋 Analysis table with tool status
+    deactivate cli
 end
 
 ' Notes for timing and duration

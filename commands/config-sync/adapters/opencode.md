@@ -2,6 +2,7 @@
 name: "config-sync:opencode"
 description: OpenCode specific operations with JSON format and external references
 argument-hint: --action=<sync|analyze|verify> --component=<rules,permissions,commands,settings,memory|all>
+disable-model-invocation: true
 ---
 
 # Config-Sync OpenCode Command
