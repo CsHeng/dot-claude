@@ -2,6 +2,7 @@
 name: "config-sync:adapt-rules-content"
 description: Adapt rule content for universal AI agent compatibility
 argument-hint: --target=<droid|qwen|codex|opencode|all>
+disable-model-invocation: true
 ---
 
 ## Task

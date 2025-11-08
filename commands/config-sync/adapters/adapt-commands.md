@@ -2,6 +2,7 @@
 name: "config-sync:adapt-commands"
 description: Adapt Claude commands for universal tool compatibility
 argument-hint: --target=<droid|qwen|codex|opencode>
+disable-model-invocation: true
 ---
 
 ## Task

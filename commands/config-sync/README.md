@@ -1,27 +1,24 @@
-# Config Sync Plugin
+# Config Sync Plugin (Unified CLI)
 
-Centralizes Claude Code configuration synchronization flows into a single plugin that exposes a consistent `/config-sync:*` command namespace. The plugin adapts Claude’s rules, permissions, commands, memory files, and settings for other AI tooling ecosystems.
+The config-sync suite now centers on a single slash command, `/config-sync:cli`, which owns parameter parsing, plan generation, phase gating, and reporting for every workflow (sync, analyze, verify, adapt, plan, report). All other historical `/config-sync:*` entrypoints have been removed—call the CLI directly for every action.
 
-## Components
+## Layout
 
-- commands/ – Slash command definitions (orchestrator, adapters, verification, analysis)
-- lib/common.md – Shared helper references used by command snippets
-- scripts/ – Shell helpers (`executor.sh`, `backup.sh`) invoked by automation snippets
-- settings.json – Default options for sync orchestration
-- .claude-plugin/plugin.json – Plugin manifest metadata
+- `cli/` – Command manifest + `config-sync-cli.sh` entrypoint
+- `adapters/` – Target-specific automation invoked during the `adapt` phase
+- `lib/common.*` – Shared helpers (parsing, logging, path resolution)
+- `lib/phases/` – Phase runners (`collect`, `analyze`, `plan`, `prepare`, `adapt`, `execute`, `verify`, `report`)
+- `lib/planners/` – Plan builders for sync/adapt flows
+- `scripts/` – Reusable shell helpers (`executor.sh`, `backup.sh`)
+- `settings.json` – Default target/component selections, verify/dry-run preferences
 
-## Primary Commands
+## Primary Slash Command
 
 | Command | Purpose |
 | --- | --- |
-| `/config-sync:sync` | Core synchronization driver for all components |
-| `/config-sync:sync-user-config` | High level orchestrator that coordinates adapters |
-| `/config-sync:verify` | Post-sync verification and remediation |
-| `/config-sync:analyze` | Capability analysis for supported targets |
-| `/config-sync:adapt-commands` | Command format conversion per target |
-| `/config-sync:adapt-permissions` | Permission mapping for each tool |
-| `/config-sync:adapt-rules-content` | Rule content generalization |
-| `/config-sync:droid` `/config-sync:qwen` `/config-sync:codex` `/config-sync:opencode` | Tool-specific adapters and flows |
+| `/config-sync:cli` | Unified entrypoint (`--action=<sync|analyze|verify|adapt|plan|report>`) with support for `--target`, `--components`, `--profile`, `--plan-file`, `--from-phase`, `--until-phase`, `--dry-run`, `--force`, `--fix`, `--adapter`, and `--format`. |
+
+Adapters such as `/config-sync:adapt-permissions` or `/config-sync:droid` remain for direct tooling control, but the orchestration layer no longer exposes per-phase wrappers like `/config-sync:sync` or `/config-sync:verify`.
 
 ## Supported Targets
 
@@ -30,18 +27,25 @@ Centralizes Claude Code configuration synchronization flows into a single plugin
 - OpenAI Codex CLI – Minimal configuration with sandbox levels
 - OpenCode – JSON command format with operation-based permissions
 
-## Usage
-
-Run commands directly from Claude Code:
+## Usage Examples
 
 ```bash
-/config-sync:sync --target=all --component=all
-/config-sync:verify --target=droid --detailed
-/config-sync:adapt-permissions --target=opencode
+# Full sync with defaults
+/config-sync:cli --action=sync
+
+# Analyze opencode in table format
+/config-sync:cli --action=analyze --target=opencode --format=table
+
+# Verify commands + permissions for droid and qwen
+/config-sync:cli --action=verify --target=droid,qwen --components=commands,permissions --fix
+
+# Re-run plan from prepare onwards
+/config-sync:cli --action=sync --plan-file=~/.claude/config-sync/plan-20250205-120210.json --from-phase=prepare
 ```
 
 ## Development Notes
 
-- Helper scripts are intentionally minimal and is customized per environment.
-- Commands reference shared functions documented in `lib/common.md`.
-- The legacy command copies in `~/.claude/commands/` remain until the new plugin suite is fully validated.
+- Always run phase scripts via `config-sync-cli.sh`; do not invoke `lib/phases/*.sh` directly.
+- Maintain strict mode (`set -euo pipefail`) in every helper per `rules/12-shell-guidelines.md`.
+- Update documentation when adding phases, planner fields, or CLI arguments so downstream tools (sequence diagrams, plan docs) stay accurate.
+- Qwen command verification requires the Python `toml` module (install with `python3 -m pip install --user toml` or ensure the module exists in the CLI’s runtime).

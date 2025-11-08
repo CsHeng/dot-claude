@@ -2,6 +2,7 @@
 name: "config-sync:qwen"
 description: Qwen CLI specific operations with TOML conversion
 argument-hint: --action=<sync|analyze|verify> --component=<rules,commands,settings,memory|all>
+disable-model-invocation: true
 ---
 
 # Config-Sync Qwen Command

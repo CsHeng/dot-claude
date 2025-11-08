@@ -2,6 +2,7 @@
 name: "config-sync:adapt-permissions"
 description: Adapt Claude permissions to target tool format
 argument-hint: --target=<droid|qwen|codex|opencode>
+disable-model-invocation: true
 ---
 
 ## Task

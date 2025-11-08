@@ -2,6 +2,7 @@
 name: "config-sync:analyze-target-tool"
 description: Analyze target tool's configuration capabilities
 argument-hint: --target=<droid|qwen|codex|opencode>
+disable-model-invocation: true
 ---
 
 ## Task

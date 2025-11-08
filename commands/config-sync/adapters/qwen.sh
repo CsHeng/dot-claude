@@ -164,63 +164,83 @@ mkdir -p "$QWEN_ROOT/commands" "$QWEN_ROOT/rules"
 sync_commands() {
   local source_commands="$CLAUDE_ROOT/commands"
   local target_commands="$QWEN_ROOT/commands"
-  local excluded_dir="$target_commands/config-sync"
 
   if [[ ! -d "$source_commands" ]]; then
     log_warn "Source commands directory not found: $source_commands"
     return 0
   fi
 
-  log_info "Syncing commands to Qwen TOML format..."
+  log_info "Syncing commands to Qwen TOML format (excluding config-sync)..."
+
+  if [[ "$DRY_RUN" == "true" ]]; then
+    local count
+    count=$(find "$source_commands" -type f -name "*.md" ! -path "$source_commands/config-sync/*" | wc -l | tr -d ' ')
+    log_info "Would stage full command tree (except config-sync) and convert $count markdown files to TOML."
+    return 0
+  fi
+
+  local staging_dir
+  staging_dir="$(mktemp -d)"
+
+  # Copy supporting assets excluding config-sync and markdown definitions
+  if command -v rsync >/dev/null 2>&1; then
+    if rsync -a --exclude 'config-sync/**' --exclude '*.md' "$source_commands/" "$staging_dir/"; then
+      log_info "Staged non-Markdown assets for Qwen commands"
+    else
+      log_error "Failed to stage supporting assets for commands"
+      rm -rf "$staging_dir"
+      return 1
+    fi
+  else
+    log_warn "rsync unavailable; using cp fallback for supporting assets"
+    if ! cp -R "$source_commands/" "$staging_dir/"; then
+      log_error "Failed to copy supporting assets for commands"
+      rm -rf "$staging_dir"
+      return 1
+    fi
+    # Remove config-sync and markdown files from staging
+    rm -rf "$staging_dir/config-sync"
+    find "$staging_dir" -type f -name "*.md" -delete
+  fi
 
   local processed=0
   local failed=0
 
-  if [[ -d "$excluded_dir" ]]; then
-    if [[ "$DRY_RUN" == "true" ]]; then
-      log_info "Would remove excluded module: $excluded_dir"
-    else
-      log_info "Removing excluded module: $excluded_dir"
-      rm -rf "$excluded_dir"
-    fi
-  fi
-
-  # Process all markdown command files
   while IFS= read -r -d '' cmd_file; do
     local rel_path="${cmd_file#$source_commands/}"
     if [[ "$rel_path" == config-sync/* ]]; then
-      if [[ "$VERBOSE" == "true" ]]; then
-        log_info "Skipping config-sync command: $rel_path"
-      fi
       continue
     fi
     local rel_path_no_ext="${rel_path%.md}"
-    local toml_file="$target_commands/${rel_path_no_ext}.toml"
-
-    # Create target directory if needed
+    local toml_file="$staging_dir/${rel_path_no_ext}.toml"
     mkdir -p "$(dirname "$toml_file")"
 
-    if [[ "$DRY_RUN" == "true" ]]; then
-      log_info "Would convert: $cmd_file -> $toml_file"
+    if convert_markdown_to_toml "$cmd_file" "$toml_file" "qwen"; then
+      if [[ "$VERBOSE" == "true" ]]; then
+        log_info "✓ Converted: ${rel_path_no_ext}"
+      fi
       ((processed += 1))
     else
-      if convert_markdown_to_toml "$cmd_file" "$toml_file" "qwen"; then
-        log_info "✓ Converted: ${rel_path_no_ext}"
-        ((processed += 1))
-      else
-        log_error "✗ Failed to convert: ${rel_path_no_ext}"
-        ((failed += 1))
-      fi
+      log_error "✗ Failed to convert: ${rel_path_no_ext}"
+      ((failed += 1))
     fi
   done < <(find "$source_commands" -type f -name "*.md" -print0)
 
-  # Remove legacy markdown files from target
-  if [[ "$DRY_RUN" != "true" ]]; then
-    while IFS= read -r -d '' legacy_md; do
-      log_info "Removing legacy markdown: $legacy_md"
-      rm "$legacy_md"
-    done < <(find "$target_commands" -type f -name "*.md" -print0)
+  if [[ $failed -ne 0 ]]; then
+    log_error "Command conversion failed for $failed file(s)"
+    rm -rf "$staging_dir"
+    return 1
   fi
+
+  if rsync -a --delete "$staging_dir/" "$target_commands/"; then
+    log_info "✓ Commands synchronized to Qwen (staged tree applied)"
+  else
+    log_error "Failed to apply staged commands to Qwen directory"
+    rm -rf "$staging_dir"
+    return 1
+  fi
+
+  rm -rf "$staging_dir"
 
   log_info "Commands sync: $processed processed, $failed failed"
   return $failed

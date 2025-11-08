@@ -1,86 +1,55 @@
-# LLM-Powered Configuration Sync Commands
+# config-sync CLI Playbook
 
-This directory contains intelligent commands that use Claude Code as the single source of truth to analyze and adapt configurations for target tools (Qwen CLI, Factory/Droid CLI, Codex CLI, OpenCode). All config-sync commands now live under `commands/config-sync/` and are exposed via slash commands such as `/config-sync:sync`.
+`/config-sync:cli` is now the **only** orchestrator entrypoint. Every workflow (sync, analyze, verify, adapt, plan, report) is exposed via the `--action` flag, while adapters remain available for direct tool interactions.
 
-## Available Commands
+## CLI Actions
 
-### 🚀 Core Commands
+| Action | Purpose | Common Flags |
+| --- | --- | --- |
+| `sync` | Collect → analyze → plan → prepare → adapt → execute → (optional) verify → report | `--target=<list|all>`, `--components=<list|all>`, `--profile=<full|fast|custom>`, `--dry-run`, `--force`, `--fix`, `--no-verify` |
+| `analyze` | Inspect target capabilities and emit reports (markdown/table/json) | `--format=<markdown|table|json>`, `--detailed` |
+| `verify` | Run verification routines (and optional fixes) across components | `--components=<list|all>`, `--fix`, `--detailed` |
+| `adapt` | Execute a single adapter via the CLI pipeline | `--adapter=<commands|permissions|rules|memory|settings>` |
+| `plan` | Build and persist a plan without executing later phases | `--plan-file=<path>` |
+| `report` | Re-render the latest run metadata (requires prior phases) | `--plan-file=<path>` |
 
-#### `/config-sync:sync`
-**Purpose**: Directly synchronize specific configuration components
-**Usage**: `/config-sync:sync --target=<tool[,tool]|all> --component=<rules,permissions,commands,settings,memory|all> [--dry-run] [--force] [--verify]`
+Global helpers: `--target`, `--components`, `--profile`, `--plan-file`, `--from-phase`, `--until-phase`, `--dry-run`, `--force`, `--fix`, `--no-verify`, `--adapter`, `--format`, `--verbose`.
 
-#### `/config-sync:sync-user-config`
-**Purpose**: Complete configuration sync from Claude to target tools
-**Usage**: `/config-sync:sync-user-config --target=<tool[,tool]|all> --component=<type[,type]|all>`
+## Quick Recipes
 
-**Examples**:
 ```bash
-# Sync everything to all tools
-/config-sync:sync-user-config --target=all
+# Full sync with defaults
+/config-sync:cli --action=sync
 
-# Sync only rules and permissions to Droid CLI
-/config-sync:sync-user-config --target=droid --component=rules,permissions
+# Dry-run sync for rules + commands on Droid + Qwen
+/config-sync:cli --action=sync --target=droid,qwen --components=rules,commands --dry-run
 
-# Sync only commands to Codex CLI
-/config-sync:sync-user-config --target=codex --component=commands
+# Analyze OpenCode in table format
+/config-sync:cli --action=analyze --target=opencode --format=table --detailed
+
+# Verify permissions + commands for Codex and auto-fix
+/config-sync:cli --action=verify --target=codex --components=permissions,commands --fix
+
+# Run only the permissions adapter for Qwen
+/config-sync:cli --action=adapt --adapter=permissions --target=qwen --dry-run
+
+# Resume a run from prepare to verify using a stored plan
+/config-sync:cli --action=sync --plan-file=~/.claude/config-sync/plan-20250205-120210.json --from-phase=prepare
 ```
 
-#### `/config-sync:adapt-permissions`
-**Purpose**: Adapt Claude permissions to target tool format
-**Usage**: `/config-sync:adapt-permissions --target=<tool>`
+## Adapter Catalog
 
-**Examples**:
-```bash
-# Adapt permissions for Factory/Droid CLI
-/config-sync:adapt-permissions --target=droid
+| Slash Command | Purpose |
+| --- | --- |
+| `/config-sync:adapt-permissions` | Map Claude’s `allow/ask/deny` sets to a target tool |
+| `/config-sync:adapt-commands` | Convert Claude markdown commands for specific targets |
+| `/config-sync:droid` `/config-sync:qwen` `/config-sync:codex` `/config-sync:opencode` | Tool-specific adapters (sync/analyze/verify sub-flags) |
+| `/config-sync:adapt-rules-content` | Normalize rules for non-Claude platforms |
+| `/config-sync:adapt-permissions` | Permissions-only adaptation helper |
 
-# Generate permission guidelines for Qwen CLI
-/config-sync:adapt-permissions --target=qwen
-```
+Adapters can be run directly or via `/config-sync:cli --action=adapt --adapter=<name>`.
 
-#### `/config-sync:adapt-commands`
-**Purpose**: Adapt Claude commands for universal tool compatibility
-**Usage**: `/config-sync:adapt-commands --target=<tool>`
-
-**Examples**:
-```bash
-# Make commands compatible with Droid CLI
-/config-sync:adapt-commands --target=droid
-
-# Adapt commands for Codex CLI
-/config-sync:adapt-commands --target=codex
-```
-
-#### `/config-sync:verify`
-**Purpose**: Verify configuration sync completeness and correctness
-**Usage**: `/config-sync:verify --target=<tool[,tool]|all> [--component=<type[,type]|all>]`
-
-**Examples**:
-```bash
-# Verify all tools
-/config-sync:verify --target=all
-
-# Verify specific tool
-/config-sync:verify --target=qwen
-```
-
-#### `/config-sync:analyze`
-**Purpose**: Analyze target tool capabilities, configuration state, and sync requirements
-**Usage**: `/config-sync:analyze --target=<tool[,tool]|all> [--detailed] [--format=<markdown|table|json>]`
-
-**Examples**:
-```bash
-# Analyze Codex CLI capabilities
-/config-sync:analyze --target=codex --detailed
-
-# Research Droid CLI configuration system
-/config-sync:analyze --target=droid
-```
-
-## Target Tools
-
-### Target Tool Snapshot
+## Target Snapshot
 
 | Tool | Config Directory | Key Files | Command Format |
 | --- | --- | --- | --- |
@@ -89,104 +58,33 @@ This directory contains intelligent commands that use Claude Code as the single 
 | OpenAI Codex CLI | `~/.codex` | `config.toml`, `CODEX.md`, `AGENTS.md`, `rules/` | Markdown |
 | OpenCode | `~/.config/opencode` | `opencode.json`, optional `user-settings.json`, `AGENTS.md`, `rules/` | JSON |
 
-## Usage Patterns
+## End-to-End Workflow
 
-### Complete Setup for New Tool
-```bash
-# 1. Analyze target capabilities
-/config-sync:analyze --target=droid
+1. **Analyze** – `/config-sync:cli --action=analyze --target=<tool>` (understand capabilities + gaps)
+2. **Sync** – `/config-sync:cli --action=sync --target=<tool>` (apply changes)
+3. **Verify** – `/config-sync:cli --action=verify --target=<tool>` (ensure correctness)
+4. **Report / resume** – rerun `--action=report` or `--action=sync` with `--plan-file` as needed
 
-# 2. Perform complete sync
-/config-sync:sync-user-config --target=droid
+## Component Coverage
 
-# 3. Verify sync success
-/config-sync:verify --target=droid
-```
+- **Rules** – Markdown guidelines synchronized across tools
+- **Commands** – Slash command definitions, adapted per platform
+- **Settings** – Tool config files, respecting force flags
+- **Permissions** – Allow/ask/deny lists mapped to native formats
+- **Memory** – CLAUDE.md and AGENTS.md derivatives tailored per tool
 
-### Update Specific Components
-```bash
-# Update only permissions
-/config-sync:adapt-permissions --target=droid
+## Safety Checklist
 
-# Update only commands
-/config-sync:adapt-commands --target=droid
-
-# Verify specific component
-/config-sync:verify --target=droid
-```
-
-### Maintenance and Updates
-```bash
-# Regular sync check
-/config-sync:sync-user-config --target=all
-
-# Periodic verification
-/config-sync:verify --target=all
-```
-
-## Configuration Components
-
-### Rules
-- Development guidelines and standards
-- Stored as Markdown files
-- Synchronized to all target tools
-- Referenced by memory files
-
-### Memory Files
-- Tool-specific adaptations of `CLAUDE.md`
-- Context and rule indexing
-- Tool-specific references and settings
-
-### Agent Guides
-- Tool-specific adaptations of `AGENTS.md`
-- Operating instructions for each tool
-- References to tool-specific memory files
-
-### Permissions
-- Claude's `allow/ask/deny` system
-- Adapted to target tool formats where supported
-- Documented for tools without permission systems
-
-### Commands
-- Custom task templates
-- Adapted for universal compatibility
-- Claude-specific features removed
-- Internal `config-sync` module remains Claude-only; adapters skip syncing that directory to target tools
-
-### Settings
-- Environment variables and preferences
-- Tool-specific configuration syntax
-- Relevant settings transferred where applicable
-
-## Safety and Best Practices
-
-### Before Running Commands
-1. **Back up existing configurations**: Important target configurations should be backed up
-2. **Verify target tool installation**: Ensure target tools are properly installed
-3. **Check file permissions**: Verify write access to target directories
-4. **Review scope**: Understand what will be synchronized
-
-### During Sync Operations
-1. **Monitor output**: Watch for warnings or error messages
-2. **Verify adaptations**: Review changes made during adaptation
-3. **Check security**: Ensure no dangerous permissions are inappropriately allowed
-4. **Document changes**: Keep track of what was modified
-
-### After Sync Operations
-1. **Run verification**: Always use `/config-sync:verify` after synchronization
-2. **Test functionality**: Verify that target tools work correctly with new configurations
-3. **Review documentation**: Read any generated documentation or guidelines
-4. **Address issues**: Fix any problems identified during verification
+1. Back up target directories (the CLI’s `prepare` phase handles this when not in `fast` profile).
+2. Confirm tool installations and write permissions (`collect` phase fails fast if missing).
+3. Review CLI output for warnings (especially around permissions and settings).
+4. Always run `--action=verify` (or enable verification during sync) before considering the run complete.
+5. When syncing Qwen commands, ensure the Python `toml` module is available (`python3 -m pip install --user toml`) so verification can parse the generated `.toml` manifests.
 
 ## Troubleshooting
 
-### Common Issues
-- **Permission denied**: Check write access to target directories
-- **File not found**: Verify target tool is installed and configured
-- **Parse errors**: Ensure configuration files are valid JSON/YAML
-- **Command failures**: Check for unsupported features or syntax
-
-### Getting Help
-- Run `/config-sync:analyze --target=<tool>` to understand tool capabilities
-- Use `/config-sync:verify` to identify specific issues
-- Review command output for detailed remediation guidance
+- **Permission denied** – Ensure the CLI process can write to the target directory (or rerun with elevated privileges if policies permit).
+- **Missing adapter** – Verify the relevant script exists under `commands/config-sync/adapters/`.
+- **Plan mismatch** – When resuming with `--plan-file`, make sure targets/components match the original plan file.
+- **Skipped verification** – Use `--no-verify` sparingly; re-run `--action=verify` to close the loop.
+- **Qwen command warnings** – Install the `toml` Python module so the verify phase can parse `.toml` commands instead of skipping them.

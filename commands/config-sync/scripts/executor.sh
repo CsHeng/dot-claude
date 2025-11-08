@@ -321,14 +321,14 @@ convert_markdown_to_toml() {
   mkdir -p "$(dirname "$toml_file")"
 
   # Use python3 for proper YAML frontmatter parsing and TOML generation
-  python3 << EOF
+  MD_FILE="$md_file" TOML_FILE="$toml_file" TARGET_TOOL="$target_tool" python3 <<'PY'
 import re
 import sys
 import os
 
-md_file = "$md_file"
-toml_file = "$toml_file"
-target_tool = "$target_tool"
+md_file = os.environ["MD_FILE"]
+toml_file = os.environ["TOML_FILE"]
+target_tool = os.environ.get("TARGET_TOOL", "qwen")
 
 try:
     with open(md_file, 'r', encoding='utf-8') as f:
@@ -370,9 +370,26 @@ try:
         body_content = re.sub(r'\$[0-9]+', '{{args}}', body_content)
         body_content = re.sub(r'@CLAUDE\.md', '@QWEN.md', body_content)
 
-    # Escape quotes in content for TOML
-    body_content_escaped = body_content.replace('"""', r'\"\"\"')
     description_escaped = description.replace('"', r'\"')
+
+    use_literal_prompt = "'''" not in body_content
+    if use_literal_prompt:
+        prompt_lines = [
+            "prompt = '''",
+            body_content,
+            "'''",
+            ""
+        ]
+    else:
+        body_content_escaped = (
+            body_content
+            .replace('\\', r'\\')
+            .replace('"""', r'\"\"\"')
+        )
+        prompt_lines = [
+            f'prompt = """{body_content_escaped}"""',
+            ""
+        ]
 
     toml_lines = [
         f"# Generated from {md_file} by Claude Code config-sync",
@@ -383,11 +400,8 @@ try:
     if target_tool == "qwen":
         toml_lines.append(f"is_background = {'true' if is_background else 'false'}")
 
-    toml_lines.extend([
-        "",
-        f'prompt = """{body_content_escaped}"""',
-        ""
-    ])
+    toml_lines.append("")
+    toml_lines.extend(prompt_lines)
 
     toml_content = "\n".join(toml_lines)
 
@@ -400,7 +414,7 @@ try:
 except Exception as e:
     print(f"[ERROR] Failed to convert {md_file}: {e}", file=sys.stderr)
     sys.exit(1)
-EOF
+PY
 
   [[ $? -eq 0 ]] || {
     echo "[ERROR] TOML conversion failed for $md_file" >&2

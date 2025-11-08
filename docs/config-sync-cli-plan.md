@@ -3,8 +3,28 @@
 ## objective
 Unify every config-sync workflow under a single entrypoint named `config-sync-cli`. The new CLI must collect and validate parameters once, enforce phase ordering automatically, and fan out to adapters or verifiers based on a declarative plan. Legacy slash commands become thin aliases that call the CLI with presets until they can be deleted.
 
+## implementation phases
+1. **Phase A – Planning + scaffolding**  
+   - Finalize CLI contract, configuration defaults, and manifest requirements.  
+   - Create the `config-sync/cli` directory with markdown + shell entrypoint skeleton that wires parameter parsing to shared helpers.
+2. **Phase B – Phase runners + planners**  
+   - Build `lib/phases/*.sh` modules that encapsulate collect/analyze/plan/prepare/adapt/execute/verify/report responsibilities.  
+   - Implement planner helpers in `lib/planners/` that assemble plan JSON for sync/adapt actions, enforce dependency graphs, and persist metadata.
+3. **Phase C – Legacy wrapper delegation** *(complete)*  
+   - Update `/config-sync:*` markdown and shell wrappers (`sync`, `verify`, `analyze`, `sync-user-config`) to call the new CLI with presets, preserving user-facing behavior while centralizing logic.  
+   - Document delegation behavior plus compatibility switches in `commands/config-sync/README.md` and this plan.
+4. **Phase D – Instrumentation + reporting**  
+   - Persist `_reports` artifacts, plan/run history, and structured logs.  
+   - Add smoke validations plus any missing tests or linters before enabling the CLI by default.
+5. **Phase E – Cleanup + enforcement** *(in progress)*  
+   - Remove redundant command bodies once wrappers reach parity.  
+   - Flip `disable-model-invocation: true` on helper manifests that should remain internal only, and delete superseded scripts.
+6. **Phase F – CLI-only future**  
+   - Delete the legacy `/config-sync:*` wrappers entirely and update every document/diagram to reference `/config-sync:cli` as the sole orchestrator.  
+   - Drop compatibility promises so future changes only target the CLI architecture.
+
 ## current-state summary
-- Core commands live under `commands/config-sync/core` (`sync`, `sync-user-config`, `verify`, `analyze`).
+- Core orchestration lives under `commands/config-sync/cli` (`config-sync-cli.md` + `config-sync-cli.sh`).
 - Adapter commands live under `commands/config-sync/adapters` (tool-specific sync plus helpers such as `adapt-commands`, `adapt-permissions`, `adapt-rules-content`).
 - Each command re-implements argument parsing, validation, environment bootstrapping, and logging; sequencing between commands depends on human memory.
 - Settings such as `defaults.target` reside in `commands/config-sync/settings.json`, but the defaults are not enforced uniformly.
@@ -78,7 +98,7 @@ commands/config-sync/
       sync_plan.sh          # builds plans for sync flows
       adapt_plan.sh
   adapters/
-    <existing adapters invoked internally; legacy markdown wrappers become thin aliases during transition>
+    <existing adapters invoked internally; legacy wrappers removed once CLI adopted>
   scripts/
     executor.sh
     backup.sh
@@ -90,10 +110,10 @@ commands/config-sync/
 - Report generation writes both stdout-friendly summaries and machine-readable artifacts under `~/.claude/config-sync/run-<timestamp>/` for auditing.
 
 ## migration approach
-1. Implement `config-sync-cli.md` and `.sh` behind a feature flag while keeping legacy commands untouched.
-2. Update `/config-sync:sync`, `/config-sync:verify`, etc., to call the CLI with pre-populated arguments (for example `/config-sync:verify` becomes a wrapper script that executes `config-sync-cli --action=verify ...`).
-3. Deprecate legacy commands incrementally by emitting warnings and documenting the new usage in `commands/config-sync/readme.md` and `docs/config-sync-commands.md`.
-4. After parity is proven, remove redundant command markdown files and scripts, leaving only the CLI plus wrapper shims for external tools that still require old names.
+1. Implement `config-sync-cli.md` and `.sh`, wiring every phase runner and planner.
+2. Document the CLI contract and migrate user docs to `/config-sync:cli`.
+3. Remove redundant command markdown/shell wrappers so `/config-sync:cli` is the only orchestrator surface.
+4. Keep adapter manifests (`/config-sync:droid`, `/config-sync:adapt-permissions`, etc.) but call them exclusively via the CLI or for direct low-level operations.
 5. Expand automated tests or smoke scripts to cover CLI flows, ensuring coverage thresholds (80% overall, 95% on critical flows) stay intact.
 
 ## instrumentation and reporting
