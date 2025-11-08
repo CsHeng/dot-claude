@@ -226,12 +226,12 @@ verify_tool_installation() {
     echo "### Installation Check"
 
     if check_tool_installed "$tool"; then
-        echo "✅ $tool is installed and accessible"
+        echo "SUCCESS: $tool is installed and accessible"
         if [[ "$VERBOSE" == true ]]; then
             echo "   Path: $(which "$tool")"
         fi
     else
-        echo "❌ $tool is not installed or not in PATH"
+        echo "ERROR: $tool is not installed or not in PATH"
         ((issues += 1))
     fi
 
@@ -251,23 +251,23 @@ verify_configuration_structure() {
     config_dir=$(get_tool_config_dir "$tool")
 
     if [[ ! -d "$config_dir" ]]; then
-        echo "❌ Configuration directory not found: $config_dir"
+        echo "ERROR: Configuration directory not found: $config_dir"
         ((issues += 1))
         if [[ "$FIX" == true ]]; then
             mkdir -p "$config_dir"
-            echo "🔧 Created configuration directory: $config_dir"
+            echo "FIX: Created configuration directory: $config_dir"
             ((fixes += 1))
         fi
     else
-        echo "✅ Configuration directory exists: $config_dir"
+        echo "SUCCESS: Configuration directory exists: $config_dir"
 
         # Check if directory is writable
         if [[ ! -w "$config_dir" ]]; then
-            echo "❌ Configuration directory not writable"
+            echo "ERROR: Configuration directory not writable"
             ((issues += 1))
             if [[ "$FIX" == true ]]; then
                 chmod u+w "$config_dir"
-                echo "🔧 Made configuration directory writable"
+                echo "FIX: Made configuration directory writable"
                 ((fixes += 1))
             fi
         fi
@@ -278,15 +278,15 @@ verify_configuration_structure() {
     commands_dir=$(get_tool_commands_dir "$tool")
 
     if [[ ! -d "$commands_dir" ]]; then
-        echo "❌ Commands directory not found: $commands_dir"
+        echo "ERROR: Commands directory not found: $commands_dir"
         ((issues += 1))
         if [[ "$FIX" == true ]]; then
             mkdir -p "$commands_dir"
-            echo "🔧 Created commands directory: $commands_dir"
+            echo "FIX: Created commands directory: $commands_dir"
             ((fixes += 1))
         fi
     else
-        echo "✅ Commands directory exists: $commands_dir"
+        echo "SUCCESS: Commands directory exists: $commands_dir"
     fi
 
     echo
@@ -306,11 +306,11 @@ verify_rules_files() {
     local rules_dir="$config_dir/rules"
 
     if [[ ! -d "$rules_dir" ]]; then
-        echo "❌ Rules directory does not exist: $rules_dir"
+        echo "ERROR: Rules directory does not exist: $rules_dir"
         ((issues += 1))
         if [[ "$FIX" == true ]]; then
             mkdir -p "$rules_dir"
-            echo "🔧 Created rules directory: $rules_dir"
+            echo "FIX: Created rules directory: $rules_dir"
             ((fixes += 1))
         fi
         return $issues
@@ -319,7 +319,7 @@ verify_rules_files() {
     # Check for rule files
     local rule_files=("$rules_dir"/*.md)
     if [[ ! -f "${rule_files[0]}" ]]; then
-        echo "❌ No rule files found"
+        echo "ERROR: No rule files found"
         ((issues += 1))
         if [[ "$FIX" == true ]] && [[ -d "$CLAUDE_CONFIG_DIR/rules" ]]; then
             # Sync basic rule files
@@ -330,13 +330,13 @@ verify_rules_files() {
                 ((synced += 1))
             done
             if [[ $synced -gt 0 ]]; then
-                echo "🔧 Synced $synced rule files from Claude"
+                echo "FIX: Synced $synced rule files from Claude"
                 ((fixes += 1))
             fi
         fi
     else
         local rule_count=$(ls "$rules_dir"/*.md 2>/dev/null | wc -l)
-        echo "✅ Found $rule_count rule files"
+        echo "SUCCESS: Found $rule_count rule files"
 
         # Detailed check for tool-specific adaptations
         if [[ "$DETAILED" == "true" ]]; then
@@ -345,11 +345,11 @@ verify_rules_files() {
 
                 # Check for Claude references that should be adapted
                 if grep -q "CLAUDE.md" "$rule_file"; then
-                    echo "⚠️  Rule $(basename "$rule_file") contains Claude references"
+                    echo "WARNING:  Rule $(basename "$rule_file") contains Claude references"
                     ((issues += 1))
                     if [[ "$FIX" == true ]]; then
                         sed -i '' 's/CLAUDE.md/AGENTS.md/g' "$rule_file"
-                        echo "🔧 Updated tool references in $(basename "$rule_file")"
+                        echo "FIX: Updated tool references in $(basename "$rule_file")"
                         ((fixes += 1))
                     fi
                 fi
@@ -400,7 +400,7 @@ verify_droid_permissions() {
     local settings_file="$config_dir/settings.json"
 
     if [[ ! -f "$settings_file" ]]; then
-        echo "❌ Droid settings.json not found"
+        echo "ERROR: Droid settings.json not found"
         ((issues_ref += 1))
         if [[ "$FIX" == "true" ]]; then
             # Create basic settings file
@@ -418,19 +418,19 @@ verify_droid_permissions() {
   "autonomy": "balanced"
 }
 JSON
-            echo "🔧 Created basic Droid settings.json"
+            echo "FIX: Created basic Droid settings.json"
             ((fixes_ref += 1))
         fi
     else
-        echo "✅ Droid settings.json exists"
+        echo "SUCCESS: Droid settings.json exists"
 
         # Validate JSON syntax
         if command -v jq &> /dev/null; then
             if ! jq empty "$settings_file" 2>/dev/null; then
-                echo "❌ Invalid JSON syntax in settings.json"
+                echo "ERROR: Invalid JSON syntax in settings.json"
                 ((issues_ref += 1))
             else
-                echo "✅ JSON syntax is valid"
+                echo "SUCCESS: JSON syntax is valid"
             fi
         fi
     fi
@@ -445,7 +445,7 @@ verify_qwen_permissions() {
     local permissions_file="$config_dir/PERMISSIONS.md"
 
     if [[ ! -f "$permissions_file" ]]; then
-        echo "❌ Qwen permissions documentation not found"
+        echo "ERROR: Qwen permissions documentation not found"
         ((issues_ref += 1))
         if [[ "$FIX" == "true" ]]; then
             cat > "$permissions_file" << 'MARKDOWN'
@@ -462,11 +462,11 @@ It operates with the same permissions as the user account.
 ## Synchronized Configuration
 This file was synchronized from Claude Code configuration system.
 MARKDOWN
-            echo "🔧 Created Qwen permissions documentation"
+            echo "FIX: Created Qwen permissions documentation"
             ((fixes_ref += 1))
         fi
     else
-        echo "✅ Qwen permissions documentation exists"
+        echo "SUCCESS: Qwen permissions documentation exists"
     fi
 }
 
@@ -479,7 +479,7 @@ verify_codex_permissions() {
     local config_file="$config_dir/config.toml"
 
     if [[ ! -f "$config_file" ]]; then
-        echo "❌ Codex config.toml not found"
+        echo "ERROR: Codex config.toml not found"
         ((issues_ref += 1))
         if [[ "$FIX" == "true" ]]; then
             cat > "$config_file" << 'TOML'
@@ -499,19 +499,19 @@ memory_limit = "512MB"
 source = "claude-code-sync"
 last_sync = ""
 TOML
-            echo "🔧 Created basic Codex config.toml"
+            echo "FIX: Created basic Codex config.toml"
             ((fixes_ref += 1))
         fi
     else
-        echo "✅ Codex config.toml exists"
+        echo "SUCCESS: Codex config.toml exists"
 
         # Check for sandbox configuration
         if ! grep -q "\[sandbox\]" "$config_file"; then
-            echo "⚠️  Missing sandbox configuration"
+            echo "WARNING:  Missing sandbox configuration"
             ((issues_ref += 1))
             if [[ "$FIX" == "true" ]]; then
                 echo -e "\n[sandbox]\nmode = \"workspace-write\"" >> "$config_file"
-                echo "🔧 Added sandbox configuration"
+                echo "FIX: Added sandbox configuration"
                 ((fixes_ref += 1))
             fi
         fi
@@ -527,7 +527,7 @@ verify_opencode_permissions() {
     local config_file="$config_dir/opencode.json"
 
     if [[ ! -f "$config_file" ]]; then
-        echo "❌ OpenCode opencode.json not found"
+        echo "ERROR: OpenCode opencode.json not found"
         ((issues_ref += 1))
         if [[ "$FIX" == "true" ]]; then
             cat > "$config_file" << 'JSON'
@@ -565,19 +565,19 @@ verify_opencode_permissions() {
   }
 }
 JSON
-            echo "🔧 Created basic OpenCode opencode.json"
+            echo "FIX: Created basic OpenCode opencode.json"
             ((fixes_ref += 1))
         fi
     else
-        echo "✅ OpenCode opencode.json exists"
+        echo "SUCCESS: OpenCode opencode.json exists"
 
         # Validate JSON syntax
         if command -v jq &> /dev/null; then
             if ! jq empty "$config_file" 2>/dev/null; then
-                echo "❌ Invalid JSON syntax in opencode.json"
+                echo "ERROR: Invalid JSON syntax in opencode.json"
                 ((issues_ref += 1))
             else
-                echo "✅ JSON syntax is valid"
+                echo "SUCCESS: JSON syntax is valid"
             fi
         fi
     fi
@@ -595,7 +595,7 @@ verify_commands_files() {
     commands_dir=$(get_tool_commands_dir "$tool")
 
     if [[ ! -d "$commands_dir" ]]; then
-        echo "❌ Commands directory does not exist: $commands_dir"
+        echo "ERROR: Commands directory does not exist: $commands_dir"
         ((issues += 1))
         return $issues
     fi
@@ -615,14 +615,14 @@ verify_commands_files() {
     esac
 
     if [[ ${#cmd_files[@]} -eq 0 ]]; then
-        echo "❌ No command files found"
+        echo "ERROR: No command files found"
         ((issues += 1))
         if [[ "$FIX" == true ]] && [[ -d "$CLAUDE_CONFIG_DIR/commands" ]]; then
-            echo "🔧 Would sync command files (requires adapter implementation)"
+            echo "FIX: Would sync command files (requires adapter implementation)"
         fi
     else
         local cmd_count=${#cmd_files[@]}
-        echo "✅ Found $cmd_count command files"
+        echo "SUCCESS: Found $cmd_count command files"
 
         # Validate command formats
         if [[ "$DETAILED" == "true" ]]; then
@@ -631,7 +631,7 @@ verify_commands_files() {
                     for cmd_file in "${cmd_files[@]}"; do
                         [[ -f "$cmd_file" ]] || continue
                         if command -v jq &> /dev/null && ! jq empty "$cmd_file" 2>/dev/null; then
-                            echo "⚠️  Command $(basename "$cmd_file") has invalid JSON"
+                            echo "WARNING:  Command $(basename "$cmd_file") has invalid JSON"
                             ((issues += 1))
                         fi
                     done
@@ -640,7 +640,7 @@ verify_commands_files() {
                     for cmd_file in "${cmd_files[@]}"; do
                         [[ -f "$cmd_file" ]] || continue
                         if ! grep -q "^prompt = " "$cmd_file"; then
-                            echo "⚠️  Command $(basename "$cmd_file") missing prompt field"
+                            echo "WARNING:  Command $(basename "$cmd_file") missing prompt field"
                             ((issues += 1))
                         fi
                     done
@@ -667,33 +667,33 @@ verify_settings_files() {
     case "$tool" in
         "droid")
             if [[ -f "$config_dir/settings.json" ]]; then
-                echo "✅ Droid settings.json exists"
+                echo "SUCCESS: Droid settings.json exists"
             else
-                echo "⚠️  Droid settings.json not found"
+                echo "WARNING:  Droid settings.json not found"
                 ((issues += 1))
             fi
             ;;
         "qwen")
             if [[ -f "$config_dir/settings.json" ]]; then
-                echo "✅ Qwen settings.json exists"
+                echo "SUCCESS: Qwen settings.json exists"
             else
-                echo "⚠️  Qwen settings.json not found"
+                echo "WARNING:  Qwen settings.json not found"
                 ((issues += 1))
             fi
             ;;
         "codex")
             if [[ -f "$config_dir/config.toml" ]]; then
-                echo "✅ Codex config.toml exists"
+                echo "SUCCESS: Codex config.toml exists"
             else
-                echo "⚠️  Codex config.toml not found"
+                echo "WARNING:  Codex config.toml not found"
                 ((issues += 1))
             fi
             ;;
         "opencode")
             if [[ -f "$config_dir/opencode.json" ]]; then
-                echo "✅ OpenCode opencode.json exists"
+                echo "SUCCESS: OpenCode opencode.json exists"
             else
-                echo "⚠️  OpenCode opencode.json not found"
+                echo "WARNING:  OpenCode opencode.json not found"
                 ((issues += 1))
             fi
             ;;
@@ -717,52 +717,52 @@ verify_memory_files() {
     case "$tool" in
         "droid")
             if [[ -f "$config_dir/DROID.md" ]]; then
-                echo "✅ DROID.md exists"
+                echo "SUCCESS: DROID.md exists"
             else
-                echo "⚠️  DROID.md not found"
+                echo "WARNING:  DROID.md not found"
                 ((issues += 1))
                 if [[ "$FIX" == true ]]; then
                     create_basic_memory_file "$tool" "$config_dir/DROID.md"
-                    echo "🔧 Created DROID.md"
+                    echo "FIX: Created DROID.md"
                     ((fixes += 1))
                 fi
             fi
             ;;
         "qwen")
             if [[ -f "$config_dir/QWEN.md" ]]; then
-                echo "✅ QWEN.md exists"
+                echo "SUCCESS: QWEN.md exists"
             else
-                echo "⚠️  QWEN.md not found"
+                echo "WARNING:  QWEN.md not found"
                 ((issues += 1))
                 if [[ "$FIX" == true ]]; then
                     create_basic_memory_file "$tool" "$config_dir/QWEN.md"
-                    echo "🔧 Created QWEN.md"
+                    echo "FIX: Created QWEN.md"
                     ((fixes += 1))
                 fi
             fi
             ;;
         "codex")
             if [[ -f "$config_dir/memory.md" ]]; then
-                echo "✅ Codex memory.md exists"
+                echo "SUCCESS: Codex memory.md exists"
             else
-                echo "⚠️  Codex memory.md not found"
+                echo "WARNING:  Codex memory.md not found"
                 ((issues += 1))
                 if [[ "$FIX" == true ]]; then
                     create_basic_memory_file "$tool" "$config_dir/memory.md"
-                    echo "🔧 Created memory.md"
+                    echo "FIX: Created memory.md"
                     ((fixes += 1))
                 fi
             fi
             ;;
         "opencode")
             if [[ -f "$config_dir/AGENTS.md" ]]; then
-                echo "✅ OpenCode AGENTS.md exists"
+                echo "SUCCESS: OpenCode AGENTS.md exists"
             else
-                echo "⚠️  AGENTS.md not found"
+                echo "WARNING:  AGENTS.md not found"
                 ((issues += 1))
                 if [[ "$FIX" == true ]]; then
                     create_basic_agents_file "$tool" "$config_dir/AGENTS.md"
-                    echo "🔧 Created AGENTS.md"
+                    echo "FIX: Created AGENTS.md"
                     ((fixes += 1))
                 fi
             fi
@@ -899,11 +899,11 @@ run_verification() {
 
         # Summary for this tool
         if [[ $tool_issues -eq 0 ]]; then
-            echo "✅ **$tool**: No issues found"
+            echo "SUCCESS: **$tool**: No issues found"
         else
-            echo "❌ **$tool**: $tool_issues issue(s) found"
+            echo "ERROR: **$tool**: $tool_issues issue(s) found"
             if [[ "$FIX" == "true" ]]; then
-                echo "🔧 **Fixes Applied**: Check individual component logs above"
+                echo "FIX: **Fixes Applied**: Check individual component logs above"
             fi
         fi
 
@@ -916,14 +916,14 @@ run_verification() {
     echo ""
 
     if [[ $total_issues -eq 0 ]]; then
-        echo "🎉 **All checks passed!** Configuration synchronization is complete and correct."
+        echo "COMPLETE: **All checks passed!** Configuration synchronization is complete and correct."
     else
-        echo "⚠️ **Issues Found**: $total_issues total issue(s)"
+        echo "WARNING: **Issues Found**: $total_issues total issue(s)"
         if [[ "$FIX" == "true" ]]; then
-            echo "🔧 **Auto-fix Applied**: Some issues may have been automatically resolved"
-            echo "💡 **Recommendation**: Run verification again to check remaining issues"
+            echo "FIX: **Auto-fix Applied**: Some issues may have been automatically resolved"
+            echo "INFO: **Recommendation**: Run verification again to check remaining issues"
         else
-            echo "💡 **Recommendation**: Run with --fix flag to automatically resolve common issues"
+            echo "INFO: **Recommendation**: Run with --fix flag to automatically resolve common issues"
         fi
     fi
 

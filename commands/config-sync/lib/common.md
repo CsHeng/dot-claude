@@ -1,3 +1,9 @@
+---
+name: "/config-sync:lib-common"
+description: "Common helper references for config-sync commands"
+disable-model-invocation: true
+---
+
 # Common Utilities Reference
 
 The config-sync command suite refers to these shared helper concepts when outlining shell snippets. Implementations can live in shell scripts, Python modules, or other automation tooling as long as they provide equivalent behavior.
@@ -28,6 +34,6 @@ Use `scripts/backup.sh` to expose a `create_backup <source> <destRoot>` function
 
 ## Executor Utilities
 
-`scripts/executor.sh` should expose helpers for safe file writes, e.g. `write_with_checksum`, `render_template`, or `sync_with_sanitization` depending on your automation approach.
+`scripts/executor.sh` exposes helpers for safe file writes, e.g. `write_with_checksum`, `render_template`, or `sync_with_sanitization` depending on your automation approach.
 
 These utilities are intentionally abstract so the plugin can operate across different environments. When wiring this plugin into your own workflows, implement the functions above to match your preferred automation stack.

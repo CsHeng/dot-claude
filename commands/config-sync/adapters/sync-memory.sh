@@ -564,18 +564,18 @@ verify_memory_sync() {
     memory_filename=$(get_tool_memory_filename "$tool")
     if [[ "$tool" != "opencode" ]]; then  # OpenCode uses AGENTS.md as primary
         if [[ -f "$config_dir/$memory_filename" ]]; then
-            log_success "✅ User memory file exists: $memory_filename"
+            log_success "SUCCESS: User memory file exists: $memory_filename"
         else
-            log_warning "⚠️  User memory file missing: $memory_filename"
+            log_warning "WARNING:  User memory file missing: $memory_filename"
             ((issues += 1))
         fi
     fi
 
     # Check agents file
     if [[ -f "$config_dir/AGENTS.md" ]]; then
-        log_success "✅ Agents file exists: AGENTS.md"
+        log_success "SUCCESS: Agents file exists: AGENTS.md"
     else
-        log_warning "⚠️  Agents file missing: AGENTS.md"
+        log_warning "WARNING:  Agents file missing: AGENTS.md"
         ((issues += 1))
     fi
 
@@ -583,13 +583,13 @@ verify_memory_sync() {
     if [[ -d "$config_dir/rules" ]]; then
         local rule_count=$(find "$config_dir/rules" -name "*.md" -type f | wc -l)
         if [[ $rule_count -gt 0 ]]; then
-            log_success "✅ Rules directory exists with $rule_count files"
+            log_success "SUCCESS: Rules directory exists with $rule_count files"
         else
-            log_warning "⚠️  Rules directory exists but is empty"
+            log_warning "WARNING:  Rules directory exists but is empty"
             ((issues += 1))
         fi
     else
-        log_warning "⚠️  Rules directory missing"
+        log_warning "WARNING:  Rules directory missing"
         ((issues += 1))
     fi
 
@@ -652,9 +652,9 @@ generate_memory_sync_report() {
     done
 
     if [[ $total_issues -eq 0 ]]; then
-        echo "✅ **All memory files verified successfully**"
+        echo "SUCCESS: **All memory files verified successfully**"
     else
-        echo "⚠️  **$total_issues issues found during verification**"
+        echo "WARNING:  **$total_issues issues found during verification**"
     fi
     echo ""
 
@@ -736,7 +736,7 @@ run_memory_sync() {
         # Verify sync
         verify_memory_sync "$target_tool"
 
-        echo "✅ **$target_tool**: Memory sync completed"
+        echo "SUCCESS: **$target_tool**: Memory sync completed"
     done
 
     # Generate final report

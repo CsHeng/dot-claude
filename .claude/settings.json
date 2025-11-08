@@ -1,7 +1,6 @@
 {
   "permissions": {
     "allow": [
-      "Read(~/.claude/rules/**)",
       "Read(/tmp/**)",
       "Write(/tmp/**)",
       "Bash(grep:*)",

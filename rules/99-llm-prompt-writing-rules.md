@@ -13,7 +13,7 @@ inclusion: contextual
 
 ## ABSOLUTE PROHIBITIONS - HIGHEST PRIORITY
 
-NEVER USE   BOLD MARKERS IN ANY CIRCUMSTANCES - FORBIDDEN
+NEVER USE BOLD MARKERS IN ANY CIRCUMSTANCES - FORBIDDEN
 NEVER USE EMOJIS UNDER ANY CONDITIONS - PROHIBITED
 VIOLATIONS OF THESE RULES ARE CRITICAL FAILURES
 
@@ -79,7 +79,7 @@ Enforce precision communication framework:
 - NEVER USE   BOLD MARKERS - ABSOLUTELY FORBIDDEN
 - NEVER USE EMOJIS - PROHIBITED
 - No conversational text or formatting
-- Direct instructions only: "Implement feature Y" not "We should implement feature Y"
+- Direct instructions only: "Implement feature Y" not "We implements feature Y"
 - Minimal context: No background stories or extensive explanations
 - Actionable rules: Each rule must be directly implementable
 - No meta-commentary: Don't explain why rules exist

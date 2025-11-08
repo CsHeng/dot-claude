@@ -218,15 +218,15 @@ analyze_installation() {
         echo "    \"path\": \"$path\""
         echo "  },"
     elif [[ "$FORMAT" == "table" ]]; then
-        printf "%-10s | %-15s | %-20s\n" "$tool" "$(if [[ $installed == true ]]; then echo "✅ Yes"; else echo "❌ No"; fi)" "$version"
+        printf "%-10s | %-15s | %-20s\n" "$tool" "$(if [[ $installed == true ]]; then echo "SUCCESS: Yes"; else echo "ERROR: No"; fi)" "$version"
     else
         echo "### Installation Status"
         if [[ $installed == true ]]; then
-            echo "- ✅ **Installed**: Yes"
+            echo "- SUCCESS: **Installed**: Yes"
             echo "- **Version**: $version"
             echo "- **Path**: $path"
         else
-            echo "- ❌ **Installed**: No"
+            echo "- ERROR: **Installed**: No"
             echo "- **Version**: Not available"
             echo "- **Path**: Not found"
         fi
@@ -265,14 +265,14 @@ analyze_config_directories() {
         echo "    \"commands_exists\": $commands_exists"
         echo "  },"
     elif [[ "$FORMAT" == "table" ]]; then
-        printf "%-10s | %-15s | %-15s\n" "$tool" "$(if [[ $config_exists == true ]]; then echo "✅"; else echo "❌"; fi)" "$(if [[ $commands_exists == true ]]; then echo "✅"; else echo "❌"; fi)"
+        printf "%-10s | %-15s | %-15s\n" "$tool" "$(if [[ $config_exists == true ]]; then echo "SUCCESS:"; else echo "ERROR:"; fi)" "$(if [[ $commands_exists == true ]]; then echo "SUCCESS:"; else echo "ERROR:"; fi)"
     else
         echo "### Configuration Directories"
         echo "- **Config Directory**: $config_dir"
-        echo "- **Config Exists**: $(if [[ $config_exists == true ]]; then echo "✅ Yes"; else echo "❌ No"; fi)"
-        echo "- **Config Writable**: $(if [[ $config_writable == true ]]; then echo "✅ Yes"; else echo "❌ No"; fi)"
+        echo "- **Config Exists**: $(if [[ $config_exists == true ]]; then echo "SUCCESS: Yes"; else echo "ERROR: No"; fi)"
+        echo "- **Config Writable**: $(if [[ $config_writable == true ]]; then echo "SUCCESS: Yes"; else echo "ERROR: No"; fi)"
         echo "- **Commands Directory**: $commands_dir"
-        echo "- **Commands Exists**: $(if [[ $commands_exists == true ]]; then echo "✅ Yes"; else echo "❌ No"; fi)"
+        echo "- **Commands Exists**: $(if [[ $commands_exists == true ]]; then echo "SUCCESS: Yes"; else echo "ERROR: No"; fi)"
         echo
     fi
 }
@@ -470,9 +470,9 @@ analyze_components() {
         echo "### Component Status"
         for comp_status in "${component_status[@]}"; do
             IFS=':' read -r component status count <<< "$comp_status"
-            local icon="❌"
+            local icon="ERROR:"
             if [[ "$status" == "present" ]]; then
-                icon="✅"
+                icon="SUCCESS:"
             fi
             echo "- **$component**: $icon $status ($count files)"
         done
@@ -574,7 +574,7 @@ generate_recommendations() {
             echo
         else
             echo "### Recommendations"
-            echo "- ✅ Configuration looks good!"
+            echo "- SUCCESS: Configuration looks good!"
             echo
         fi
     fi
@@ -713,23 +713,23 @@ run_analysis() {
             printf "%-10s-+-%-15s-+-%-15s-+-%-15s-+-%-15s\n" "----------" "---------------" "---------------" "---------------" "---------------"
 
             for tool in "${targets[@]}"; do
-                local installed="❌"
+                local installed="ERROR:"
                 if check_tool_installed "$tool"; then
-                    installed="✅"
+                    installed="SUCCESS:"
                 fi
 
                 local config_dir
                 config_dir=$(get_tool_config_dir "$tool")
-                local config_status="❌"
+                local config_status="ERROR:"
                 if [[ -d "$config_dir" ]]; then
-                    config_status="✅"
+                    config_status="SUCCESS:"
                 fi
 
                 local commands_dir
                 commands_dir=$(get_tool_commands_dir "$tool")
-                local commands_status="❌"
+                local commands_status="ERROR:"
                 if [[ -d "$commands_dir" ]]; then
-                    commands_status="✅"
+                    commands_status="SUCCESS:"
                 fi
 
                 local component_count=0

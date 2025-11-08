@@ -1,3 +1,9 @@
+---
+name: "/doc-gen:lib-common"
+description: "Shared conventions for doc-gen adapters"
+disable-model-invocation: true
+---
+
 ## Shared Conventions
 
 These notes are bundled with the doc-gen module so adapters can stay consistent without referencing external rule files. Copy wording as needed.
