@@ -23,7 +23,7 @@ fileMatchPattern: '**/*.sh'
 #### Current Environment
 - Development: zsh 5.9 (arm64-apple-darwin24.0) - Interactive scripts and terminal
 - Bash Scripts: GNU bash 5.3.3 (aarch64-apple-darwin24.4.0) - Modern bash features available
-- System Default: macOS bash 3.2.57 - Legacy fallback only, avoid modern features
+- System Default: macOS bash 3.2.57 - fallback only, avoid modern features
 
 ### Shell Feature Guidelines
 

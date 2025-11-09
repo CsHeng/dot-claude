@@ -1,6 +1,6 @@
 ---
 name: "config-sync:cli"
-description: Legacy alias that forwards to `/config-sync/sync-cli`
+description: Alias that forwards to `/config-sync/sync-cli`
 argument-hint: --action=<sync|analyze|verify|adapt|plan|report> [...]
 allowed-tools: Read, Write, ApplyPatch, Bash(rg:*), Bash(ls:*), Bash(find:*), Bash(cat:*)
 ---

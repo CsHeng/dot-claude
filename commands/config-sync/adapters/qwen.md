@@ -66,10 +66,10 @@ case "$COMPONENT" in
         convert_markdown_to_toml "$cmd_file" "$toml_file" "qwen"
       done < <(find "$SOURCE_COMMANDS" -type f -name "*.md" -print0)
 
-      # Remove legacy Markdown command files from target
-      while IFS= read -r -d '' legacy_md; do
-        echo "[qwen-adapter] Removing legacy markdown command: $legacy_md" >&2
-        rm "$legacy_md"
+      # Remove stray Markdown command files from target
+      while IFS= read -r -d '' stale_md; do
+        echo "[qwen-adapter] Removing stray markdown command: $stale_md" >&2
+        rm "$stale_md"
       done < <(find "$TARGET_COMMANDS" -type f -name "*.md" -print0)
     else
       echo "[qwen-adapter] Skipping commands sync, no source commands at $SOURCE_COMMANDS" >&2
