@@ -19,7 +19,6 @@ Enforce `rules/99-llm-prompt-writing-rules.md` across Claude Code commands, skil
 ## Parameters
 
 - `--target` - Absolute or repo-relative path. Reject paths outside the LLM-facing set defined by `CLAUDE.md`. Default scans every mapped file and directory.
-- `--dry-run` - Reserved for backward compatibility. The command is read-only, so this flag simply keeps legacy scripts working.
 
 ## Context Gathering as target list
 

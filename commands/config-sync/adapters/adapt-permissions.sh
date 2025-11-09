@@ -12,6 +12,7 @@ source "$SCRIPT_DIR/../scripts/executor.sh"
 
 # Default values
 TARGET=""
+MODE="adapt"
 DRY_RUN=false
 FORCE=false
 VERBOSE=false
@@ -42,6 +43,7 @@ ARGUMENTS:
     --target <tool>         Target tool for permission adaptation (required)
 
 OPTIONS:
+    --mode <adapt|verify>   Run adaptation (default) or verification
     --dry-run               Show what would be done without executing
     --force                 Force overwrite existing permissions
     --verbose               Enable detailed output
@@ -75,6 +77,28 @@ parse_arguments() {
                 DRY_RUN=true
                 shift
                 ;;
+            --mode=*)
+                MODE="${1#--mode=}"
+                shift
+                ;;
+            --mode)
+                MODE="$2"
+                shift 2
+                ;;
+            --action=*)
+                case "${1#--action=}" in
+                    verify) MODE="verify" ;;
+                    *) MODE="adapt" ;;
+                esac
+                shift
+                ;;
+            --action)
+                case "$2" in
+                    verify) MODE="verify" ;;
+                    *) MODE="adapt" ;;
+                esac
+                shift 2
+                ;;
             --force)
                 FORCE=true
                 shift
@@ -104,6 +128,11 @@ parse_arguments() {
     # Validate target
     if [[ ! "$TARGET" =~ ^(droid|qwen|codex|opencode)$ ]]; then
         echo "Error: Invalid target '$TARGET'. Must be droid, qwen, codex, or opencode" >&2
+        exit 1
+    fi
+    MODE="${MODE,,}"
+    if [[ ! "$MODE" =~ ^(adapt|verify)$ ]]; then
+        echo "Error: Invalid mode '$MODE'. Use adapt or verify" >&2
         exit 1
     fi
 }
@@ -556,7 +585,7 @@ generate_adaptation_report() {
     echo "## Verification"
     echo "1. Review generated permission configuration"
     echo "2. Test functionality in target tool"
-    echo "3. Run \`/config-sync:cli --action=verify --target=$TARGET\` to validate setup"
+    echo "3. Run \`/config-sync/sync-cli --action=verify --target=$TARGET\` to validate setup"
     echo ""
 
     if [[ "$DRY_RUN" == false ]]; then
@@ -572,6 +601,229 @@ generate_adaptation_report() {
     echo "1. Test the adapted permissions in $TARGET"
     echo "2. Customize settings as needed for your workflow"
     echo "3. Monitor permission effectiveness and adjust if required"
+}
+
+verify_droid_permissions() {
+    local config_dir
+    config_dir=$(get_target_config_dir "$TARGET")
+    local settings_file="$config_dir/settings.json"
+
+    if [[ ! -f "$settings_file" ]]; then
+        log_error "Droid settings.json not found at $settings_file"
+        return 1
+    fi
+
+    local allow_blob deny_blob
+    allow_blob=$(printf '%s\n' "${ALLOW_LIST[@]}")
+    deny_blob=$(printf '%s\n' "${DENY_LIST[@]}")
+
+    EXPECTED_ALLOW="$allow_blob" \
+    EXPECTED_DENY="$deny_blob" \
+    python3 - "$settings_file" <<'PYVERIFY'
+import json, os, sys
+from pathlib import Path
+
+settings_path = Path(sys.argv[1])
+expected_allow = [line for line in os.environ.get("EXPECTED_ALLOW", "").splitlines() if line.strip()]
+expected_deny = [line for line in os.environ.get("EXPECTED_DENY", "").splitlines() if line.strip()]
+
+if not settings_path.exists():
+    print(f"[ERROR] Missing settings: {settings_path}", file=sys.stderr)
+    sys.exit(1)
+
+def load_clean_json(path: Path) -> dict:
+    raw = path.read_text(encoding="utf-8")
+    cleaned = "\n".join(
+        line for line in raw.splitlines()
+        if not line.lstrip().startswith("//")
+    ).strip()
+    if not cleaned:
+        return {}
+    return json.loads(cleaned)
+
+data = load_clean_json(settings_path)
+allow = set(data.get("commandAllowlist") or [])
+deny = set(data.get("commandDenylist") or [])
+
+missing_allow = [cmd for cmd in expected_allow if cmd not in allow]
+missing_deny = [cmd for cmd in expected_deny if cmd not in deny]
+
+if missing_allow or missing_deny:
+    if missing_allow:
+        print("[ERROR] commandAllowlist missing:", ", ".join(missing_allow), file=sys.stderr)
+    if missing_deny:
+        print("[ERROR] commandDenylist missing:", ", ".join(missing_deny), file=sys.stderr)
+    sys.exit(1)
+PYVERIFY
+
+    log_success "Droid permissions verified in $settings_file"
+}
+
+verify_qwen_permissions() {
+    local config_dir
+    config_dir=$(get_target_config_dir "$TARGET")
+    local permissions_file="$config_dir/PERMISSIONS.md"
+
+    if [[ ! -f "$permissions_file" ]]; then
+        log_error "Qwen PERMISSIONS.md not found at $permissions_file"
+        return 1
+    fi
+
+    local allow_blob ask_blob deny_blob
+    allow_blob=$(printf '%s\n' "${ALLOW_LIST[@]}")
+    ask_blob=$(printf '%s\n' "${ASK_LIST[@]}")
+    deny_blob=$(printf '%s\n' "${DENY_LIST[@]}")
+
+    EXPECTED_ALLOW="$allow_blob" \
+    EXPECTED_ASK="$ask_blob" \
+    EXPECTED_DENY="$deny_blob" \
+    python3 - "$permissions_file" <<'PYVERIFY'
+import os, sys
+from pathlib import Path
+
+doc_path = Path(sys.argv[1])
+text = doc_path.read_text(encoding="utf-8")
+
+def collect(env_name: str) -> list[str]:
+    return [line for line in os.environ.get(env_name, "").splitlines() if line.strip()]
+
+def missing(entries):
+    return [entry for entry in entries if entry not in text]
+
+missing_any = False
+for name, entries in (
+    ("allow", collect("EXPECTED_ALLOW")),
+    ("ask", collect("EXPECTED_ASK")),
+    ("deny", collect("EXPECTED_DENY")),
+):
+    miss = missing(entries)
+    if miss:
+        missing_any = True
+        print(f"[ERROR] PERMISSIONS.md missing {name} commands: {', '.join(miss)}", file=sys.stderr)
+
+if missing_any:
+    sys.exit(1)
+PYVERIFY
+
+    log_success "Qwen permission guide verified in $permissions_file"
+}
+
+verify_codex_permissions() {
+    local config_dir
+    config_dir=$(get_target_config_dir "$TARGET")
+    local config_file="$config_dir/config.toml"
+
+    if [[ ! -f "$config_file" ]]; then
+        log_error "Codex config.toml not found at $config_file"
+        return 1
+    fi
+
+    local sandbox_mode="workspace-write"
+    local allow_execution=true
+    local allow_network=true
+    local dangerous_count=${#DENY_LIST[@]}
+
+    if [[ $dangerous_count -ge 15 ]]; then
+        sandbox_mode="read-only"
+        allow_execution=false
+    elif [[ $dangerous_count -ge 8 ]]; then
+        sandbox_mode="workspace-write"
+        allow_network=false
+    fi
+
+    EXPECTED_MODE="$sandbox_mode" \
+    EXPECTED_EXEC="$allow_execution" \
+    EXPECTED_NET="$allow_network" \
+    python3 - "$config_file" <<'PYVERIFY'
+import os
+import sys
+from pathlib import Path
+
+config_path = Path(sys.argv[1])
+expected_mode = os.environ.get("EXPECTED_MODE")
+expected_exec = os.environ.get("EXPECTED_EXEC")
+expected_net = os.environ.get("EXPECTED_NET")
+
+sandbox = {}
+current_section = None
+for line in config_path.read_text(encoding="utf-8").splitlines():
+    stripped = line.strip()
+    if not stripped or stripped.startswith("#"):
+        continue
+    if stripped.startswith("[") and stripped.endswith("]"):
+        current_section = stripped
+        continue
+    if current_section != "[sandbox]":
+        continue
+    if "=" not in stripped:
+        continue
+    key, value = stripped.split("=", 1)
+    sandbox[key.strip()] = value.strip().strip('"')
+
+errors = []
+if sandbox.get("mode") != expected_mode:
+    errors.append(f"mode expected {expected_mode}, found {sandbox.get('mode')}")
+if str(sandbox.get("allow_execution", "")).lower() != expected_exec:
+    errors.append(f"allow_execution expected {expected_exec}, found {sandbox.get('allow_execution')}")
+if str(sandbox.get("allow_network", "")).lower() != expected_net:
+    errors.append(f"allow_network expected {expected_net}, found {sandbox.get('allow_network')}")
+
+if errors:
+    for err in errors:
+        print(f\"[ERROR] Codex sandbox mismatch: {err}\", file=sys.stderr)
+    sys.exit(1)
+PYVERIFY
+
+    log_success "Codex sandbox configuration verified in $config_file"
+}
+
+verify_opencode_permissions() {
+    local config_dir
+    config_dir=$(get_target_config_dir "$TARGET")
+    local config_file="$config_dir/opencode.json"
+
+    if [[ ! -f "$config_file" ]]; then
+        log_error "OpenCode opencode.json not found at $config_file"
+        return 1
+    fi
+
+    local allow_blob ask_blob deny_blob
+    allow_blob=$(printf '%s\n' "${ALLOW_LIST[@]}")
+    ask_blob=$(printf '%s\n' "${ASK_LIST[@]}")
+    deny_blob=$(printf '%s\n' "${DENY_LIST[@]}")
+
+    EXPECTED_ALLOW="$allow_blob" \
+    EXPECTED_ASK="$ask_blob" \
+    EXPECTED_DENY="$deny_blob" \
+    python3 - "$config_file" <<'PYVERIFY'
+import json, os, sys
+from pathlib import Path
+
+config_path = Path(sys.argv[1])
+config = json.loads(config_path.read_text(encoding="utf-8") or "{}")
+bash_permissions = config.get("permission", {}).get("bash", {})
+
+def collect(env_name: str, label: str) -> list[str]:
+    return [(cmd, label) for cmd in os.environ.get(env_name, "").splitlines() if cmd.strip()]
+
+expected = (
+    collect("EXPECTED_ALLOW", "allow")
+    + collect("EXPECTED_ASK", "ask")
+    + collect("EXPECTED_DENY", "deny")
+)
+
+missing = []
+for cmd, label in expected:
+    current = bash_permissions.get(cmd)
+    if current != label:
+        missing.append(f"{cmd}=>{label} (found {current})")
+
+if missing:
+    print("[ERROR] OpenCode permission mismatches:", ", ".join(missing), file=sys.stderr)
+    sys.exit(1)
+PYVERIFY
+
+    log_success "OpenCode permissions verified in $config_file"
 }
 
 # Main adaptation function
@@ -606,6 +858,34 @@ run_permission_adaptation() {
     generate_adaptation_report
 }
 
+run_permission_verification() {
+    log_info "Verifying permissions for target: $TARGET"
+
+    if [[ ! -d "$CLAUDE_CONFIG_DIR" ]]; then
+        log_error "Claude configuration directory not found: $CLAUDE_CONFIG_DIR"
+        exit 1
+    fi
+
+    read_claude_permissions
+
+    case "$TARGET" in
+        "droid")
+            verify_droid_permissions
+            ;;
+        "qwen")
+            verify_qwen_permissions
+            ;;
+        "codex")
+            verify_codex_permissions
+            ;;
+        "opencode")
+            verify_opencode_permissions
+            ;;
+    esac
+
+    log_success "Permission verification completed for $TARGET"
+}
+
 main() {
     parse_arguments "$@"
 
@@ -614,13 +894,15 @@ main() {
         set -x
     fi
 
-    # Run adaptation
-    run_permission_adaptation
-
-    if [[ "$DRY_RUN" == true ]]; then
-        log_success "Permission adaptation dry run completed - no changes were made"
+    if [[ "$MODE" == "verify" ]]; then
+        run_permission_verification
     else
-        log_success "Permission adaptation completed successfully"
+        run_permission_adaptation
+        if [[ "$DRY_RUN" == true ]]; then
+            log_success "Permission adaptation dry run completed - no changes were made"
+        else
+            log_success "Permission adaptation completed successfully"
+        fi
     fi
 }
 

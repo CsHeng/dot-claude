@@ -1,5 +1,5 @@
----
-name: "config-sync:sync-project-rules"
+name: "config-sync/sync-project-rules"
+command: "~/.claude/commands/config-sync/sync-project-rules.sh"
 description: Sync shared Claude rules into project IDE directories (Cursor, VS Code Copilot)
 argument-hint: --target=<cursor|copilot|all> [--all] [--dry-run] [--verify-only] [--project-root=<path>]
 disable-model-invocation: true
@@ -8,11 +8,11 @@ disable-model-invocation: true
 # Project Rule Sync Command
 
 ## Purpose
-Distribute the shared `~/.claude/rules` library plus any project-specific overrides into IDE-facing directories such as `.cursor/rules` and `.github/instructions`. The command mirrors the behavior of `sync-project-rules.sh` but runs directly from `/config-sync:sync-project-rules` with automatic project detection.
+Distribute the shared `~/.claude/rules` library plus any project-specific overrides into IDE-facing directories such as `.cursor/rules` and `.github/instructions`. The command mirrors the behavior of `sync-project-rules.sh` but runs directly from `/config-sync/sync-project-rules` with automatic project detection.
 
 ## Usage
 ```bash
-/config-sync:sync-project-rules [options]
+/config-sync/sync-project-rules [options]
 ```
 
 ## Options
@@ -37,11 +37,11 @@ If the command runs from `~/.claude` without an override, it stops immediately t
 ## Examples
 ```bash
 # Sync both Cursor and Copilot for the current project
-/config-sync:sync-project-rules --all
+/config-sync/sync-project-rules --all
 
 # Sync only Cursor rules for a specific repository
-/config-sync:sync-project-rules --target=cursor --project-root=/path/to/project
+/config-sync/sync-project-rules --target=cursor --project-root=/path/to/project
 
 # Preview destinations without copying
-/config-sync:sync-project-rules --dry-run --all
+/config-sync/sync-project-rules --dry-run --all
 ```
