@@ -24,7 +24,7 @@ Distribute the shared `~/.claude/rules` library plus any project-specific overri
 - `CLAUDE_PROJECT_DIR` environment variable (if set) acts as an implicit project-root override, enabling invocation from any directory.
 
 ## Behavior
-- Provides built-in logging, copy, and verification helpers so the command stays self-contained (no dependency on legacy `lib/rule-sync-common.sh`).
+- Provides built-in logging, copy, and verification helpers so the command stays self-contained (no dependency on `lib/rule-sync-common.sh`).
 - Resolves the project root in this order: `--project-root` argument, `CLAUDE_PROJECT_DIR`, then the current working directory (rejecting `~/.claude` itself).
 - Honors `CLAUDE_PROJECT_DIR` when present so the command can run from tooling workspaces while still targeting the intended repository.
 - Merges sources from `~/.claude/rules` and `<project>/.claude/rules`, allowing checked-in overrides to layer on top of the shared rule set.

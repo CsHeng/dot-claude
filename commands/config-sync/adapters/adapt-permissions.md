@@ -96,7 +96,7 @@ Map Claude command permissions to operation-based permissions:
 - Generate `~/.qwen/PERMISSIONS.md` (Qwen) or `~/.codex/PERMISSIONS.md` (Codex) with guidelines
 - Document recommended permission practices
 - Create user awareness materials
-- If legacy files exist (e.g., `permissions.json`), create `~/.qwen/backup` if needed and back them up with `rsync -a --quiet`
+- If an existing file such as `permissions.json` is present, create `~/.qwen/backup` if needed and back it up with `rsync -a --quiet`
 - NEVER modify target tool settings files
 
 ### For OpenCode CLI

@@ -75,7 +75,7 @@ usage() {
   cat <<'EOF'
 Usage: sync-cli.sh [options]
 
-Legacy alias: config-sync-cli.sh [options]
+Alias: config-sync-cli.sh [options]
 
 Options:
   --action=<sync|analyze|verify|adapt|plan|report>

@@ -49,12 +49,7 @@ get_target_config_dir() {
     codex)   printf '%s\n' "$HOME/.codex" ;;
     opencode)
       local config_dir="${XDG_CONFIG_HOME:-$HOME/.config}/opencode"
-      local legacy_dir="$HOME/.opencode"
-      if [[ -d "$config_dir" || ! -d "$legacy_dir" ]]; then
-        printf '%s\n' "$config_dir"
-      else
-        printf '%s\n' "$legacy_dir"
-      fi
+      printf '%s\n' "$config_dir"
       ;;
   esac
 }

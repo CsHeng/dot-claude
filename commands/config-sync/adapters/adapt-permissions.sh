@@ -319,7 +319,7 @@ adapt_qwen_permissions() {
     local config_dir
     config_dir=$(get_target_config_dir "$TARGET")
     local permissions_file="$config_dir/PERMISSIONS.md"
-    local legacy_permissions_json="$config_dir/permissions.json"
+    local permissions_json="$config_dir/permissions.json"
 
     if [[ "$DRY_RUN" == true ]]; then
         log_info "Would create permission guidelines for Qwen in $permissions_file"
@@ -329,13 +329,13 @@ adapt_qwen_permissions() {
     # Create config directory if it doesn't exist
     mkdir -p "$config_dir"
 
-    # Backup existing guideline or legacy files when not forced
+    # Backup existing guideline files when not forced
     if [[ "$FORCE" == false ]]; then
         if [[ -f "$permissions_file" ]]; then
             backup_file "$permissions_file"
         fi
-        if [[ -f "$legacy_permissions_json" ]]; then
-            backup_file "$legacy_permissions_json"
+        if [[ -f "$permissions_json" ]]; then
+            backup_file "$permissions_json"
         fi
     fi
 

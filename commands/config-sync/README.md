@@ -4,7 +4,7 @@ The config-sync suite now centers on a single slash command, `/config-sync/sync-
 
 ## Layout
 
-- `cli/` – Command manifests + `sync-cli.sh` entrypoint (plus `config-sync-cli.sh` legacy shim)
+- `cli/` – Command manifests + `sync-cli.sh` entrypoint (plus `config-sync-cli.sh` shim)
 - `adapters/` – Target-specific automation invoked during the `adapt` phase
 - `sync-project-rules.{md,sh}` – Standalone slash command for syncing the shared rule library into IDE-facing directories
 - `lib/common.*` – Shared helpers (parsing, logging, path resolution)

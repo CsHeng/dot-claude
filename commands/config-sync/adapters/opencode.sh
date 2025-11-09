@@ -25,7 +25,6 @@ COMPONENT_LABEL=""
 # OpenCode-specific paths
 OPENCODE_BASE_DIR="${XDG_CONFIG_HOME:-$HOME/.config}"
 OPENCODE_CONFIG_DIR="${OPENCODE_BASE_DIR}/opencode"
-LEGACY_OPENCODE_DIR="${HOME}/.opencode"
 OPENCODE_COMMANDS_DIR="${OPENCODE_CONFIG_DIR}/command"
 OPENCODE_RULES_DIR="${OPENCODE_CONFIG_DIR}/rules"
 OPENCODE_CONFIG_FILE="${OPENCODE_CONFIG_DIR}/opencode.json"
@@ -163,36 +162,7 @@ check_opencode_installation() {
     fi
 }
 
-migrate_legacy_opencode_dir() {
-    if [[ ! -d "$LEGACY_OPENCODE_DIR" ]]; then
-        return
-    fi
-
-    if [[ "$DRY_RUN" == true ]]; then
-        if [[ ! -d "$OPENCODE_CONFIG_DIR" ]]; then
-            log_info "Would migrate legacy OpenCode configuration from $LEGACY_OPENCODE_DIR to $OPENCODE_CONFIG_DIR"
-        else
-            log_info "Would merge legacy OpenCode configuration from $LEGACY_OPENCODE_DIR into $OPENCODE_CONFIG_DIR"
-        fi
-        return
-    fi
-
-    mkdir -p "$(dirname "$OPENCODE_CONFIG_DIR")"
-
-    if [[ -d "$OPENCODE_CONFIG_DIR" ]]; then
-        log_info "Merging legacy OpenCode configuration from $LEGACY_OPENCODE_DIR into $OPENCODE_CONFIG_DIR"
-        mkdir -p "$OPENCODE_CONFIG_DIR"
-        rsync -a --quiet "$LEGACY_OPENCODE_DIR"/ "$OPENCODE_CONFIG_DIR"/
-        rm -rf "$LEGACY_OPENCODE_DIR"
-    else
-        log_info "Migrating legacy OpenCode configuration from $LEGACY_OPENCODE_DIR to $OPENCODE_CONFIG_DIR"
-        mv "$LEGACY_OPENCODE_DIR" "$OPENCODE_CONFIG_DIR"
-    fi
-}
-
 setup_opencode_directories() {
-    migrate_legacy_opencode_dir
-
     local dirs=("$OPENCODE_CONFIG_DIR" "$OPENCODE_COMMANDS_DIR" "$OPENCODE_RULES_DIR")
 
     for dir in "${dirs[@]}"; do
@@ -205,10 +175,6 @@ setup_opencode_directories() {
             fi
         fi
     done
-}
-
-convert_markdown_to_json() {
-    : # legacy no-op (retained for compatibility)
 }
 
 sync_rules() {
@@ -229,7 +195,7 @@ sync_rules() {
 
     mkdir -p "$target_dir"
 
-    # Clean legacy root-level rule artifacts (keep memory files)
+    # Clean stray root-level rule artifacts (keep memory files)
     find "$OPENCODE_CONFIG_DIR" -maxdepth 1 -type f -name "*.md" ! -name "OPENCODE.md" ! -name "AGENTS.md" -delete
 
     # Sync rules into dedicated rules directory
@@ -286,7 +252,7 @@ sync_commands() {
     fi
 
     if [[ -d "$OPENCODE_CONFIG_DIR/commands" && "$DRY_RUN" != true ]]; then
-        log_info "Removing legacy OpenCode commands directory: $OPENCODE_CONFIG_DIR/commands"
+        log_info "Removing redundant OpenCode commands directory: $OPENCODE_CONFIG_DIR/commands"
         rm -rf "$OPENCODE_CONFIG_DIR/commands"
     fi
 

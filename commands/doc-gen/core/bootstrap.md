@@ -85,7 +85,7 @@ Execution inputs (make sure every item appears in the checklist prompt):
    - Abort early if the user does not confirm.
 2. Context harvest  
    - Run `ls`, `find`, and `rg` across `--core` to map modules, detect frameworks, and surface notable files.  
-   - Inventory existing documentation: count markdown files, PlantUML diagrams, ADRs, and other assets in both the target directory and any legacy `docs/`.  
+  - Inventory existing documentation: count markdown files, PlantUML diagrams, ADRs, and other assets in both the target directory and any auxiliary `docs/`.  
    - Capture additional doc bundles (e.g., `docs-release/`) as read-only references, include their counts in the inventory table, and store their paths in `_reports/parameters.json`.  
    - For `delta` scope, intersect the discovery results with the captured change list and note any skipped areas in TODO.md.
 3. Adapter delegation  

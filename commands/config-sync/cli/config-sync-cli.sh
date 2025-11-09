@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 set -euo pipefail
-trap 'echo "[ERROR] legacy config-sync-cli failed on line $LINENO" >&2' ERR
+trap 'echo "[ERROR] config-sync-cli shim failed on line $LINENO" >&2' ERR
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
