@@ -91,7 +91,7 @@ ENV_PROJECT_ROOT="${CLAUDE_PROJECT_DIR:-}"
 
 show_usage() {
     cat <<EOF
-Usage: /config-sync:sync-project-rules [options]
+Usage: /config-sync/sync-project-rules [options]
 
 Options:
   --all                   Sync all targets without prompting
@@ -103,6 +103,12 @@ Options:
 EOF
 }
 
+set_project_paths() {
+    PROJECT_RULES_DIR="$PROJECT_ROOT/.claude/rules"
+    TARGET_DIRS[cursor]="$PROJECT_ROOT/.cursor/rules"
+    TARGET_DIRS[copilot]="$PROJECT_ROOT/.github/instructions"
+}
+
 resolve_project_root() {
     if [[ -n "$PROJECT_ROOT_OVERRIDE" ]]; then
         if [[ ! -d "$PROJECT_ROOT_OVERRIDE" ]]; then
@@ -110,6 +116,7 @@ resolve_project_root() {
             exit 1
         fi
         PROJECT_ROOT="$(cd "$PROJECT_ROOT_OVERRIDE" && pwd -P)"
+        set_project_paths
         return
     fi
 
@@ -119,6 +126,7 @@ resolve_project_root() {
             exit 1
         fi
         PROJECT_ROOT="$(cd "$ENV_PROJECT_ROOT" && pwd -P)"
+        set_project_paths
         return
     fi
 
@@ -128,18 +136,15 @@ resolve_project_root() {
     fi
 
     PROJECT_ROOT="$CURRENT_DIR"
-
-    PROJECT_RULES_DIR="$PROJECT_ROOT/.claude/rules"
-    TARGET_DIRS=(
-        [cursor]="$PROJECT_ROOT/.cursor/rules"
-        [copilot]="$PROJECT_ROOT/.github/instructions"
-    )
+    set_project_paths
 }
 
 build_sources() {
     SOURCE_DIRS=()
     SOURCE_DIRS+=("$GENERAL_RULES_DIR")
-    [[ -d "$PROJECT_RULES_DIR" ]] && SOURCE_DIRS+=("$PROJECT_RULES_DIR")
+    if [[ -d "$PROJECT_RULES_DIR" ]]; then
+        SOURCE_DIRS+=("$PROJECT_RULES_DIR")
+    fi
 }
 
 check_environment() {

@@ -10,8 +10,8 @@ This system treats **Claude Code as the primary source of truth** for:
 - **Agent Instructions**: Operating procedures in `AGENTS.md` and `CLAUDE.md`
 
 From this central configuration, we sync to:
-- **IDE Tools**: Cursor, VS Code Copilot (via `sync-project-rules.sh`)
-- **CLI Tools**: Qwen, Factory/Droid, Codex, OpenCode (via `/config-sync:cli`)
+- **IDE Tools**: Cursor, VS Code Copilot (via `/config-sync/sync-project-rules`)
+- **CLI Tools**: Qwen, Factory/Droid, Codex, OpenCode (via `/config-sync/sync-cli`)
 
 ## 📁 Essential Files
 
@@ -26,7 +26,6 @@ From this central configuration, we sync to:
 ├── 📄 AGENTS.md                   # Agent operating instructions
 ├── 📄 CLAUDE.md                   # Claude's memory and context
 ├── ⚙️ settings.json               # Global preferences
-└── 🔄 sync-project-rules.sh       # IDE tool synchronization
 ```
 
 ## 🚀 Quick Start
@@ -43,24 +42,21 @@ claude /doctor  # Verify configuration
 
 ### 2. Sync to IDE Tools (Project Level)
 ```bash
-# Copy sync script to your project
-cp ~/.claude/sync-project-rules.sh /path/to/project/.claude/
+# From inside the project (or set CLAUDE_PROJECT_DIR)
+/config-sync/sync-project-rules --all
 
-# Run sync in project directory
-cd /path/to/project
-.claude/sync-project-rules.sh
 ```
 
 ### 3. Sync to CLI Tools (Optional)
 ```bash
 # Analyze available CLI tools
-/config-sync:cli --action=analyze --target=all
+/config-sync/sync-cli --action=analyze --target=all
 
 # Sync configuration to installed tools
-/config-sync:cli --action=sync --target=all
+/config-sync/sync-cli --action=sync --target=all
 
 # Verify sync worked
-/config-sync:cli --action=verify --target=all
+/config-sync/sync-cli --action=verify --target=all
 ```
 
 ## 🔧 Configuration Components
@@ -111,7 +107,7 @@ Three-tier command control in settings files:
 
 ### IDE Plugin Sync
 - **Target**: Cursor, VS Code Copilot
-- **Method**: `sync-project-rules.sh` script
+- **Method**: `/config-sync/sync-project-rules`
 - **Scope**: Project-level rules distribution
 - **Usage**: Run in each project directory
 
@@ -119,7 +115,7 @@ Three-tier command control in settings files:
 
 ### CLI Tool Sync
 - **Target**: Qwen, Factory/Droid, Codex, OpenCode
-- **Method**: `/config-sync:cli --action=<sync|analyze|verify|adapt|plan|report>`
+- **Method**: `/config-sync/sync-cli --action=<sync|analyze|verify|adapt|plan|report>`
 - **Scope**: Full configuration (rules, permissions, commands, memory)
 - **Features**: PlantUML integration, documentation generation
 - **Usage**: One-time setup per tool
@@ -148,13 +144,13 @@ vim ~/.claude/.claude/settings.json
 ### For IDE Integration
 ```bash
 # After updating rules, sync to project IDEs
-/path/to/project/.claude/sync-project-rules.sh
+/config-sync/sync-project-rules --all
 ```
 
 ### For CLI Tools
 ```bash
 # After major configuration changes
-/config-sync:cli --action=sync --target=all
+/config-sync/sync-cli --action=sync --target=all
 ```
 
 ## 🛠️ Maintenance
@@ -175,10 +171,10 @@ vim ~/.claude/.claude/settings.json
 claude /doctor
 
 # Verify IDE sync
-/path/to/project/.claude/sync-project-rules.sh --verify-only
+/config-sync/sync-project-rules --verify-only
 
 # Verify CLI sync
-/config-sync:cli --action=verify --target=all
+/config-sync/sync-cli --action=verify --target=all
 ```
 
 ## 🔍 Troubleshooting
@@ -186,8 +182,8 @@ claude /doctor
 | Issue | Solution |
 |-------|----------|
 | Rules not loading | Check file naming, run `claude /doctor` |
-| IDE sync not working | Verify script location, check project structure |
-| CLI sync failed | Run `/config-sync:cli --action=analyze --target=<tool>` |
+| IDE sync not working | Verify slash command usage and project structure |
+| CLI sync failed | Run `/config-sync/sync-cli --action=analyze --target=<tool>` |
 | Permission denied | Check `Bash(command:*)` syntax in settings |
 
 ## 📚 Documentation

@@ -14,7 +14,16 @@ phase_verify() {
 
     for component in "${SELECTED_COMPONENTS[@]}"; do
       if [[ "$component" == "permissions" ]]; then
-        log_info "[verify] Permissions verification routed via audits; skipping adapter"
+        local perm_script="$ADAPTERS_DIR/adapt-permissions.sh"
+        if [[ ! -f "$perm_script" ]]; then
+          log_warning "[verify] Permissions adapter missing; skipping"
+          continue
+        fi
+        log_info "[verify] Verifying permissions for $target"
+        if ! bash "$perm_script" "--target=$target" "--mode=verify"; then
+          log_error "[verify] Permissions verification failed for $target"
+          failures=1
+        fi
         continue
       fi
       log_info "[verify] Verifying $target ($component)"

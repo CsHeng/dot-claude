@@ -56,7 +56,7 @@ participant "OpenCode" as opencode_tool
 autonumber 1
 
 group Initial Setup - Sync All Tools
-    user -> cli: /config-sync:cli --action=sync --target=all --components=all
+    user -> cli: /config-sync/sync-cli --action=sync --target=all --components=all
     activate cli
 
     note over cli
@@ -148,7 +148,7 @@ end
 
 ' == VERIFICATION SEQUENCE ==
 group Verification Phase
-    user -> cli: /config-sync:cli --action=verify --target=all --components=all --detailed
+    user -> cli: /config-sync/sync-cli --action=verify --target=all --components=all --detailed
     activate cli
 
     note over cli
@@ -200,7 +200,7 @@ end
 
 ' == UPDATE SEQUENCE ==
 group Targeted Update
-    user -> cli: /config-sync:cli --action=sync --target=droid --components=permissions
+    user -> cli: /config-sync/sync-cli --action=sync --target=droid --components=permissions
     activate cli
 
     cli -> claude_config: Read current permissions
@@ -227,7 +227,7 @@ end
 
 ' == ANALYSIS SEQUENCE ==
 group Analysis Phase
-    user -> cli: /config-sync:cli --action=analyze --target=all --format=table
+    user -> cli: /config-sync/sync-cli --action=analyze --target=all --format=table
     activate cli
 
     par Parallel Analysis

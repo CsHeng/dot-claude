@@ -1,6 +1,6 @@
 # config-sync CLI Playbook
 
-`/config-sync:cli` is now the **only** orchestrator entrypoint. Every workflow (sync, analyze, verify, adapt, plan, report) is exposed via the `--action` flag, while adapters remain available for direct tool interactions.
+`/config-sync/sync-cli` is now the **only** orchestrator entrypoint. Every workflow (sync, analyze, verify, adapt, plan, report) is exposed via the `--action` flag, while adapters remain available for direct tool interactions.
 
 ## CLI Actions
 
@@ -19,22 +19,22 @@ Global helpers: `--target`, `--components`, `--profile`, `--plan-file`, `--from-
 
 ```bash
 # Full sync with defaults
-/config-sync:cli --action=sync
+/config-sync/sync-cli --action=sync
 
 # Dry-run sync for rules + commands on Droid + Qwen
-/config-sync:cli --action=sync --target=droid,qwen --components=rules,commands --dry-run
+/config-sync/sync-cli --action=sync --target=droid,qwen --components=rules,commands --dry-run
 
 # Analyze OpenCode in table format
-/config-sync:cli --action=analyze --target=opencode --format=table --detailed
+/config-sync/sync-cli --action=analyze --target=opencode --format=table --detailed
 
 # Verify permissions + commands for Codex and auto-fix
-/config-sync:cli --action=verify --target=codex --components=permissions,commands --fix
+/config-sync/sync-cli --action=verify --target=codex --components=permissions,commands --fix
 
 # Run only the permissions adapter for Qwen
-/config-sync:cli --action=adapt --adapter=permissions --target=qwen --dry-run
+/config-sync/sync-cli --action=adapt --adapter=permissions --target=qwen --dry-run
 
 # Resume a run from prepare to verify using a stored plan
-/config-sync:cli --action=sync --plan-file=~/.claude/config-sync/plan-20250205-120210.json --from-phase=prepare
+/config-sync/sync-cli --action=sync --plan-file=~/.claude/backup/plan-20250205-120210.json --from-phase=prepare
 ```
 
 ## Adapter Catalog
@@ -47,7 +47,7 @@ Global helpers: `--target`, `--components`, `--profile`, `--plan-file`, `--from-
 | `/config-sync:adapt-rules-content` | Normalize rules for non-Claude platforms |
 | `/config-sync:adapt-permissions` | Permissions-only adaptation helper |
 
-Adapters can be run directly or via `/config-sync:cli --action=adapt --adapter=<name>`.
+Adapters can be run directly or via `/config-sync/sync-cli --action=adapt --adapter=<name>`.
 
 ## Target Snapshot
 
@@ -60,9 +60,9 @@ Adapters can be run directly or via `/config-sync:cli --action=adapt --adapter=<
 
 ## End-to-End Workflow
 
-1. **Analyze** – `/config-sync:cli --action=analyze --target=<tool>` (understand capabilities + gaps)
-2. **Sync** – `/config-sync:cli --action=sync --target=<tool>` (apply changes)
-3. **Verify** – `/config-sync:cli --action=verify --target=<tool>` (ensure correctness)
+1. **Analyze** – `/config-sync/sync-cli --action=analyze --target=<tool>` (understand capabilities + gaps)
+2. **Sync** – `/config-sync/sync-cli --action=sync --target=<tool>` (apply changes)
+3. **Verify** – `/config-sync/sync-cli --action=verify --target=<tool>` (ensure correctness)
 4. **Report / resume** – rerun `--action=report` or `--action=sync` with `--plan-file` as needed
 
 ## Component Coverage
