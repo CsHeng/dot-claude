@@ -20,7 +20,7 @@ From this central configuration, we sync to:
 ├── 📁 .claude/
 │   └── ⚙️ settings.json           # Shared permissions
 ├── 📁 commands/                   # Custom slash commands
-│   └── 📁 config-sync/            # Multi-tool sync utilities
+│   └── 📁 config-sync/            # Multi-tool sync utilities (`sync-cli.{md,sh}`, `sync-project-rules.{md,sh}`)
 ├── 📁 docs/                       # Detailed documentation
 ├── 📁 rules/                      # Development guidelines by category
 ├── 📄 AGENTS.md                   # Agent operating instructions
@@ -118,15 +118,20 @@ Three-tier command control in settings files:
 - **Method**: `/config-sync/sync-cli --action=<sync|analyze|verify|adapt|plan|report>`
 - **Scope**: Full configuration (rules, permissions, commands, memory)
 - **Features**: PlantUML integration, documentation generation
+- **Command Files**: `commands/config-sync/sync-cli.{md,sh}`
 - **Usage**: One-time setup per tool
 
 📖 **[CLI Sync Commands](docs/config-sync-commands.md)**
 
-### **Additional Commands**
-- `/draft-commit-message` - Generate git commit messages from current changes
-- `/review-shell-syntax` - Validate shell script syntax and guideline compliance
-- `/review-llm-prompts` - Review Claude Code prompt files for rule compliance
-- `/doc-gen:*` - Documentation generation system with project-type adapters
+### **Command Library (`commands/`)**
+
+| Slash command | Location | Purpose |
+| --- | --- | --- |
+| `/config-sync/sync-cli`, `/config-sync/sync-project-rules` | `commands/config-sync/sync-cli.{md,sh}`, `commands/config-sync/sync-project-rules.{md,sh}`, adapters under `commands/config-sync/adapters/` | Multi-target sync orchestrator plus IDE rule distribution helpers. |
+| `/doc-gen:*` | `commands/doc-gen/` (core orchestrator, adapters, lib) | Documentation generation workflows for SDK/demo deliverables. |
+| `/draft-commit-message` | `commands/draft-commit-message.md` | Proposes commit subjects + bullet points from current git status/diffs. |
+| `/review-shell-syntax` | `commands/review-shell-syntax.md` | Validates shell scripts against `rules/12-shell-guidelines.md` and runs syntax checks. |
+| `/review-llm-prompts` | `commands/review-llm-prompts.md`, helpers in `commands/review-llm-prompts/` | Audits LLM-facing prompts for `rules/99-llm-prompt-writing-rules.md` compliance. |
 
 ## 📋 Daily Usage
 

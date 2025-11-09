@@ -437,11 +437,64 @@ adapt_codex_permissions() {
 
     # Create or update config.toml
     if [[ -f "$config_file" ]]; then
-        # Update existing file
-        temp_file=$(mktemp)
-        sed -i '' "s/^mode = .*/mode = \"$sandbox_mode\"/" "$config_file"
-        sed -i '' "s/^allow_execution = .*/allow_execution = $allow_execution/" "$config_file"
-        sed -i '' "s/^allow_network = .*/allow_network = $allow_network/" "$config_file"
+        SANDBOX_MODE="$sandbox_mode" \
+        ALLOW_EXEC="$allow_execution" \
+        ALLOW_NET="$allow_network" \
+        python3 - "$config_file" <<'PY'
+import os
+import re
+import sys
+from pathlib import Path
+
+config_path = Path(sys.argv[1])
+text = config_path.read_text(encoding="utf-8") if config_path.exists() else ""
+
+mode = os.environ.get("SANDBOX_MODE", "workspace-write")
+allow_exec = os.environ.get("ALLOW_EXEC", "true").lower()
+allow_net = os.environ.get("ALLOW_NET", "true").lower()
+
+block_pattern = re.compile(r"(?ms)^\[sandbox\]\n(.*?)(?=^\[|\Z)")
+match = block_pattern.search(text)
+block_body = match.group(1) if match else ""
+
+def parse_values(body: str) -> dict[str, str]:
+    values: dict[str, str] = {}
+    for line in body.splitlines():
+        stripped = line.strip()
+        if not stripped or stripped.startswith("#") or "=" not in stripped:
+            continue
+        key, value = stripped.split("=", 1)
+        values[key.strip()] = value.strip()
+    return values
+
+existing = parse_values(block_body)
+enabled = existing.get("enabled", "true")
+timeout = existing.get("timeout", "30")
+memory_limit = existing.get("memory_limit", '"512MB"')
+
+new_lines = [
+    "[sandbox]",
+    f'mode = "{mode}"',
+    f"allow_network = {allow_net}",
+    f"allow_execution = {allow_exec}",
+    f"enabled = {enabled}",
+    f"timeout = {timeout}",
+    f"memory_limit = {memory_limit}",
+]
+new_block = "\n".join(new_lines) + "\n"
+
+if match:
+    start, end = match.span()
+    text = text[:start] + new_block + text[end:]
+else:
+    if text and not text.endswith("\n"):
+        text += "\n"
+    if text:
+        text += "\n"
+    text += new_block
+
+config_path.write_text(text, encoding="utf-8")
+PY
     else
         # Create new file
         cat > "$config_file" << EOF
@@ -770,7 +823,7 @@ if str(sandbox.get("allow_network", "")).lower() != expected_net:
 
 if errors:
     for err in errors:
-        print(f\"[ERROR] Codex sandbox mismatch: {err}\", file=sys.stderr)
+        print(f"[ERROR] Codex sandbox mismatch: {err}", file=sys.stderr)
     sys.exit(1)
 PYVERIFY
 
