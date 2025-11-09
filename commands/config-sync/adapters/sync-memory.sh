@@ -243,7 +243,7 @@ get_tool_memory_filename() {
             echo "QWEN.md"
             ;;
         "codex")
-            echo "memory.md"
+            echo "CODEX.md"
             ;;
         "opencode")
             echo "AGENTS.md"  # OpenCode uses AGENTS.md as primary memory
@@ -285,7 +285,6 @@ backup_memory_files() {
         "DROID.md"
         "QWEN.md"
         "CODEX.md"
-        "memory.md"
     )
 
     for file in "${memory_files[@]}"; do
