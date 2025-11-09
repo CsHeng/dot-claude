@@ -36,14 +36,27 @@ Claude Code uses a hierarchical settings system with multiple configuration file
 
 **Precedence**: ⭐⭐⭐ Highest (overrides all other settings)
 
+### 4. Local Overrides (`.claude/settings.local.json`)
+**Purpose**: Personal overrides that should not be shared
+**Use cases**:
+- Personal API keys and credentials
+- Local development paths
+- Temporary debugging settings
+- Machine-specific configurations
+
+**Precedence**: ⭐⭐⭐⭐ Highest (overrides all settings, git-ignored)
+
+**Important**: This file should be added to `.gitignore` to prevent committing sensitive information.
+
 ## 🏗️ Settings Processing and Override Hierarchy
 
 ### Precedence Order (Highest to Lowest)
-1. **Enterprise policies** - Organizational security policies
-2. **Command line arguments** - Runtime CLI overrides
-3. **Project settings** (`.claude/settings.json`) - Project-specific configuration
-4. **Home project settings** (`~/.claude/.claude/settings.json`) - Cross-project shared settings
-5. **Global user settings** (`~/.claude/settings.json`) - Personal preferences
+1. **Local overrides** (`.claude/settings.local.json`) - Personal overrides (git-ignored)
+2. **Enterprise policies** - Organizational security policies
+3. **Command line arguments** - Runtime CLI overrides
+4. **Project settings** (`.claude/settings.json`) - Project-specific configuration
+5. **Home project settings** (`~/.claude/.claude/settings.json`) - Cross-project shared settings
+6. **Global user settings** (`~/.claude/settings.json`) - Personal preferences
 
 ### Settings Merging Logic
 

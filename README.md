@@ -17,15 +17,15 @@ From this central configuration, we sync to:
 
 ```
 .claude/
-├── 📁 .claude/
-│   └── ⚙️ settings.json           # Shared permissions
-├── 📁 commands/                   # Custom slash commands
-│   └── 📁 config-sync/            # Multi-tool sync utilities (`sync-cli.{md,sh}`, `sync-project-rules.{md,sh}`)
-├── 📁 docs/                       # Detailed documentation
-├── 📁 rules/                      # Development guidelines by category
-├── 📄 AGENTS.md                   # Agent operating instructions
-├── 📄 CLAUDE.md                   # Claude's memory and context
-├── ⚙️ settings.json               # Global preferences
+├── 📁 .claude/                   # Shared permissions
+│   └── ⚙️ settings.json          # Tool access control
+├── 📁 commands/                  # Custom slash commands
+│   └── 📁 config-sync/           # Multi-tool sync utilities
+├── 📁 docs/                      # Complete documentation
+├── 📁 rules/                     # Development guidelines
+├── 📄 AGENTS.md                  # Agent instructions
+├── 📄 CLAUDE.md                  # Claude's memory
+└── ⚙️ settings.json              # Global preferences
 ```
 
 ## 🚀 Quick Start
@@ -62,34 +62,14 @@ claude /doctor  # Verify configuration
 ## 🔧 Configuration Components
 
 ### **Rules Library** (`rules/`)
-Automatically loaded by Claude Code:
-
-**Core Rules:**
-- `00-memory-rules.md` - Personal preferences (all files)
-- `01-development-standards.md` - General standards (all files)
+Development guidelines automatically loaded by Claude Code. Core files include:
+- `00-memory-rules.md` - Personal preferences
+- `01-development-standards.md` - General standards
 - `02-architecture-patterns.md` - Architecture patterns
-- `03-security-standards.md` - Security practices
-- `04-testing-strategy.md` - Testing approaches
-- `05-error-patterns.md` - Error handling
+- `10-*.md` - Language-specific guidelines (Python, Go, Shell, etc.)
+- `99-llm-prompt-writing-rules.md` - AI development guidelines
 
-**Language-Specific Rules:**
-- `10-python-guidelines.md` - Python (`**/*.py`)
-- `11-go-guidelines.md` - Go (`**/*.go`)
-- `12-shell-guidelines.md` - Shell (`**/*.sh`)
-- `13-docker-guidelines.md` - Docker (docker files, Makefiles)
-- `14-networking-guidelines.md` - Network patterns
-
-**Tool & Process Rules:**
-- `20-tool-standards.md` - Tool configuration
-- `21-quality-standards.md` - Code quality
-- `22-logging-standards.md` - Logging standards
-- `23-workflow-patterns.md` - Workflow patterns
-
-**AI & LLM Rules:**
-- `98-communication-protocol.md` - Default ABSOLUTE MODE communication standards
-- `99-llm-prompt-writing-rules.md` - AI/LLM agent development
-
-Rules auto-apply by file patterns. See `rules/00-memory-rules.md` for details.
+📖 **[Complete Rules List](./directory-structure.md#rules---development-guidelines)**
 
 ### **Permission System**
 Three-tier command control in settings files:
@@ -99,9 +79,13 @@ Three-tier command control in settings files:
 
 📖 **[Permissions Reference](docs/permissions.md)**
 
-### **Agent Instructions**
-- **AGENTS.md**: How AI agents should operate
-- **CLAUDE.md**: Claude's memory and context index
+### **Settings Hierarchy**
+1. **Local overrides** (`.claude/settings.local.json`) - Personal (git-ignored)
+2. **Project settings** (`.claude/settings.json`) - Team configuration
+3. **Shared settings** (`.claude/.claude/settings.json`) - Cross-project
+4. **Global settings** (`settings.json`) - Personal preferences
+
+📖 **[Settings Guide](docs/settings.md)** index
 
 ## 🔄 Sync Capabilities
 
@@ -111,27 +95,26 @@ Three-tier command control in settings files:
 - **Scope**: Project-level rules distribution
 - **Usage**: Run in each project directory
 
-📖 **[IDE Sync Guide](docs/sync-project-rules.md)**
+📖 **[Config-Sync Guide](docs/config-sync-guide.md#project-rules-integration)**
 
 ### CLI Tool Sync
 - **Target**: Qwen, Factory/Droid, Codex, OpenCode
 - **Method**: `/config-sync/sync-cli --action=<sync|analyze|verify|adapt|plan|report>`
 - **Scope**: Full configuration (rules, permissions, commands, memory)
-- **Features**: PlantUML integration, documentation generation
-- **Command Files**: `commands/config-sync/sync-cli.{md,sh}`
-- **Usage**: One-time setup per tool
+- **Features**: 8-phase pipeline, backup system, PlantUML integration
 
-📖 **[CLI Sync Commands](docs/config-sync-commands.md)**
+📖 **[Config-Sync Guide](docs/config-sync-guide.md)**
 
-### **Command Library (`commands/`)**
+### **Available Commands**
 
-| Slash command | Location | Purpose |
-| --- | --- | --- |
-| `/config-sync/sync-cli`, `/config-sync/sync-project-rules` | `commands/config-sync/sync-cli.{md,sh}`, `commands/config-sync/sync-project-rules.{md,sh}`, adapters under `commands/config-sync/adapters/` | Multi-target sync orchestrator plus IDE rule distribution helpers. |
-| `/doc-gen:*` | `commands/doc-gen/` (core orchestrator, adapters, lib) | Documentation generation workflows for SDK/demo deliverables. |
-| `/draft-commit-message` | `commands/draft-commit-message.md` | Proposes commit subjects + bullet points from current git status/diffs. |
-| `/review-shell-syntax` | `commands/review-shell-syntax.md` | Validates shell scripts against `rules/12-shell-guidelines.md` and runs syntax checks. |
-| `/review-llm-prompts` | `commands/review-llm-prompts.md`, helpers in `commands/review-llm-prompts/` | Audits LLM-facing prompts for `rules/99-llm-prompt-writing-rules.md` compliance. |
+| Category | Commands | Purpose |
+|----------|----------|---------|
+| **Config-Sync** | `/config-sync/sync-cli`, `/config-sync/sync-project-rules`, `/config-sync:*` | Multi-tool configuration synchronization |
+| **Documentation** | `/doc-gen:*` | Generate project documentation |
+| **Code Review** | `/review-shell-syntax`, `/review-llm-prompts` | Validate compliance with guidelines |
+| **Utilities** | `/draft-commit-message` | Git workflow helpers |
+
+📖 **[Complete Command Reference](docs/commands.md)**
 
 ## 📋 Daily Usage
 
@@ -141,7 +124,7 @@ Three-tier command control in settings files:
 vim ~/.claude/rules/01-development-standards.md
 
 # Update permissions
-vim ~/.claude/.claude/settings.json
+vim ~/.claude/settings.json
 
 # Claude automatically uses updated configuration
 ```
@@ -160,16 +143,6 @@ vim ~/.claude/.claude/settings.json
 
 ## 🛠️ Maintenance
 
-### Adding New Rules
-1. Create `XX-description.md` in `rules/`
-2. Follow naming convention
-3. Claude automatically loads new rules
-
-### Updating Permissions
-1. Edit appropriate settings file
-2. Use `Bash(command:*)` syntax
-3. Verify with `claude /doctor`
-
 ### Configuration Validation
 ```bash
 # Check Claude configuration
@@ -182,21 +155,31 @@ claude /doctor
 /config-sync/sync-cli --action=verify --target=all
 ```
 
-## 🔍 Troubleshooting
+### Adding New Content
+1. **Rules**: Create `XX-description.md` in `rules/`
+2. **Commands**: Add `.md` file in `commands/`
+3. **Settings**: Update appropriate settings file
+
+📖 **[Maintenance Guide](docs/directory-structure.md#migration-guide)**
+
+## 🔍 Quick Troubleshooting
 
 | Issue | Solution |
 |-------|----------|
 | Rules not loading | Check file naming, run `claude /doctor` |
-| IDE sync not working | Verify slash command usage and project structure |
+| IDE sync not working | Verify project structure, check permissions |
 | CLI sync failed | Run `/config-sync/sync-cli --action=analyze --target=<tool>` |
-| Permission denied | Check `Bash(command:*)` syntax in settings |
+| Permission denied | Check settings hierarchy and syntax |
+
+📖 **[Complete Troubleshooting Guide](docs/troubleshooting.md)**
 
 ## 📚 Documentation
 
 - **[Settings Guide](docs/settings.md)** – Configuration hierarchy
 - **[Permissions Reference](docs/permissions.md)** – Command control
-- **[IDE Sync Guide](docs/sync-project-rules.md)** – Cursor/Copilot integration
-- **[CLI Sync Commands](docs/config-sync-commands.md)** – Multi-tool commands
+- **[Config-Sync Guide](docs/config-sync-guide.md)** – Complete sync system documentation
+- **[CLI Sequence Diagram](docs/config-sync-cli-sequence-diagram.puml)** – CLI workflow visualization
+- **[Project Rules Sequence Diagram](docs/config-sync-project-sequence-diagram.puml)** – IDE integration workflow
 
 ## 🎯 Benefits
 
