@@ -24,6 +24,16 @@ def count_files(path, pattern):
     except Exception:
         return 0
 
+def count_command_files(path):
+    """Count both .md and .toml files in commands directory"""
+    root = Path(path)
+    if not root.exists():
+        return 0
+    try:
+        return sum(1 for _ in root.rglob("*.md")) + sum(1 for _ in root.rglob("*.toml"))
+    except Exception:
+        return 0
+
 matrix = [line for line in os.environ.get("TARGET_MATRIX", "").splitlines() if line.strip()]
 format_name = os.environ.get("ANALYZE_FORMAT", "markdown")
 detailed = os.environ.get("ANALYZE_DETAILED") == "true"
@@ -39,7 +49,9 @@ for row in matrix:
         "config_dir": config_dir,
         "config_exists": Path(config_dir).exists(),
         "commands_dir": commands_dir,
-        "commands_markdown": count_files(commands_dir, "*.md"),
+        "commands_markdown": count_command_files(commands_dir),
+        "commands_md_only": count_files(commands_dir, "*.md"),
+        "commands_toml_only": count_files(commands_dir, "*.toml"),
         "rules_dir": rules_dir,
         "rules_markdown": count_files(rules_dir, "*.md"),
     }
@@ -53,19 +65,19 @@ with open(sys.argv[1], "w", encoding="utf-8") as fh:
 if format_name == "json":
     print(json.dumps(report, indent=2))
 else:
-    header = f"{'Target':10} {'Config?':8} {'Cmd(md)':8} {'Rules(md)':9}"
+    header = f"{'Target':10} {'Config?':8} {'Cmd(.md/.toml)':13} {'Rules(.md)':9}"
     divider = "-" * len(header)
     rows = [header, divider]
     for entry in targets:
         rows.append(
             f"{entry['name']:10} "
             f"{'yes' if entry['config_exists'] else 'no':8} "
-            f"{entry['commands_markdown']:8} "
+            f"{entry['commands_markdown']:13} "
             f"{entry['rules_markdown']:9}"
         )
     if format_name == "markdown":
-        print("| Target | Config | Cmd (.md) | Rules (.md) |")
-        print("| ------ | ------ | --------- | ----------- |")
+        print("| Target | Config | Cmd (.md/.toml) | Rules (.md) |")
+        print("| ------ | ------ | --------------- | ----------- |")
         for entry in targets:
             print(
                 f"| {entry['name']} "
