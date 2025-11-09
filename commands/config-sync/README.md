@@ -4,9 +4,9 @@ The config-sync suite now centers on a single slash command, `/config-sync/sync-
 
 ## Layout
 
-- `cli/` – Command manifests + `sync-cli.sh` entrypoint (plus `config-sync-cli.sh` shim)
-- `adapters/` – Target-specific automation invoked during the `adapt` phase
+- `sync-cli.{md,sh}` – Unified slash command manifest plus entrypoint script
 - `sync-project-rules.{md,sh}` – Standalone slash command for syncing the shared rule library into IDE-facing directories
+- `adapters/` – Target-specific automation invoked during the `adapt` phase
 - `lib/common.*` – Shared helpers (parsing, logging, path resolution)
 - `lib/phases/` – Phase runners (`collect`, `analyze`, `plan`, `prepare`, `adapt`, `execute`, `verify`, `report`)
 - `lib/planners/` – Plan builders for sync/adapt flows
@@ -47,7 +47,7 @@ Adapters such as `/config-sync:adapt-permissions` or `/config-sync:droid` remain
 
 ## Development Notes
 
-- Always run phase scripts via `sync-cli.sh`; do not invoke `lib/phases/*.sh` directly (the `config-sync-cli.sh` shim merely execs the renamed entrypoint).
+- Always run phase scripts via `sync-cli.sh`; do not invoke `lib/phases/*.sh` directly.
 - Maintain strict mode (`set -euo pipefail`) in every helper per `rules/12-shell-guidelines.md`.
 - Update documentation when adding phases, planner fields, or CLI arguments so downstream tools (sequence diagrams, plan docs) stay accurate.
 - Qwen command verification requires the Python `toml` module (install with `python3 -m pip install --user toml` or ensure the module exists in the CLI’s runtime).

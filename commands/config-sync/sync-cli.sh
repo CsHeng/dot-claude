@@ -3,9 +3,7 @@
 
 set -euo pipefail
 
-CLI_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-readonly CLI_DIR
-CLI_ROOT="$(cd "$CLI_DIR/.." && pwd)"
+CLI_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 readonly CLI_ROOT
 SETTINGS_PATH="$CLI_ROOT/settings.json"
 readonly SETTINGS_PATH
@@ -74,8 +72,6 @@ ADAPTERS_DIR="$CLI_ROOT/adapters"
 usage() {
   cat <<'EOF'
 Usage: sync-cli.sh [options]
-
-Alias: config-sync-cli.sh [options]
 
 Options:
   --action=<sync|analyze|verify|adapt|plan|report>

@@ -1,5 +1,5 @@
 name: "config-sync/sync-cli"
-command: "~/.claude/commands/config-sync/cli/sync-cli.sh"
+command: "~/.claude/commands/config-sync/sync-cli.sh"
 description: Unified orchestrator for config-sync workflows (sync, analyze, verify, adapt, report)
 argument-hint: --action=<sync|analyze|verify|adapt|plan|report> --target=<list|all> --components=<list|all> [--adapter=<name>] [--profile=<fast|full|custom>] [--plan-file=<path>] [--from-phase=<phase>] [--until-phase=<phase>] [--dry-run] [--force] [--fix] [--no-verify]
 allowed-tools: Read, Write, ApplyPatch, Bash(rg:*), Bash(ls:*), Bash(find:*), Bash(cat:*)
