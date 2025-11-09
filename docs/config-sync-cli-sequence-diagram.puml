@@ -1,0 +1,307 @@
+@startuml Config-Sync CLI Sequence Diagram
+
+!theme plain
+title Config-Sync CLI: Core Workflow Sequence
+scale 1.0
+
+' Define styles with better contrast
+skinparam actor {
+    BackgroundColor #4A90E2
+    BorderColor #2E5C8A
+    FontColor White
+}
+
+skinparam participant {
+    BackgroundColor #52C41A
+    BorderColor #389E0D
+    FontColor White
+}
+
+skinparam database {
+    BackgroundColor #FA8C16
+    BorderColor #D46B08
+    FontColor White
+}
+
+skinparam sequence {
+    ArrowColor #333333
+    ArrowFontColor #333333
+    LifeLineBorderColor #333333
+    LifeLineBackgroundColor #F5F5F5
+}
+
+skinparam note {
+    BackgroundColor #F0F0F0
+    BorderColor #999999
+    FontColor #333333
+}
+
+' Actors and Participants
+actor "User" as user
+participant "config-sync CLI" as cli
+participant "Analyze Target" as analyze
+participant "Permission Adapter" as perm_adapter
+participant "Command Adapter" as cmd_adapter
+participant "Rules Adapter" as rules_adapter
+participant "Memory Adapter" as memory_adapter
+
+participant "Claude Config" as claude_config
+participant "Droid CLI" as droid_tool
+participant "Qwen CLI" as qwen_tool
+participant "Codex CLI" as codex_tool
+participant "OpenCode" as opencode_tool
+
+' == INITIAL SETUP SEQUENCE ==
+group Initial Setup - Sync All Tools
+    user -> cli: /config-sync/sync-cli --action=sync --target=all --components=all
+    activate cli
+
+    note over cli
+      parse_target_list("all") ⇒ droid,qwen,codex,opencode
+      parse_component_list("all") ⇒ commands,rules,settings,permissions,memory
+      Phase pipeline: collect → analyze → plan → prepare → adapt → execute → verify → report
+    end note
+
+    == Collect & Analyze Phase ==
+    cli -> analyze: /config-sync/analyze-target-tool --target=all
+    activate analyze
+
+    par Parallel Tool Analysis
+        analyze -> droid_tool: Check Droid installation & config
+        activate droid_tool
+        droid_tool --> analyze: Droid status report
+        deactivate droid_tool
+
+        analyze -> qwen_tool: Check Qwen installation & config
+        activate qwen_tool
+        qwen_tool --> analyze: Qwen status report
+        deactivate qwen_tool
+
+        analyze -> codex_tool: Check Codex installation & config
+        activate codex_tool
+        codex_tool --> analyze: Codex status report
+        deactivate codex_tool
+
+        analyze -> opencode_tool: Check OpenCode installation & config
+        activate opencode_tool
+        opencode_tool --> analyze: OpenCode status report
+        deactivate opencode_tool
+    end
+
+    analyze --> cli: Analysis complete (markdown/table/json format)
+    deactivate analyze
+
+    cli -> claude_config: Read configuration files
+    activate claude_config
+    claude_config --> cli: rules, commands, settings, memory files
+    deactivate claude_config
+
+    note over cli: Create backup directories\\nfor all target tools (prepare phase)
+
+    == Adaptation Phase ==
+    par Parallel Adapter Processing
+        cli -> perm_adapter: /config-sync/adapt-permissions --target=all
+        activate perm_adapter
+        note right of perm_adapter: Map Claude allow/ask/deny\\nto tool-specific formats
+        perm_adapter --> cli: Permission adaptation complete
+        deactivate perm_adapter
+
+        cli -> cmd_adapter: /config-sync/adapt-commands --target=all
+        activate cmd_adapter
+        note right of cmd_adapter: Convert Claude markdown commands\\nto tool-specific formats (TOML/JSON)
+        cmd_adapter --> cli: Command adaptation complete
+        deactivate cmd_adapter
+
+        cli -> rules_adapter: /config-sync/adapt-rules-content --target=all
+        activate rules_adapter
+        note right of rules_adapter: Normalize rules\\nfor non-Claude platforms
+        rules_adapter --> cli: Rules adaptation complete
+        deactivate rules_adapter
+
+        cli -> memory_adapter: Sync memory files
+        activate memory_adapter
+        note right of memory_adapter: CLAUDE.md → Tool-specific memory files\\nAGENTS.md → Universal instructions
+        memory_adapter --> cli: Memory sync complete
+        deactivate memory_adapter
+    end
+
+    == Execute Phase ==
+    par Parallel Tool Configuration
+        cli -> droid_tool: Write ~/.factory/ configuration
+        activate droid_tool
+        droid_tool --> cli: Droid configuration applied
+        deactivate droid_tool
+
+        cli -> qwen_tool: Write ~/.qwen/ configuration
+        activate qwen_tool
+        qwen_tool --> cli: Qwen configuration applied
+        deactivate qwen_tool
+
+        cli -> codex_tool: Write ~/.codex/ configuration
+        activate codex_tool
+        codex_tool --> cli: Codex configuration applied
+        deactivate codex_tool
+
+        cli -> opencode_tool: Write ~/.config/opencode/ configuration
+        activate opencode_tool
+        opencode_tool --> cli: OpenCode configuration applied
+        deactivate opencode_tool
+    end
+
+    cli --> user: ✅ All tools synchronized successfully
+    deactivate cli
+end
+
+' == VERIFICATION SEQUENCE ==
+group Verification Phase
+    user -> cli: /config-sync/sync-cli --action=verify --target=all --components=all --detailed
+    activate cli
+
+    note over cli: Verification ensures all config files\\nexist and are valid for each tool
+
+    par Parallel Verification
+        cli -> droid_tool: Verify Droid configuration integrity
+        activate droid_tool
+        droid_tool --> cli: Droid verification results
+        deactivate droid_tool
+
+        cli -> qwen_tool: Verify Qwen configuration integrity
+        activate qwen_tool
+        qwen_tool --> cli: Qwen verification results
+        deactivate qwen_tool
+
+        cli -> codex_tool: Verify Codex configuration integrity
+        activate codex_tool
+        codex_tool --> cli: Codex verification results
+        deactivate codex_tool
+
+        cli -> opencode_tool: Verify OpenCode configuration integrity
+        activate opencode_tool
+        opencode_tool --> cli: OpenCode verification results
+        deactivate opencode_tool
+    end
+
+    cli --> user: 📊 Detailed verification report with results
+    deactivate cli
+end
+
+' == TARGETED UPDATE SEQUENCE ==
+group Targeted Single-Tool Update
+    user -> cli: /config-sync/sync-cli --action=adapt --adapter=permissions --target=droid --dry-run
+    activate cli
+
+    note over cli: Targeted updates allow specific\\ncomponent changes to single tools
+
+    cli -> claude_config: Read current Claude permissions
+    activate claude_config
+    claude_config --> cli: Permission settings data
+    deactivate claude_config
+
+    cli -> perm_adapter: /config-sync/adapt-permissions --target=droid
+    activate perm_adapter
+    perm_adapter --> cli: Permissions mapped for Droid format
+    deactivate perm_adapter
+
+    note over cli: Dry-run mode: Shows what would change\\nwithout making actual modifications
+
+    cli --> user: 📋 Preview: Droid permissions that would be applied
+    deactivate cli
+end
+
+' == ERROR HANDLING SEQUENCE ==
+group Error Handling and Recovery
+    user -> cli: /config-sync/sync-cli --action=sync --target=codex --components=permissions
+    activate cli
+
+    cli -> perm_adapter: /config-sync/adapt-permissions --target=codex
+    activate perm_adapter
+    perm_adapter --> cli: Permissions adapted for Codex
+    deactivate perm_adapter
+
+    cli -> codex_tool: Update ~/.codex/config.toml
+    activate codex_tool
+    codex_tool --> cli: ❌ Permission denied error
+    deactivate codex_tool
+
+    note over cli
+      Error handling workflow:
+      1. Log detailed error information with context
+      2. Check backup directories for rollback options
+      3. Suggest specific fixes (permissions, dependencies, paths)
+      4. Provide plan file for resumption after fixing issues
+      5. Isolate failures to prevent cascade effects
+    end note
+
+    cli --> user: ❌ Sync failed with specific recovery suggestions
+    deactivate cli
+end
+
+' == PLAN RESUMPTION SEQUENCE ==
+group Plan File Resumption
+    user -> cli: /config-sync/sync-cli --action=sync --plan-file=plan-20250205-120210.json --from-phase=prepare
+    activate cli
+
+    note over cli: Plan files enable resuming complex operations\\nfrom any phase, useful for long-running syncs
+
+    cli -> cli: Load stored plan and state
+    cli --> cli: Resuming from prepare phase with existing context
+
+    cli -> claude_config: Continue with configuration processing
+    activate claude_config
+    claude_config --> cli: Configuration data loaded
+    deactivate claude_config
+
+    cli --> user: 🔄 Execution resumed from prepare phase
+    deactivate cli
+end
+
+' Performance and timing notes
+note over user, opencode_tool
+    **Timing Estimates**
+    • Initial setup (all tools): 2-5 minutes
+    • Targeted single-tool update: 30-60 seconds
+    • Verification (all tools): 1-2 minutes
+    • Analysis (all tools): 30-60 seconds
+
+    **Parallel Processing Benefits**
+    • All tool operations run in parallel when possible
+    • Reduces total sync time by 60-70%
+    • Independent tool operations with error isolation
+    • Failed tools don't block successful ones
+
+    **Phase Control Features**
+    • Control execution start/end with --from-phase and --until-phase
+    • Store and resume execution with --plan-file
+    • Dry-run mode for change preview without execution
+    • Detailed logging with --verbose flag
+end note
+
+' Component details
+note right of perm_adapter
+    **Permission Mapping Logic**
+    • Claude allow/ask/deny → Tool-specific formats
+    • Security-first approach with risk assessment
+    • Format conversion: JSON → TOML → Guidelines
+    • Tool-appropriate sandbox levels and operation controls
+    • Handles permission conflicts and edge cases
+end note
+
+note right of cmd_adapter
+    **Command Adaptation**
+    • Claude markdown → Tool-specific formats
+    • TOML conversion for Qwen CLI
+    • JSON conversion for OpenCode
+    • Markdown preservation for Droid and Codex
+    • Maintains command functionality across platforms
+end note
+
+note right of memory_adapter
+    **Memory Adaptation**
+    • CLAUDE.md → Tool-specific memory files
+    • AGENTS.md → Universal agent instructions
+    • Context preservation across tools
+    • Tool-specific customization when needed
+    • Maintains conversation continuity
+end note
+
+@enduml
