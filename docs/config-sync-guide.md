@@ -7,9 +7,53 @@ Config-Sync is a unified system for synchronizing Claude configuration across mu
 The system operates on an 8-phase pipeline:
 `collect → analyze → plan → prepare → adapt → execute → verify → report`
 
+### Phase Pipeline Details
+
+1. **Collect** - Gather current configuration from Claude and target tools
+2. **Analyze** - Inspect target capabilities and identify gaps/conflicts
+3. **Plan** - Create execution plan with specific actions and dependencies
+4. **Prepare** - Create backups and validate prerequisites
+5. **Adapt** - Transform configurations for target tool formats
+6. **Execute** - Apply configurations to target tools
+7. **Verify** - Validate successful application and functionality
+8. **Report** - Generate comprehensive execution report
+
+### Backup System
+
+The backup system automatically creates timestamped backups during the **prepare** phase:
+
+- **Location**: `~/.claude/backup/`
+- **Plan Files**: `plan-YYYYMMDD-HHMMSS.json` - Complete execution state for resumption
+- **Tool Backups**: `toolname-YYYYMMDD-HHMMSS/` - Original configurations
+- **Retention**: All backups retained until manually cleaned
+
+### Resumption Capability
+
+Execution can be resumed from any phase:
+```bash
+# Resume from prepare phase using stored plan
+/config-sync/sync-cli --action=sync --plan-file=~/.claude/backup/plan-20250205-120210.json --from-phase=prepare
+```
+
 - **Primary orchestrator**: `/config-sync/sync-cli` - Full workflow management
 - **Adapter commands**: Tool-specific operations for targeted tasks
 - **Project integration**: `/config-sync/sync-project-rules` - IDE synchronization
+
+### PlantUML Integration
+
+The system includes PlantUML sequence diagrams for workflow visualization:
+
+- **CLI Workflow**: `docs/config-sync-cli-sequence-diagram.puml`
+- **Project Rules Workflow**: `docs/config-sync-project-sequence-diagram.puml`
+
+These diagrams can be rendered to SVG for documentation:
+```bash
+# Render CLI workflow diagram
+plantuml -tsvg docs/config-sync-cli-sequence-diagram.puml
+
+# Render project rules workflow diagram
+plantuml -tsvg docs/config-sync-project-sequence-diagram.puml
+```
 
 ## Target Tools
 

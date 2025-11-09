@@ -1,0 +1,227 @@
+# Directory Structure
+
+This document describes the complete directory structure of the Claude Code configuration system.
+
+## Root Directory Structure
+
+```
+~/.claude/
+├── 📁 .claude/                    # Internal Claude Code configuration
+│   └── ⚙️ settings.json           # Shared permissions and tool access
+├── 📁 backup/                     # Config-sync backup system
+├── 📁 commands/                   # Custom slash commands
+├── 📁 debug/                      # Runtime debugging information
+├── 📁 docs/                       # Documentation files
+├── 📁 file-history/               # File modification tracking
+├── 📁 ide/                        # IDE integration lock files
+├── 📁 lib/                        # Shared libraries (currently empty)
+├── 📁 plugins/                    # Plugin system
+├── 📁 projects/                   # Project-specific configurations
+├── 📁 rules/                      # Development guidelines and rules
+├── 📁 session-env/                # Session environment variables
+├── 📁 shell-snapshots/            # Shell command history
+├── 📁 statsig/                    # Analytics and metrics
+├── 📁 todos/                      # Task tracking
+├── 📄 AGENTS.md                   # Agent operating instructions
+├── 📄 CLAUDE.md                   # Claude's memory and context
+└── ⚙️ settings.json               # Global Claude Code preferences
+```
+
+## Core Configuration Files
+
+### Settings Files
+
+| File | Purpose | Scope |
+|------|---------|-------|
+| `settings.json` | Global Claude Code preferences | System-wide |
+| `.claude/settings.json` | Shared permissions and tool access | Configuration system |
+| `.claude/settings.local.json` | Local overrides (git-ignored) | Personal overrides |
+
+### Memory and Instructions
+
+| File | Purpose | Content |
+|------|---------|---------|
+| `CLAUDE.md` | Claude's memory and context index | Personal preferences, project context |
+| `AGENTS.md` | Agent operating instructions | How AI agents should operate |
+
+## Key Directories
+
+### `/rules/` - Development Guidelines
+
+Numbered rule files that automatically load based on file patterns:
+
+```
+rules/
+├── 00-memory-rules.md              # Personal preferences (all files)
+├── 01-development-standards.md     # General standards (all files)
+├── 02-architecture-patterns.md     # Architecture patterns
+├── 03-security-standards.md        # Security practices
+├── 04-testing-strategy.md          # Testing approaches
+├── 05-error-patterns.md            # Error handling
+├── 10-python-guidelines.md         # Python files (**/*.py)
+├── 11-go-guidelines.md             # Go files (**/*.go)
+├── 12-shell-guidelines.md          # Shell scripts (**/*.sh)
+├── 13-docker-guidelines.md         # Docker files, Makefiles
+├── 14-networking-guidelines.md     # Network patterns
+├── 20-tool-standards.md            # Tool configuration
+├── 21-quality-standards.md         # Code quality
+├── 22-logging-standards.md         # Logging standards
+├── 23-workflow-patterns.md         # Workflow patterns
+├── 98-communication-protocol.md    # ABSOLUTE MODE communication
+├── 99-llm-prompt-writing-rules.md  # AI/LLM agent development
+```
+
+### `/commands/` - Slash Commands
+
+Custom commands that extend Claude Code functionality:
+
+```
+commands/
+├── config-sync/                    # Multi-tool sync utilities
+│   ├── sync-cli.md                # Main CLI orchestrator
+│   ├── sync-project-rules.md      # IDE rules sync
+│   ├── adapters/                  # Tool-specific adapters
+│   │   ├── droid.md              # Droid CLI adapter
+│   │   ├── qwen.md               # Qwen CLI adapter
+│   │   ├── codex.md              # Codex CLI adapter
+│   │   ├── opencode.md           # OpenCode adapter
+│   │   ├── analyze-target-tool.md # Tool analysis
+│   │   ├── adapt-permissions.md   # Permission mapping
+│   │   ├── adapt-commands.md      # Command conversion
+│   │   └── adapt-rules-content.md # Rules normalization
+│   ├── lib/                       # Shared guidance
+│   └── scripts/                   # Bash helpers
+├── doc-gen/                        # Documentation generation
+│   ├── core/
+│   │   └── bootstrap.md           # Main orchestrator
+│   └── adapters/                  # Project-specific adapters
+├── draft-commit-message.md         # Git commit helper
+├── review-shell-syntax.md          # Shell script validation
+└── review-llm-prompts.md           # LLM prompt compliance
+```
+
+### `/docs/` - Documentation
+
+Comprehensive documentation for the configuration system:
+
+```
+docs/
+├── commands.md                     # Command reference
+├── config-sync-guide.md           # Complete sync system guide
+├── config-sync-cli-sequence-diagram.puml  # CLI workflow visualization
+├── config-sync-project-sequence-diagram.puml  # IDE integration workflow
+├── directory-structure.md         # This file
+├── permissions.md                  # Permission system reference
+└── settings.md                     # Configuration hierarchy
+```
+
+### `/backup/` - Config-Sync Backup System
+
+Automatic backups created during sync operations:
+
+```
+backup/
+├── plan-<timestamp>.json          # Execution plans for resumption
+├── droid-<timestamp>/             # Droid configuration backups
+├── qwen-<timestamp>/              # Qwen configuration backups
+├── codex-<timestamp>/             # Codex configuration backups
+└── opencode-<timestamp>/          # OpenCode configuration backups
+```
+
+### Runtime Directories
+
+These directories are created and managed automatically:
+
+| Directory | Purpose | Content |
+|-----------|---------|---------|
+| `debug/` | Runtime debugging | Logs, error traces |
+| `file-history/` | File tracking | Modification history |
+| `ide/` | IDE integration | Lock files, state |
+| `session-env/` | Session data | Environment variables |
+| `shell-snapshots/` | Command history | Shell command logs |
+| `statsig/` | Analytics | Usage metrics |
+| `todos/` | Task tracking | Active task lists |
+
+## Configuration Priority
+
+1. **Global Settings**: `settings.json` (root level)
+2. **Shared Permissions**: `.claude/settings.json`
+3. **Local Overrides**: `.claude/settings.local.json` (git-ignored)
+4. **Rules**: Numbered files in `/rules/` (auto-loaded by pattern)
+5. **Commands**: Slash commands in `/commands/`
+6. **Project Config**: `/projects/` (project-specific overrides)
+
+## File Naming Conventions
+
+### Rules Files
+- Format: `XX-description.md`
+- `XX`: Two-digit number for loading order
+- `description`: kebab-case description
+- Examples: `01-development-standards.md`, `10-python-guidelines.md`
+
+### Command Files
+- Top-level: `command-name.md`
+- Nested: `category/command-name.md`
+- Examples: `draft-commit-message.md`, `config-sync/sync-cli.md`
+
+### Backup Files
+- Plans: `plan-YYYYMMDD-HHMMSS.json`
+- Tool backups: `toolname-YYYYMMDD-HHMMSS/`
+
+## Git Considerations
+
+### Tracked Files
+- All configuration files except local overrides
+- Rules and commands
+- Documentation
+
+### Git-Ignored Files
+- `.claude/settings.local.json`
+- Runtime directories (`debug/`, `session-env/`, etc.)
+- Backup directories
+- IDE lock files
+
+### Recommended .gitignore Pattern
+```gitignore
+# Local overrides
+.claude/settings.local.json
+
+# Runtime directories
+debug/
+file-history/
+session-env/
+shell-snapshots/
+statsig/
+todos/
+
+# Backup system
+backup/
+
+# IDE integration
+ide/
+```
+
+## Migration Guide
+
+When moving this configuration to a new system:
+
+1. **Copy Core Files**:
+   - `settings.json`
+   - `.claude/settings.json`
+   - `rules/` directory
+   - `commands/` directory
+   - `CLAUDE.md`, `AGENTS.md`
+
+2. **Regenerate Runtime Files**:
+   - Runtime directories will be created automatically
+   - Backup system will initialize on first sync
+
+3. **Update Local Settings**:
+   - Create `.claude/settings.local.json` for system-specific preferences
+   - Adjust paths and tool locations as needed
+
+## Related Documentation
+
+- **[Settings Reference](./settings.md)** - Configuration hierarchy and permissions
+- **[Commands Reference](./commands.md)** - Available slash commands
+- **[Config-Sync Guide](./config-sync-guide.md)** - Sync system documentation
