@@ -1,0 +1,14 @@
+{
+  "defaults": {
+    "target": "all",
+    "components": [
+      "rules",
+      "permissions",
+      "commands",
+      "settings",
+      "memory"
+    ],
+    "verify": true,
+    "dryRun": false
+  }
+}

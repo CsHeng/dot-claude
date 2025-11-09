@@ -6,6 +6,7 @@ The config-sync suite now centers on a single slash command, `/config-sync:cli`,
 
 - `cli/` – Command manifest + `config-sync-cli.sh` entrypoint
 - `adapters/` – Target-specific automation invoked during the `adapt` phase
+- `sync-project-rules.{md,sh}` – Standalone slash command for syncing the shared rule library into IDE-facing directories
 - `lib/common.*` – Shared helpers (parsing, logging, path resolution)
 - `lib/phases/` – Phase runners (`collect`, `analyze`, `plan`, `prepare`, `adapt`, `execute`, `verify`, `report`)
 - `lib/planners/` – Plan builders for sync/adapt flows
@@ -17,6 +18,7 @@ The config-sync suite now centers on a single slash command, `/config-sync:cli`,
 | Command | Purpose |
 | --- | --- |
 | `/config-sync:cli` | Unified entrypoint (`--action=<sync|analyze|verify|adapt|plan|report>`) with support for `--target`, `--components`, `--profile`, `--plan-file`, `--from-phase`, `--until-phase`, `--dry-run`, `--force`, `--fix`, `--adapter`, and `--format`. |
+| `/config-sync:sync-project-rules` | IDE helper that copies `~/.claude/rules` (plus project overrides) into `.cursor/rules` and `.github/instructions`, supporting `--target`, `--dry-run`, `--verify-only`, and `--project-root` or `CLAUDE_PROJECT_DIR`. |
 
 Adapters such as `/config-sync:adapt-permissions` or `/config-sync:droid` remain for direct tooling control, but the orchestration layer no longer exposes per-phase wrappers like `/config-sync:sync` or `/config-sync:verify`.
 
