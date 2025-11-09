@@ -1,0 +1,316 @@
+@startuml Config-Sync Project Rules Sequence Diagram
+
+!theme plain
+title Config-Sync Project Rules: IDE Integration Workflow
+scale 1.0
+
+' Define styles with better contrast
+skinparam actor {
+    BackgroundColor #4A90E2
+    BorderColor #2E5C8A
+    FontColor White
+}
+
+skinparam participant {
+    BackgroundColor #52C41A
+    BorderColor #389E0D
+    FontColor White
+}
+
+skinparam database {
+    BackgroundColor #FA8C16
+    BorderColor #D46B08
+    FontColor White
+}
+
+skinparam sequence {
+    ArrowColor #333333
+    ArrowFontColor #333333
+    LifeLineBorderColor #333333
+    LifeLineBackgroundColor #F5F5F5
+}
+
+skinparam note {
+    BackgroundColor #F0F0F0
+    BorderColor #999999
+    FontColor #333333
+}
+
+' Actors and Participants
+actor "User" as user
+participant "Project Rules CLI" as proj_cli
+participant "Project Detector" as detector
+participant "Claude Config" as claude_config
+participant "File System" as filesystem
+
+participant "Cursor IDE" as cursor
+participant "VS Code Copilot" as copilot
+participant "Git Repository" as git
+
+' == PROJECT AUTO-DETECTION ==
+group Project Root Detection
+    user -> proj_cli: /config-sync/sync-project-rules --all
+    activate proj_cli
+
+    note over proj_cli: Command auto-detects project root\\nor uses CLAUDE_PROJECT_DIR environment variable
+
+    proj_cli -> detector: Detect project root directory
+    activate detector
+
+    alt Project Root Found via Git
+        detector -> git: Look for .git directory
+        activate git
+        git --> detector: Git repository root found
+        deactivate git
+        detector --> proj_cli: Project root: /path/to/project
+        deactivate detector
+
+    else Project Root via Environment
+        proj_cli -> proj_cli: Use CLAUDE_PROJECT_DIR=/path/to/project
+        proj_cli --> proj_cli: Project root from environment
+    else No Project Found
+        proj_cli --> user: ❌ Error: No project root found
+        deactivate proj_cli
+    end
+
+    note over proj_cli: Project confirmed at detected path
+end
+
+' == RULES COLLECTION PHASE ==
+group Rules Collection from Claude Config
+    proj_cli -> claude_config: Read ~/.claude/rules/*.md
+    activate claude_config
+
+    note over claude_config: Finds all rule files with numbering:\\n00-memory-rules.md, 01-development-standards.md,\\n02-architecture-patterns.md, etc.
+
+    claude_config --> proj_cli: List of rule files with content
+    deactivate claude_config
+
+    note over proj_cli: Processing rule files for IDE adaptation
+end
+
+' == IDE DIRECTORY SETUP ==
+group IDE Directory Preparation
+    proj_cli -> filesystem: Check if .cursor/rules exists
+    activate filesystem
+
+    alt Cursor Directory Missing
+        filesystem --> proj_cli: Directory not found
+        proj_cli -> filesystem: Create .cursor/rules directory
+        filesystem --> proj_cli: Directory created successfully
+    else Directory Exists
+        filesystem --> proj_cli: Directory already exists
+    end
+    deactivate filesystem
+
+    proj_cli -> filesystem: Check if .github/instructions exists
+    activate filesystem
+
+    alt VS Code Instructions Missing
+        filesystem --> proj_cli: Directory not found
+        proj_cli -> filesystem: Create .github/instructions directory
+        filesystem --> proj_cli: Directory created successfully
+    else Directory Exists
+        filesystem --> proj_cli: Directory already exists
+    end
+    deactivate filesystem
+
+    note over proj_cli: IDE directories prepared for rule synchronization
+end
+
+' == CURSOR RULES SYNCHRONIZATION ==
+group Cursor IDE Rules Sync
+    par Parallel Rule File Copy to Cursor
+        proj_cli -> filesystem: Copy 00-memory-rules.md → .cursor/rules/
+        activate filesystem
+        filesystem --> proj_cli: 00-memory-rules.md copied
+        deactivate filesystem
+
+        proj_cli -> filesystem: Copy 01-development-standards.md → .cursor/rules/
+        activate filesystem
+        filesystem --> proj_cli: 01-development-standards.md copied
+        deactivate filesystem
+
+        proj_cli -> filesystem: Copy 02-architecture-patterns.md → .cursor/rules/
+        activate filesystem
+        filesystem --> proj_cli: 02-architecture-patterns.md copied
+        deactivate filesystem
+    end
+
+    note over proj_cli: All Claude rules copied to Cursor with original numbering
+
+    proj_cli -> cursor: Notify rules updated (if IDE is running)
+    activate cursor
+    cursor --> proj_cli: Rules acknowledged
+    deactivate cursor
+end
+
+' == VS CODE COPILOT SYNCHRONIZATION ==
+group VS Code Copilot Rules Sync
+    par Parallel Rule File Copy to VS Code
+        proj_cli -> filesystem: Copy 00-memory-rules.md → .github/instructions/
+        activate filesystem
+        filesystem --> proj_cli: 00-memory-rules.md copied
+        deactivate filesystem
+
+        proj_cli -> filesystem: Copy 01-development-standards.md → .github/instructions/
+        activate filesystem
+        filesystem --> proj_cli: 01-development-standards.md copied
+        deactivate filesystem
+
+        proj_cli -> filesystem: Copy 02-architecture-patterns.md → .github/instructions/
+        activate filesystem
+        filesystem --> proj_cli: 02-architecture-patterns.md copied
+        deactivate filesystem
+    end
+
+    note over proj_cli: All Claude rules copied to VS Code Copilot with original numbering
+
+    proj_cli -> copilot: Notify instructions updated (if extension is active)
+    activate copilot
+    copilot --> proj_cli: Instructions acknowledged
+    deactivate copilot
+end
+
+' == VERIFICATION PHASE ==
+group Project Rules Verification
+    proj_cli -> filesystem: Verify all files copied successfully
+    activate filesystem
+
+    par Parallel File Verification
+        filesystem -> filesystem: Check .cursor/rules/00-memory-rules.md
+        filesystem -> filesystem: Check .cursor/rules/01-development-standards.md
+        filesystem -> filesystem: Check .github/instructions/00-memory-rules.md
+        filesystem -> filesystem: Check .github/instructions/01-development-standards.md
+    end
+
+    filesystem --> proj_cli: All files verified and accessible
+    deactivate filesystem
+
+    proj_cli -> proj_cli: Generate sync report
+    proj_cli --> user: ✅ Project rules synchronized successfully to IDEs
+end
+
+' == TARGETED IDE SYNC ==
+group Targeted IDE Synchronization
+    user -> proj_cli: /config-sync/sync-project-rules --target=cursor
+    activate proj_cli
+
+    note over proj_cli: Targeted sync updates only specific IDE
+
+    proj_cli -> detector: Detect project root (reusing detection logic)
+    activate detector
+    detector --> proj_cli: Project root confirmed
+    deactivate detector
+
+    proj_cli -> claude_config: Read Claude rules
+    activate claude_config
+    claude_config --> proj_cli: Rule files loaded
+    deactivate claude_config
+
+    proj_cli -> filesystem: Sync rules only to .cursor/rules/
+    activate filesystem
+    filesystem --> proj_cli: Cursor rules updated
+    deactivate filesystem
+
+    proj_cli --> user: ✅ Cursor rules synchronized
+    deactivate proj_cli
+end
+
+' == VERIFICATION-ONLY MODE ==
+group Verification Only Workflow
+    user -> proj_cli: /config-sync/sync-project-rules --verify-only
+    activate proj_cli
+
+    proj_cli -> detector: Detect project root
+    activate detector
+    detector --> proj_cli: Project root found
+    deactivate detector
+
+    proj_cli -> filesystem: Check existing IDE rule files
+    activate filesystem
+
+    par Parallel File Verification
+        filesystem -> filesystem: Verify .cursor/rules/ file count and content
+        filesystem -> filesystem: Verify .github/instructions/ file count and content
+        filesystem -> filesystem: Compare with Claude source rules
+    end
+
+    filesystem --> proj_cli: Verification report with discrepancies
+    deactivate filesystem
+
+    alt Issues Found
+        proj_cli --> user: ⚠️ Verification complete with issues found
+    else All Good
+        proj_cli --> user: ✅ Verification complete - all rules in sync
+    end
+
+    deactivate proj_cli
+end
+
+' == ERROR HANDLING ==
+group Error Handling and Recovery
+    user -> proj_cli: /config-sync/sync-project-rules --all
+    activate proj_cli
+
+    proj_cli -> detector: Detect project root
+    activate detector
+    detector --> proj_cli: ❌ No git repository found
+    deactivate detector
+
+    note over proj_cli
+      Error handling scenarios:
+      1. Project root not found - suggest using CLAUDE_PROJECT_DIR
+      2. Permission denied writing to IDE directories
+      3. Claude rules directory missing or empty
+      4. File system errors during copy operations
+    end note
+
+    proj_cli --> user: ❌ Error: No project detected. Use CLAUDE_PROJECT_DIR or run in git repository
+    deactivate proj_cli
+end
+
+' Workflow notes
+note over user, git
+    **Project Rules Sync Characteristics**
+    • Execution time: 30-60 seconds for typical projects
+    • File count: 20-30 rule files depending on configuration
+    • IDE support: Cursor and VS Code Copilot
+    • Target detection: Automatic via git or environment variable
+
+    **Integration Benefits**
+    • Consistent coding standards across IDEs
+    • Single source of truth from Claude config
+    • Automatic rule numbering preservation
+    • Project-specific when needed
+
+    **Usage Patterns**
+    • Initial project setup: --all flag
+    • IDE-specific updates: --target flag
+    • Compliance checks: --verify-only flag
+    • CI/CD integration via environment variables
+end note
+
+' Directory structure notes
+note right of filesystem
+    **Directory Structure Created**
+    project/
+    ├── .cursor/
+    │   └── rules/
+    │       ├── 00-memory-rules.md
+    │       ├── 01-development-standards.md
+    │       └── ... (all Claude rules)
+    └── .github/
+        └── instructions/
+            ├── 00-memory-rules.md
+            ├── 01-development-standards.md
+            └── ... (all Claude rules)
+
+    **File Handling**
+    • Preserves original numbering from Claude
+    • Maintains markdown formatting
+    • Overwrites existing files with current Claude config
+    • Creates directories as needed
+end note
+
+@enduml
