@@ -52,6 +52,16 @@ backup_target_components() {
   mkdir -p "$target_backup"
 
   local files_backed_up=0
+  local components_blob=" ${components[*]} "
+  local has_permissions=false
+  local has_settings=false
+
+  if [[ "$components_blob" == *" permissions "* ]]; then
+    has_permissions=true
+  fi
+  if [[ "$components_blob" == *" settings "* ]]; then
+    has_settings=true
+  fi
 
   # Backup rules directory if selected
   if [[ " ${components[*]} " =~ " rules " ]]; then
@@ -68,18 +78,25 @@ backup_target_components() {
 
   # Backup commands directory if selected (excluding config-sync for non-opencode tools)
   if [[ " ${components[*]} " =~ " commands " ]]; then
-    if [[ -d "$target_dir/commands" ]]; then
+    local commands_dir
+    commands_dir="$(get_target_commands_dir "$target")"
+    if [[ -d "$commands_dir" ]]; then
+      local rel_path="${commands_dir#$target_dir/}"
+      local dest_dir="$target_backup/${rel_path:-commands}"
+
+      mkdir -p "$dest_dir"
+
       # For non-opencode tools, exclude config-sync directory
-      local rsync_args=("$target_dir/commands/" "$target_backup/commands/")
+      local rsync_args=("$commands_dir/" "$dest_dir/")
       if [[ "$target" != "opencode" ]]; then
-        rsync_args=("--exclude=config-sync" "$target_dir/commands/" "$target_backup/commands/")
+        rsync_args=("--exclude=config-sync" "$commands_dir/" "$dest_dir/")
       fi
 
       if ! rsync -a --quiet "${rsync_args[@]}"; then
         log_error "[backup] Failed to backup commands directory for $target"
         return 1
       else
-        log_info "[backup] Backed up commands directory for $target"
+        log_info "[backup] Backed up ${rel_path:-commands} for $target"
         ((files_backed_up += 1))
       fi
     fi
@@ -123,6 +140,43 @@ backup_target_components() {
           return 1
         else
           log_info "[backup] Backed up $settings_file for $target"
+          ((files_backed_up += 1))
+        fi
+      fi
+    done
+  fi
+
+  # Backup permission manifests/configuration if requested
+  if [[ "$has_permissions" == true ]]; then
+    local perm_files=()
+    case "$target" in
+      droid)
+        if [[ "$has_settings" != true ]]; then
+          perm_files+=("$target_dir/settings.json")
+        fi
+        ;;
+      qwen)
+        perm_files+=("$target_dir/permissions.json")
+        ;;
+      codex)
+        if [[ "$has_settings" != true ]]; then
+          perm_files+=("$target_dir/config.toml")
+        fi
+        ;;
+      opencode)
+        perm_files+=("$target_dir/opencode.json")
+        ;;
+    esac
+
+    for perm_path in "${perm_files[@]}"; do
+      if [[ -f "$perm_path" ]]; then
+        local relative="${perm_path#$target_dir/}"
+        local dest="$target_backup/$relative"
+        if ! create_backup "$perm_path" "$dest"; then
+          log_error "[backup] Failed to backup permissions file $perm_path for $target"
+          return 1
+        else
+          log_info "[backup] Backed up permissions file $relative for $target"
           ((files_backed_up += 1))
         fi
       fi

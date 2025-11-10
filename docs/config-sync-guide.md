@@ -79,7 +79,7 @@ plantuml -tsvg docs/config-sync-project-sequence-diagram.puml
 | Tool | Config Directory | Key Files | Command Format |
 |------|------------------|-----------|----------------|
 | Droid CLI | `~/.factory` | `settings.json`, `config.json`, `DROID.md`, `AGENTS.md`, `rules/` | Markdown |
-| Qwen CLI | `~/.qwen` | `settings.json`, `QWEN.md`, `AGENTS.md`, `rules/` | TOML |
+| Qwen CLI | `~/.qwen` | `settings.json`, `permissions.json`, `QWEN.md`, `AGENTS.md`, `rules/` | TOML |
 | OpenAI Codex CLI | `~/.codex` | `config.toml`, `CODEX.md`, `AGENTS.md`, `rules/` | Markdown |
 | OpenCode | `~/.config/opencode` | `opencode.json`, optional `user-settings.json`, `AGENTS.md`, `rules/` | JSON |
 
@@ -93,16 +93,16 @@ All operations use: `/config-sync/sync-cli --action=<ACTION> [FLAGS]`
 
 | Action | Purpose | Key Flags |
 |--------|---------|-----------|
-| `sync` | Full workflow: collect → analyze → plan → prepare → adapt → execute → verify → report | `--target=<list|all>`, `--components=<list|all>`, `--profile=<full|fast|custom>`, `--dry-run`, `--force`, `--fix`, `--no-verify` |
+| `sync` | Full workflow: collect → analyze → plan → prepare → adapt → execute → verify → report | `--target=<list|all>`, `--components=<list|all>`, `--profile=<full|fast|custom>`, `--dry-run`, `--force`, `--no-verify` |
 | `analyze` | Inspect target capabilities and emit reports | `--format=<markdown|table|json>`, `--detailed` |
-| `verify` | Run verification routines (and optional fixes) | `--components=<list|all>`, `--fix`, `--detailed` |
+| `verify` | Run verification routines | `--components=<list|all>`, `--detailed` |
 | `adapt` | Execute a single adapter via the CLI pipeline | `--adapter=<commands|permissions|rules|memory|settings>` |
 | `plan` | Build and persist a plan without executing later phases | `--plan-file=<path>` |
 | `report` | Re-render the latest run metadata (requires prior phases) | `--plan-file=<path>` |
 
 #### Global Flags
 
-`--target`, `--components`, `--profile`, `--plan-file`, `--from-phase`, `--until-phase`, `--dry-run`, `--force`, `--fix`, `--no-verify`, `--adapter`, `--format`, `--verbose`
+`--target`, `--components`, `--profile`, `--plan-file`, `--from-phase`, `--until-phase`, `--dry-run`, `--force`, `--no-verify`, `--adapter`, `--format`, `--verbose`
 
 #### Component Types
 
@@ -124,8 +124,8 @@ All operations use: `/config-sync/sync-cli --action=<ACTION> [FLAGS]`
 # Analyze OpenCode in table format
 /config-sync/sync-cli --action=analyze --target=opencode --format=table --detailed
 
-# Verify permissions + commands for Codex and auto-fix
-/config-sync/sync-cli --action=verify --target=codex --components=permissions,commands --fix
+# Verify permissions + commands for Codex
+/config-sync/sync-cli --action=verify --target=codex --components=permissions,commands
 
 # Run only the permissions adapter for Qwen
 /config-sync/sync-cli --action=adapt --adapter=permissions --target=qwen --dry-run
@@ -226,7 +226,7 @@ The `prepare` phase automatically creates backups unless using `fast` profile:
 /config-sync/sync-cli --action=verify --target=all --components=all --detailed
 
 # Verification with auto-fix
-/config-sync/sync-cli --action=verify --target=codex --components=permissions,commands --fix
+/config-sync/sync-cli --action=verify --target=codex --components=permissions,commands
 
 # Component-specific verification
 /config-sync/sync-cli --action=verify --target=qwen --components=rules

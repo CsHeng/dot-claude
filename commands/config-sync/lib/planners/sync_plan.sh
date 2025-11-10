@@ -11,24 +11,23 @@ __config_sync_emit_plan() {
   local until_phase="$8"
   local dry_run="$9"
   local force="${10}"
-  local fix="${11}"
-  local verify="${12}"
-  local settings_path="${13}"
-  local timestamp="${14}"
-  local run_root="${15}"
-  local adapter="${16:-}"
+  local verify="${11}"
+  local settings_path="${12}"
+  local timestamp="${13}"
+  local run_root="${14}"
+  local adapter="${15:-}"
 
   local plan_dir
   plan_dir="$(dirname "$plan_path")"
   mkdir -p "$plan_dir"
 
   python3 - "$plan_path" "$action" "$targets_csv" "$components_csv" "$profile" \
-    "$phases_csv" "$from_phase" "$until_phase" "$dry_run" "$force" "$fix" \
+    "$phases_csv" "$from_phase" "$until_phase" "$dry_run" "$force" \
     "$verify" "$settings_path" "$timestamp" "$run_root" "$adapter" <<'PY'
 import json, os, sys
 
 (plan_path, action, targets_csv, components_csv, profile, phases_csv,
- from_phase, until_phase, dry_run, force, fix, verify,
+ from_phase, until_phase, dry_run, force, verify,
  settings_path, timestamp, run_root, adapter) = sys.argv[1:]
 
 def split_csv(value):
@@ -59,7 +58,6 @@ plan = {
     "flags": {
         "dryRun": as_bool(dry_run),
         "force": as_bool(force),
-        "fix": as_bool(fix),
         "verify": as_bool(verify),
     },
     "settings": {
@@ -86,5 +84,5 @@ PY
 
 planner_build_sync_plan() {
   __config_sync_emit_plan "$1" "$2" "$3" "$4" "$5" "$6" "$7" "$8" "$9" \
-    "${10}" "${11}" "${12}" "${13}" "${14}" "${15}" ""
+    "${10}" "${11}" "${12}" "${13}" "${14}" ""
 }

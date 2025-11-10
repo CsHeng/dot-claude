@@ -442,8 +442,8 @@ except Exception as e:
 sync_memory() {
   log_info "Syncing memory files to Qwen..."
 
-  local memory_file="$QWEN_CONFIG_DIR/QWEN.md"
-  local agents_file="$QWEN_CONFIG_DIR/AGENTS.md"
+  local memory_file="$QWEN_ROOT/QWEN.md"
+  local agents_file="$QWEN_ROOT/AGENTS.md"
   local timestamp
   timestamp="$(date -u +"%Y-%m-%dT%H:%M:%SZ")"
 

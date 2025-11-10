@@ -99,12 +99,9 @@ get_target_commands_dir() {
     qwen)    printf '%s\n' "$HOME/.qwen/commands" ;;
     codex)   printf '%s\n' "$HOME/.codex/commands" ;;
     opencode)
-      local base="$(get_target_config_dir opencode)"
-      if [[ -d "$base/command" || ! -d "$base/commands" ]]; then
-        printf '%s\n' "$base/command"
-      else
-        printf '%s\n' "$base/commands"
-      fi
+      local base
+      base="$(get_target_config_dir opencode)"
+      printf '%s\n' "$base/command"
       ;;
   esac
 }

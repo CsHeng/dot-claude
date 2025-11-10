@@ -17,7 +17,7 @@ The config-sync suite now centers on a single slash command, `/config-sync/sync-
 
 | Command | Purpose |
 | --- | --- |
-| `/config-sync/sync-cli` | Unified entrypoint (`--action=<sync|analyze|verify|adapt|plan|report>`) with support for `--target`, `--components`, `--profile`, `--plan-file`, `--from-phase`, `--until-phase`, `--dry-run`, `--force`, `--fix`, `--adapter`, and `--format`. |
+| `/config-sync/sync-cli` | Unified entrypoint (`--action=<sync|analyze|verify|adapt|plan|report>`) with support for `--target`, `--components`, `--profile`, `--plan-file`, `--from-phase`, `--until-phase`, `--dry-run`, `--force`, `--adapter`, and `--format`. |
 | `/config-sync/sync-project-rules` | IDE helper that copies `~/.claude/rules` (plus project overrides) into `.cursor/rules` and `.github/instructions`, supporting `--target`, `--dry-run`, `--verify-only`, and `--project-root` or `CLAUDE_PROJECT_DIR`. The old `/config-sync:sync-project-rules` alias has been removed—use the slash command directly. |
 
 Adapters such as `/config-sync:adapt-permissions` or `/config-sync:droid` remain for direct tooling control, but the orchestration layer no longer exposes per-phase wrappers like `/config-sync:sync` or `/config-sync:verify`.
@@ -25,7 +25,7 @@ Adapters such as `/config-sync:adapt-permissions` or `/config-sync:droid` remain
 ## Supported Targets
 
 - Factory/Droid CLI – Markdown commands, JSON permissions
-- Qwen CLI – TOML command conversion, documentation-based permissions
+- Qwen CLI – TOML command conversion, JSON permission manifest
 - OpenAI Codex CLI – Minimal configuration with sandbox levels
 - OpenCode – JSON command format with operation-based permissions
 
@@ -39,7 +39,7 @@ Adapters such as `/config-sync:adapt-permissions` or `/config-sync:droid` remain
 /config-sync/sync-cli --action=analyze --target=opencode --format=table
 
 # Verify commands + permissions for droid and qwen
-/config-sync/sync-cli --action=verify --target=droid,qwen --components=commands,permissions --fix
+/config-sync/sync-cli --action=verify --target=droid,qwen --components=commands,permissions
 
 # Re-run plan from prepare onwards
 /config-sync/sync-cli --action=sync --plan-file=~/.claude/backup/plan-20250205-120210.json --from-phase=prepare

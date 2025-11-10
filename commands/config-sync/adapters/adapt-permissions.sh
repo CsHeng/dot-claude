@@ -317,82 +317,51 @@ adapt_qwen_permissions() {
 
     local config_dir
     config_dir=$(get_target_config_dir "$TARGET")
-    local permissions_file="$config_dir/PERMISSIONS.md"
-    local permissions_json="$config_dir/permissions.json"
+    local manifest_file="$config_dir/permissions.json"
+    local timestamp
+    timestamp="$(date -u +"%Y-%m-%dT%H:%M:%SZ")"
 
     if [[ "$DRY_RUN" == true ]]; then
-        log_info "Would create permission guidelines for Qwen in $permissions_file"
+        log_info "Would write Qwen permission manifest to $manifest_file"
         return 0
     fi
 
-    # Create config directory if it doesn't exist
     mkdir -p "$config_dir"
 
-    # Note: Backup handled by unified prepare phase
-    # No need for individual guideline file backups
+    local allow_blob ask_blob deny_blob
+    allow_blob=$(printf '%s\n' "${ALLOW_LIST[@]}")
+    ask_blob=$(printf '%s\n' "${ASK_LIST[@]}")
+    deny_blob=$(printf '%s\n' "${DENY_LIST[@]}")
 
-    # Create permission guidelines
-    cat > "$permissions_file" << 'EOF'
-# Qwen CLI Permissions Guide
+    ALLOW_BLOB="$allow_blob" \
+    ASK_BLOB="$ask_blob" \
+    DENY_BLOB="$deny_blob" \
+    MANIFEST_TS="$timestamp" \
+    python3 - "$manifest_file" <<'PYMANIFEST'
+import json
+import os
+import sys
+from pathlib import Path
 
-## Permission System Overview
+manifest_path = Path(sys.argv[1])
 
-Qwen CLI does not have a formal permission system like Claude Code. It operates with the same permissions as the user account. However, we can establish guidelines for safe usage based on your Claude Code permissions.
+def collect(env_name: str) -> list[str]:
+    return [line for line in os.environ.get(env_name, "").splitlines() if line.strip()]
 
-## Security Guidelines
+manifest = {
+    "version": 1,
+    "generated_at": os.environ.get("MANIFEST_TS"),
+    "permissions": {
+        "allow": collect("ALLOW_BLOB"),
+        "ask": collect("ASK_BLOB"),
+        "deny": collect("DENY_BLOB"),
+    },
+}
 
-### Always Safe Commands
-The following commands are considered safe and can be executed without special consideration:
-EOF
+manifest_path.write_text(json.dumps(manifest, indent=2) + "\n", encoding="utf-8")
+PYMANIFEST
 
-    # Add safe commands
-    echo "" >> "$permissions_file"
-    for cmd in "${ALLOW_LIST[@]}"; do
-        echo "- \`${cmd}\`" >> "$permissions_file"
-    done
-
-    cat >> "$permissions_file" << 'EOF'
-
-### Commands Requiring Confirmation
-The following commands should be used with care and may require user confirmation:
-EOF
-
-    # Add ask commands
-    echo "" >> "$permissions_file"
-    for cmd in "${ASK_LIST[@]}"; do
-        echo "- \`${cmd}\`" >> "$permissions_file"
-    done
-
-    cat >> "$permissions_file" << 'EOF'
-
-### Commands to Avoid
-The following commands are considered dangerous and should be avoided:
-EOF
-
-    # Add deny commands
-    echo "" >> "$permissions_file"
-    for cmd in "${DENY_LIST[@]}"; do
-        echo "- \`${cmd}\`" >> "$permissions_file"
-    done
-
-    cat >> "$permissions_file" << 'EOF'
-
-## Best Practices
-
-1. **Review Commands**: Always review commands before execution, especially those that modify files or system settings.
-2. **Use Version Control**: Commit changes before running potentially destructive commands.
-3. **Test in Safe Environment**: Test commands in a development environment before production use.
-4. **Backup Important Data**: Ensure you have backups before running file modification commands.
-
-## Integration Notes
-
-This permission guide was synchronized from your Claude Code configuration.
-The guidelines reflect your established permission boundaries and security preferences.
-
-Generated: $(date)
-EOF
-
-    log_success "Qwen permission guidelines created in $permissions_file"
+    log_success "Qwen permission manifest updated in $manifest_file"
 }
 
 # Adapt permissions for Codex
@@ -603,9 +572,9 @@ generate_adaptation_report() {
             echo "- **Method**: Map Claude allow/ask/deny to commandAllowlist/commandDenylist"
             ;;
         "qwen")
-            echo "- **Format**: Markdown guidelines"
-            echo "- **File**: ~/.qwen/PERMISSIONS.md"
-            echo "- **Method**: Create user awareness documentation"
+            echo "- **Format**: JSON permission manifest"
+            echo "- **File**: ~/.qwen/permissions.json"
+            echo "- **Method**: Structured allow/ask/deny mapping consumed by the CLI"
             ;;
         "codex")
             echo "- **Format**: TOML sandbox configuration"
@@ -706,10 +675,10 @@ PYVERIFY
 verify_qwen_permissions() {
     local config_dir
     config_dir=$(get_target_config_dir "$TARGET")
-    local permissions_file="$config_dir/PERMISSIONS.md"
+    local manifest_file="$config_dir/permissions.json"
 
-    if [[ ! -f "$permissions_file" ]]; then
-        log_error "Qwen PERMISSIONS.md not found at $permissions_file"
+    if [[ ! -f "$manifest_file" ]]; then
+        log_error "Qwen permissions.json not found at $manifest_file"
         return 1
     fi
 
@@ -721,35 +690,38 @@ verify_qwen_permissions() {
     EXPECTED_ALLOW="$allow_blob" \
     EXPECTED_ASK="$ask_blob" \
     EXPECTED_DENY="$deny_blob" \
-    python3 - "$permissions_file" <<'PYVERIFY'
-import os, sys
+    python3 - "$manifest_file" <<'PYVERIFY'
+import json, os, sys
 from pathlib import Path
 
-doc_path = Path(sys.argv[1])
-text = doc_path.read_text(encoding="utf-8")
+manifest_path = Path(sys.argv[1])
+manifest = json.loads(manifest_path.read_text(encoding="utf-8") or "{}")
+permissions = manifest.get("permissions") or {}
+
+allow = set(permissions.get("allow") or [])
+ask = set(permissions.get("ask") or [])
+deny = set(permissions.get("deny") or [])
 
 def collect(env_name: str) -> list[str]:
     return [line for line in os.environ.get(env_name, "").splitlines() if line.strip()]
 
-def missing(entries):
-    return [entry for entry in entries if entry not in text]
+problems = []
+for entry in collect("EXPECTED_ALLOW"):
+    if entry not in allow:
+        problems.append(f"allow:{entry}")
+for entry in collect("EXPECTED_ASK"):
+    if entry not in ask:
+        problems.append(f"ask:{entry}")
+for entry in collect("EXPECTED_DENY"):
+    if entry not in deny:
+        problems.append(f"deny:{entry}")
 
-missing_any = False
-for name, entries in (
-    ("allow", collect("EXPECTED_ALLOW")),
-    ("ask", collect("EXPECTED_ASK")),
-    ("deny", collect("EXPECTED_DENY")),
-):
-    miss = missing(entries)
-    if miss:
-        missing_any = True
-        print(f"[ERROR] PERMISSIONS.md missing {name} commands: {', '.join(miss)}", file=sys.stderr)
-
-if missing_any:
+if problems:
+    print("[ERROR] Qwen permissions.json missing entries:", ", ".join(problems), file=sys.stderr)
     sys.exit(1)
 PYVERIFY
 
-    log_success "Qwen permission guide verified in $permissions_file"
+    log_success "Qwen permission manifest verified in $manifest_file"
 }
 
 verify_codex_permissions() {
