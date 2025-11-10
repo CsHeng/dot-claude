@@ -41,7 +41,6 @@ UNTIL_PHASE=""
 FORMAT="markdown"
 DRY_RUN=false
 FORCE=false
-FIX=false
 NO_VERIFY=false
 VERBOSE=false
 DETAILED=false
@@ -85,7 +84,6 @@ Options:
   --format=<markdown|table|json>
   --dry-run
   --force
-  --fix
   --no-verify
   --verbose
   --help
@@ -246,10 +244,6 @@ parse_args() {
         ;;
       --force)
         FORCE=true
-        shift
-        ;;
-      --fix)
-        FIX=true
         shift
         ;;
       --no-verify)
@@ -466,7 +460,6 @@ write_plan() {
         "$UNTIL_PHASE" \
         "$DRY_RUN" \
         "$FORCE" \
-        "$FIX" \
         "$VERIFY_ENABLED" \
         "$SETTINGS_PATH" \
         "$PLAN_TIMESTAMP" \
@@ -484,7 +477,6 @@ write_plan() {
         "$UNTIL_PHASE" \
         "$DRY_RUN" \
         "$FORCE" \
-        "$FIX" \
         "$VERIFY_ENABLED" \
         "$SETTINGS_PATH" \
         "$PLAN_TIMESTAMP" \

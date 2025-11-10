@@ -11,6 +11,7 @@ __phase_adapt_run_target_component() {
 
   local args=("--action=$action" "--component=$component")
   $DRY_RUN && args+=("--dry-run")
+  $FORCE && args+=("--force")
   $VERBOSE && args+=("--verbose")
 
   log_info "[adapt] Running adapter for $target ($component)"

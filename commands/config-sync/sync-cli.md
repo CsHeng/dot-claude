@@ -1,7 +1,7 @@
 name: "config-sync/sync-cli"
 command: "~/.claude/commands/config-sync/sync-cli.sh"
 description: Unified orchestrator for config-sync workflows (sync, analyze, verify, adapt, report)
-argument-hint: --action=<sync|analyze|verify|adapt|plan|report> --target=<list|all> --components=<list|all> [--adapter=<name>] [--profile=<fast|full|custom>] [--plan-file=<path>] [--from-phase=<phase>] [--until-phase=<phase>] [--dry-run] [--force] [--fix] [--no-verify]
+argument-hint: --action=<sync|analyze|verify|adapt|plan|report> --target=<list|all> --components=<list|all> [--adapter=<name>] [--profile=<fast|full|custom>] [--plan-file=<path>] [--from-phase=<phase>] [--until-phase=<phase>] [--dry-run] [--force] [--no-verify]
 allowed-tools: Read, Write, ApplyPatch, Bash(rg:*), Bash(ls:*), Bash(find:*), Bash(cat:*)
 ---
 
@@ -19,7 +19,7 @@ allowed-tools: Read, Write, ApplyPatch, Bash(rg:*), Bash(ls:*), Bash(find:*), Ba
   [--plan-file=<path>] \
   [--from-phase=<phase>] \
   [--until-phase=<phase>] \
-  [--dry-run] [--force] [--fix] [--no-verify] [--verbose]
+  [--dry-run] [--force] [--no-verify] [--verbose]
 ```
 
 ## Key behaviors
@@ -39,9 +39,9 @@ allowed-tools: Read, Write, ApplyPatch, Bash(rg:*), Bash(ls:*), Bash(find:*), Ba
   ```bash
   /config-sync/sync-cli --action=analyze --target=opencode --format=table
   ```
-- Verify commands + permissions and auto-fix common issues:
+- Verify commands + permissions across multiple targets:
   ```bash
-  /config-sync/sync-cli --action=verify --target=droid,qwen --components=commands,permissions --fix
+  /config-sync/sync-cli --action=verify --target=droid,qwen --components=commands,permissions
   ```
 - Run only the permissions adapter in dry-run mode:
   ```bash

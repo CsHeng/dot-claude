@@ -48,10 +48,24 @@ Analyze Claude's permission system and generate appropriate permission configura
 }
 ```
 
-#### Qwen CLI & Codex CLI
-- Generate permission guidelines documentation
-- Create user awareness documentation
-- Document recommended manual practices
+#### Qwen CLI
+```json
+{
+  "version": 1,
+  "permissions": {
+    "allow": [/* Claude 'allow' commands */],
+    "ask": [/* Claude 'ask' commands */],
+    "deny": [/* Claude 'deny' commands */]
+  }
+}
+```
+- Emit `permissions.json` manifest consumed by Qwen CLI wrappers
+- Keep the manifest sorted/deduplicated for stable diffs
+
+#### Codex CLI
+- Update the `[sandbox]` block inside `~/.codex/config.toml`
+- Derive `mode`, `allow_network`, and `allow_execution` from permission strictness
+- Preserve unrelated configuration fields while rewriting the sandbox block
 
 #### OpenCode CLI
 ```json
@@ -92,12 +106,17 @@ Map Claude command permissions to operation-based permissions:
 - Backup original file before modification
 - NEVER add sync metadata or tracking information
 
-### For Qwen CLI & Codex CLI
-- Generate `~/.qwen/PERMISSIONS.md` (Qwen) or `~/.codex/PERMISSIONS.md` (Codex) with guidelines
-- Document recommended permission practices
-- Create user awareness materials
-- If an existing file such as `permissions.json` is present, create `~/.qwen/backup` if needed and back it up with `rsync -a --quiet`
-- NEVER modify target tool settings files
+### For Qwen CLI
+- Generate/overwrite `~/.qwen/permissions.json` with allow/ask/deny arrays
+- Preserve manifest readability (indentation, stable ordering)
+- Ensure `permissions.json` is backed up by the prepare phase before mutation
+- Avoid emitting supplemental Markdown files
+
+### For Codex CLI
+- Generate/update the `[sandbox]` block inside `~/.codex/config.toml`
+- Preserve existing `[core]`, `[sync]`, and other sections
+- Keep previously configured `enabled`, `timeout`, and `memory_limit` values when present
+- Respect `--force` semantics before overwriting structural changes
 
 ### For OpenCode CLI
 - Generate/overwrite `~/.config/opencode/opencode.json` with adapted permissions
@@ -107,7 +126,7 @@ Map Claude command permissions to operation-based permissions:
 - NEVER add sync metadata or tracking information
 
 ## Safety Requirements
-- NEVER modify target tool settings files - this can break tools
+- Only modify target tool configuration files after confirming prepare-phase backups exist
 - Use `rsync -a` (not `cp`) for all backups to preserve metadata
 - If temporary files are needed, create them in /tmp using mktemp
 - ALWAYS clean up temporary files in /tmp immediately after use
