@@ -448,84 +448,11 @@ sync_memory() {
   timestamp="$(date -u +"%Y-%m-%dT%H:%M:%SZ")"
 
   if [[ "$DRY_RUN" == "true" ]]; then
-    log_info "Would create memory files: $memory_file, $agents_file"
+    log_info "Would copy CLAUDE.md to $memory_file and regenerate $agents_file"
     return 0
   fi
 
-  # Create QWEN.md - tool-specific memory file
-  log_info "Creating QWEN.md with Qwen-specific content..."
-  cat > "$memory_file" <<EOF
-# QWEN User Memory
-
-## Tool Configuration
-- **Tool**: QWEN CLI
-- **Source**: Synchronized from Claude Code configuration
-- **Sync Date**: ${timestamp}
-- **Format**: TOML command definitions, Markdown rules
-
-## QWEN-Specific Capabilities
-
-### Command Execution Model
-- **Permission System**: User permission level with confirmation prompts
-- **Safety Mechanisms**: User confirmation for shell execution
-- **Execution Context**: Same permissions as user account
-- **Trusted Prompts**: Project-based prompt trust system
-
-### File Operations
-- **Supported Formats**: TOML commands, Markdown rules, JSON settings
-- **Editing Capabilities**: Full file system access with user permissions
-- **Safety Features**: Shell execution requires explicit confirmation
-
-### Integration Features
-- **Commands**: TOML format command definitions
-- **Rules**: Markdown rule files with automatic loading
-- **Settings**: JSON-based configuration management
-- **Memory**: Context preservation across sessions
-
-## Development Standards
-
-This file contains adapted memory content from Claude Code configuration, customized for QWEN usage patterns.
-
-### Core Rules Directory
-Your development rules have been synchronized to: `rules/`
-
-The following rule categories are available and automatically loaded:
-- General development standards (01-development-standards.md)
-- Architecture patterns (02-architecture-patterns.md)
-- Security guidelines (03-security-standards.md)
-- Testing strategy (04-testing-strategy.md)
-- Error handling (05-error-patterns.md)
-- Language-specific guidelines (python, go, shell, docker)
-
-### QWEN-Specific Adaptations
-This memory file has been adapted for QWEN with the following changes:
-- Updated command format for TOML compatibility
-- Adapted permission system for user confirmation model
-- Added QWEN-specific capability documentation
-- Integrated with QWEN's trusted prompts system
-
-### Memory File References
-- Primary agents and capabilities: See AGENTS.md
-- Development rules: Automatically loaded from rules/ directory
-- Tool-specific settings: In settings.json
-- Command definitions: In commands/ directory (TOML format)
-
-## Usage Notes
-- This file serves as your primary memory reference for QWEN
-- Rules are automatically loaded from the rules/ directory
-- Agent instructions and capabilities are documented in AGENTS.md
-- Commands are defined in TOML format for QWEN compatibility
-- Shell operations require user confirmation
-
-## QWEN Integration Notes
-- Commands follow QWEN's TOML definition format
-- Permissions are managed through user confirmation prompts
-- Rules are automatically adapted for QWEN compatibility
-- All operations respect user file system permissions
-- Trusted prompts provide project-specific context
-
-Generated from Claude Code configuration on ${timestamp}.
-EOF
+  sync_claude_memory_file "$memory_file" "$FORCE"
 
   # Create AGENTS.md - universal agent capabilities with Qwen-specific notes
   log_info "Creating AGENTS.md with Qwen-specific integration notes..."

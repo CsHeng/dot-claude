@@ -25,9 +25,37 @@ validate_component() {
   esac
 }
 
+# Get component list from SELECTED_COMPONENTS
+get_components() {
+    printf '%s\n' "${SELECTED_COMPONENTS[@]}"
+}
+
+# Get tool-specific memory filename
+get_tool_memory_filename() {
+    local tool="$1"
+    case "$tool" in
+        "droid")
+            echo "DROID.md"
+            ;;
+        "qwen")
+            echo "QWEN.md"
+            ;;
+        "codex")
+            echo "CODEX.md"
+            ;;
+        "opencode")
+            echo "AGENTS.md"  # OpenCode uses AGENTS.md as primary memory
+            ;;
+        *)
+            echo ""
+            ;;
+    esac
+}
+
 log_info()    { printf '[INFO] %s\n' "$*"; }
 log_success() { printf '[OK] %s\n' "$*"; }
 log_warning() { printf '[WARN] %s\n' "$*"; }
+log_warn()     { log_warning "$@"; }  # Backward compatibility alias
 log_error()   { printf '[ERROR] %s\n' "$*"; }
 
 setup_plugin_environment() {

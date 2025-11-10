@@ -130,7 +130,8 @@ parse_arguments() {
         echo "Error: Invalid target '$TARGET'. Must be droid, qwen, codex, or opencode" >&2
         exit 1
     fi
-    MODE="${MODE,,}"
+    # Convert to lowercase for case-insensitive comparison
+    MODE=$(echo "$MODE" | tr '[:upper:]' '[:lower:]')
     if [[ ! "$MODE" =~ ^(adapt|verify)$ ]]; then
         echo "Error: Invalid mode '$MODE'. Use adapt or verify" >&2
         exit 1
@@ -217,10 +218,8 @@ adapt_droid_permissions() {
     # Create config directory if it doesn't exist
     mkdir -p "$config_dir"
 
-    # Backup existing settings
-    if [[ -f "$settings_file" && "$FORCE" == false ]]; then
-        backup_file "$settings_file"
-    fi
+    # Note: Backup handled by unified prepare phase
+    # No need for individual settings backup
 
     local allow_list=("${ALLOW_LIST[@]}")
     local ask_list=("${ASK_LIST[@]}")
@@ -329,15 +328,8 @@ adapt_qwen_permissions() {
     # Create config directory if it doesn't exist
     mkdir -p "$config_dir"
 
-    # Backup existing guideline files when not forced
-    if [[ "$FORCE" == false ]]; then
-        if [[ -f "$permissions_file" ]]; then
-            backup_file "$permissions_file"
-        fi
-        if [[ -f "$permissions_json" ]]; then
-            backup_file "$permissions_json"
-        fi
-    fi
+    # Note: Backup handled by unified prepare phase
+    # No need for individual guideline file backups
 
     # Create permission guidelines
     cat > "$permissions_file" << 'EOF'
@@ -541,9 +533,8 @@ adapt_opencode_permissions() {
     ask_env=$(printf '%s\n' "${ASK_LIST[@]}")
     deny_env=$(printf '%s\n' "${DENY_LIST[@]}")
 
-    if [[ -f "$config_file" && "$FORCE" == false ]]; then
-        backup_file "$config_file"
-    fi
+    # Note: Backup handled by unified prepare phase
+    # No need for individual config file backup
 
     ALLOW_LINES="$allow_env" \
     ASK_LINES="$ask_env" \

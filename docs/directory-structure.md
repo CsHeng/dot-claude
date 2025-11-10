@@ -46,7 +46,7 @@ This document describes the complete directory structure of the Claude Code conf
 
 ## Key Directories
 
-### `/rules/` - Development Guidelines
+### Development Guidelines
 
 Numbered rule files that automatically load based on file patterns:
 
@@ -71,7 +71,7 @@ rules/
 ├── 99-llm-prompt-writing-rules.md  # AI/LLM agent development
 ```
 
-### `/commands/` - Slash Commands
+### Commands
 
 Custom commands that extend Claude Code functionality:
 
@@ -100,7 +100,7 @@ commands/
 └── review-llm-prompts.md           # LLM prompt compliance
 ```
 
-### `/docs/` - Documentation
+### Documentation
 
 Comprehensive documentation for the configuration system:
 
@@ -115,7 +115,7 @@ docs/
 └── settings.md                     # Configuration hierarchy
 ```
 
-### `/backup/` - Config-Sync Backup System
+### Backup System
 
 Automatic backups created during sync operations:
 
