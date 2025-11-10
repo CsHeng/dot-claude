@@ -15,7 +15,7 @@ The commands directory contains slash commands for various workflows including c
 │   │   ├── adapt-rules-content.md # Rules normalization
 │   │   ├── droid.md              # Droid CLI adapter
 │   │   ├── qwen.md               # Qwen CLI adapter
-│   │   ├── codex.md              # Codex CLI adapter
+│   │   ├── codex.md              # (config-sync adapter for Codex targets)
 │   │   └── opencode.md           # OpenCode adapter
 │   ├── lib/                       # Shared guidance
 │   └── scripts/                   # Bash helpers
@@ -47,7 +47,7 @@ The commands directory contains slash commands for various workflows including c
 | `/config-sync:adapt-rules-content` | Normalize rules for different platforms | Cross-platform compatibility |
 | `/config-sync:droid` | Droid CLI specific operations | Tool-specific sync/analyze/verify |
 | `/config-sync:qwen` | Qwen CLI specific operations | Tool-specific sync/analyze/verify |
-| `/config-sync:codex` | Codex CLI specific operations | Tool-specific sync/analyze/verify |
+| `/config-sync:codex` | Codex CLI-specific operations (handled via config-sync) | Tool-specific sync/analyze/verify |
 | `/config-sync:opencode` | OpenCode specific operations | Tool-specific sync/analyze/verify |
 
 ### Documentation Generation Commands

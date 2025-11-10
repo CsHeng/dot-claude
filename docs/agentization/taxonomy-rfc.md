@@ -1,0 +1,122 @@
+# Taxonomy RFC
+
+## Background
+The current CLI relies on `CLAUDE.md` and numerous `rules/*.md` files to describe behavior, but there is no organized mapping between commands, rules, and memory entries. Without an explicit agent/skill structure:
+- Tasks cannot be routed quickly to the right agent.
+- `rules/*` are hard to reuse and often conflict or overlap.
+- Commands such as review or config-sync cannot validate future skills or agents.
+
+This RFC defines a unified taxonomy (Memory → Agent → Skill → Command) to guide the directory refactor and supporting tooling.
+
+## Scope
+- Entry file: `CLAUDE.md`
+- Directories: `rules/`, `skills/`, `agents/`, `commands/`, `requirements/`, `docs/`
+- Supported commands: config-sync, review-llm-prompts, doc-gen, draft-commit-message, review-shell-syntax, etc.
+- Execution environments: Codex CLI, Claude Code, Qwen CLI, IDE/CI sync destinations
+
+## Goals
+1. Establish the Memory → Agent → Skill load order and selection logic.
+2. Define consistent naming, directory layout, manifest fields, tags, and `source` references.
+3. Standardize versioning, approval, synchronization, rollback, and monitoring processes.
+4. Provide milestones, task templates, and acceptance criteria for the migration.
+
+## Concepts
+- **Memory**: entry points (CLAUDE) that route tasks and declare default agents/skills.
+- **Agent**: orchestration unit that binds default/optional skills to commands with clear inputs, outputs, fail-fast rules, and permissions.
+- **Skill**: single capability module referencing `rules/` sections with defined scope and validation steps.
+- **Command**: executable slash command or script.
+- **Adapter**: command-specific extension for particular targets (e.g., config-sync adapters).
+- **Workflow**: higher-order coordination across multiple commands handled by agents.
+
+## Naming Rules
+- Skill IDs: `skill:<category>-<name>` (e.g., `skill:toolchain-baseline`).
+- Agent IDs: `agent:<domain>-<role>` (e.g., `agent:config-sync`).
+- Directories: `skills/<category>-<name>/SKILL.md`, `agents/<domain>-<role>/AGENT.md`.
+- Tags: controlled vocabulary (toolchain, workflow, language, security, memory, testing, etc.) for routing.
+- Source references: `rules/<file>.md#Heading-Slug`, listed in manifests for traceability.
+- Manifest required fields:
+  - Skill: `name`, `description`, `tags`, `source`, `capability`, `usage`, `validation`, `allowed-tools`.
+  - Agent: `name`, `description`, `default-skills`, `optional-skills`, `supported-commands`, `inputs`, `outputs`, `fail-fast`, `escalation`, `permissions`.
+
+## Load Order
+1. Memory chooses candidate agents based on task context (command, files, language, request).
+2. Agents load default skills and append optional skills based on task tags.
+3. Commands emit the agent and skill versions used.
+4. Review/config-sync commands read the same mapping to keep tooling consistent.
+
+### Selection Mechanisms
+- Command prefixes (`/config-sync/*`, `/doc-gen:*`, etc.) map to agents.
+- File types (e.g., `**/*.py`) trigger language skills.
+- Metadata (security, testing, LLM-facing) activates corresponding skills.
+- If multiple agents qualify, Memory selects the higher-priority one or prompts the user.
+
+## Directory Layout & Sync
+```
+.claude/
+├── CLAUDE.md
+├── (IDE-specific memory files as needed)
+├── rules/
+├── skills/<category>-<name>/SKILL.md
+├── agents/<domain>-<role>/AGENT.md
+├── commands/
+├── docs/agentization/
+└── scripts/tests/agent-matrix.sh
+```
+
+- config-sync copies `rules/`, `skills/`, `agents/`, and `CLAUDE.md` to IDE/CI targets.
+- review-llm-prompts expands its default targets to include the new directories and validates manifest structure.
+
+## Conflict Handling
+- A rule section can map to only one core skill; if multiple skills need it, wrap it as a child skill or reference another skill explicitly.
+- When skills overlap, the agent loads only the highest-priority skill unless optional skills are specified.
+- CLAUDE agent lists are the single authority; commands must not hardcode skills.
+
+## Versioning & Release
+- Use `MAJOR.MINOR.PATCH` with per-manifest `CHANGELOG.md`.
+- config-sync logs the agent/skill versions used for each run so environments can be audited.
+- Release cadence:
+  - Phase 1-2: Beta (legacy rule loading available).
+  - Phase 3-4: GA (agents/skills default on).
+  - Phase 5+: Monthly releases.
+- Each release updates manifest versions, changelogs, and CLAUDE references.
+
+## Approval Flow
+1. Submit a PR with the agentization issue template (goals, commands, skills, risks, checklist).
+2. Require two reviewers (command owner + prompt/rule owner).
+3. Run `/review-llm-prompts --target=<files>` and attach results.
+4. If scripts or tools change, run relevant linters/tests (shellcheck, `plantuml --check-syntax`, `dbml2sql`, etc.).
+5. Perform a config-sync dry run to confirm new directories are recognized.
+
+## Sync Matrix
+Maintain a lightweight sync log (plan path, targets, timestamp, commit hash) so you can audit which environments have been updated and reproduce or roll back runs as needed.
+
+## Rollback Strategy
+- Every manifest includes a `fallback` pointer to the previous version.
+- config-sync keeps at least two historical copies for `--from-backup=<timestamp>`.
+- CLAUDE contain an emergency section describing how to revert to legacy rules.
+
+## Milestones
+See `requirements/01-claude.md` for the Phase 0‑5 timeline:
+1. Phase 0: RFC + CLAUDE notice.
+2. Phase 1: `skills/` directory and core skills.
+3. Phase 2: config-sync and llm-police agents.
+4. Phase 3: Updated review/config-sync tooling.
+5. Phase 4: Agents such as doc-gen and workflow-helper.
+6. Phase 5: Advanced skills, rollback validation, release notes.
+
+## Acceptance Criteria
+- CLAUDE reference agents only and link to this RFC.
+- At least four skills (toolchain, workflow, llm-governance, language-python) implemented with the template.
+- At least two agents (config-sync, llm-police) defined and passing review-llm-prompts.
+- review-llm-prompts, config-sync, and agent-matrix scripts updated.
+- Version matrix, changelog, and regression logs available.
+
+## Terminology
+- Memory: routing entry file.
+- Agent: task orchestration unit.
+- Skill: capability module.
+- Command: executable action.
+- Adapter: target-specific extension.
+- Manifest: SKILL.md/AGENT.md.
+- Version Matrix: mapping of environments to versions.
+- Fallback: previous configuration for rollback.

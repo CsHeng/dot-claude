@@ -1,163 +1,112 @@
 # Claude Code Configuration System
 
-Claude Code rules, permissions, and agent configuration with sync capabilities for IDE and CLI coding assistants.
+Unified Memory → Agent → Skill architecture for Claude Code plus tooling to sync rules and commands into IDEs and external CLIs.
 
-## 🎯 Core Concept
+## Overview
+- **Memory files** (`CLAUDE.md`, `AGENTS.md`) route every task to an agent, which in turn loads the required skills.
+- **Skills** (`skills/<name>/SKILL.md`) package single capabilities (toolchain checks, workflow rules, LLM governance, etc.).
+- **Agents** (`agents/<name>/AGENT.md`) describe how slash commands should run: inputs, outputs, permissions, fail-fast rules.
+- **Commands** (`commands/**`) remain pure tools (shell scripts, documentation prompts). They rely on agents/skills for policy.
+- **Config-sync** copies the configuration into IDE workspaces or CLI tools.
 
-This system treats **Claude Code as the primary source of truth** for:
-- **Rules**: Development guidelines in `rules/`
-- **Permissions**: Command execution control in settings files
-- **Agent Instructions**: Operating procedures in `AGENTS.md` and `CLAUDE.md`
-
-From this central configuration, we sync to:
-- **IDE Tools**: Cursor, VS Code Copilot (via `/config-sync/sync-project-rules`)
-- **CLI Tools**: Qwen, Factory/Droid, Codex, OpenCode (via `/config-sync/sync-cli`)
-
-## 📁 Essential Files
-
+## Repository Layout
 ```
 .claude/
-├── 📁 .claude/                   # Shared permissions
-│   └── ⚙️ settings.json          # Tool access control
-├── 📁 commands/                  # Custom slash commands
-│   └── 📁 config-sync/           # Multi-tool sync utilities
-├── 📁 docs/                      # Complete documentation
-├── 📁 rules/                     # Development guidelines
-├── 📄 AGENTS.md                  # Agent instructions
-├── 📄 CLAUDE.md                  # Claude's memory
-└── ⚙️ settings.json              # Global preferences
+├── agents/                 # Agent manifests (execution contracts)
+├── commands/               # Slash commands (config-sync, doc-gen, etc.)
+├── docs/                   # Documentation and guides
+├── rules/                  # Development standards referenced by skills
+├── skills/                 # Skill manifests (single capability)
+├── AGENTS.md               # Operator guide (this repo)
+├── CLAUDE.md               # Memory routing table for Claude Code
+└── settings.json           # Global preferences / permissions
 ```
 
-## 🚀 Quick Start
-
-### 1. Set up Claude Code Configuration
+## Quick Start
 ```bash
-git clone <repository-url> ~/.claude
+git clone <repo> ~/.claude
 cd ~/.claude
 
-# Generate your settings
-# Ask: "Create settings.json for my development environment"
-claude /doctor  # Verify configuration
+# Verify base configuration
+claude /doctor
 ```
 
-### 2. Sync to IDE Tools (Project Level)
+### Sync to IDE (project) tools
 ```bash
-# From inside the project (or set CLAUDE_PROJECT_DIR)
-claude /config-sync:sync-project-rules --all
-
+# From inside a project (or set CLAUDE_PROJECT_DIR)
+claude /config-sync:sync-project-rules --all --project-root=/path/to/project
 ```
 
-### 3. Sync to CLI Tools (Optional)
+### Sync to CLI tools
 ```bash
-# Analyze available CLI tools
-claude /config-sync:sync-cli --action=analyze --target=all
-
-# Sync configuration to installed tools
-claude /config-sync:sync-cli --action=sync --target=all
-
-# Verify sync worked
-claude /config-sync:sync-cli --action=verify --target=all
+claude /config-sync:sync-cli --action=sync --target=all --components=all
 ```
 
-## 🔧 Configuration Components
+## Memory → Agent → Skill
+- **CLAUDE.md** lists agents and their default/optional skills; Memory no longer enumerates rule files directly.
+- **Agents** (e.g., `agent:config-sync`, `agent:doc-gen`, `agent:workflow-helper`) describe responsibilities, required inputs, permissions, fallback behavior.
+- **Skills** (e.g., `skill:toolchain-baseline`, `skill:workflow-discipline`, `skill:llm-governance`, `skill:language-python`) cite the relevant `rules/` sections and provide validation steps.
+- Commands reference agents in their README to show which skills are active.
 
-### **Rules Library** (`rules/`)
-Development guidelines automatically loaded by Claude Code. Core files include:
-- `00-memory-rules.md` - Personal preferences
-- `01-development-standards.md` - General standards
-- `02-architecture-patterns.md` - Architecture patterns
-- `10-*.md` - Language-specific guidelines (Python, Go, Shell, etc.)
-- `99-llm-prompt-writing-rules.md` - AI development guidelines
-
-📖 **[Complete Rules List](./directory-structure.md#development-guidelines)**
-
-### **Permission System**
-Three-tier command control in settings files:
-- **allow**: Runs automatically
-- **ask**: Requires confirmation
-- **deny**: Blocked completely
-
-📖 **[Permissions Reference](docs/permissions.md)**
-
-### **Settings Hierarchy**
-1. **Local overrides** (`.claude/settings.local.json`) - Personal (git-ignored)
-2. **Project settings** (`.claude/settings.json`) - Team configuration
-3. **Shared settings** (`.claude/.claude/settings.json`) - Cross-project
-4. **Global settings** (`settings.json`) - Personal preferences
-
-📖 **[Settings Guide](docs/settings.md)** index
-
-## 🔄 Sync Capabilities
-
-### IDE Plugin Sync
-- **Target**: Cursor, VS Code Copilot
-- **Method**: `/config-sync/sync-project-rules`
-- **Scope**: Project-level rules distribution
-- **Usage**: Run in each project directory
-
-📖 **[Config-Sync Guide](docs/config-sync-guide.md#project-rules-integration)**
-
-### CLI Tool Sync
-- **Target**: Qwen, Factory/Droid, Codex, OpenCode
-- **Method**: `/config-sync/sync-cli --action=<sync|analyze|verify|adapt|plan|report>`
-- **Scope**: Full configuration (rules, permissions, commands, memory)
-- **Features**: 8-phase pipeline, backup system, PlantUML integration
-
-📖 **[Config-Sync Guide](docs/config-sync-guide.md)**
-
-### **Available Commands**
-
+## Key Commands
 | Category | Commands | Purpose |
-|----------|----------|---------|
-| **Config-Sync** | `/config-sync/sync-cli`, `/config-sync/sync-project-rules`, `/config-sync:*` | Multi-tool configuration synchronization |
-| **Documentation** | `/doc-gen:*` | Generate project documentation |
-| **Code Review** | `/review-shell-syntax`, `/review-llm-prompts` | Validate compliance with guidelines |
-| **Utilities** | `/draft-commit-message` | Git workflow helpers |
+| --- | --- | --- |
+| Config Sync | `/config-sync/sync-cli`, `/config-sync/sync-project-rules`, `/config-sync:*` | Sync rules/commands/memory to IDE and CLI targets |
+| Documentation | `/doc-gen:*` | Generate architecture/integration docs via adapters |
+| Reviews | `/review-llm-prompts`, `/review-shell-syntax` | LLM prompt governance and shell linting |
+| Workflow Helpers | `/commands:draft-commit-message` | Git helper |
 
-📖 **[Complete Command Reference](docs/commands.md)**
+See `docs/commands.md` for the complete list.
 
-## 📋 Daily Usage
+## Rules & Settings
+- `rules/00-memory-rules.md`: personal preferences, shell strict-mode, communication style
+- `rules/01-23`: development, architecture, security, logging, workflow standards
+- `rules/99-llm-prompt-writing-rules.md`: ABSOLUTE-mode instructions for all LLM-facing files
+- `settings.json` plus `.claude/settings.json` control tool permissions (allow/ask/deny)
 
-### For Claude Code Development
+## Config-Sync Overview
+- Targets: `droid`, `qwen`, `codex`, `opencode`, `claude`, and IDE project directories
+- Components: `rules`, `permissions`, `commands`, `settings`, `memory`
+- Pipeline: collect → analyze → plan → prepare → adapt → execute → verify → report
+- Backups: `~/.claude/backup/run-<timestamp>/`
+- Logs and plans show agent/skill versions for auditing
+
+### Examples
 ```bash
-# Edit rules (Claude loads automatically)
-vim ~/.claude/rules/01-development-standards.md
+# Analyze without changes
+claude /config-sync:sync-cli --action=analyze --target=qwen
 
-# Update permissions
-vim ~/.claude/settings.json
+# Sync only rules + commands for Codex
+claude /config-sync:sync-cli --action=sync --target=codex --components=rules,commands
 
-# Claude automatically uses updated configuration
+# Project-level rules copy
+claude /config-sync:sync-project-rules --all --project-root=/repo/path
 ```
 
-### For IDE Integration
-```bash
-# After updating rules, sync to project IDEs
-claude /config-sync:sync-project-rules --all
-```
+## Daily Workflow
+- Edit rules/skills/agents; CLAUDE automatically loads them
+- Run `/config-sync:sync-project-rules` after rule updates to push to IDE directories
+- Run `/config-sync:sync-cli --action=sync` to push to CLI targets
+- Use `/review-llm-prompts` to audit commands/skills/docs after changes
 
-### For CLI Tools
+## Maintenance
 ```bash
-# After major configuration changes
-claude /config-sync:sync-cli --action=sync --target=all
-```
-
-## 🛠️ Maintenance
-
-### Configuration Validation
-```bash
-# Check Claude configuration
+# Validate configuration
 claude /doctor
 
-# Verify IDE sync
-claude /config-sync:sync-project-rules --verify-only
+# Verify IDE sync without changes
+claude /config-sync:sync-project-rules --verify-only --project-root=/repo/path
 
-# Verify CLI sync
+# Verify CLI targets
 claude /config-sync:sync-cli --action=verify --target=all
 ```
 
-### Adding New Content
-1. **Rules**: Create `XX-description.md` in `rules/`
-2. **Commands**: Add `.md` file in `commands/`
+### Extending the System
+1. **New skill**: create `skills/<category>-<name>/SKILL.md`, cite rule sections, run `/review-llm-prompts --target=skills/<name>`.
+2. **New agent**: create `agents/<domain>-<role>/AGENT.md`, hook it up to commands in their README, and add it to CLAUDE.md.
+3. **New command**: add `commands/<name>.md`, describe agent mapping, and follow the slash-command spec.
+
+Refer to `requirements/01-claude.md` for the complete taxonomy, workflows, and action plan. 
 3. **Settings**: Update appropriate settings file
 
 📖 **[Maintenance Guide](docs/directory-structure.md#migration-guide)**

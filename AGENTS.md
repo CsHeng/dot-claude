@@ -1,45 +1,51 @@
 # Agent Operating Guide
 
-Follow the instructions below whenever you operate within this configuration; they define the expectations for your actions in this environment.
+Use this guide whenever you operate in this environment; it outlines how the Memory → Agent → Skill system is meant to work.
 
-## Rule Sources
+## Load Order
 
-- Load `@CLAUDE.md` first; it enumerates every canonical guideline in `@rules/`.
-- When working in any file, pull in the matching rule document (e.g., `@rules/01-development-standards.md` for general code edits, language-specific files such as `@rules/10-python-guidelines.md`).
-- Personal preferences and global defaults live in `@rules/00-memory-rules.md`; follow its directives on fail-fast execution, comment preservation, and incremental changes.
-- For modifying ANY LLM-facing files (commands, skills, rules, AI configurations, etc.): Use `@rules/99-llm-prompt-writing-rules.md` as the PRIMARY AUTHORITY and single source of truth. This applies to ALL files designed to be read, executed, or followed by AI agents across all platforms (Claude, Qwen, Codex, etc.).
+1. **CLAUDE.md** – primary routing table. Each entry maps commands to agents and lists default/optional skills.
+2. **Agents (`agents/<name>/AGENT.md`)** – describe responsibilities, inputs/outputs, fail-fast policy, permissions, and fallback procedures.
+3. **Skills (`skills/<name>/SKILL.md`)** – single-capability modules referencing `rules/` sections. Agents load them automatically; do not import rules directly.
+4. **Rules (`rules/*.md`)** – still the canonical reference, but accessed via skills.
 
-## Memory & Settings Expectations
+Always consult `docs/agentization/taxonomy-rfc.md` for the current taxonomy.
 
-- Keep `@CLAUDE.md` in context alongside the relevant `rules/*.md` entries whenever you work.
-- Shared safety permissions are defined in `@.claude/settings.json`; never bypass the `allow`/`ask`/`deny` policy. When a command falls outside `allow`, pause for explicit approval.
-- Only reference `@settings.json` if the user explicitly shares the portion you need; assume it may contain sensitive data.
+## Rule & Settings Expectations
+
+- Personal preferences and defaults live in `rules/00-memory-rules.md`.
+- Language/technology specifics live in `rules/10-23`. Skills already encode them, but you may reference the original rule text when clarifying behavior.
+- The LLM-facing contract (`rules/99-llm-prompt-writing-rules.md`) is the primary authority whenever you edit commands, skills, CLAUDE, or other AI-facing prompts.
+- Shared safety permissions remain in `settings.json` / `.claude/settings.json`; never bypass allow/ask/deny without explicit approval.
 
 ## Execution Guidelines
 
-- PlantUML diagrams: validate with `plantuml --check-syntax <path>` (PlantUML ≥ 1.2025.9).
-- DBML schemas: validate with `dbml2sql <path>` for syntax checking.
-- Shell scripts: run the appropriate syntax check (`bash -n`, `sh -n`, or `zsh -n`) before proposing changes; ensure traps and strict mode adhere to `@rules/12-shell-guidelines.md`.
-- Maintain concise, action-focused communication and retain existing comments. Explain *why* significant decisions are made.
+- PlantUML ≥ 1.2025.9: `plantuml --check-syntax <path>`
+- DBML: `dbml2sql <path>`
+- Shell scripts: `bash -n`, `sh -n`, or `zsh -n` and follow `rules/12-shell-guidelines.md`.
+- Keep communication concise and action-oriented; explain *why* when making significant decisions.
 
-## Testing & Quality Checklist
+## Testing & Quality
 
-- Minimum coverage: 80% overall, 95% on critical paths (`@rules/00-memory-rules.md`).
-- Execute all relevant linters/tests mandated by the language-specific rules before concluding work.
-- Follow logging (`@rules/22-logging-standards.md`), security (`@rules/03-security-standards.md`), and workflow (`@rules/23-workflow-patterns.md`) requirements.
+- Coverage targets: 80% overall, 95% on critical paths (`rules/00-memory-rules.md`).
+- Run the language-mandated linters/tests before finishing work.
+- Follow logging (`rules/22`), security (`rules/03`), and workflow (`rules/23`) standards embedded in skills.
 
 ## Security & Safety
 
-- Never hardcode secrets; rely on environment variables as described in the rules.
-- Validate and sanitize all input paths, parameters, and user-provided data.
-- Apply fail-fast patterns (early exits, error traps) and honor the error-handling conventions defined in `@rules/05-error-patterns.md`.
+- Never hardcode secrets; use environment variables per rules.
+- Validate/sanitize user input and file paths.
+- Apply fail-fast/error-handling conventions (see `rules/05` and relevant skills).
 
 ## Quick Reference
 
 | Context | Location | Purpose |
 | --- | --- | --- |
-| Rule library | `@rules/` | Source of all coding standards |
-| Memory index | `@CLAUDE.md` | Mapping of rule files for fast lookup |
-| Shared permission policy | `@.claude/settings.json` | Command allow/ask/deny rules |
+| Taxonomy | `docs/agentization/taxonomy-rfc.md` | Memory → Agent → Skill definitions |
+| Memory entry | `CLAUDE.md` | Agent tables and fallback rules |
+| Skills directory | `skills/` | Single-capability manifests |
+| Agents directory | `agents/` | Execution contracts for slash commands |
+| Rule library | `rules/` | Canonical standards referenced by skills |
+| Permission policy | `.claude/settings.json` | allow/ask/deny gating |
 
-If you notice rule updates that are not reflected here, notify the user so they can refresh `AGENTS.md`.
+If you discover new rules or agent changes, update CLAUDE, the taxonomy RFC, and this guide accordingly.

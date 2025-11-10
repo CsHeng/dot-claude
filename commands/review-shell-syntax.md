@@ -19,3 +19,9 @@ Ensure the target shell script follows our shell guidelines and passes syntax va
   - `sh -n "$1"`
   - `zsh -n "$1"`
 - Report the syntax check output and confirm whether the script complies or needs changes.
+
+## Agentization Mapping
+
+| Agent | Commands | Default Skills | Optional Skills |
+| --- | --- | --- | --- |
+| `agent:workflow-helper` | `/review-shell-syntax` | `skill:workflow-discipline` | `skill:toolchain-baseline`, `skill:language-shell` |

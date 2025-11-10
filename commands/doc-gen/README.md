@@ -24,3 +24,9 @@ Invoke the orchestrator command directly from Claude Code, passing the target pr
 ```
 
 During runtime the command presents a consolidated checklist for `mode`, `project-type`, and `language`, minimizing free-text input. Paths still accept manual entry, but the orchestrator attempts to auto-suggest common directories. Bootstrap runs stage output in `docs-bootstrap/` so existing `docs/` content remains read-only; maintain runs operate on `docs/` unless overridden. The orchestrator now enforces deliverables directly (parameter table, asset counts, actor matrix, validated PlantUML results, `TODO(doc-gen)` backlog) before handing off control. It then merges in project-type specifics from `adapters/`. Add new project types by creating additional adapter files and referencing them in the orchestrator registry.
+
+## Agentization Mapping
+
+| Agent | Commands | Default Skills | Optional Skills |
+| --- | --- | --- | --- |
+| `agent:doc-gen` | `/doc-gen:bootstrap`, `/doc-gen:maintain` | `skill:workflow-discipline`, `skill:security-logging` | `skill:language-python`, `skill:language-go`, `skill:architecture-patterns` |

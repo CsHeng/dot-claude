@@ -83,7 +83,7 @@ commands/
 │   ├── adapters/                  # Tool-specific adapters
 │   │   ├── droid.md              # Droid CLI adapter
 │   │   ├── qwen.md               # Qwen CLI adapter
-│   │   ├── codex.md              # Codex CLI adapter
+│   │   ├── codex.md              # (config-sync adapter for Codex targets)
 │   │   ├── opencode.md           # OpenCode adapter
 │   │   ├── analyze-target-tool.md # Tool analysis
 │   │   ├── adapt-permissions.md   # Permission mapping
@@ -124,7 +124,7 @@ backup/
 ├── plan-<timestamp>.json          # Execution plans for resumption
 ├── droid-<timestamp>/             # Droid configuration backups
 ├── qwen-<timestamp>/              # Qwen configuration backups
-├── codex-<timestamp>/             # Codex configuration backups
+├── codex-<timestamp>/             # (config-sync backup for Codex target)
 └── opencode-<timestamp>/          # OpenCode configuration backups
 ```
 
