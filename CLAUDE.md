@@ -21,8 +21,7 @@ Override with explicit request for explanatory communication.
 1. Select the agent from command/task context.
 2. Agent loads default skills; task tags trigger optional skills (language, security, LLM, etc.).
 3. Commands emit agent and skill versions in their logs for auditability.
-4. If no agent matches, fall back to legacy mode: load rules directly and request human confirmation.
+4. If no agent matches, error out and request maintainer assistance.
 
 ## Fallback
-- `agent:config-sync` and `agent:llm-police` are core agents; if they fail, run emergency mode and notify maintainers.
-- Emergency message: `Use legacy rules directory per docs/agentization/taxonomy-rfc.md#Rollback Strategy`
+- `agent:llm-police` ensures LLM governance. If it fails, notify maintainers rather than auto-loading rule files.

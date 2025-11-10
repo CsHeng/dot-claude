@@ -75,7 +75,7 @@ This RFC defines a unified taxonomy (Memory → Agent → Skill → Command) to 
 - Use `MAJOR.MINOR.PATCH` with per-manifest `CHANGELOG.md`.
 - config-sync logs the agent/skill versions used for each run so environments can be audited.
 - Release cadence:
-  - Phase 1-2: Beta (legacy rule loading available).
+  - Phase 1-2: Beta (verify agents/skills in controlled scope).
   - Phase 3-4: GA (agents/skills default on).
   - Phase 5+: Monthly releases.
 - Each release updates manifest versions, changelogs, and CLAUDE references.
@@ -93,7 +93,7 @@ Maintain a lightweight sync log (plan path, targets, timestamp, commit hash) so 
 ## Rollback Strategy
 - Every manifest includes a `fallback` pointer to the previous version.
 - config-sync keeps at least two historical copies for `--from-backup=<timestamp>`.
-- CLAUDE contain an emergency section describing how to revert to legacy rules.
+- CLAUDE contains an emergency note describing how to recover if agents fail (no automatic rule loading).
 
 ## Milestones
 See `requirements/01-claude.md` for the Phase 0‑5 timeline:
