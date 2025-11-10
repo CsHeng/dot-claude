@@ -39,8 +39,8 @@ The commands directory contains slash commands for various workflows including c
 
 | Command | Purpose | Key Features |
 |---------|---------|--------------|
-| `/config-sync/sync-cli` | Main orchestrator for CLI tool synchronization | 8-phase pipeline, multi-target support, verification |
-| `/config-sync/sync-project-rules` | Sync Claude rules to IDE projects | Cursor/VS Code Copilot integration, auto-detection |
+| `claude /config-sync:sync-cli` | Main orchestrator for CLI tool synchronization | 8-phase pipeline, multi-target support, verification |
+| `claude /config-sync:sync-project-rules` | Sync Claude rules to IDE projects | Cursor/VS Code Copilot integration, auto-detection |
 | `/config-sync:analyze-target-tool` | Analyze specific tool capabilities | Installation checks, configuration audit |
 | `/config-sync:adapt-permissions` | Map Claude permissions to tool formats | Security-first approach, format conversion |
 | `/config-sync:adapt-commands` | Convert command formats between tools | Markdown ↔ TOML ↔ JSON conversion |
