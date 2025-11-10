@@ -312,19 +312,23 @@ sync_settings() {
     log_info "Syncing settings to Codex..."
 
     if [[ "$DRY_RUN" == true ]]; then
-        log_info "Would create Codex settings configuration"
+        log_info "Would create or update Codex settings configuration"
         return 0
     fi
 
     local target_file="$CODEX_SETTINGS_FILE"
+    mkdir -p "$CODEX_CONFIG_DIR"
 
-    # Backup existing settings if they exist
-    if [[ -f "$target_file" && "$FORCE" == false ]]; then
-        backup_file "$target_file"
+    if [[ -f "$target_file" && "$FORCE" != true ]]; then
+        log_info "Codex settings already exist; preserving sandbox configuration (use --force to regenerate)"
+        return 0
     fi
 
+    # Note: Backup handled by unified prepare phase
+    # No need for individual file backup
+
     # Create minimal Codex configuration
-    cat > "$target_file" << 'EOF'
+    cat > "$target_file" << EOF
 # Codex CLI Configuration
 # Minimal configuration for OpenAI Codex
 
@@ -349,9 +353,16 @@ include_comments = true
 
 [sandbox]
 # Sandbox security settings
+mode = "workspace-write"
+allow_network = true
+allow_execution = true
 enabled = true
 timeout = 30
 memory_limit = "512MB"
+
+[sync]
+source = "claude-code-sync"
+last_sync = "$(date -u +"%Y-%m-%dT%H:%M:%SZ")"
 EOF
 
     log_warning "WARNING:  IMPORTANT: Edit $target_file to set your OpenAI API key"
@@ -367,92 +378,11 @@ sync_memory() {
     timestamp="$(date -u +"%Y-%m-%dT%H:%M:%SZ")"
 
     if [[ "$DRY_RUN" == true ]]; then
-        log_info "Would create memory files: $memory_file, $agents_file"
+        log_info "Would copy CLAUDE.md to $memory_file and regenerate $agents_file"
         return 0
     fi
 
-    # Create CODEX.md - tool-specific memory file
-    log_info "Creating CODEX.md with Codex-specific content..."
-    cat > "$memory_file" <<EOF
-# CODEX User Memory
-
-## Tool Configuration
-- **Tool**: OpenAI Codex CLI
-- **Source**: Synchronized from Claude Code configuration
-- **Sync Date**: ${timestamp}
-- **Format**: TOML configuration, Markdown rules
-
-## CODEX-Specific Capabilities
-
-### Code Generation Model
-- **API Integration**: OpenAI Codex API for code generation
-- **Model**: code-davinci-002 for optimal code completion
-- **Temperature**: Low temperature (0.1) for consistent output
-- **Token Limits**: Configurable token limits for different use cases
-
-### Sandbox Environment
-- **Security Levels**: read-only, workspace-write, full-access modes
-- **File System**: Limited to workspace directory by default
-- **Network Access**: Configurable network access for external resources
-- **Execution Safety**: No direct code execution capabilities
-
-### Integration Features
-- **Commands**: Markdown command format support
-- **Rules**: Automatic rule loading from rules/ directory
-- **Settings**: TOML-based configuration management
-- **API Management**: OpenAI API key and configuration
-
-## Development Standards
-
-This file contains adapted memory content from Claude Code configuration, customized for CODEX usage patterns.
-
-### Core Rules Directory
-Your development rules have been synchronized to: `rules/`
-
-The following rule categories are available and automatically loaded:
-- General development standards (01-development-standards.md)
-- Architecture patterns (02-architecture-patterns.md)
-- Security guidelines (03-security-standards.md)
-- Testing strategy (04-testing-strategy.md)
-- Error handling (05-error-patterns.md)
-- Language-specific guidelines (python, go, shell, docker)
-
-### CODEX-Specific Adaptations
-This memory file has been adapted for CODEX with the following changes:
-- Updated content for code generation focus
-- Adapted to sandbox security model
-- Added CODEX-specific capability documentation
-- Integrated with OpenAI API configuration
-
-### Memory File References
-- Primary agents and capabilities: See AGENTS.md
-- Development rules: Automatically loaded from rules/ directory
-- Tool-specific settings: In config.toml
-- API configuration: OpenAI API key management
-
-## Usage Notes
-- This file serves as your primary memory reference for CODEX
-- Rules are automatically loaded from the rules/ directory
-- Agent instructions and capabilities are documented in AGENTS.md
-- Code generation is optimized for practical implementation
-- API key must be configured in config.toml
-
-## CODEX Integration Notes
-- Commands follow CODEX's Markdown format
-- Permissions are managed through sandbox configuration
-- Rules are automatically adapted for CODEX compatibility
-- All operations respect OpenAI API rate limits
-- Code generation focuses on practical, implementable solutions
-
-## API Configuration
-- **API Key**: Must be set in config.toml
-- **Model**: code-davinci-002 (recommended)
-- **Temperature**: 0.1 for consistent output
-- **Max Tokens**: Configurable based on use case
-- **Timeout**: 30 seconds default
-
-Generated from Claude Code configuration on ${timestamp}.
-EOF
+    sync_claude_memory_file "$memory_file" "$FORCE"
 
     # Create AGENTS.md - universal agent capabilities with Codex-specific notes
     log_info "Creating AGENTS.md with Codex-specific integration notes..."

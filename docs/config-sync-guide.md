@@ -20,12 +20,31 @@ The system operates on an 8-phase pipeline:
 
 ### Backup System
 
-The backup system automatically creates timestamped backups during the **prepare** phase:
+The backup system uses a **unified centralized approach** during the **prepare** phase:
 
-- **Location**: `~/.claude/backup/`
-- **Plan Files**: `plan-YYYYMMDD-HHMMSS.json` - Complete execution state for resumption
-- **Tool Backups**: `toolname-YYYYMMDD-HHMMSS/` - Original configurations
-- **Retention**: All backups retained until manually cleaned
+- **Location**: `~/.claude/backup/run-TIMESTAMP/backups/`
+- **Scope**: Complete target configuration directories
+- **Strategy**: Single comprehensive backup operation per tool
+- **Structure**: Organized by tool with timestamped subdirectories
+
+#### Unified Backup Structure
+```
+~/.claude/backup/run-TIMESTAMP/
+├── backups/
+│   ├── droid/              # Complete ~/.factory/ backup
+│   ├── qwen/               # Complete ~/.qwen/ backup
+│   ├── codex/              # Complete ~/.codex/ backup
+│   └── opencode/           # Complete ~/.config/opencode/ backup
+├── logs/
+└── metadata/
+```
+
+#### Backup Features
+- **Automatic cleanup** of legacy backup directories in target tool directories
+- **Detailed logging** with file counts and backup sizes
+- **Backup manifests** (JSON) for verification and restoration
+- **Complete directory backup** using rsync with delete flag for accuracy
+- **Profile awareness** - Fast profile skips backup but records placeholder
 
 ### Resumption Capability
 

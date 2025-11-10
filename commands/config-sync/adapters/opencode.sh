@@ -286,7 +286,7 @@ sync_memory() {
     timestamp="$(date -u +"%Y-%m-%dT%H:%M:%SZ")"
 
     if [[ "$DRY_RUN" == true ]]; then
-        log_info "Would create memory files: $memory_file, $agents_file"
+        log_info "Would create memory files: $memory_file, $agents_file, $memory_index_file"
         return 0
     fi
 

@@ -11,22 +11,12 @@ CLAUDE_CONFIG_DIR="${HOME}/.claude"
 readonly CLAUDE_CONFIG_DIR
 
 if [[ -f "$LIB_DIR/common.sh" ]]; then
-  # Optional: load shell-specific helpers if provided.
+  # Load common functions including logging utilities
   source "$LIB_DIR/common.sh"
 fi
 
-# Error handling and logging utilities
-log_info() {
-  echo "[INFO] $*" >&2
-}
-
-log_warn() {
-  echo "[WARN] $*" >&2
-}
-
-log_error() {
-  echo "[ERROR] $*" >&2
-}
+# Note: Logging functions (log_info, log_warn, log_warning, log_error, log_success)
+# are now loaded from common.sh to ensure consistency across all scripts
 
 # Pre-flight checks for dependencies
 check_dependencies() {
@@ -145,38 +135,17 @@ validate_source_config() {
   return 0
 }
 
-# Atomic write with backup and verification
+# Atomic write without backup (backup handled by prepare phase)
 write_with_backup() {
   local src="$1"
   local dest="$2"
-  local backup_dir="$3"
+  # backup_dir parameter removed - backup handled by prepare phase
 
   # Validate inputs
   [[ -f "$src" ]] || {
     echo "[ERROR] Source file not found: $src" >&2
     return 1
   }
-
-  # Create backup directory if it doesn't exist
-  if [[ -n "$backup_dir" ]]; then
-    mkdir -p "$backup_dir" || {
-      echo "[ERROR] Failed to create backup directory: $backup_dir" >&2
-      return 1
-    }
-
-    # Create timestamped backup if destination exists
-    if [[ -f "$dest" ]]; then
-      local timestamp
-      timestamp="$(date +%Y%m%d-%H%M%S-%N)"
-      local backup_file="$backup_dir/$(basename "$dest").$timestamp.bak"
-
-      rsync -a --quiet "$dest" "$backup_file" || {
-        echo "[ERROR] Failed to create backup: $backup_file" >&2
-        return 1
-      }
-      echo "[INFO] Created backup: $backup_file" >&2
-    fi
-  fi
 
   # Create destination directory
   mkdir -p "$(dirname "$dest")" || {
@@ -187,9 +156,9 @@ write_with_backup() {
   # Atomic write: use temp file + move
   local temp_file="${dest}.tmp.$$"
 
-  # Sync to temporary file first
+  # Copy to temporary file first
   if rsync -a --quiet "$src" "$temp_file"; then
-    # Verify sync succeeded
+    # Verify copy succeeded
     if [[ -f "$temp_file" ]]; then
       # Move temp file to final destination (atomic operation)
       if mv "$temp_file" "$dest"; then
@@ -205,7 +174,7 @@ write_with_backup() {
       return 1
     fi
   else
-    echo "[ERROR] Failed to sync source to temporary file: $src -> $temp_file" >&2
+    echo "[ERROR] Failed to copy source to temporary file: $src -> $temp_file" >&2
     rm -f "$temp_file"  # Clean up temp file
     return 1
   fi
@@ -279,31 +248,27 @@ sync_with_sanitization() {
   fi
 }
 
-backup_file() {
-  local src="$1"
-  local backup_dir="${2:-$(dirname "$src")/backup}"
+sync_claude_memory_file() {
+  local destination_file="$1"
+  local force_overwrite="${2:-false}"
+  local source_file="$CLAUDE_CONFIG_DIR/CLAUDE.md"
 
-  if [[ ! -f "$src" ]]; then
-    log_warn "No existing file to back up: $src"
-    return 0
+  if [[ ! -f "$source_file" ]]; then
+    log_error "Source CLAUDE.md not found: $source_file"
+    return 1
   fi
 
-  mkdir -p "$backup_dir" || {
-    log_error "Failed to create backup directory: $backup_dir"
-    return 1
-  }
+  mkdir -p "$(dirname "$destination_file")"
 
-  local timestamp
-  timestamp="$(date +%Y%m%d-%H%M%S-%N)"
-  local backup_file_path="$backup_dir/$(basename "$src").$timestamp.bak"
+  # Note: Backup is now handled by prepare phase, no individual backup here
 
-  if rsync -a --quiet "$src" "$backup_file_path"; then
-    log_info "Created backup: $backup_file_path"
-    return 0
+  if command -v rsync >/dev/null 2>&1; then
+    rsync -a "$source_file" "$destination_file"
   else
-    log_error "Failed to create backup: $backup_file_path"
-    return 1
+    cp "$source_file" "$destination_file"
   fi
+
+  log_info "Copied CLAUDE.md to $destination_file"
 }
 
 # Convert Markdown command with YAML frontmatter to Qwen TOML format
@@ -514,4 +479,8 @@ sync_config_sync_commands() {
   fi
 }
 
-echo "[executor] helper script loaded" >&2
+# Only show loading message once if not already loaded
+if [[ -z "${EXECUTOR_HELPER_LOADED:-}" ]]; then
+  log_info "[executor] helper script loaded"
+  export EXECUTOR_HELPER_LOADED=1
+fi

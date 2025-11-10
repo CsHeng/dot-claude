@@ -69,7 +69,7 @@ Development guidelines automatically loaded by Claude Code. Core files include:
 - `10-*.md` - Language-specific guidelines (Python, Go, Shell, etc.)
 - `99-llm-prompt-writing-rules.md` - AI development guidelines
 
-📖 **[Complete Rules List](./directory-structure.md#rules---development-guidelines)**
+📖 **[Complete Rules List](./directory-structure.md#development-guidelines)**
 
 ### **Permission System**
 Three-tier command control in settings files:

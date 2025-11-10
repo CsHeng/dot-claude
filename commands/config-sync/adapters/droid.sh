@@ -317,15 +317,8 @@ sync_settings() {
   fi
 
   if [[ -f "$settings_file" ]]; then
-    log_info "Creating backup of existing settings..."
-    if ! backup_file "$settings_file"; then
-      log_error "✗ Failed to create settings backup"
-      return 1
-    fi
-  fi
-
-  # Factory/Droid settings - basic configuration
-  if [[ -f "$settings_file" ]]; then
+    # Note: Backup handled by unified prepare phase
+    log_info "Settings backup handled by unified prepare phase"
     log_info "Updating existing settings file"
     local temp_file
     temp_file=$(mktemp)
@@ -460,79 +453,11 @@ sync_memory() {
   timestamp="$(date -u +"%Y-%m-%dT%H:%M:%SZ")"
 
   if [[ "$DRY_RUN" == "true" ]]; then
-    log_info "Would create memory files: $memory_file, $agents_file"
+    log_info "Would copy CLAUDE.md to $memory_file and regenerate $agents_file"
     return 0
   fi
 
-  # Create DROID.md - tool-specific memory file
-  log_info "Creating DROID.md with Droid-specific content..."
-  cat > "$memory_file" <<EOF
-# DROID User Memory
-
-## Tool Configuration
-- **Tool**: DROID/Factory CLI
-- **Source**: Synchronized from Claude Code configuration
-- **Sync Date**: ${timestamp}
-- **Format**: Markdown compatible with Droid/Factory
-
-## DROID-Specific Capabilities
-
-### Command Execution Model
-- **Permission System**: Allowlist/denylist based access control
-- **Safety Mechanisms**: Command validation and sandboxing
-- **Execution Context**: User permissions with command filtering
-
-### File Operations
-- **Supported Formats**: Markdown, JSON, configuration files
-- **Editing Capabilities**: Full file read/write/edit operations
-- **Safety Features**: Backup before destructive operations
-
-### Integration Features
-- **Commands**: Native Markdown command format support
-- **Rules**: Automatic rule loading from rules/ directory
-- **Settings**: JSON-based configuration management
-
-## Development Standards
-
-This file contains adapted memory content from Claude Code configuration, customized for DROID usage patterns.
-
-### Core Rules Directory
-Your development rules have been synchronized to: \`rules/\`
-
-The following rule categories are available and automatically loaded:
-- General development standards (01-development-standards.md)
-- Architecture patterns (02-architecture-patterns.md)
-- Security guidelines (03-security-standards.md)
-- Testing strategy (04-testing-strategy.md)
-- Error handling (05-error-patterns.md)
-- Language-specific guidelines (python, go, shell, docker)
-
-### DROID-Specific Adaptations
-This memory file has been adapted for DROID with the following changes:
-- Updated command syntax for DROID compatibility
-- Adapted permission system references
-- Added DROID-specific capability documentation
-- Integrated with DROID's allowlist/denylist model
-
-### Memory File References
-- Primary agents and capabilities: See AGENTS.md
-- Development rules: Automatically loaded from rules/ directory
-- Tool-specific settings: In settings.json and config.json
-
-## Usage Notes
-- This file serves as your primary memory reference for DROID
-- Rules are automatically loaded from the rules/ directory
-- Agent instructions and capabilities are documented in AGENTS.md
-- Configuration is managed through DROID's permission system
-
-## DROID Integration Notes
-- Commands follow DROID's Markdown format
-- Permissions are managed through allowlist/denylist in settings.json
-- Rules are automatically adapted for DROID compatibility
-- All operations respect DROID's security boundaries
-
-Generated from Claude Code configuration on ${timestamp}.
-EOF
+  sync_claude_memory_file "$memory_file" "$FORCE"
 
   # Create AGENTS.md - universal agent capabilities with DROID-specific notes
   log_info "Creating AGENTS.md with DROID-specific integration notes..."

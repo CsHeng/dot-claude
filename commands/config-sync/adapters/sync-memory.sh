@@ -254,54 +254,9 @@ get_tool_memory_filename() {
     esac
 }
 
-# Create backup directory
-create_backup_dir() {
-    local tool="$1"
-    local config_dir
-    config_dir=$(get_tool_config_dir "$tool")
-    local backup_dir="$config_dir/backup/$(date +%Y%m%d_%H%M%S)"
-
-    if [[ "$DRY_RUN" == false ]]; then
-        mkdir -p "$backup_dir"
-        echo "$backup_dir"
-    else
-        echo "Would create backup directory: $backup_dir"
-    fi
-}
+# Note: Backup functions removed - now handled by unified prepare phase
 
 # Backup existing memory files
-backup_memory_files() {
-    local tool="$1"
-    local backup_dir="$2"
-
-    local config_dir
-    config_dir=$(get_tool_config_dir "$tool")
-
-    log_info "Backing up existing memory files for $tool..."
-
-    local memory_files=(
-        "CLAUDE.md"
-        "AGENTS.md"
-        "DROID.md"
-        "QWEN.md"
-        "CODEX.md"
-    )
-
-    for file in "${memory_files[@]}"; do
-        local source_file="$config_dir/$file"
-        if [[ -f "$source_file" ]]; then
-            if [[ "$DRY_RUN" == false ]]; then
-                rsync -a --quiet "$source_file" "$backup_dir/$file"
-                log_info "Backed up: $file"
-            else
-                log_info "Would backup: $file"
-            fi
-        fi
-    done
-
-    log_success "Memory backup completed for $tool"
-}
-
 # Sync user memory file
 sync_user_memory() {
     local tool="$1"
@@ -331,77 +286,7 @@ sync_user_memory() {
         return 0
     fi
 
-    # Create config directory if it doesn't exist
-    mkdir -p "$config_dir"
-
-    # Backup existing file if not forcing
-    if [[ -f "$target_file" && "$FORCE" == false ]]; then
-        backup_file "$target_file"
-    fi
-
-    # Create tool-specific memory file
-    local tool_name=$(echo "$tool" | tr '[:lower:]' '[:upper:]')
-
-    cat > "$target_file" << EOF
-# $tool_name User Memory
-
-## Tool Configuration
-- **Tool**: $tool_name CLI
-- **Source**: Synchronized from Claude Code configuration
-- **Sync Date**: $(date)
-- **Original File**: CLAUDE.md
-
-## Development Standards
-
-This file contains adapted memory content from Claude Code configuration, customized for $tool_name usage.
-
-### Core Rules Directory
-Your development rules have been synchronized to: \`rules/\`
-
-The following rule categories are available:
-EOF
-
-    # Add rules information
-    if [[ -d "$CLAUDE_CONFIG_DIR/rules" ]]; then
-        find "$CLAUDE_CONFIG_DIR/rules" -name "*.md" -type f | sort | while read -r rule_file; do
-            local basename=$(basename "$rule_file" .md)
-            local title=$(head -1 "$rule_file" | sed 's/^# //')
-            echo "- **$basename**: $title" >> "$target_file"
-        done
-    else
-        echo "- No rules files found in source configuration" >> "$target_file"
-    fi
-
-    cat >> "$target_file" << EOF
-
-### Tool-Specific Adaptations
-This memory file has been adapted for $tool_name with the following changes:
-- Updated tool references and paths
-- Adapted command syntax for $tool_name compatibility
-- Preserved core development guidelines and standards
-- Added $tool_name-specific usage notes
-
-### Memory File References
-- Primary agents and capabilities: See AGENTS.md
-- Development rules: See rules/ directory
-- Tool-specific settings: In configuration files
-
-### Usage Notes
-- This file serves as your primary memory reference for $tool_name
-- Rules and guidelines are automatically loaded from the rules/ directory
-- Agent instructions and capabilities are documented in AGENTS.md
-- Configuration settings are managed through $tool_name's configuration system
-
-## Synchronization Information
-
-This file was generated from your Claude Code configuration on $(date).
-
-**Source**: $source_file
-**Target**: $target_file
-**Tool**: $tool_name
-
-For configuration changes, update your Claude Code configuration and re-sync.
-EOF
+    sync_claude_memory_file "$target_file" "$FORCE"
 
     log_success "User memory synced for $tool: $memory_filename"
 }
@@ -425,16 +310,17 @@ sync_agents_file() {
     # Create config directory if it doesn't exist
     mkdir -p "$config_dir"
 
-    # Backup existing file if not forcing
-    if [[ -f "$target_file" && "$FORCE" == false ]]; then
-        backup_file "$target_file"
-    fi
+    # Note: Backup is now handled by the unified prepare phase
+    # No need for individual file backups here
 
     local tool_name=$(echo "$tool" | tr '[:lower:]' '[:upper:]')
 
     if [[ -f "$source_file" ]]; then
         # Adapt existing AGENTS.md
-        sed "s/CLAUDE.md/$(get_tool_memory_filename "$tool")/g" "$source_file" > "$target_file"
+        local memory_file="$(get_tool_memory_filename "$tool")"
+        sed -e "s/@CLAUDE\.md/@${memory_file}/g" \
+            -e "s/CLAUDE.md/${memory_file}/g" \
+            "$source_file" > "$target_file"
 
         # Add tool-specific section
         cat >> "$target_file" << EOF
@@ -724,10 +610,8 @@ run_memory_sync() {
 
         # Create backup
         local backup_dir
-        backup_dir=$(create_backup_dir "$target_tool")
-
-        # Backup existing memory files
-        backup_memory_files "$target_tool" "$backup_dir"
+        # Note: Backup creation removed - now handled by unified prepare phase
+        # No need for create_backup_dir and backup_memory_files calls
 
         # Sync memory components
         sync_memory_components "$target_tool"
