@@ -39,7 +39,7 @@ Focus on Android libraries distributed to external apps. Capture public APIs, in
 - Feature flags or remote configuration that alters SDK behavior.
 
 ## Integration guidance
-- Gradle coordinates, repository declarations, and version matrix.
+- Gradle coordinates, repository declarations, and dependency version table.
 - Manifest requirements (permissions, services, providers, receivers).
 - Proguard/R8 snippets, consumer Proguard configuration, keep rules.
 - Host app initialization snippet (Application.onCreate, first Activity, or lazy init), error handling, retries.

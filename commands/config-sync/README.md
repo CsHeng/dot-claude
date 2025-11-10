@@ -51,3 +51,11 @@ Adapters such as `/config-sync:adapt-permissions` or `/config-sync:droid` remain
 - Maintain strict mode (`set -euo pipefail`) in every helper per `rules/12-shell-guidelines.md`.
 - Update documentation when adding phases, planner fields, or CLI arguments so downstream tools (sequence diagrams, plan docs) stay accurate.
 - Qwen command verification requires the Python `toml` module (install with `python3 -m pip install --user toml` or ensure the module exists in the CLI’s runtime).
+
+## Agentization Mapping
+
+| Agent | Commands | Default Skills | Optional Skills |
+| --- | --- | --- | --- |
+| `agent:config-sync` | `/config-sync/sync-cli`, `/config-sync/sync-project-rules`, `/config-sync:adapt-*` | `skill:toolchain-baseline`, `skill:workflow-discipline`, `skill:security-logging` | `skill:language-python`, `skill:language-go`, `skill:language-shell` |
+
+Agent metadata lives in `agents/config-sync/AGENT.md`. Make sure command logs include the agent/skill versions so future audits can trace each run.

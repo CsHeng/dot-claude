@@ -75,3 +75,9 @@ Enforce `rules/99-llm-prompt-writing-rules.md` across Claude Code commands, skil
 # Preview fixes without changing disk
 /review-llm-prompts --dry-run
 ```
+
+## Agentization Mapping
+
+| Agent | Commands | Default Skills | Optional Skills |
+| --- | --- | --- | --- |
+| `agent:llm-police` | `/review-llm-prompts` | `skill:llm-governance`, `skill:workflow-discipline` | `skill:toolchain-baseline`（当需要运行 shell 工具时） |

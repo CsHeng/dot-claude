@@ -1,7 +1,8 @@
+---
 name: "config-sync/sync-project-rules"
+description: "Sync shared Claude rules into project IDE directories (Cursor, VS Code Copilot)"
 command: "~/.claude/commands/config-sync/sync-project-rules.sh"
-description: Sync shared Claude rules into project IDE directories (Cursor, VS Code Copilot)
-argument-hint: --target=<cursor|copilot|all> [--all] [--dry-run] [--verify-only] [--project-root=<path>]
+argument-hint: "--target=<cursor|copilot|all> [--all] [--dry-run] [--verify-only] [--project-root=<path>]"
 disable-model-invocation: true
 ---
 

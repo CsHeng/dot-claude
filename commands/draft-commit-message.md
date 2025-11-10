@@ -22,3 +22,9 @@ allowed-tools: Bash(git rev-parse --git-dir), Bash(git status --short), Bash(git
 - Incorporate optional human notes from `$ARGUMENTS` if provided.
 - Highlight any files with unstaged changes that may need review.
 - Explicitly confirm with the human before running any commit commands; never execute `git commit` yourself.
+
+## Agentization Mapping
+
+| Agent | Commands | Default Skills | Optional Skills |
+| --- | --- | --- | --- |
+| `agent:workflow-helper` | `/commands:draft-commit-message` | `skill:workflow-discipline` | `skill:toolchain-baseline`（当需要额外工具时） |
