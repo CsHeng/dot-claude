@@ -84,7 +84,7 @@ Comprehensive troubleshooting guide for the Claude Code configuration system, co
 **Solutions**:
 1. **Run analysis first**:
    ```bash
-   /config-sync/sync-cli --action=analyze --target=<tool>
+   claude /config-sync:sync-cli --action=analyze --target=<tool>
    ```
 
 2. **Check tool installation**:
@@ -101,7 +101,7 @@ Comprehensive troubleshooting guide for the Claude Code configuration system, co
 
 4. **Use dry-run to preview**:
    ```bash
-   /config-sync/sync-cli --action=sync --dry-run
+   claude /config-sync:sync-cli --action=sync --dry-run
    ```
 
 ### Backup System Issues
@@ -138,19 +138,19 @@ Comprehensive troubleshooting guide for the Claude Code configuration system, co
 
 2. **Use correct plan file**:
    ```bash
-   /config-sync/sync-cli --action=sync --plan-file=~/.claude/backup/plan-20250205-120210.json
+   claude /config-sync:sync-cli --action=sync --plan-file=~/.claude/backup/plan-20250205-120210.json
    ```
 
 3. **Resume from specific phase**:
    ```bash
-   /config-sync/sync-cli --action=sync --plan-file=plan.json --from-phase=prepare
+   claude /config-sync:sync-cli --action=sync --plan-file=plan.json --from-phase=prepare
    ```
 
 ## 📂 Project Rules Sync Issues
 
 ### IDE Sync Fails
 
-**Symptoms**: `/config-sync/sync-project-rules` fails
+**Symptoms**: `claude /config-sync:sync-project-rules` fails
 
 **Solutions**:
 1. **Check project detection**:
@@ -159,7 +159,7 @@ Comprehensive troubleshooting guide for the Claude Code configuration system, co
    git status
 
    # Or set project directory manually
-   CLAUDE_PROJECT_DIR=/path/to/project /config-sync/sync-project-rules --all
+   CLAUDE_PROJECT_DIR=/path/to/project claude /config-sync:sync-project-rules --all
    ```
 
 2. **Check IDE directories**:
@@ -170,7 +170,7 @@ Comprehensive troubleshooting guide for the Claude Code configuration system, co
 
 3. **Run verification**:
    ```bash
-   /config-sync/sync-project-rules --verify-only
+   claude /config-sync:sync-project-rules --verify-only
    ```
 
 ### Rules Not Loading in IDE

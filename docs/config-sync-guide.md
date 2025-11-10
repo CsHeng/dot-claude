@@ -51,12 +51,12 @@ The backup system uses a **unified centralized approach** during the **prepare**
 Execution can be resumed from any phase:
 ```bash
 # Resume from prepare phase using stored plan
-/config-sync/sync-cli --action=sync --plan-file=~/.claude/backup/plan-20250205-120210.json --from-phase=prepare
+claude /config-sync:sync-cli --action=sync --plan-file=~/.claude/backup/plan-20250205-120210.json --from-phase=prepare
 ```
 
-- **Primary orchestrator**: `/config-sync/sync-cli` - Full workflow management
+- **Primary orchestrator**: `claude /config-sync:sync-cli` - Full workflow management
 - **Adapter commands**: Tool-specific operations for targeted tasks
-- **Project integration**: `/config-sync/sync-project-rules` - IDE synchronization
+- **Project integration**: `claude /config-sync:sync-project-rules` - IDE synchronization
 
 ### PlantUML Integration
 
@@ -85,9 +85,9 @@ plantuml -tsvg docs/config-sync-project-sequence-diagram.puml
 
 ## CLI Reference
 
-### Primary Orchestrator: `/config-sync/sync-cli`
+### Primary Orchestrator: `claude /config-sync:sync-cli`
 
-All operations use: `/config-sync/sync-cli --action=<ACTION> [FLAGS]`
+All operations use: `claude /config-sync:sync-cli --action=<ACTION> [FLAGS]`
 
 #### Actions
 
@@ -116,22 +116,22 @@ All operations use: `/config-sync/sync-cli --action=<ACTION> [FLAGS]`
 
 ```bash
 # Full sync with defaults
-/config-sync/sync-cli --action=sync
+claude /config-sync:sync-cli --action=sync
 
 # Dry-run sync for rules + commands on Droid + Qwen
-/config-sync/sync-cli --action=sync --target=droid,qwen --components=rules,commands --dry-run
+claude /config-sync:sync-cli --action=sync --target=droid,qwen --components=rules,commands --dry-run
 
 # Analyze OpenCode in table format
-/config-sync/sync-cli --action=analyze --target=opencode --format=table --detailed
+claude /config-sync:sync-cli --action=analyze --target=opencode --format=table --detailed
 
 # Verify permissions + commands for Codex
-/config-sync/sync-cli --action=verify --target=codex --components=permissions,commands
+claude /config-sync:sync-cli --action=verify --target=codex --components=permissions,commands
 
 # Run only the permissions adapter for Qwen
-/config-sync/sync-cli --action=adapt --adapter=permissions --target=qwen --dry-run
+claude /config-sync:sync-cli --action=adapt --adapter=permissions --target=qwen --dry-run
 
 # Resume a run from prepare to verify using a stored plan
-/config-sync/sync-cli --action=sync --plan-file=~/.claude/backup/plan-20250205-120210.json --from-phase=prepare
+claude /config-sync:sync-cli --action=sync --plan-file=~/.claude/backup/plan-20250205-120210.json --from-phase=prepare
 ```
 
 ## Adapter Commands
@@ -162,19 +162,19 @@ All operations use: `/config-sync/sync-cli --action=<ACTION> [FLAGS]`
 
 ## Project Rules Integration
 
-### `/config-sync/sync-project-rules`
+### `claude /config-sync:sync-project-rules`
 
 Project-level helper that syncs the shared rule library into IDE assistants (Cursor, VS Code Copilot) for a specific repository.
 
 ```bash
 # From inside the project (or pass --project-root / use CLAUDE_PROJECT_DIR)
-/config-sync/sync-project-rules --all
+claude /config-sync:sync-project-rules --all
 
 # Limit to a single target
-/config-sync/sync-project-rules --target=cursor
+claude /config-sync:sync-project-rules --target=cursor
 
 # Run from another directory
-CLAUDE_PROJECT_DIR=/path/to/project /config-sync/sync-project-rules --verify-only
+CLAUDE_PROJECT_DIR=/path/to/project claude /config-sync:sync-project-rules --verify-only
 ```
 
 #### Behavior
@@ -223,18 +223,18 @@ The `prepare` phase automatically creates backups unless using `fast` profile:
 
 ```bash
 # Full verification with detailed output
-/config-sync/sync-cli --action=verify --target=all --components=all --detailed
+claude /config-sync:sync-cli --action=verify --target=all --components=all --detailed
 
 # Verification with auto-fix
-/config-sync/sync-cli --action=verify --target=codex --components=permissions,commands
+claude /config-sync:sync-cli --action=verify --target=codex --components=permissions,commands
 
 # Component-specific verification
-/config-sync/sync-cli --action=verify --target=qwen --components=rules
+claude /config-sync:sync-cli --action=verify --target=qwen --components=rules
 ```
 
 ### Rollback Procedures
 
-1. **Use plan files**: `/config-sync/sync-cli --action=report --plan-file=<path>` to review changes
+1. **Use plan files**: `claude /config-sync:sync-cli --action=report --plan-file=<path>` to review changes
 2. **Manual restore**: Restore from backup directories created during `prepare` phase
 3. **Re-sync**: Run sync again with corrected configuration
 
@@ -264,16 +264,16 @@ The `prepare` phase automatically creates backups unless using `fast` profile:
 
 ### Initial Setup
 
-1. **Analyze** - `/config-sync/sync-cli --action=analyze --target=<tool>` (understand capabilities + gaps)
-2. **Sync** - `/config-sync/sync-cli --action=sync --target=<tool>` (apply changes)
-3. **Verify** - `/config-sync/sync-cli --action=verify --target=<tool>` (ensure correctness)
+1. **Analyze** - `claude /config-sync:sync-cli --action=analyze --target=<tool>` (understand capabilities + gaps)
+2. **Sync** - `claude /config-sync:sync-cli --action=sync --target=<tool>` (apply changes)
+3. **Verify** - `claude /config-sync:sync-cli --action=verify --target=<tool>` (ensure correctness)
 4. **Report** - Re-run `--action=report` or `--action=sync` with `--plan-file` as needed
 
 ### Ongoing Maintenance
 
 - **Targeted updates**: Use `--target` and `--components` flags for specific changes
 - **Regular verification**: Schedule periodic verification runs
-- **Project sync**: Use `/config-sync/sync-project-rules` when project rules change
+- **Project sync**: Use `claude /config-sync:sync-project-rules` when project rules change
 - **Monitor**: Check CLI output for warnings and recommendations
 
 ### Multi-Tool Management

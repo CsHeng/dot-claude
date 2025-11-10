@@ -43,20 +43,20 @@ claude /doctor  # Verify configuration
 ### 2. Sync to IDE Tools (Project Level)
 ```bash
 # From inside the project (or set CLAUDE_PROJECT_DIR)
-/config-sync/sync-project-rules --all
+claude /config-sync:sync-project-rules --all
 
 ```
 
 ### 3. Sync to CLI Tools (Optional)
 ```bash
 # Analyze available CLI tools
-/config-sync/sync-cli --action=analyze --target=all
+claude /config-sync:sync-cli --action=analyze --target=all
 
 # Sync configuration to installed tools
-/config-sync/sync-cli --action=sync --target=all
+claude /config-sync:sync-cli --action=sync --target=all
 
 # Verify sync worked
-/config-sync/sync-cli --action=verify --target=all
+claude /config-sync:sync-cli --action=verify --target=all
 ```
 
 ## 🔧 Configuration Components
@@ -132,13 +132,13 @@ vim ~/.claude/settings.json
 ### For IDE Integration
 ```bash
 # After updating rules, sync to project IDEs
-/config-sync/sync-project-rules --all
+claude /config-sync:sync-project-rules --all
 ```
 
 ### For CLI Tools
 ```bash
 # After major configuration changes
-/config-sync/sync-cli --action=sync --target=all
+claude /config-sync:sync-cli --action=sync --target=all
 ```
 
 ## 🛠️ Maintenance
@@ -149,10 +149,10 @@ vim ~/.claude/settings.json
 claude /doctor
 
 # Verify IDE sync
-/config-sync/sync-project-rules --verify-only
+claude /config-sync:sync-project-rules --verify-only
 
 # Verify CLI sync
-/config-sync/sync-cli --action=verify --target=all
+claude /config-sync:sync-cli --action=verify --target=all
 ```
 
 ### Adding New Content
