@@ -93,6 +93,8 @@ Maintain a lightweight sync log (plan path, targets, timestamp, commit hash) so 
 ## Rollback Strategy
 - Every manifest includes a `fallback` pointer to the previous version.
 - config-sync keeps at least two historical copies for `--from-backup=<timestamp>`.
+- Configurable backup retention maintains `maxRuns` backups with automatic cleanup (default: 5).
+- Backup retention settings simply cap the number of stored runs (latest N only).
 - CLAUDE contains an emergency note describing how to recover if agents fail (no automatic rule loading).
 
 ## Milestones

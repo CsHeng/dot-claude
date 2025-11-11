@@ -12,6 +12,7 @@ mkdir -p "$STATE_ROOT"
 
 source "$CLI_ROOT/lib/common.sh"
 source "$CLI_ROOT/scripts/executor.sh"
+source "$CLI_ROOT/scripts/backup-cleanup.sh"
 
 PHASES_DIR="$CLI_ROOT/lib/phases"
 PLANNERS_DIR="$CLI_ROOT/lib/planners"
@@ -335,7 +336,7 @@ configure_flags() {
 phase_exists() {
   local needle="$1"
   case "$needle" in
-    collect|analyze|plan|prepare|adapt|execute|verify|report) return 0 ;;
+    collect|analyze|plan|prepare|adapt|execute|verify|cleanup|report) return 0 ;;
     *) return 1 ;;
   esac
 }
@@ -346,7 +347,7 @@ select_phases() {
     sync)
       ACTIVE_PHASES=(collect analyze plan prepare adapt execute)
       $VERIFY_ENABLED && ACTIVE_PHASES+=(verify)
-      ACTIVE_PHASES+=(report)
+      ACTIVE_PHASES+=(cleanup report)
       ;;
     analyze)
       ACTIVE_PHASES=(collect analyze report)
@@ -562,6 +563,19 @@ run_pipeline() {
   fi
 
   $failure && return 1
+  return 0
+}
+
+phase_cleanup() {
+  log_info "Starting backup cleanup phase"
+
+  # Run backup cleanup with current settings
+  if ! cleanup_backups "$STATE_ROOT" "$SETTINGS_PATH"; then
+    log_error "Backup cleanup phase failed"
+    return 1
+  fi
+
+  log_info "Backup cleanup phase completed successfully"
   return 0
 }
 

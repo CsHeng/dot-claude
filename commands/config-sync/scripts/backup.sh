@@ -220,11 +220,11 @@ create_backup_manifest() {
   for target in "${targets[@]}"; do
     local target_manifest="$backup_root/$target/BACKUP_MANIFEST.json"
     if [[ -f "$target_manifest" ]]; then
-      local target_size target_files
-      target_size=$(jq -r '.files_backed_up' "$target_manifest" 2>/dev/null || echo 0)
-      target_files=$(jq -r '.backup_size_bytes' "$target_manifest" 2>/dev/null || echo 0)
+      local target_files target_size_bytes
+      target_files=$(jq -r '.files_backed_up' "$target_manifest" 2>/dev/null || echo 0)
+      target_size_bytes=$(jq -r '.backup_size_bytes' "$target_manifest" 2>/dev/null || echo 0)
       ((total_files += target_files))
-      ((total_size += target_size))
+      ((total_size += target_size_bytes))
 
       if [[ -n "$targets_json" ]]; then
         targets_json+=","

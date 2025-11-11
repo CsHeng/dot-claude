@@ -10,8 +10,8 @@ The config-sync suite now centers on a single slash command, `/config-sync/sync-
 - `lib/common.*` – Shared helpers (parsing, logging, path resolution)
 - `lib/phases/` – Phase runners (`collect`, `analyze`, `plan`, `prepare`, `adapt`, `execute`, `verify`, `report`)
 - `lib/planners/` – Plan builders for sync/adapt flows
-- `scripts/` – Reusable shell helpers (`executor.sh`, `backup.sh`)
-- `settings.json` – Default target/component selections, verify/dry-run preferences
+- `scripts/` – Reusable shell helpers (`executor.sh`, `backup.sh`, `backup-cleanup.sh`)
+- `settings.json` – Default target/component selections, verify/dry-run preferences, backup retention settings
 
 ## Primary Slash Command
 
@@ -44,6 +44,52 @@ Adapters such as `/config-sync:adapt-permissions` or `/config-sync:droid` remain
 # Re-run plan from prepare onwards
 /config-sync/sync-cli --action=sync --plan-file=~/.claude/backup/plan-20250205-120210.json --from-phase=prepare
 ```
+
+## Backup Retention
+
+The config-sync system includes automatic backup retention management to prevent unlimited disk usage. After each successful sync operation, the system automatically cleans up old backup runs based on configurable retention settings.
+
+### Features
+- **Automatic Cleanup**: Runs after successful sync operations
+- **Configurable Retention**: Keep the latest N runs (default: 5)
+- **Safe Deletion**: Dry-run mode and integrity verification
+- **Simple Policy**: Always delete everything beyond the N most recent runs
+- **Detailed Logging**: Track all cleanup actions
+
+### Configuration
+Backup retention is configured in `settings.json`:
+
+```json
+{
+  "backup": {
+    "retention": {
+      "maxRuns": 5,
+      "enabled": true,
+      "dryRun": false
+    }
+  }
+}
+```
+
+### Management Commands
+```bash
+# Check current backup status
+~/.claude/commands/config-sync/scripts/backup-cleanup.sh --status
+
+# Preview cleanup actions
+~/.claude/commands/config-sync/scripts/backup-cleanup.sh --dry-run
+
+# Manual cleanup
+~/.claude/commands/config-sync/scripts/backup-cleanup.sh
+```
+
+### Pipeline Integration
+The cleanup phase is automatically integrated into the sync pipeline:
+```
+collect → analyze → plan → prepare → adapt → execute → [verify] → cleanup → report
+```
+
+Use `--until-phase=execute` to skip cleanup or `--from-phase=cleanup` to run only cleanup.
 
 ## Development Notes
 

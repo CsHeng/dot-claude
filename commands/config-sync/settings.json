@@ -10,5 +10,12 @@
     ],
     "verify": true,
     "dryRun": false
+  },
+  "backup": {
+    "retention": {
+      "maxRuns": 5,
+      "enabled": true,
+      "dryRun": false
+    }
   }
 }
