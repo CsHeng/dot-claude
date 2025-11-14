@@ -1,10 +1,6 @@
 ---
 skill: development-standards
-version: 2.0.0
 description: Development standards and best practices
-confidence: high
-impact: high
-status: active
 ---
 
 # Code Quality Standards

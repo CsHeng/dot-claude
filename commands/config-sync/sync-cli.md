@@ -5,7 +5,7 @@ argument-hint: "--action=<sync|analyze|verify|adapt|plan|report> --target=<list|
 allowed-tools:
   - Read
   - Write
-  - ApplyPatch
+  - Edit
   - Bash
   - Bash(rg:*)
   - Bash(ls:*)
@@ -15,12 +15,10 @@ is_background: false
 ---
 
 ## Usage
-
-Execute unified configuration synchronization workflows across multiple IDE targets and components.
+Execute unified configuration synchronization workflows across multiple CLI targets and components.
 
 ## Arguments
-
-- `--action`: Workflow execution mode
+- `--action`: Workflow execution mode (default: sync)
   - `sync`: Execute complete synchronization pipeline
   - `analyze`: Analyze current configuration state
   - `verify`: Validate configuration integrity
@@ -47,28 +45,35 @@ Execute unified configuration synchronization workflows across multiple IDE targ
 - `--verbose`: Enable detailed logging
 
 ## Workflow
+### Input Validation
+- Validate action parameter against allowed modes
+- Verify target specification exists in configuration
+- Check component selection validity
+- Parse command-line arguments deterministically
 
-1. Parameter Validation: Parse and validate all command-line arguments
-2. Environment Detection: Identify IDE targets and validate accessibility
-3. Settings Integration: Merge runtime parameters with persistent settings
-4. Plan Generation: Create execution plan with phases and dependencies
-5. Phase Execution: Run determined phases in sequence with validation
-6. Result Persistence: Save execution metadata and artifacts
-7. Cleanup Operations: Manage temporary files and backup retention
+### Configuration Analysis
+- Scan source configuration directories
+- Analyze target IDE configuration structures
+- Identify configuration deltas and conflicts
+- Generate synchronization requirements
+
+### Execution Processing
+- Execute action-specific workflow logic
+- Apply configuration transformations
+- Validate synchronization results
+- Generate execution reports with status indicators
 
 ### Phase Mapping
-
 | Action | Phases Executed |
 | --- | --- |
-| `sync` | collect → analyze → plan → prepare → adapt → execute → verify → cleanup → report |
-| `analyze` | collect → analyze |
-| `verify` | execute → verify |
-| `adapt` | adapt → execute |
-| `plan` | collect → analyze → plan → prepare |
-| `report` | report |
+| sync | collect → analyze → plan → prepare → adapt → execute → verify → cleanup → report |
+| analyze | collect → analyze |
+| verify | execute → verify |
+| adapt | adapt → execute |
+| plan | collect → analyze → plan → prepare |
+| report | report |
 
 ## Output
-
 Generated Artifacts:
 - Plan file: `~/.claude/backup/plan-<timestamp>.json`
 - Run logs: `~/.claude/backup/run-<timestamp>/logs/*.log`

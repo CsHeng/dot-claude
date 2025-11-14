@@ -1,10 +1,6 @@
 ---
 skill: error-patterns
-version: 2.0.0
 description: Error handling patterns and logging standards
-confidence: high
-impact: high
-status: active
 ---
 
 # Error Handling Strategy Implementation

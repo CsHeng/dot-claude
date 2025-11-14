@@ -1,10 +1,6 @@
 ---
 skill: networking-controls
-version: 2.0.0
 description: Network security and connectivity standards
-confidence: high
-impact: high
-status: active
 ---
 
 # Network Security Implementation
@@ -246,7 +242,7 @@ class CircuitBreaker:
         self.last_failure_time = None
         self.state = "CLOSED"  # CLOSED, OPEN, HALF_OPEN
 
-    def call(self, func: Callable, *args, **kwargs):
+    def call(self, func: Callable, *args, kwargs):
         if self.state == "OPEN":
             if time.time() - self.last_failure_time > self.timeout:
                 self.state = "HALF_OPEN"
@@ -254,7 +250,7 @@ class CircuitBreaker:
                 raise Exception("Circuit breaker is OPEN")
 
         try:
-            result = func(*args, **kwargs)
+            result = func(*args, kwargs)
             if self.state == "HALF_OPEN":
                 self.state = "CLOSED"
                 self.failure_count = 0

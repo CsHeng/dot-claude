@@ -102,7 +102,7 @@ claude /config-sync:sync-cli --action=verify --target=all
 ```
 
 ### Extending the System
-1. **New skill**: create `skills/<category>-<name>/SKILL.md`, cite rule sections, run `/optimize-prompts --target=skills/<name>`.
+1. **New skill**: create `skills/<category>-<name>/SKILL.md`, cite rule sections, run `/optimize-prompts --target=skills/<name>`, and load `skill:skill-creator` for the canonical workflow plus bootstrap scripts (`skills/skill-creator/SKILL.md`).
 2. **New agent**: create `agents/<domain>-<role>/AGENT.md`, hook it up to commands in their README, and add it to CLAUDE.md.
 3. **New command**: add `commands/<name>.md`, describe agent mapping, and follow the slash-command spec.
 

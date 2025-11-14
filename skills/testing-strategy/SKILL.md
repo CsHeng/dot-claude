@@ -1,10 +1,6 @@
 ---
 skill: testing-strategy
-version: 2.0.0
 description: Comprehensive testing strategies and coverage standards
-confidence: high
-impact: high
-status: active
 ---
 
 # Test Coverage and Architecture

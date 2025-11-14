@@ -7,7 +7,6 @@ default-skills:
   - skill:workflow-discipline
   - skill:security-guardrails
 optional-skills:
-  - skill:environment-validation
   - skill:development-standards
 supported-commands:
   - Task invocation for web research
@@ -39,7 +38,6 @@ Execute comprehensive internet research across diverse sources with creative sea
 
 ## Optional Skills
 Load based on research complexity:
-- skill:environment-validation: For technology-specific research and tooling analysis
 - skill:development-standards: For best practices and coding standard research
 
 ## Workflow Phases

@@ -1,10 +1,6 @@
 ---
 skill: language-shell
-version: 2.0.0
 description: Shell scripting standards and safety practices
-confidence: high
-impact: high
-status: active
 allowed-tools:
   - Bash(shellcheck)
 ---

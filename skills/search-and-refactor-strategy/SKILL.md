@@ -8,7 +8,7 @@ allowed-tools:
 ## Purpose
 Provide deterministic guidance for selecting between ast-grep and ripgrep tools based on search requirements, accuracy needs, and structural vs textual analysis as defined in the agentization taxonomy and shell guidelines.
 
-**Dependencies**: This skill assumes that `skill:environment-validation` has been loaded to validate tool availability.
+Dependencies: This skill assumes that `skill:environment-validation` has been loaded to validate tool availability.
 
 ## IO Semantics
 Input: Search requirements, refactoring tasks, codebases needing modification
@@ -51,7 +51,6 @@ Use dry-run modes for large-scale modifications
 Backup code before applying automated refactors
 Test search patterns on small subsets first
 Monitor tool performance and resource usage
-**Note**: Tool version validation is handled by `skill:environment-validation`
 
 ## Validation Criteria
 Tool selection matches task requirements (discovery vs textual vs structural)

@@ -1,14 +1,12 @@
 ---
 name: "AGENTS.md"
 description: "Agent system specification with DEPTH optimization framework"
-version: "2.0.0"
-type: "specification"
 required-skills:
   - skill:workflow-discipline
   - skill:architecture-patterns
+  - skill:environment-validation
 optional-skills:
   - skill:security-logging
-  - skill:environment-validation
 ---
 
 # Agent System Specification
@@ -21,15 +19,17 @@ optional-skills:
 3. Skill Layer: Single-capability modules with rule references
 4. Rule Layer: Canonical standards with validation criteria
 
+All agents instantiate lazily—no agent initializes until its slash-command pattern is invoked. Before handing control to any agent, Memory automatically loads `skill:environment-validation` so tooling decisions (fd vs find, rg vs grep, ast-grep detection, PATH hygiene) are resolved once and propagated to subsequent skills.
+
 Reference: `docs/agentization/taxonomy-rfc.md`
 
 ### DEPTH Framework Requirements
 All agents implement standardized DEPTH optimization:
-- **D**: Deterministic workflow phases with clear decision policies
-- **E**: Error handling patterns with severity classification
-- **P**: Permission gating with comprehensive security validation
-- **T**: Tooling selection with context-aware optimization
-- **H**: Hierarchical escalation with clear fallback procedures
+- D: Deterministic workflow phases with clear decision policies
+- E: Error handling patterns with severity classification
+- P: Permission gating with comprehensive security validation
+- T: Tooling selection with context-aware optimization
+- H: Hierarchical escalation with clear fallback procedures
 
 ## Rule Application Matrix
 
@@ -43,14 +43,14 @@ All agents implement standardized DEPTH optimization:
 ## Agent Specifications
 
 ### `agent:config-sync`
-**Commands**: `/config-sync/*`
-**Mission**: Orchestrate configuration synchronization workflows
-**Inputs**: Target directories, configuration files, rule sets
-**Outputs**: Synchronized configurations, audit logs, rollback capabilities
-**Fail-Fast Triggers**: Permission denied, invalid targets, security violations
-**Escalation**: `agent:llm-governance` for governance violations
+Commands: `/config-sync/*`
+Mission: Orchestrate configuration synchronization workflows
+Inputs: Target directories, configuration files, rule sets
+Outputs: Synchronized configurations, audit logs, rollback capabilities
+Fail-Fast Triggers: Permission denied, invalid targets, security violations
+Escalation: `agent:llm-governance` for governance violations
 
-**DEPTH Implementation**:
+DEPTH Implementation:
 - Deterministic: Repository analysis → Skill loading → Orchestration → Verification
 - Error Handling: Classification matrix with severity-based response
 - Permission: Multi-level gating with user justification workflows
@@ -58,14 +58,14 @@ All agents implement standardized DEPTH optimization:
 - Hierarchical: Dependencies → Adapter execution → System integration
 
 ### `agent:llm-governance`
-**Commands**: `/optimize-prompts`
-**Mission**: Execute LLM governance audits with deterministic validation
-**Inputs**: LLM-facing files, target lists, audit scope specifications
-**Outputs**: Audit reports, compliance assessments, remediation plans
-**Fail-Fast Triggers**: Critical governance violations, ABSOLUTE mode breaches
-**Escalation**: Immediate maintainer notification for critical violations
+Commands: `/optimize-prompts`
+Mission: Execute LLM governance audits with deterministic validation
+Inputs: LLM-facing files, target lists, audit scope specifications
+Outputs: Audit reports, compliance assessments, remediation plans
+Fail-Fast Triggers: Critical governance violations, ABSOLUTE mode breaches
+Escalation: Immediate maintainer notification for critical violations
 
-**DEPTH Implementation**:
+DEPTH Implementation:
 - Deterministic: Target analysis → Rule loading → Audit execution → Reporting
 - Error Handling: Rule validation failures → Default rules → Limited validation
 - Permission: Strict read-only enforcement, no write operations
@@ -73,14 +73,14 @@ All agents implement standardized DEPTH optimization:
 - Hierarchical: File analysis → Rule application → Violation classification → Remediation
 
 ### `agent:doc-gen`
-**Commands**: `/doc-gen:*`
-**Mission**: Manage documentation generation with architecture adaptation
-**Inputs**: Project structure, documentation templates, customization parameters
-**Outputs**: Generated documentation, PlantUML diagrams, maintenance procedures
-**Fail-Fast Triggers**: Invalid project types, missing templates, permission denials
-**Escalation**: `agent:config-sync` for integration issues
+Commands: `/doc-gen:*`
+Mission: Manage documentation generation with architecture adaptation
+Inputs: Project structure, documentation templates, customization parameters
+Outputs: Generated documentation, PlantUML diagrams, maintenance procedures
+Fail-Fast Triggers: Invalid project types, missing templates, permission denials
+Escalation: `agent:config-sync` for integration issues
 
-**DEPTH Implementation**:
+DEPTH Implementation:
 - Deterministic: Project analysis → Skill loading → Orchestration → Output generation
 - Error Handling: Project type ambiguity → Selection menu → Default application
 - Permission: User confirmation before overwriting with justification
@@ -88,14 +88,14 @@ All agents implement standardized DEPTH optimization:
 - Hierarchical: Detection → Template selection → Generation → Validation → Maintenance
 
 ### `agent:workflow-helper`
-**Commands**: `/draft-commit-message`, `/review-shell-syntax`
-**Mission**: Execute day-to-day workflows with deterministic tooling selection
-**Inputs**: Git state, shell scripts, workflow context, task specifications
-**Outputs**: Commit messages, syntax validation, actionable recommendations
-**Fail-Fast Triggers**: Security violations, critical errors, repository integrity issues
-**Escalation**: Language-specific agents for specialized issues
+Commands: `/draft-commit-message`, `/review-shell-syntax`
+Mission: Execute day-to-day workflows with deterministic tooling selection
+Inputs: Git state, shell scripts, workflow context, task specifications
+Outputs: Commit messages, syntax validation, actionable recommendations
+Fail-Fast Triggers: Security violations, critical errors, repository integrity issues
+Escalation: Language-specific agents for specialized issues
 
-**DEPTH Implementation**:
+DEPTH Implementation:
 - Deterministic: Task analysis → Skill loading → Permission-gated execution → Verification
 - Error Handling: Tool selection failures → Manual alternatives → Documented limitations
 - Permission: Comprehensive gating with risk assessment and approval workflows
@@ -105,9 +105,9 @@ All agents implement standardized DEPTH optimization:
 ## Skill Loading Requirements
 
 ### Mandatory Skills by Category
-- **Workflow Discipline**: All agents - maintain incremental delivery and deterministic execution
-- **Security Logging**: Sensitive operations - apply structured controls and audit trails
-- **Toolchain Baseline**: Development operations - ensure consistency and compatibility
+- Workflow Discipline: All agents - maintain incremental delivery and deterministic execution
+- Toolchain Baseline (`skill:environment-validation`): All agents - enforce consistent tool chains, prefer fd/rg/ast-grep, and validate PATH/tool availability before other skills execute
+- Security Logging: Sensitive operations - apply structured controls and audit trails
 
 ### Conditional Loading Logic
 ```yaml
@@ -128,23 +128,23 @@ Security Context:
 
 Audit Complexity:
   trigger: "multi-file or system-wide analysis"
-  action: "Load environment-validation skill"
+  action: "Intensify environment-validation checks (fd vs find, rg vs grep, ast-grep availability)"
   validation: "Tool availability and compatibility"
 ```
 
 ### Validation Requirements
-- **Manifest Completeness**: Required fields present with valid values
-- **Source References**: Valid rule file mappings with version compatibility
-- **Permission Compatibility**: Tool access authorization against security policies
-- **Dependency Resolution**: No circular references with conflict detection
+- Manifest Completeness: Required fields present with valid values
+- Source References: Valid rule file mappings with version compatibility
+- Permission Compatibility: Tool access authorization against security policies
+- Dependency Resolution: No circular references with conflict detection
 
 ## Quality Standards
 
 ### Validation Metrics
-- **Coverage Requirements**: 80% overall code coverage, 95% on critical paths
-- **Linting Standards**: Language-mandated validators before completion
-- **Logging Requirements**: Structured logs with comprehensive audit trails
-- **Security Validation**: Input validation with vulnerability scanning
+- Coverage Requirements: 80% overall code coverage, 95% on critical paths
+- Linting Standards: Language-mandated validators before completion
+- Logging Requirements: Structured logs with comprehensive audit trails
+- Security Validation: Input validation with vulnerability scanning
 
 ### Tool Compatibility Matrix
 ```yaml
@@ -172,10 +172,10 @@ Shell Scripts:
 - Critical dependency resolution failures
 
 ### Recovery Procedures
-1. **Input Validation**: Comprehensive validation of all inputs and file paths
-2. **Secret Management**: Environment variables only with audit trail
-3. **Exception Logging**: Detailed diagnostic information with context preservation
-4. **Fallback Strategies**: Documented degradation procedures
+1. Input Validation: Comprehensive validation of all inputs and file paths
+2. Secret Management: Environment variables only with audit trail
+3. Exception Logging: Detailed diagnostic information with context preservation
+4. Fallback Strategies: Documented degradation procedures
 
 ## System Dependencies
 
@@ -216,10 +216,10 @@ Agent Cascade Failure:
 ## Inter-Agent Communication
 
 ### Communication Patterns
-- **Config-Sync → LLM-Governance**: Permission violations and governance breaches
-- **Doc-Gen → Config-Sync**: Integration issues and configuration conflicts
-- **Workflow-Helper → Language Agents**: Specialized language-specific tasks
-- **All Agents → Maintainer**: Critical failures and security incidents
+- Config-Sync → LLM-Governance: Permission violations and governance breaches
+- Doc-Gen → Config-Sync: Integration issues and configuration conflicts
+- Workflow-Helper → Language Agents: Specialized language-specific tasks
+- All Agents → Maintainer: Critical failures and security incidents
 
 ### Escalation Decision Logic
 ```

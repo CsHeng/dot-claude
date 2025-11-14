@@ -1,10 +1,6 @@
 ---
 skill: language-python
-version: 2.0.0
 description: Python language patterns and best practices
-confidence: high
-impact: high
-status: active
 allowed-tools:
   - Bash(uv)
   - Bash(ruff)

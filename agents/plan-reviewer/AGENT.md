@@ -41,7 +41,6 @@ Analyze development plans for technical feasibility, completeness, and potential
 
 ## Optional Skills
 Load based on plan complexity:
-- skill:environment-validation: For complex tooling validations
 - skill:language-python: For Python-specific plan reviews
 - skill:language-go: For Go-specific plan reviews
 - skill:testing-strategy: For test adequacy assessments

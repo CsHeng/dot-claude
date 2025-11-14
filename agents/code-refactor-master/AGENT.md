@@ -5,7 +5,6 @@ default-skills:
   - skill:development-standards
   - skill:architecture-patterns
   - skill:workflow-discipline
-  - skill:environment-validation
   - skill:automation-language-selection
 supported-commands: []
 permissions:
@@ -41,7 +40,6 @@ Orchestrate comprehensive code refactoring while maintaining zero breakage throu
 - skill:development-standards: Ensure adherence to coding standards and patterns
 - skill:architecture-patterns: Maintain architectural integrity during reorganization
 - skill:workflow-discipline: Apply incremental delivery and fail-fast principles
-- skill:environment-validation: Validate toolchain compatibility throughout refactoring
 - skill:automation-language-selection: Determine appropriate refactoring tools and strategies
 
 ## Optional Skills

@@ -1,15 +1,11 @@
 ---
 skill: llm-governance
-version: 2.0.0
 description: LLM content governance and compliance standards
-confidence: high
-impact: high
-status: active
 allowed-tools:
   - Bash(rg --pcre2 '\\*\\*')
   - Bash(rg --pcre2 '\\p{Extended_Pictographic}')
   - Bash(rg --pcre2 '(?<![\\`\\\\])\\*\\*(?![\\`/\\\\\\s])')
-  - Bash(rg --pcre2 '\\b(should|could|would|might|may)\\b')
+  - Bash(rg --pcre2 '\\b(must|can|will|can|can)\\b')
   - Read
   - Write
   - Edit
@@ -38,11 +34,11 @@ Content density optimization:
 Replace modal verbs with imperative equivalents:
 
 Conversion patterns:
-- "should use" → "use"
-- "could implement" → "implement"
-- "would recommend" → "apply"
-- "might want to" → "apply"
-- "may need to" → "ensure"
+- "must use" → "use"
+- "can implement" → "implement"
+- "will recommend" → "apply"
+- "can want to" → "apply"
+- "can need to" → "ensure"
 
 Imperative tone enforcement:
 - Audit content for modal verb usage
@@ -85,9 +81,9 @@ Character validation standards:
 ### Target File Identification
 
 Apply governance to specific file types:
-- `commands/**/*.md`
-- `skills/**/*.md`
-- `rules/**/*.md`
+- `commands//*.md`
+- `skills//*.md`
+- `rules//*.md`
 - `CLAUDE.md`
 - `AGENTS.md`
 - `.claude/settings.json`
@@ -150,7 +146,7 @@ rg --pcre2 '(?<![\\`\\\\])\\*\\*(?![\\`/\\\\\\s])' --line-number
 rg --pcre2 '\\p{Extended_Pictographic}' --line-number
 
 # Modal verb detection
-rg --pcre2 '\\b(should|could|would|might|may)\\b' --line-number
+rg --pcre2 '\\b(must|can|will|can|can)\\b' --line-number
 
 # Conversational pattern detection
 rg --pcre2 '\\b(hello|hi|hey|thanks|please|sorry)\\b' --line-number
@@ -174,11 +170,11 @@ remove_bold_markers() {
 replace_modal_verbs() {
     local file="$1"
     sed -i.tmp \
-        -e 's/should/use/g' \
-        -e 's/could/implement/g' \
-        -e 's/would/apply/g' \
-        -e 's/might want to/apply/g' \
-        -e 's/may need to/ensure/g' \
+        -e 's/must/use/g' \
+        -e 's/can/implement/g' \
+        -e 's/will/apply/g' \
+        -e 's/can want to/apply/g' \
+        -e 's/can need to/ensure/g' \
         "$file"
     rm "$file.tmp"
 }

@@ -67,11 +67,11 @@ commands/config-sync/
 
 ### Supported Targets
 
-- **Factory/Droid CLI**: Markdown commands, JSON permissions
-- **Qwen CLI**: TOML command conversion, JSON permission manifest
-- **OpenAI Codex CLI**: Minimal configuration with sandbox levels
-- **OpenCode**: JSON command format with operation-based permissions
-- **Amp CLI**: AGENTS.md guidance, `.agents/commands` mirroring, `amp.permissions` array
+- Factory/Droid CLI: Markdown commands, JSON permissions
+- Qwen CLI: TOML command conversion, JSON permission manifest
+- OpenAI Codex CLI: Minimal configuration with sandbox levels
+- OpenCode: JSON command format with operation-based permissions
+- Amp CLI: AGENTS.md guidance, `.agents/commands` mirroring, `amp.permissions` array
 
 ### Usage Examples
 
@@ -136,9 +136,9 @@ Control cleanup execution with phase controls:
 
 ## development-guidelines
 
-1. **Phase Execution**: Always invoke phase scripts through `sync-cli.sh`. Never call `lib/phases/*.sh` directly
-2. **Shell Standards**: Maintain strict mode (`set -euo pipefail`) in all helper scripts per `rules/12-shell-guidelines.md`
-3. **Documentation Updates**: Update documentation when adding phases, planner fields, or CLI arguments to maintain downstream tool accuracy
-4. **Dependency Management**: Qwen command verification requires Python `toml` module. Install with `python3 -m pip install --user toml`
-5. **Agent Integration**: Ensure command logs include agent/skill versions for audit traceability
-6. **Error Handling**: Implement comprehensive error handling with proper logging and rollback mechanisms
+1. Phase Execution: Always invoke phase scripts through `sync-cli.sh`. Never call `lib/phases/*.sh` directly
+2. Shell Standards: Maintain strict mode (`set -euo pipefail`) in all helper scripts per `rules/12-shell-guidelines.md`
+3. Documentation Updates: Update documentation when adding phases, planner fields, or CLI arguments to maintain downstream tool accuracy
+4. Dependency Management: Qwen command verification requires Python `toml` module. Install with `python3 -m pip install --user toml`
+5. Agent Integration: Ensure command logs include agent/skill versions for audit traceability
+6. Error Handling: Implement comprehensive error handling with proper logging and rollback mechanisms
