@@ -10,13 +10,13 @@ allowed-tools:
   - Bash(golangci-lint)
 ---
 
-# **Go Architecture Standards**
+# Go Architecture Standards
 
-## **Module Structure and Organization**
+## Module Structure and Organization
 
-### **Project Layout Requirements**
+### Project Layout Requirements
 
-**Implement standard Go project structure:**
+Implement standard Go project structure:
 ```
 project/
 ├── cmd/
@@ -35,37 +35,37 @@ project/
 └── README.md
 ```
 
-**Package organization principles:**
+Package organization principles:
 - Use `internal/` for code not intended for external use
 - Organize packages by feature, not technical layer
 - Keep packages focused with single responsibility
 - Apply clear package naming conventions
 
-### **Dependency Management**
+### Dependency Management
 
-**Maintain clean dependency graph:**
+Maintain clean dependency graph:
 - Keep dependencies minimal and well-maintained
 - Use semantic versioning for dependency constraints
 - Regularly update dependencies for security patches
 - Implement dependency injection for testability
 
-**Module best practices:**
+Module best practices:
 - Pin specific versions in go.mod
 - Use `go mod tidy` to maintain clean dependencies
 - Implement vendor directory management for reproducible builds
 - Document dependency decisions in go.mod comments
 
-## **Error Handling Patterns**
+## Error Handling Patterns
 
-### **Explicit Error Handling**
+### Explicit Error Handling
 
-**Apply Go error handling conventions:**
+Apply Go error handling conventions:
 - Always handle returned errors explicitly
 - Use multiple return values for error information
 - Implement proper error wrapping with context
 - Create descriptive error messages with context
 
-**Error wrapping implementation:**
+Error wrapping implementation:
 ```go
 // Use fmt.Errorf with %w for error wrapping
 if err := validateInput(data); err != nil {
@@ -84,15 +84,15 @@ func (e BusinessError) Error() string {
 }
 ```
 
-### **Error Interface Implementation**
+### Error Interface Implementation
 
-**Implement proper error interfaces:**
+Implement proper error interfaces:
 - Use `errors.Is()` for error type checking
 - Use `errors.As()` for error type assertion
 - Create sentinel errors for expected conditions
 - Implement temporary and timeout error interfaces
 
-**Interface compliance examples:**
+Interface compliance examples:
 ```go
 // Implement temporary interface for retryable errors
 func (e NetworkError) Temporary() bool {
@@ -105,31 +105,31 @@ func (e TimeoutError) Timeout() bool {
 }
 ```
 
-## **Code Quality Standards**
+## Code Quality Standards
 
-### **Go Formatting and Style**
+### Go Formatting and Style
 
-**Apply consistent formatting standards:**
+Apply consistent formatting standards:
 - Use `gofmt` for all code formatting
 - Implement `goimports` for import management
 - Use `golint` for style guidance
 - Apply `golangci-lint` for comprehensive analysis
 
-**Naming conventions:**
+Naming conventions:
 - Use CamelCase for exported names
 - Use camelCase for unexported names
 - Use short, descriptive names in local scope
 - Use meaningful names for exported APIs
 
-### **Static Analysis Implementation**
+### Static Analysis Implementation
 
-**Integrate golangci-lint in development:**
+Integrate golangci-lint in development:
 - Configure comprehensive rule set
 - Run analysis in CI/CD pipeline
 - Fix all high-severity issues
 - Document rule exceptions with justification
 
-**Linting configuration:**
+Linting configuration:
 ```yaml
 # .golangci.yml
 linters:
@@ -147,17 +147,17 @@ linters:
     - deadcode
 ```
 
-## **Build and Deployment Standards**
+## Build and Deployment Standards
 
-### **Build Configuration**
+### Build Configuration
 
-**Implement standardized build process:**
+Implement standardized build process:
 - Set minimum Go version to 1.23
 - Use `CGO_ENABLED=0` for static binaries
 - Implement cross-compilation for multiple targets
 - Use build flags for version information
 
-**Build script implementation:**
+Build script implementation:
 ```bash
 #!/bin/bash
 set -euo pipefail
@@ -171,15 +171,15 @@ GOOS=linux GOARCH=amd64 go build ${LDFLAGS} -o bin/app-linux-amd64 cmd/app/main.
 GOOS=darwin GOARCH=amd64 go build ${LDFLAGS} -o bin/app-darwin-amd64 cmd/app/main.go
 ```
 
-### **Testing Implementation**
+### Testing Implementation
 
-**Comprehensive testing strategy:**
+Comprehensive testing strategy:
 - Implement table-driven tests for data-driven scenarios
 - Use benchmark tests for performance-critical code
 - Apply race condition testing with `-race` flag
 - Maintain 80%+ code coverage
 
-**Testing patterns:**
+Testing patterns:
 ```go
 func TestProcessInput(t *testing.T) {
     tests := []struct {
@@ -217,17 +217,17 @@ func TestProcessInput(t *testing.T) {
 }
 ```
 
-## **Performance and Concurrency**
+## Performance and Concurrency
 
-### **Goroutine Management**
+### Goroutine Management
 
-**Implement proper goroutine patterns:**
+Implement proper goroutine patterns:
 - Use worker pools for managing concurrent tasks
 - Implement graceful shutdown with context cancellation
 - Avoid goroutine leaks by proper cleanup
 - Use buffered channels for communication
 
-**Concurrency patterns:**
+Concurrency patterns:
 ```go
 // Worker pool implementation
 type Worker struct {
@@ -251,31 +251,31 @@ func (w Worker) Start(ctx context.Context) {
 }
 ```
 
-### **Resource Management**
+### Resource Management
 
-**Implement efficient resource usage:**
+Implement efficient resource usage:
 - Use sync.Pool for object reuse
 - Implement proper connection pooling
 - Apply memory profiling to identify leaks
 - Use context for timeout and cancellation
 
-**Memory optimization techniques:**
+Memory optimization techniques:
 - Pre-allocate slices when size is known
 - Use strings.Builder for efficient string concatenation
 - Implement streaming for large data processing
 - Avoid memory allocations in hot paths
 
-## **Security Implementation**
+## Security Implementation
 
-### **Secure Coding Practices**
+### Secure Coding Practices
 
-**Apply Go security best practices:**
+Apply Go security best practices:
 - Validate all external inputs at boundaries
 - Use constant-time comparison for sensitive data
 - Implement proper random number generation
 - Apply secure default configurations
 
-**Security validation examples:**
+Security validation examples:
 ```go
 import (
     "crypto/subtle"
@@ -294,9 +294,9 @@ func hashPassword(password string) (string, error) {
 }
 ```
 
-### **Dependency Security**
+### Dependency Security
 
-**Maintain secure dependencies:**
+Maintain secure dependencies:
 - Regularly scan for known vulnerabilities
 - Use tools like `govulncheck` for security analysis
 - Update dependencies with security patches promptly

@@ -21,41 +21,41 @@ is_background: false
 ```
 
 ## Arguments
-- **action**: Operation mode - sync, analyze, or verify
-- **component**: Components to process - comma-separated list or all
+- action: Operation mode - sync, analyze, or verify
+- component: Components to process - comma-separated list or all
 
 ## Workflow
-1. **Parameter Parsing**: Extract action and component specifications
-2. **Tool Validation**: Verify python3 and jq availability
-3. **Qwen Analysis**: Examine existing Qwen CLI configuration
-4. **Content Conversion**: Convert Claude formats to Qwen-compatible formats
-5. **TOML Processing**: Convert command files to TOML format
-6. **Permission Setup**: Generate JSON permission manifests
-7. **Verification**: Validate synchronization completeness
+1. Parameter Parsing: Extract action and component specifications
+2. Tool Validation: Verify python3 and jq availability
+3. Qwen Analysis: Examine existing Qwen CLI configuration
+4. Content Conversion: Convert Claude formats to Qwen-compatible formats
+5. TOML Processing: Convert command files to TOML format
+6. Permission Setup: Generate JSON permission manifests
+7. Verification: Validate synchronization completeness
 
 ### Qwen CLI Features
-- **Command Format**: TOML conversion from Markdown
-- **Permissions**: JSON permission manifests
-- **Conversion Required**: Automatic format transformation
-- **Dependencies**: python3 and jq required for processing
+- Command Format: TOML conversion from Markdown
+- Permissions: JSON permission manifests
+- Conversion Required: Automatic format transformation
+- Dependencies: python3 and jq required for processing
 
 ### Component Processing
-- **Rules**: Direct sync to Qwen rules directory
-- **Commands**: Convert from Markdown to TOML format
-- **Settings**: Generate Qwen-specific configuration files
-- **Memory**: Configure AGENTS.md and QWEN.md references
-- **Permissions**: Convert to JSON permission manifests
+- Rules: Direct sync to Qwen rules directory
+- Commands: Convert from Markdown to TOML format
+- Settings: Generate Qwen-specific configuration files
+- Memory: Configure AGENTS.md and QWEN.md references
+- Permissions: Convert to JSON permission manifests
 
 ### Dependencies
-- **python3**: Required for content conversion
-- **jq**: Required for settings updates and JSON processing
+- python3: Required for content conversion
+- jq: Required for settings updates and JSON processing
 
 ## Output
-- **Converted Commands**: TOML format command files
-- **Synced Components**: Rules and settings in Qwen directories
-- **Permission Manifests**: JSON permission configurations
-- **Conversion Report**: Format transformation summary
-- **Verification Results**: Component-by-component status
+- Converted Commands: TOML format command files
+- Synced Components: Rules and settings in Qwen directories
+- Permission Manifests: JSON permission configurations
+- Conversion Report: Format transformation summary
+- Verification Results: Component-by-component status
 CLAUDE_ROOT="$HOME/.claude"
 QWEN_ROOT="$HOME/.qwen"
 mkdir -p "$QWEN_ROOT/commands" "$QWEN_ROOT/rules"

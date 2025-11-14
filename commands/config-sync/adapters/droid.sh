@@ -467,68 +467,68 @@ sync_memory() {
 ## Available Agents
 
 ### File Operations Agent
-- **DROID Integration**: Native file read/write/edit operations
-- **Scope**: Workspace and configuration directories
-- **Safety**: Automatic backup before destructive operations
-- **Format Support**: Markdown, JSON, TOML, configuration files
+- DROID Integration: Native file read/write/edit operations
+- Scope: Workspace and configuration directories
+- Safety: Automatic backup before destructive operations
+- Format Support: Markdown, JSON, TOML, configuration files
 
 ### Configuration Management Agent
-- **DROID Integration**: Settings.json and config.json management
-- **Permission Control**: Allowlist/denylist management
-- **Rule Synchronization**: Automatic rule loading and adaptation
-- **Environment Setup**: Development environment configuration
+- DROID Integration: Settings.json and config.json management
+- Permission Control: Allowlist/denylist management
+- Rule Synchronization: Automatic rule loading and adaptation
+- Environment Setup: Development environment configuration
 
 ### Development Workflow Agent
-- **DROID Integration**: Command execution within permission boundaries
-- **Build Automation**: Support for build tools and scripts
-- **Testing Orchestration**: Test execution and reporting
-- **Code Quality**: Linting and analysis tool integration
+- DROID Integration: Command execution within permission boundaries
+- Build Automation: Support for build tools and scripts
+- Testing Orchestration: Test execution and reporting
+- Code Quality: Linting and analysis tool integration
 
 ### Security and Analysis Agent
-- **DROID Integration**: Permission-aware operations
-- **Risk Assessment**: Command safety evaluation
-- **Audit Trail**: Operation logging and tracking
-- **Compliance**: Security policy enforcement
+- DROID Integration: Permission-aware operations
+- Risk Assessment: Command safety evaluation
+- Audit Trail: Operation logging and tracking
+- Compliance: Security policy enforcement
 
 ## DROID-Specific Features
 
 ### Permission System Integration
-- **Command Filtering**: Automatic allowlist/denylist checking
-- **Safety Validation**: Pre-execution safety checks
-- **User Confirmation**: Required for high-risk operations
-- **Audit Logging**: All operations logged for security
+- Command Filtering: Automatic allowlist/denylist checking
+- Safety Validation: Pre-execution safety checks
+- User Confirmation: Required for high-risk operations
+- Audit Logging: All operations logged for security
 
 ### File Operation Safety
-- **Automatic Backups**: Created before destructive operations
-- **Validation**: File syntax and structure validation
-- **Rollback**: Capability to undo harmful operations
-- **Integrity Checks**: File integrity verification
+- Automatic Backups: Created before destructive operations
+- Validation: File syntax and structure validation
+- Rollback: Capability to undo harmful operations
+- Integrity Checks: File integrity verification
 
 ### Command Execution
-- **Context Awareness**: Working directory and environment awareness
-- **Dependency Checking**: Tool availability verification
-- **Error Handling**: Comprehensive error reporting
-- **Performance**: Optimized for development workflows
+- Context Awareness: Working directory and environment awareness
+- Dependency Checking: Tool availability verification
+- Error Handling: Comprehensive error reporting
+- Performance: Optimized for development workflows
 
 ## Usage Guidelines
 
 ### File Operations
-1. **Read Operations**: Use file reading agents for code analysis
-2. **Write Operations**: File writing agents include automatic backup
-3. **Edit Operations**: Edit agents provide validation and safety
-4. **Batch Operations**: Batch agents handle multiple files efficiently
+1. Read Operations: Use file reading agents for code analysis
+2. Write Operations: File writing agents include automatic backup
+3. Edit Operations: Edit agents provide validation and safety
+4. Batch Operations: Batch agents handle multiple files efficiently
 
 ### Configuration Management
-1. **Settings**: Use configuration agents for settings.json management
-2. **Permissions**: Permission agents manage allowlist/denylist
-3. **Rules**: Rule agents handle development guidelines
-4. **Environment**: Environment agents manage development setup
+1. Settings: Use configuration agents for settings.json management
+2. Permissions: Permission agents manage allowlist/denylist
+3. Rules: Rule agents handle development guidelines
+4. Environment: Environment agents manage development setup
 
 ### Development Workflow
-1. **Build**: Use workflow agents for build automation
-2. **Test**: Test agents orchestrate testing procedures
-3. **Deploy**: Deployment agents handle release processes
-4. **Monitor**: Monitoring agents track system health
+1. Build: Use workflow agents for build automation
+2. Test: Test agents orchestrate testing procedures
+3. Deploy: Deployment agents handle release processes
+4. Monitor: Monitoring agents track system health
 
 ## DROID Integration Notes
 

@@ -22,85 +22,85 @@ is_background: false
 ```
 
 ## Arguments
-- **mode**: bootstrap (stages to docs-bootstrap/) or maintain (in-place)
-- **scope**: full (complete regeneration) or delta (changes only)
-- **project-type**: android-app, android-sdk, web-admin, web-user, backend-go, backend-php
-- **language**: en or zh for documentation language
-- **repo**: Repository root directory
-- **docs**: Documentation output directory
-- **core**: Core documentation templates path
-- **demo**: Demo/example path (optional)
+- mode: bootstrap (stages to docs-bootstrap/) or maintain (in-place)
+- scope: full (complete regeneration) or delta (changes only)
+- project-type: android-app, android-sdk, web-admin, web-user, backend-go, backend-php
+- language: en or zh for documentation language
+- repo: Repository root directory
+- docs: Documentation output directory
+- core: Core documentation templates path
+- demo: Demo/example path (optional)
 
 ## DEPTH Workflow
 
 ### D - Decomposition
-- **Objective**: Self-contained orchestrator for documentation bootstrap and maintenance across project types
-- **Scope**: Parameter collection, path resolution, project analysis, adapter delegation, and validation
-- **Output**: README.md, TODO.md, parameter reports, validation results, and structured documentation
-- **Reference**: commands/doc-gen/lib/common.md, commands/doc-gen/adapters/, project-specific guidelines
+- Objective: Self-contained orchestrator for documentation bootstrap and maintenance across project types
+- Scope: Parameter collection, path resolution, project analysis, adapter delegation, and validation
+- Output: README.md, TODO.md, parameter reports, validation results, and structured documentation
+- Reference: commands/doc-gen/lib/common.md, commands/doc-gen/adapters/, project-specific guidelines
 
 ### E - Explicit Reasoning
-- **Mode Isolation**: Separate bootstrap (staging) from maintain (in-place) operations
-- **Project Type Adaptation**: Route to specific adapters based on detected project structure
-- **Delta Processing**: Support incremental updates with change tracking and persistence
-- **Flow Identification**: Use consistent [A-Z][0-9][0-9] identifiers across all artifacts
-- **Quality Assurance**: Fail-fast validation with comprehensive verification steps
+- Mode Isolation: Separate bootstrap (staging) from maintain (in-place) operations
+- Project Type Adaptation: Route to specific adapters based on detected project structure
+- Delta Processing: Support incremental updates with change tracking and persistence
+- Flow Identification: Use consistent [A-Z][0-9][0-9] identifiers across all artifacts
+- Quality Assurance: Fail-fast validation with comprehensive verification steps
 
 ### P - Parameters
-- **Mode Validation**: Strict validation of bootstrap vs maintain modes
-- **Project Type Verification**: Reject unsupported project types early
-- **Path Resolution**: Resolve relative paths against --repo and validate existence
-- **Language Support**: Enforce en/zh language constraints for narrative text
-- **Demo Integration**: Handle optional demo paths with secondary documentation passes
+- Mode Validation: Strict validation of bootstrap vs maintain modes
+- Project Type Verification: Reject unsupported project types early
+- Path Resolution: Resolve relative paths against --repo and validate existence
+- Language Support: Enforce en/zh language constraints for narrative text
+- Demo Integration: Handle optional demo paths with secondary documentation passes
 
 ### T - Test Cases
-- **Failure Case**: Invalid project type → Error with supported options
-- **Failure Case**: Missing paths → Auto-detection or user prompt for correction
-- **Success Case**: Valid parameters → Complete documentation generation
-- **Edge Case**: Delta scope → Change list processing and incremental updates
+- Failure Case: Invalid project type → Error with supported options
+- Failure Case: Missing paths → Auto-detection or user prompt for correction
+- Success Case: Valid parameters → Complete documentation generation
+- Edge Case: Delta scope → Change list processing and incremental updates
 
 ### H - Heuristics
-- **Fail Fast**: Parameter validation before any file operations
-- **Idempotent Operations**: Safe re-execution with same parameters
-- **Quality over Speed**: Prioritize accuracy and completeness
-- **Deterministic Output**: Consistent results across executions
-- **Flow Consistency**: Maintain identifier synchronization across artifacts
+- Fail Fast: Parameter validation before any file operations
+- Idempotent Operations: Safe re-execution with same parameters
+- Quality over Speed: Prioritize accuracy and completeness
+- Deterministic Output: Consistent results across executions
+- Flow Consistency: Maintain identifier synchronization across artifacts
 
 ## Workflow
-1. **Parameter Survey**: Interactive checklist with pre-filled defaults and validation
-2. **Path Resolution**: Resolve and validate all path arguments against repository root
-3. **Project Analysis**: Inspect codebase structure, frameworks, and existing documentation
-4. **Adapter Discovery**: Validate and load project-type-specific adapter with fallback to stub
-5. **Context Harvest**: Inventory existing docs, map modules, and capture change context
-6. **Adapter Delegation**: Generate SDK deliverables first, then demo modules if specified
-7. **TODO Planning**: Build comprehensive TODO.md with automation metadata and ledger
-8. **Automated Execution**: Execute all auto tasks, track failures, and update status
-9. **Verification**: Validate completeness, syntax consistency, and flow identifier alignment
-10. **Final Handoff**: Compile statistics, report manual items, and provide recommendations
+1. Parameter Survey: Interactive checklist with pre-filled defaults and validation
+2. Path Resolution: Resolve and validate all path arguments against repository root
+3. Project Analysis: Inspect codebase structure, frameworks, and existing documentation
+4. Adapter Discovery: Validate and load project-type-specific adapter with fallback to stub
+5. Context Harvest: Inventory existing docs, map modules, and capture change context
+6. Adapter Delegation: Generate SDK deliverables first, then demo modules if specified
+7. TODO Planning: Build comprehensive TODO.md with automation metadata and ledger
+8. Automated Execution: Execute all auto tasks, track failures, and update status
+9. Verification: Validate completeness, syntax consistency, and flow identifier alignment
+10. Final Handoff: Compile statistics, report manual items, and provide recommendations
 
 ### Execution Modes
-- **Bootstrap**: Stage content in docs-bootstrap/ to avoid overwriting
-- **Maintain**: Operate directly on docs/ for updates
-- **Full**: Complete regeneration of all documentation
-- **Delta**: Process only changed files since last successful run
+- Bootstrap: Stage content in docs-bootstrap/ to avoid overwriting
+- Maintain: Operate directly on docs/ for updates
+- Full: Complete regeneration of all documentation
+- Delta: Process only changed files since last successful run
 
 ### Supported Project Types
-- **android-app**: Full workflow implementation
-- **android-sdk**: Full workflow implementation
-- **web-admin**: Stub adapter (future expansion)
-- **web-user**: Stub adapter (future expansion)
-- **backend-go**: Stub adapter (future expansion)
-- **backend-php**: Stub adapter (future expansion)
+- android-app: Full workflow implementation
+- android-sdk: Full workflow implementation
+- web-admin: Stub adapter (future expansion)
+- web-user: Stub adapter (future expansion)
+- backend-go: Stub adapter (future expansion)
+- backend-php: Stub adapter (future expansion)
 
 ### Adapter Discovery
 Use home directory pattern: `~/.claude/commands/doc-gen/adapters/<project-type>.md`
 Validate path exists before reading and log canonical adapter path
 
 ## Output
-- **README.md**: Project documentation with parameter table and diagrams
-- **TODO.md**: Actionable backlog with prioritized tasks
-- **Parameter Report**: Resolved configuration in _reports/parameters.json
-- **Validation Results**: Syntax checking and completeness verification
+- README.md: Project documentation with parameter table and diagrams
+- TODO.md: Actionable backlog with prioritized tasks
+- Parameter Report: Resolved configuration in _reports/parameters.json
+- Validation Results: Syntax checking and completeness verification
 - Documentation target (`--docs`): `docs-bootstrap/` for bootstrap, `docs/` for maintain, or a user supplied directory.
 - Code core path (`--core`): auto-detect common source roots (`app/`, `src/`, `packages/`) and offer the most likely match.
 - Demo paths (`--demo`, optional): list discovered directories such as `samples/`, `demo/`, `integration/`, or allow `none`.

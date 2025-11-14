@@ -296,30 +296,30 @@ sync_memory() {
 # OPENCODE User Memory
 
 ## Tool Configuration
-- **Tool**: OpenCode CLI
-- **Source**: Synchronized from Claude Code configuration
-- **Sync Date**: ${timestamp}
-- **Format**: Markdown commands, Markdown rules, operation-based permissions
+- Tool: OpenCode CLI
+- Source: Synchronized from Claude Code configuration
+- Sync Date: ${timestamp}
+- Format: Markdown commands, Markdown rules, operation-based permissions
 
 ## OPENCODE-Specific Capabilities
 
 ### Operation-Based Permission System
-- **Edit Operations**: File modification with full editing capabilities
-- **Bash Operations**: Command execution with configurable restrictions
-- **WebFetch Operations**: Web content retrieval with domain filtering
-- **Read Operations**: File access across workspace and configuration
+- Edit Operations: File modification with full editing capabilities
+- Bash Operations: Command execution with configurable restrictions
+- WebFetch Operations: Web content retrieval with domain filtering
+- Read Operations: File access across workspace and configuration
 
 ### Command Format
-- **Markdown Commands**: YAML frontmatter with metadata and markdown templates
-- **External References**: Lazy loading for large documentation
-- **Instruction Arrays**: Complex operation support with reusable prompts
-- **Parameter Guidance**: Describe expected arguments within command templates
+- Markdown Commands: YAML frontmatter with metadata and markdown templates
+- External References: Lazy loading for large documentation
+- Instruction Arrays: Complex operation support with reusable prompts
+- Parameter Guidance: Describe expected arguments within command templates
 
 ### Integration Features
-- **Commands**: Markdown command files with frontmatter metadata
-- **Rules**: Markdown rule files with automatic loading
-- **Settings**: JSON-based configuration with operation permissions
-- **Memory**: AGENTS.md as primary reference + OPENCODE.md
+- Commands: Markdown command files with frontmatter metadata
+- Rules: Markdown rule files with automatic loading
+- Settings: JSON-based configuration with operation permissions
+- Memory: AGENTS.md as primary reference + OPENCODE.md
 
 ## Development Standards
 
@@ -364,10 +364,10 @@ This memory file has been adapted for OPENCODE with the following changes:
 - All operations respect permission boundaries and safety measures
 
 ## Permission Categories
-- **edit**: File modification operations (create, update, delete)
-- **bash**: Command execution operations (with restrictions)
-- **webfetch**: Web content retrieval (domain filtered)
-- **read**: File reading operations (workspace and config)
+- edit: File modification operations (create, update, delete)
+- bash: Command execution operations (with restrictions)
+- webfetch: Web content retrieval (domain filtered)
+- read: File reading operations (workspace and config)
 
 Generated from Claude Code configuration on ${timestamp}.
 EOF
@@ -380,39 +380,39 @@ EOF
 ## Agent Capabilities
 
 ### Core Operations
-- **edit**: Modify files in the workspace with full editing capabilities
-- **bash**: Execute commands with configurable restrictions and safety measures
-- **webfetch**: Retrieve web content with domain filtering and security controls
-- **read**: Access files across workspace and configuration directories
+- edit: Modify files in the workspace with full editing capabilities
+- bash: Execute commands with configurable restrictions and safety measures
+- webfetch: Retrieve web content with domain filtering and security controls
+- read: Access files across workspace and configuration directories
 
 ### Permission System
 OpenCode uses an operation-based permission system with the following categories:
 
 #### Edit Operations
-- **Scope**: Workspace files and project directories
-- **Capabilities**: Create, modify, delete files
-- **Restrictions**: System files outside workspace
+- Scope: Workspace files and project directories
+- Capabilities: Create, modify, delete files
+- Restrictions: System files outside workspace
 
 #### Bash Operations
-- **Scope**: Read-only system commands by default
-- **Capabilities**: Execute development tools, git commands, build processes
-- **Restrictions**: Destructive system commands require explicit permission
+- Scope: Read-only system commands by default
+- Capabilities: Execute development tools, git commands, build processes
+- Restrictions: Destructive system commands require explicit permission
 
 #### WebFetch Operations
-- **Scope**: Pre-approved domains and development resources
-- **Capabilities**: Retrieve documentation, API references, code examples
-- **Restrictions**: Authenticated sites and sensitive resources blocked
+- Scope: Pre-approved domains and development resources
+- Capabilities: Retrieve documentation, API references, code examples
+- Restrictions: Authenticated sites and sensitive resources blocked
 
 #### Read Operations
-- **Scope**: All workspace files and configuration directories
-- **Capabilities**: Access project files, settings, documentation
-- **Restrictions**: System-critical files outside project context
+- Scope: All workspace files and configuration directories
+- Capabilities: Access project files, settings, documentation
+- Restrictions: System-critical files outside project context
 
 ## External References
 
 ### Configuration Files
-- **opencode.json**: Main configuration with permissions and settings
-- **command/**: Markdown command definitions with metadata
+- opencode.json: Main configuration with permissions and settings
+- command/: Markdown command definitions with metadata
 - **rules/*.md**: Development guidelines and coding standards
 
 ### Development Standards
@@ -423,16 +423,16 @@ OpenCode uses an operation-based permission system with the following categories
 ## Agent Instructions
 
 ### Primary Directives
-1. **Maintain Context**: Use AGENTS.md as the primary reference for agent capabilities
-2. **Follow Permissions**: Respect operation-based permission boundaries
-3. **Use External References**: Leverage linked files for detailed information
-4. **Provide Safety**: Apply safety checks for destructive operations
+1. Maintain Context: Use AGENTS.md as the primary reference for agent capabilities
+2. Follow Permissions: Respect operation-based permission boundaries
+3. Use External References: Leverage linked files for detailed information
+4. Provide Safety: Apply safety checks for destructive operations
 
 ### Development Workflow
-1. **Load Configuration**: Start with opencode.json for current permissions
-2. **Access Commands**: Use markdown command definitions from command/ directory
-3. **Apply Rules**: Follow development guidelines from rules/ files
-4. **Update Memory**: Maintain AGENTS.md as the central reference point
+1. Load Configuration: Start with opencode.json for current permissions
+2. Access Commands: Use markdown command definitions from command/ directory
+3. Apply Rules: Follow development guidelines from rules/ files
+4. Update Memory: Maintain AGENTS.md as the central reference point
 
 ## Integration Notes
 

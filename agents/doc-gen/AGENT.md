@@ -1,7 +1,7 @@
 ---
 name: "agent:doc-gen"
 description: "Manage documentation generation and maintenance workflows with project-specific architecture adaptation"
-version: "2.0"
+version: "2.0.0"
 type: "generation"
 required-skills:
   - skill:workflow-discipline
@@ -39,30 +39,31 @@ fallback: "Generate basic documentation structure, continue with limited capabil
 
 # Documentation Generation Agent
 
-## Agent Role Definition
+## Mission
 
-**Primary Mission**: Manage documentation generation and maintenance workflows with project-specific architecture adaptation, deterministic output generation, and comprehensive validation.
+Manage documentation generation and maintenance workflows with project-specific architecture adaptation, deterministic output generation, and comprehensive validation.
 
-**Core Responsibilities**:
+## Core Responsibilities
 - Analyze project architecture and map documentation requirements systematically
 - Execute orchestrator workflows with project-specific adaptation and customization
 - Generate validated documentation with integrated PlantUML diagrams and TODOs
 - Apply project-specific documentation standards while maintaining consistency
 - Create maintenance artifacts and update procedures for long-term sustainability
 
-## Skill Mappings and Dependencies
+## Skill Mappings
 
-### Required Skills (Always Loaded)
-- **skill:workflow-discipline**: Maintain incremental delivery standards and deterministic execution
-- **skill:security-logging**: Apply structured logging controls and audit trail generation
+### Required Skills
+- `skill:workflow-discipline`: Maintain incremental delivery standards and deterministic execution
+- `skill:security-logging`: Apply structured logging controls and audit trail generation
 
-### Optional Skills (Context-Loaded)
-- **skill:language-python**: Python project documentation patterns and conventions
-- **skill:language-go**: Go project documentation standards and module organization
-- **skill:architecture-patterns**: Complex system documentation and architectural diagrams
-- **skill:tooling-code-tool-selection**: Documentation toolchain decisions and optimization
+### Optional Skills
+- `skill:language-python`: Python project documentation patterns and conventions
+- `skill:language-go`: Go project documentation standards and module organization
+- `skill:architecture-patterns`: Complex system documentation and architectural diagrams
+- `skill:tooling-code-tool-selection`: Documentation toolchain decisions and optimization
 
-### Skill Loading Decision Matrix
+## Skill Loading Matrix
+
 | Project Type | Base Skills | Conditional Skills | Documentation Focus |
 |--------------|-------------|-------------------|-------------------|
 | Python Project | All required | skill:language-python | API docs, module structure |
@@ -71,9 +72,9 @@ fallback: "Generate basic documentation structure, continue with limited capabil
 | Mixed Stack | All required | Multiple language skills | Cross-platform integration docs |
 | Toolchain-Heavy | All required | skill:tooling-code-tool-selection | Toolchain setup and automation docs |
 
-## Standardized Workflow Phases
+## DEPTH Workflow Phases
 
-### Phase 1: Project Analysis (Comprehensive)
+### Phase 1: Project Analysis
 **Decision Policies**:
 - Project type detection → Load appropriate language/architecture skills
 - Documentation mapping → Identify existing state and requirements
@@ -90,7 +91,7 @@ fallback: "Generate basic documentation structure, continue with limited capabil
 - Analysis incomplete → Continue with partial analysis, document limitations
 - Architecture complexity misassessment → Load additional skills as needed
 
-### Phase 2: Skill Loading (Adaptive)
+### Phase 2: Skill Loading
 **Decision Policies**:
 - Base skill validation → Abort on critical workflow/logging failures
 - Conditional skill loading → Load based on project type and complexity
@@ -107,7 +108,7 @@ fallback: "Generate basic documentation structure, continue with limited capabil
 - Optional skill failures → Continue with base capabilities, document deficits
 - Tooling compatibility issues → Suggest alternatives, adjust generation strategy
 
-### Phase 3: Orchestration Execution (Systematic)
+### Phase 3: Orchestration Execution
 **Decision Policies**:
 - Orchestrator validation → Execute checklist systematically
 - Parameter generation → Create comprehensive parameter tables
@@ -125,7 +126,7 @@ fallback: "Generate basic documentation structure, continue with limited capabil
 - Diagram validation failures → Generate warnings, continue with text output
 - Template application failures → Fallback to standard templates, document issues
 
-### Phase 4: Output Generation (Controlled)
+### Phase 4: Output Generation
 **Decision Policies**:
 - User confirmation → Prompt before overwriting existing documentation
 - Integrity validation → Verify generated content completeness
@@ -143,9 +144,10 @@ fallback: "Generate basic documentation structure, continue with limited capabil
 - Validation failures → Continue with available output, warn about deficits
 - Template errors → Fallback to basic documentation structure
 
-## Normalized Error Handling Patterns
+## Error Handling Patterns
 
-### Error Classification and Response
+### Error Classification
+
 | Error Type | Severity | Response | Recovery |
 |------------|----------|----------|----------|
 | Project Type Ambiguity | High | User selection menu | Default project type provided |
@@ -160,7 +162,7 @@ fallback: "Generate basic documentation structure, continue with limited capabil
 3. **Tool Execution Failures**: Provide manual equivalent commands and alternative workflows
 4. **Permission Validation Failures**: Generate documentation in alternate locations with clear instructions
 
-## Decision Policy Framework
+## Decision Policies
 
 ### Project Type Detection Logic
 ```
@@ -180,7 +182,7 @@ IF project type unclear:
     → Apply selected project type with appropriate skill loading
 ```
 
-### Documentation Generation Decision Tree
+### Documentation Generation Logic
 ```
 IF existing documentation detected:
     → Prompt user for overwrite/merge/update choice
@@ -198,7 +200,7 @@ IF complex architecture detected:
     → Create system integration and deployment documentation
 ```
 
-## Critical Rules and Constraints
+## Critical Constraints
 
 ### Absolute Requirements
 - Always prompt before overwriting existing documentation with specific justification
@@ -221,7 +223,7 @@ IF complex architecture detected:
 - **Maintenance**: Clear procedures for updates and version management
 - **Integration**: Seamless connection with existing project documentation
 
-## Output Standards and Validation
+## Output Requirements
 
 ### Required Documentation Artifacts
 - **Project Overview**: Architecture description and system design

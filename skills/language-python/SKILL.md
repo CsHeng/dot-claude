@@ -11,13 +11,13 @@ allowed-tools:
   - Bash(pytest)
 ---
 
-# **Python Architecture Standards**
+# Python Architecture Standards
 
-## **Project Structure and Organization**
+## Project Structure and Organization
 
-### **Standard Python Project Layout**
+### Standard Python Project Layout
 
-**Implement consistent project structure:**
+Implement consistent project structure:
 ```
 project/
 ├── src/
@@ -37,21 +37,21 @@ project/
 └── .python-version
 ```
 
-**Package organization principles:**
+Package organization principles:
 - Use `src/` layout for clean imports
 - Separate concerns into logical packages
 - Implement proper `__init__.py` files
 - Apply consistent naming conventions
 
-### **Dependency Management**
+### Dependency Management
 
-**Modern Python dependency management with uv:**
+Modern Python dependency management with uv:
 - Use `pyproject.toml` for project configuration
 - Implement virtual environments automatically
 - Maintain separate dev and production dependencies
 - Apply semantic versioning constraints
 
-**Dependency configuration:**
+Dependency configuration:
 ```toml
 [project]
 name = "project-name"
@@ -71,17 +71,17 @@ dev = [
 ]
 ```
 
-## **Type System Implementation**
+## Type System Implementation
 
-### **Comprehensive Type Annotations**
+### Comprehensive Type Annotations
 
-**Apply type annotations systematically:**
+Apply type annotations systematically:
 - Annotate all function signatures with input/output types
 - Use `typing` module for complex types
 - Implement generic types for reusable components
 - Apply `TypedDict` for structured data
 
-**Type annotation patterns:**
+Type annotation patterns:
 ```python
 from typing import List, Optional, Dict, Any, Union
 from dataclasses import dataclass
@@ -108,15 +108,15 @@ def transform_data(
     pass
 ```
 
-### **Advanced Type Patterns**
+### Advanced Type Patterns
 
-**Implement sophisticated type patterns:**
+Implement sophisticated type patterns:
 - Use `Protocol` for structural typing
 - Apply `TypeGuard` for type narrowing
 - Implement `NewType` for domain-specific types
 - Use `Literal` for enumerated values
 
-**Type safety examples:**
+Type safety examples:
 ```python
 from typing import Protocol, TypeGuard, NewType, Literal
 
@@ -131,11 +131,11 @@ def is_user_profile(data: Dict[str, Any]) -> TypeGuard[UserProfile]:
     return all(field in data for field in required_fields)
 ```
 
-## **Code Quality and Formatting**
+## Code Quality and Formatting
 
-### **Ruff Configuration and Usage**
+### Ruff Configuration and Usage
 
-**Implement comprehensive ruff setup:**
+Implement comprehensive ruff setup:
 ```toml
 [tool.ruff]
 line-length = 88
@@ -153,15 +153,15 @@ quote-style = "double"
 indent-style = "space"
 ```
 
-**Code formatting enforcement:**
+Code formatting enforcement:
 - Use `uv tool run ruff format .` for formatting
 - Apply `uv tool run ruff check .` for linting
 - Configure pre-commit hooks for automatic enforcement
 - Integrate with CI/CD pipeline validation
 
-### **Static Type Checking with MyPy**
+### Static Type Checking with MyPy
 
-**Configure mypy for strict type checking:**
+Configure mypy for strict type checking:
 ```toml
 [tool.mypy]
 python_version = "3.11"
@@ -172,23 +172,23 @@ disallow_untyped_defs = true
 disallow_incomplete_defs = true
 ```
 
-**Type validation requirements:**
+Type validation requirements:
 - Enforce 100% type annotation coverage on critical modules
 - Use mypy for static analysis before commits
 - Implement incremental type checking for large codebases
 - Document type-related decisions in comments
 
-## **Testing Strategy Implementation**
+## Testing Strategy Implementation
 
-### **Comprehensive Testing with Pytest**
+### Comprehensive Testing with Pytest
 
-**Apply pytest testing patterns:**
+Apply pytest testing patterns:
 - Use parametrized tests for data-driven scenarios
 - Implement fixtures for test setup and teardown
 - Apply markers for test categorization
 - Use mocks for external dependencies
 
-**Testing configuration:**
+Testing configuration:
 ```python
 # conftest.py
 import pytest
@@ -229,15 +229,15 @@ class TestUserService:
         assert response.json()["username"] == sample_user_data["username"]
 ```
 
-### **Coverage and Quality Gates**
+### Coverage and Quality Gates
 
-**Implement comprehensive test coverage:**
+Implement comprehensive test coverage:
 - Target 80% overall code coverage
 - Require 95% coverage for critical business logic
 - Use `uv tool run pytest --cov` for coverage analysis
 - Integrate coverage reports in CI/CD
 
-**Quality gate enforcement:**
+Quality gate enforcement:
 ```bash
 #!/bin/bash
 # test.sh
@@ -255,17 +255,17 @@ uv tool run ruff check src/
 echo "All quality checks passed!"
 ```
 
-## **Security Implementation**
+## Security Implementation
 
-### **Secure Coding Practices**
+### Secure Coding Practices
 
-**Apply Python security best practices:**
+Apply Python security best practices:
 - Validate all external inputs at boundaries
 - Use parameterized queries for database operations
 - Implement proper credential management
 - Apply security headers for web applications
 
-**Security validation patterns:**
+Security validation patterns:
 ```python
 import re
 from typing import Any, Dict, List
@@ -293,15 +293,15 @@ def sanitize_input(user_input: str) -> str:
     return re.sub(r'[<>"\']', '', user_input)
 ```
 
-### **Dependency Security**
+### Dependency Security
 
-**Maintain secure Python dependencies:**
+Maintain secure Python dependencies:
 - Use `uv` for secure dependency resolution
 - Regularly update dependencies with security patches
 - Scan for known vulnerabilities
 - Implement security policies for third-party packages
 
-**Security scanning integration:**
+Security scanning integration:
 ```bash
 #!/bin/bash
 # security-scan.sh
@@ -310,17 +310,17 @@ uv tool run safety check
 uv tool run bandit -r src/
 ```
 
-## **Performance Optimization**
+## Performance Optimization
 
-### **Efficient Python Patterns**
+### Efficient Python Patterns
 
-**Apply performance optimization techniques:**
+Apply performance optimization techniques:
 - Use generators for memory-efficient iteration
 - Implement lazy loading for expensive operations
 - Apply caching for frequently accessed data
 - Use appropriate data structures for the problem
 
-**Performance patterns:**
+Performance patterns:
 ```python
 from functools import lru_cache
 from typing import Iterator
@@ -346,15 +346,15 @@ async def fetch_multiple_urls(urls: List[str]) -> List[str]:
         return await asyncio.gather(*tasks)
 ```
 
-### **Memory and Resource Management**
+### Memory and Resource Management
 
-**Implement efficient resource usage:**
+Implement efficient resource usage:
 - Use context managers for resource cleanup
 - Apply memory profiling to identify leaks
 - Implement connection pooling for database operations
 - Use efficient data structures for large datasets
 
-**Resource management patterns:**
+Resource management patterns:
 ```python
 from contextlib import contextmanager
 from typing import Generator

@@ -1,19 +1,17 @@
 ---
-file-type: command
-command: /optimize-prompts
-description: Perform DEPTH-based analysis and deterministic rewrite of LLM-facing files using rule-driven schemas
-implementation: commands/optimize-prompts.md
+name: "optimize-prompts"
+description: "Perform DEPTH-based analysis and deterministic rewrite of LLM-facing files using rule-driven schemas"
 argument-hint: "[path/to/file] [--all]"
-scope: Included
 allowed-tools:
   - Read
   - Write
-  - Bash(find *)
   - Bash(ls *)
   - Bash(cat *)
   - Bash(rg *)
-dont-optimize: true
+  - Bash(fd *)
+  - Bash(ast-grep *)
 is_background: false
+dont-optimize: true
 ---
 
 ## Usage
@@ -102,6 +100,7 @@ Excluded:
 For each loaded file:
 - Run Decomposition, Explicit reasoning, Parameters, Tests, Heuristics
 - Generate an in-memory rewritten candidate
+- Prohibit generation of bold markers
 - Preserve the original file unchanged on disk
 
 ### 4. Candidate Normalization

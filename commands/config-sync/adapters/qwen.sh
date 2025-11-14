@@ -462,68 +462,68 @@ sync_memory() {
 ## Available Agents
 
 ### File Operations Agent
-- **QWEN Integration**: Native file read/write/edit operations
-- **Scope**: User file system permissions
-- **Safety**: User confirmation for destructive operations
-- **Format Support**: TOML, Markdown, JSON, configuration files
+- QWEN Integration: Native file read/write/edit operations
+- Scope: User file system permissions
+- Safety: User confirmation for destructive operations
+- Format Support: TOML, Markdown, JSON, configuration files
 
 ### Configuration Management Agent
-- **QWEN Integration**: Settings.json and TOML command management
-- **Permission Control**: User confirmation-based permission system
-- **Rule Synchronization**: Automatic rule loading and adaptation
-- **Environment Setup**: Development environment configuration
+- QWEN Integration: Settings.json and TOML command management
+- Permission Control: User confirmation-based permission system
+- Rule Synchronization: Automatic rule loading and adaptation
+- Environment Setup: Development environment configuration
 
 ### Development Workflow Agent
-- **QWEN Integration**: Command execution with user confirmation
-- **Build Automation**: Support for build tools and scripts
-- **Testing Orchestration**: Test execution and reporting
-- **Code Quality**: Linting and analysis tool integration
+- QWEN Integration: Command execution with user confirmation
+- Build Automation: Support for build tools and scripts
+- Testing Orchestration: Test execution and reporting
+- Code Quality: Linting and analysis tool integration
 
 ### Command Processing Agent
-- **QWEN Integration**: TOML command definition processing
-- **Prompt Engineering**: Trusted prompt system management
-- **Context Management**: Project-specific context preservation
-- **Command Adaptation**: Markdown to TOML conversion
+- QWEN Integration: TOML command definition processing
+- Prompt Engineering: Trusted prompt system management
+- Context Management: Project-specific context preservation
+- Command Adaptation: Markdown to TOML conversion
 
 ## QWEN-Specific Features
 
 ### Permission System Integration
-- **User Confirmation**: Required for shell execution
-- **File System Access**: Same permissions as user account
-- **Safety Validation**: Pre-execution user prompts
-- **Trust Management**: Project-based trusted prompts
+- User Confirmation: Required for shell execution
+- File System Access: Same permissions as user account
+- Safety Validation: Pre-execution user prompts
+- Trust Management: Project-based trusted prompts
 
 ### Command Format Handling
-- **TOML Definitions**: Native TOML command format support
-- **Markdown Conversion**: Automatic conversion from Claude format
-- **Prompt Structure**: Structured prompt definitions
-- **Parameter Validation**: Command parameter validation
+- TOML Definitions: Native TOML command format support
+- Markdown Conversion: Automatic conversion from Claude format
+- Prompt Structure: Structured prompt definitions
+- Parameter Validation: Command parameter validation
 
 ### Context Management
-- **Project Context**: Automatic project context detection
-- **Memory Preservation**: Context preservation across sessions
-- **Trusted Prompts**: Project-specific prompt trust system
-- **Session Management**: Multi-session context handling
+- Project Context: Automatic project context detection
+- Memory Preservation: Context preservation across sessions
+- Trusted Prompts: Project-specific prompt trust system
+- Session Management: Multi-session context handling
 
 ## Usage Guidelines
 
 ### File Operations
-1. **Read Operations**: Use file reading agents for code analysis
-2. **Write Operations**: File writing with user confirmation
-3. **Edit Operations**: Edit agents provide validation and safety
-4. **Batch Operations**: Batch agents handle multiple files efficiently
+1. Read Operations: Use file reading agents for code analysis
+2. Write Operations: File writing with user confirmation
+3. Edit Operations: Edit agents provide validation and safety
+4. Batch Operations: Batch agents handle multiple files efficiently
 
 ### Command Management
-1. **TOML Commands**: Use command agents for TOML definition management
-2. **Prompt Engineering**: Prompt agents handle trusted prompt system
-3. **Context Management**: Context agents manage project-specific context
-4. **Format Conversion**: Conversion agents handle format adaptations
+1. TOML Commands: Use command agents for TOML definition management
+2. Prompt Engineering: Prompt agents handle trusted prompt system
+3. Context Management: Context agents manage project-specific context
+4. Format Conversion: Conversion agents handle format adaptations
 
 ### Development Workflow
-1. **Build**: Use workflow agents for build automation
-2. **Test**: Test agents orchestrate testing procedures
-3. **Deploy**: Deployment agents handle release processes
-4. **Monitor**: Monitoring agents track system health
+1. Build: Use workflow agents for build automation
+2. Test: Test agents orchestrate testing procedures
+3. Deploy: Deployment agents handle release processes
+4. Monitor: Monitoring agents track system health
 
 ## QWEN Integration Notes
 

@@ -33,14 +33,14 @@ fallback: "Provide manual fix instructions and error analysis"
 Execute systematic TypeScript error resolution through automated detection, classification, and deterministic fixing of compilation issues.
 
 ## Required Skills
-- **skill:language-python**: For TypeScript-specific type system analysis
-- **skill:development-standards**: Maintain coding standards during error fixes
-- **skill:error-patterns**: Apply explicit error handling and fail-fast rules
+- skill:language-python: For TypeScript-specific type system analysis
+- skill:development-standards: Maintain coding standards during error fixes
+- skill:error-patterns: Apply explicit error handling and fail-fast rules
 
 ## Optional Skills
 Load based on error complexity:
-- **skill:toolchain-baseline**: For complex toolchain and build system issues
-- **skill:tooling-code-tool-selection**: For determining appropriate fix strategies
+- skill:toolchain-baseline: For complex toolchain and build system issues
+- skill:tooling-code-tool-selection: For determining appropriate fix strategies
 
 ## Workflow Phases
 
@@ -75,11 +75,11 @@ Load based on error complexity:
 - Generate comprehensive resolution report
 
 ## Error Handling
-- **Complex type system issues**: Escalate for design decision guidance
-- **Missing dependencies**: Request user approval for package additions
-- **Circular dependencies**: Suggest architectural restructuring
-- **Third-party type issues**: Provide manual resolution instructions
-- **Breaking changes**: Document impact and migration strategy
+- Complex type system issues: Escalate for design decision guidance
+- Missing dependencies: Request user approval for package additions
+- Circular dependencies: Suggest architectural restructuring
+- Third-party type issues: Provide manual resolution instructions
+- Breaking changes: Document impact and migration strategy
 
 ## Common Error Patterns and Fixes
 
@@ -108,16 +108,16 @@ Load based on error complexity:
 - Verify compiler compatibility
 
 ## Permissions
-- **Read access**: All TypeScript source files, configuration files
-- **Write access**: Source files for error fixes, type definition files
-- **Tool access**: TypeScript compiler, package managers, build tools
-- **Log access**: PM2 service logs, error cache files, build outputs
+- Read access: All TypeScript source files, configuration files
+- Write access: Source files for error fixes, type definition files
+- Tool access: TypeScript compiler, package managers, build tools
+- Log access: PM2 service logs, error cache files, build outputs
 
 ## Fallback Procedures
-1. **Automated fix failures**: Provide manual step-by-step fix instructions
-2. **Complex type errors**: Suggest type definition additions or interface changes
-3. **Package dependency issues**: Recommend manual installation procedures
-4. **Build system failures**: Provide manual compilation commands and debugging steps
+1. Automated fix failures: Provide manual step-by-step fix instructions
+2. Complex type errors: Suggest type definition additions or interface changes
+3. Package dependency issues: Recommend manual installation procedures
+4. Build system failures: Provide manual compilation commands and debugging steps
 
 ## Critical Rules
 - Always verify fixes by running correct TSC command from tsc-commands.txt
@@ -128,10 +128,10 @@ Load based on error complexity:
 - Document complex fixes with explanatory comments
 
 ## Repository-Specific Commands
-- **Frontend**: `npx tsc --project tsconfig.app.json --noEmit`
-- **Backend repos**: `npx tsc --noEmit`
-- **Project references**: `npx tsc --build --noEmit`
-- **Custom configs**: Use commands from detected tsc-commands.txt
+- Frontend: `npx tsc --project tsconfig.app.json --noEmit`
+- Backend repos: `npx tsc --noEmit`
+- Project references: `npx tsc --build --noEmit`
+- Custom configs: Use commands from detected tsc-commands.txt
 
 ## Success Criteria
 - All TypeScript compilation errors resolved

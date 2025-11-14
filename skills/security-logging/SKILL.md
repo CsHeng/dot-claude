@@ -11,13 +11,13 @@ allowed-tools:
   - Bash(rg --pcre2 'password|secret|key|token')
 ---
 
-# **Input Validation Security**
+# Input Validation Security
 
-## **Comprehensive Input Sanitization**
+## Comprehensive Input Sanitization
 
-### **Multi-Layer Validation Implementation**
+### Multi-Layer Validation Implementation
 
-**Apply input validation at all system boundaries:**
+Apply input validation at all system boundaries:
 ```python
 import re
 import bleach
@@ -78,9 +78,9 @@ class SecurityValidator:
         return safe_filename
 ```
 
-### **API Request Validation**
+### API Request Validation
 
-**Implement comprehensive API security:**
+Implement comprehensive API security:
 ```python
 from flask import Flask, request, jsonify
 from functools import wraps
@@ -121,11 +121,11 @@ class APISecurityMiddleware:
         return True  # Placeholder
 ```
 
-## **Credential Security Enforcement**
+## Credential Security Enforcement
 
-### **Secret Detection and Removal**
+### Secret Detection and Removal
 
-**Identify and eliminate hardcoded secrets:**
+Identify and eliminate hardcoded secrets:
 ```bash
 #!/bin/bash
 # secret-scanner.sh
@@ -177,11 +177,11 @@ replace_secrets_with_env() {
 }
 ```
 
-## **Structured Logging Implementation**
+## Structured Logging Implementation
 
-### **Security Event Logging**
+### Security Event Logging
 
-**Implement comprehensive security logging:**
+Implement comprehensive security logging:
 ```python
 import json
 import logging
@@ -307,9 +307,9 @@ class SecurityLogger:
             return key
 ```
 
-### **Log Integrity and Auditing**
+### Log Integrity and Auditing
 
-**Implement tamper-evident logging:**
+Implement tamper-evident logging:
 ```python
 import hashlib
 import json
@@ -374,11 +374,11 @@ class LogIntegrityMonitor:
         return hash_sha256.hexdigest()
 ```
 
-## **Access Control Implementation**
+## Access Control Implementation
 
-### **Multi-Factor Authentication**
+### Multi-Factor Authentication
 
-**Implement comprehensive access controls:**
+Implement comprehensive access controls:
 ```python
 import pyotp
 import qrcode

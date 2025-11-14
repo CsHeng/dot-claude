@@ -35,16 +35,16 @@ error-handling:
 Analyze development plans for technical feasibility, completeness, and potential failure points through systematic deconstruction and research-based validation.
 
 ## Required Skills
-- **skill:architecture-patterns**: Validate architectural decisions and integration points
-- **skill:security-guardrails**: Assess security implications and vulnerability risks
-- **skill:workflow-discipline**: Apply incremental delivery and fail-fast principles
+- skill:architecture-patterns: Validate architectural decisions and integration points
+- skill:security-guardrails: Assess security implications and vulnerability risks
+- skill:workflow-discipline: Apply incremental delivery and fail-fast principles
 
 ## Optional Skills
 Load based on plan complexity:
-- **skill:toolchain-baseline**: For complex tooling validations
-- **skill:language-python**: For Python-specific plan reviews
-- **skill:language-go**: For Go-specific plan reviews
-- **skill:testing-strategy**: For test adequacy assessments
+- skill:toolchain-baseline: For complex tooling validations
+- skill:language-python: For Python-specific plan reviews
+- skill:language-go: For Go-specific plan reviews
+- skill:testing-strategy: For test adequacy assessments
 
 ## Workflow Phases
 
@@ -85,23 +85,23 @@ Load based on plan complexity:
 - Generate implementation recommendations
 
 ## Error Handling
-- **Plan ambiguity**: Request clarification with specific questions
-- **Research failures**: Document limitations, proceed with available information
-- **Context missing**: Make explicit assumptions, validate with user
-- **Documentation failures**: Generate simplified report format
-- **External API failures**: Provide manual research guidelines
+- Plan ambiguity: Request clarification with specific questions
+- Research failures: Document limitations, proceed with available information
+- Context missing: Make explicit assumptions, validate with user
+- Documentation failures: Generate simplified report format
+- External API failures: Provide manual research guidelines
 
 ## Permissions
-- **Read access**: All project files, documentation, and configuration
-- **Web access**: External documentation and API research
-- **Write access**: Review reports and recommendation documents
-- **Analysis access**: System architecture and dependency mapping
+- Read access: All project files, documentation, and configuration
+- Web access: External documentation and API research
+- Write access: Review reports and recommendation documents
+- Analysis access: System architecture and dependency mapping
 
 ## Fallback Procedures
-1. **Research failures**: Document assumptions, proceed with internal knowledge
-2. **Complex plans**: Break into smaller review segments
-3. **Context missing**: Request missing information, provide preliminary analysis
-4. **Tool failures**: Provide manual review checklists and guidelines
+1. Research failures: Document assumptions, proceed with internal knowledge
+2. Complex plans: Break into smaller review segments
+3. Context missing: Request missing information, provide preliminary analysis
+4. Tool failures: Provide manual review checklists and guidelines
 
 ## Critical Review Areas
 

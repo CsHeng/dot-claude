@@ -392,74 +392,74 @@ sync_memory() {
 ## Available Agents
 
 ### Code Generation Agent
-- **CODEX Integration**: OpenAI Codex API for code generation
-- **Scope**: Multiple programming languages and frameworks
-- **Safety**: Sandbox environment for secure generation
-- **Format Support**: Source code, documentation, configuration files
+- CODEX Integration: OpenAI Codex API for code generation
+- Scope: Multiple programming languages and frameworks
+- Safety: Sandbox environment for secure generation
+- Format Support: Source code, documentation, configuration files
 
 ### File Operations Agent
-- **CODEX Integration**: File read/write within sandbox boundaries
-- **Scope**: Workspace directory with configurable permissions
-- **Safety**: Read-only default, workspace-write on request
-- **Format Support**: Source code, markdown, JSON, TOML, configuration
+- CODEX Integration: File read/write within sandbox boundaries
+- Scope: Workspace directory with configurable permissions
+- Safety: Read-only default, workspace-write on request
+- Format Support: Source code, markdown, JSON, TOML, configuration
 
 ### Configuration Management Agent
-- **CODEX Integration**: TOML configuration file management
-- **Permission Control**: Sandbox level configuration
-- **Rule Synchronization**: Automatic rule loading and adaptation
-- **Environment Setup**: Development environment configuration
+- CODEX Integration: TOML configuration file management
+- Permission Control: Sandbox level configuration
+- Rule Synchronization: Automatic rule loading and adaptation
+- Environment Setup: Development environment configuration
 
 ### API Management Agent
-- **CODEX Integration**: OpenAI API key and configuration management
-- **Rate Limiting**: API rate limit awareness and handling
-- **Model Selection**: Optimal model configuration for tasks
-- **Error Handling**: API error recovery and retry logic
+- CODEX Integration: OpenAI API key and configuration management
+- Rate Limiting: API rate limit awareness and handling
+- Model Selection: Optimal model configuration for tasks
+- Error Handling: API error recovery and retry logic
 
 ## CODEX-Specific Features
 
 ### Sandbox Security Integration
-- **Isolation**: Code generation in isolated sandbox environment
-- **File System**: Limited to workspace with configurable permissions
-- **Network Access**: Controlled network access for external resources
-- **Execution Prevention**: No direct code execution capabilities
+- Isolation: Code generation in isolated sandbox environment
+- File System: Limited to workspace with configurable permissions
+- Network Access: Controlled network access for external resources
+- Execution Prevention: No direct code execution capabilities
 
 ### API Optimization
-- **Model Selection**: Automatic model selection based on task type
-- **Token Management**: Optimal token usage for cost efficiency
-- **Rate Limiting**: Automatic rate limit handling and queuing
-- **Error Recovery**: Robust error handling and retry mechanisms
+- Model Selection: Automatic model selection based on task type
+- Token Management: Optimal token usage for cost efficiency
+- Rate Limiting: Automatic rate limit handling and queuing
+- Error Recovery: Robust error handling and retry mechanisms
 
 ### Code Generation Quality
-- **Consistency**: Low temperature for consistent, reliable output
-- **Best Practices**: Generated code follows industry best practices
-- **Context Awareness**: Maintains context across generation sessions
-- **Language Support**: Multi-language code generation capabilities
+- Consistency: Low temperature for consistent, reliable output
+- Best Practices: Generated code follows industry best practices
+- Context Awareness: Maintains context across generation sessions
+- Language Support: Multi-language code generation capabilities
 
 ## Usage Guidelines
 
 ### Code Generation
-1. **Specific Prompts**: Use specific, detailed prompts for best results
-2. **Context Provision**: Provide relevant context for accurate generation
-3. **Language Specification**: Clearly specify target programming language
-4. **Style Guidelines**: Provide style preferences for consistent output
+1. Specific Prompts: Use specific, detailed prompts for best results
+2. Context Provision: Provide relevant context for accurate generation
+3. Language Specification: Clearly specify target programming language
+4. Style Guidelines: Provide style preferences for consistent output
 
 ### File Operations
-1. **Workspace Management**: Use file agents for workspace organization
-2. **Configuration**: Configuration agents handle TOML file management
-3. **Backup**: Automatic backup before destructive operations
-4. **Validation**: File syntax and structure validation
+1. Workspace Management: Use file agents for workspace organization
+2. Configuration: Configuration agents handle TOML file management
+3. Backup: Automatic backup before destructive operations
+4. Validation: File syntax and structure validation
 
 ### API Management
-1. **Key Security**: Ensure API key is properly secured
-2. **Rate Monitoring**: Monitor API usage and rate limits
-3. **Cost Optimization**: Optimize token usage for cost efficiency
-4. **Error Handling**: Implement robust error handling procedures
+1. Key Security: Ensure API key is properly secured
+2. Rate Monitoring: Monitor API usage and rate limits
+3. Cost Optimization: Optimize token usage for cost efficiency
+4. Error Handling: Implement robust error handling procedures
 
 ### Development Workflow
-1. **Code Generation**: Use generation agents for code creation
-2. **Review Process**: Review generated code for quality and accuracy
-3. **Integration**: Integrate generated code into existing codebase
-4. **Testing**: Test generated code for functionality and performance
+1. Code Generation: Use generation agents for code creation
+2. Review Process: Review generated code for quality and accuracy
+3. Integration: Integrate generated code into existing codebase
+4. Testing: Test generated code for functionality and performance
 
 ## CODEX Integration Notes
 
