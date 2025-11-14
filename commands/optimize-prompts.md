@@ -110,6 +110,7 @@ Excluded:
   - `CLAUDE.md`, `AGENTS.md` → core type
 - Apply corresponding framework and preservation rules
 - Skip files flagged dont-optimize or with rule-type
+- Record skip reason per file (e.g., dont-optimize, README exclusion) for the final summary
 
 ### 3. Load and Validate
 - Load all targets into memory
@@ -240,6 +241,10 @@ Status Messages:
 ### Batch
 - Dependency graph overview
 - Cross-file consistency report
+- Skip report listing:
+  - Count of files analyzed vs. written
+  - Files skipped with reason code (e.g., dont-optimize, excluded pattern)
+  - Confirmation that totals match `analyzed = written + skipped`
 
 ### Status Messages
 - When no writebacks approved: Print analysis complete. no files were modified.
