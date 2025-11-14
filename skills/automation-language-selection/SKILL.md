@@ -1,6 +1,7 @@
 ---
-name: "skill:automation-language-selection"
-description: "Choose between Shell and Python for generated automation code based on task traits"
+name: skill:automation-language-selection
+description: Choose between Shell and Python for generated automation code based on
+  task traits. Use when automation language selection guidance is required.
 ---
 
 ## Purpose

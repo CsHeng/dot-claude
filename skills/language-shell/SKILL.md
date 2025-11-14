@@ -1,8 +1,9 @@
 ---
 skill: language-shell
-description: Shell scripting standards and safety practices
+description: Shell scripting standards and safety practices. Use when language shell
+  guidance is required.
 allowed-tools:
-  - Bash(shellcheck)
+- Bash(shellcheck)
 ---
 
 # Shell Script Safety Standards

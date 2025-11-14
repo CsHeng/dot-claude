@@ -1,6 +1,7 @@
 ---
 skill: development-standards
-description: Development standards and best practices
+description: Development standards and best practices. Use when development standards
+  guidance is required.
 ---
 
 # Code Quality Standards

@@ -4,19 +4,6 @@ dont-optimize: true
 
 # LLM Prompt Writing Rules
 
-## canonical-ordering
-REQUIRED canonical ordering for all rule files:
-1. scope
-2. absolute-prohibitions
-3. communication-protocol
-4. structural-rules
-5. language-rules
-6. formatting-rules
-7. naming-rules
-8. validation-rules
-9. narrative-detection
-10. depth-compatibility
-
 ## scope
 MANDATORY on:
 - commands/**/*.md
@@ -47,56 +34,6 @@ PROHIBITED ambiguous phrasing
 PROHIBITED rephrasing of user input
 PROHIBITED emotional alignment
 
-## directory-exceptions
-CRITICAL: Different directory classifications have specific preservation requirements:
-
-### commands-file-exceptions
-MUST PRESERVE:
-- Default parameter values: `(default: value)`
-- Usage examples in code blocks
-- Exit codes and error handling
-- Safety constraints and security information
-- Tool permissions and allowed-tools lists
-- Argument definitions with complete specifications
-
-MUST NOT remove:
-- `## Examples` sections with practical usage
-- Error scenarios with exit codes
-- Safety and backup procedures
-- Parameter default value declarations
-
-### skills-file-exceptions
-MUST PRESERVE:
-- Official trigger conditions: `description: ... Use when ...`
-- Claude Code compliance requirements
-- Essential capability descriptions
-- Required YAML frontmatter fields: name, description
-- RFC manifest fields: tags, source, capability, usage, validation
-MUST NOT remove:
-- "Use when" trigger clauses in descriptions
-- Official frontmatter fields per Claude Code spec
-
-### agents-file-exceptions
-MUST PRESERVE:
-- Routing logic and command patterns
-- Agent-skill dependency mappings
-- Escalation rules and decision policies
-- Workflow phases and dependencies
-- Error handling and failure scenarios
-- RFC manifest fields: default-skills, optional-skills, supported-commands, inputs, outputs, fail-fast, escalation, permissions
-MUST NOT remove:
-- Official frontmatter fields: name, description, tools, model
-- RFC-compliant manifest structure
-- Agent routing and delegation logic
-
-### core-config-exceptions
-MUST PRESERVE:
-- System routing mappings
-- Agent selection conditions
-- Permission and type definitions
-- Critical dependency relationships
-- Directory and scope declarations
-
 ## communication-protocol
 REQUIRED imperative or declarative syntax  
 REQUIRED terse, directive, high-density content  
@@ -104,6 +41,19 @@ REQUIRED termination immediately after core content
 REQUIRED meta explanations only when essential  
 
 ## structural-rules
+
+### canonical-ordering
+REQUIRED canonical ordering for all rule files:
+1. scope
+2. absolute-prohibitions
+3. communication-protocol
+4. structural-rules
+5. language-rules
+6. formatting-rules
+7. naming-rules
+8. validation-rules
+9. narrative-detection
+10. depth-compatibility
 
 ### command-files
 REQUIRED YAML frontmatter  
@@ -155,6 +105,56 @@ OPTIONAL frontmatter
 REQUIRED deterministic ordering  
 REQUIRED explicit rule-loading conditions  
 PROHIBITED conversational content  
+
+### directory-exceptions
+CRITICAL: Different directory classifications have specific preservation requirements:
+
+#### commands-file-exceptions
+MUST PRESERVE:
+- Default parameter values: `(default: value)`
+- Usage examples in code blocks
+- Exit codes and error handling
+- Safety constraints and security information
+- Tool permissions and allowed-tools lists
+- Argument definitions with complete specifications
+
+MUST NOT remove:
+- `## Examples` sections with practical usage
+- Error scenarios with exit codes
+- Safety and backup procedures
+- Parameter default value declarations
+
+#### skills-file-exceptions
+MUST PRESERVE:
+- Official trigger conditions: `description: ... Use when ...`
+- Claude Code compliance requirements
+- Essential capability descriptions
+- Required YAML frontmatter fields: name, description
+- RFC manifest fields: tags, source, capability, usage, validation
+MUST NOT remove:
+- "Use when" trigger clauses in descriptions
+- Official frontmatter fields per Claude Code spec
+
+#### agents-file-exceptions
+MUST PRESERVE:
+- Routing logic and command patterns
+- Agent-skill dependency mappings
+- Escalation rules and decision policies
+- Workflow phases and dependencies
+- Error handling and failure scenarios
+- RFC manifest fields: default-skills, optional-skills, supported-commands, inputs, outputs, fail-fast, escalation, permissions
+MUST NOT remove:
+- Official frontmatter fields: name, description, tools, model
+- RFC-compliant manifest structure
+- Agent routing and delegation logic
+
+#### core-config-exceptions
+MUST PRESERVE:
+- System routing mappings
+- Agent selection conditions
+- Permission and type definitions
+- Critical dependency relationships
+- Directory and scope declarations
 
 ## language-rules
 REQUIRED directives starting with action verbs  

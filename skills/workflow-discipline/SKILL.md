@@ -1,6 +1,7 @@
 ---
-name: "skill:workflow-discipline"
-description: "Maintain incremental delivery, fail-fast behavior, and structured communication"
+name: skill:workflow-discipline
+description: Maintain incremental delivery, fail-fast behavior, and structured communication.
+  Use when workflow discipline guidance is required.
 allowed-tools: []
 ---
 

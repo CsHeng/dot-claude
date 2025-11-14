@@ -1,23 +1,24 @@
 ---
-command: /config-sync:codex
+name: config-sync:codex
 description: Execute OpenAI Codex CLI synchronization operations
-argument-hint: "--action=<sync|analyze|verify> --component=<rules,commands,settings,memory|all>"
+argument-hint: --action=<sync|analyze|verify> --component=<rules,commands,settings,memory|all>
 allowed-tools:
-  - Read
-  - Write
-  - Bash
-  - Bash(ls:*)
-  - Bash(fd:*)
-  - Bash(cat:*)
+- Read
+- Write
+- Bash
+- Bash(ls:*)
+- Bash(fd:*)
+- Bash(cat:*)
+is_background: false
 disable-model-invocation: true
 related-commands:
-  - /config-sync/sync-cli
+- /config-sync/sync-cli
 related-agents:
-  - agent:config-sync
+- agent:config-sync
 related-skills:
-  - skill:workflow-discipline
-  - skill:automation-language-selection
-  - skill:security-logging
+- skill:workflow-discipline
+- skill:automation-language-selection
+- skill:security-logging
 ---
 
 ## usage

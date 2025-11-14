@@ -108,6 +108,96 @@ DEPTH Implementation:
 - Tooling: Task-context specific loading with security validation
 - Hierarchical: Request validation → Tool selection → Execution → Reporting → Planning
 
+### `agent:code-architecture-reviewer`
+Commands: `/review-code-architecture`
+Mission: Evaluate architectural fitness of recent code changes with systemic analysis
+Inputs: Code files, architecture diagrams, change descriptions
+Outputs: Architecture assessment, risk classification, integration notes
+Fail-Fast Triggers: Missing architectural context, unreadable sources, policy violations
+Escalation: `agent:code-refactor-master` for remediation planning
+
+DEPTH Implementation:
+- Deterministic: Context analysis → Pattern alignment → Findings generation
+- Error Handling: Missing data → Document assumptions; invalid artifacts → Request resubmission
+- Permission: Read-only evaluation of code + docs
+- Tooling: Language skill auto-selection enforced after `skill:environment-validation`
+- Hierarchical: Architecture issues escalate to refactor or plan reviewers based on scope
+
+### `agent:code-refactor-master`
+Commands: `/refactor-*`, `/review-refactor`
+Mission: Orchestrate refactor plans with deterministic sequencing and validation
+Inputs: Target files, refactor goals, dependency graphs
+Outputs: Refactor blueprints, risk logs, validation plans
+Fail-Fast Triggers: Undefined targets, unsafe dependency rewrite requests
+Escalation: `agent:refactor-planner` for large-scale restructure roadmaps
+
+DEPTH Implementation:
+- Deterministic: Scope capture → Impact analysis → Refactor plan → Validation gating
+- Error Handling: Conflicts or blockers → Document severity → escalate/back off
+- Permission: Enforce approval before write operations, maintain rollback plans
+- Tooling: Ast-grep, rg, fd pipelines aligned with environment validation
+- Hierarchical: Delegates tests to testing strategy skills, coordinates with workflow helper for commits
+
+### `agent:plan-reviewer`
+Commands: `/review-plan`, `/plan-*`
+Mission: Validate user-submitted plans for completeness, feasibility, and risk
+Inputs: Written plans, supporting specs, acceptance criteria
+Outputs: Gap analysis, risk register, actionable adjustments
+Fail-Fast Triggers: Missing objectives, conflicting requirements, permissions issues
+Escalation: `agent:workflow-helper` for day-to-day adjustments or `agent:refactor-planner` for execution plans
+
+DEPTH Implementation:
+- Deterministic: Context mapping → Constraint validation → Recommendation synthesis
+- Error Handling: Ambiguous scope → request clarification; conflicting constraints → highlight blocking issues
+- Permission: Read-only on plan artifacts
+- Tooling: Structured template enforcement and diff-aware review
+- Hierarchical: Plans requiring code changes route to refactor/architecture agents automatically
+
+### `agent:ts-code-error-resolver`
+Commands: `/fix-*`, `/resolve-errors`
+Mission: Resolve TypeScript and general runtime errors with deterministic debugging
+Inputs: Stack traces, failing tests, code snippets
+Outputs: Root cause analysis, fix patches, regression tests
+Fail-Fast Triggers: Missing repro steps, inadequate permissions to run diagnostics
+Escalation: Language-specific agents or `agent:code-architecture-reviewer` when architectural fixes required
+
+DEPTH Implementation:
+- Deterministic: Repro capture → Trace analysis → Fix proposal → Validation plan
+- Error Handling: Non-reproducible issues → Document steps tried; environment mismatch → escalate to environment validation
+- Permission: Controlled execution of tests + linters per settings
+- Tooling: Shell, node, and test runners verified through environment skill
+- Hierarchical: Hard blockers trigger maintainer notification with run logs
+
+### `agent:web-research-specialist`
+Commands: `/research-*`, `/web-search`
+Mission: Conduct structured research with citation-ready deliverables
+Inputs: Research prompts, scope boundaries, source constraints
+Outputs: Curated findings, citation lists, risk notes
+Fail-Fast Triggers: Network restrictions, source trust violations, compliance issues
+Escalation: `agent:llm-governance` for source compliance disputes
+
+DEPTH Implementation:
+- Deterministic: Scope definition → Query planning → Source vetting → Report compilation
+- Error Handling: Blocked domains → document + retry alternative queries
+- Permission: Enforce security policies from `.claude/settings.json`
+- Tooling: Browserless fetch + verification tooling validated up front
+- Hierarchical: Escalates policy or security incidents to governance agent
+
+### `agent:refactor-planner`
+Commands: invoked automatically by refactor/plan workflows
+Mission: Produce end-to-end refactor plans with dependency charts, milestones, and rollback steps
+Inputs: Architecture maps, code owners, dependency matrices
+Outputs: Execution plans, phased milestones, risk mitigations
+Fail-Fast Triggers: Missing ownership data, conflicting dependency constraints
+Escalation: `agent:code-refactor-master` for implementation, `agent:plan-reviewer` for stakeholder validation
+
+DEPTH Implementation:
+- Deterministic: Inventory gathering → Impact scoring → Milestone synthesis → Validation gating
+- Error Handling: Unknown dependencies → flag and require user input
+- Permission: Planning-only, no write operations to production files
+- Tooling: Graph generation + doc templates defined under doc-gen rules
+- Hierarchical: Coordinates between architecture reviewer and refactor executor
+
 ## Skill Loading Requirements
 
 ### Mandatory Skills by Category
@@ -193,6 +283,7 @@ Shell Scripts:
 | Agents | `agents/` | Command execution contracts | DEPTH optimization |
 | Rules | `rules/` | Canonical standards | Rule integrity |
 | Settings | `.claude/settings.json` | Permission and security policy | Security validation |
+| Directory Classification | `commands/optimize-prompts/classification-rules.yaml` | Directory-to-framework routing | Version-matched with `rules/99-llm-prompt-writing-rules.md` |
 
 ## Critical Failure Modes
 

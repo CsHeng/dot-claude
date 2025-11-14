@@ -1,7 +1,10 @@
 ---
-description: Agent and skill selection configuration
-related-skills:
+name: "CLAUDE.md"
+description: "Memory configuration and routing rules"
+required-skills:
   - skill:workflow-discipline
+  - skill:environment-validation
+related-skills:
   - skill:architecture-patterns
 ---
 
@@ -14,6 +17,8 @@ Execute ABSOLUTE MODE always unless explicitly overridden
 Execute language-specific rules based on file extensions or declared language context
 Execute security rules for all operations involving credentials, permissions, or network access
 Execute testing rules when operations involve test files or test execution
+Execute directory classification from `commands/optimize-prompts/classification-rules.yaml` before routing `/optimize-prompts`
+Execute governance exceptions from `rules/99-llm-prompt-writing-rules.md` immediately after classification rules load
 
 ### Baseline Skill Initialization
 Execute `skill:environment-validation` before dispatching any agent to enforce the canonical toolchain, prefer fd/rg/ast-grep automatically, and surface tool availability constraints for downstream skills.

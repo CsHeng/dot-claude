@@ -1,21 +1,23 @@
 ---
-command: /config-sync:adapt-rules-content
-description: Adapt Claude rule content for universal AI agent compatibility across target tools
-argument-hint: "--target=<droid|qwen|codex|opencode|amp|all>"
+name: config-sync:adapt-rules-content
+description: Adapt Claude rule content for universal AI agent compatibility across
+  target tools
+argument-hint: --target=<droid|qwen|codex|opencode|amp|all>
 allowed-tools:
-  - Read
-  - Write
-  - Bash
-  - Bash(fd:*)
-  - Bash(rg:*)
-  - Bash(cat:*)
+- Read
+- Write
+- Bash
+- Bash(fd:*)
+- Bash(rg:*)
+- Bash(cat:*)
+is_background: false
 disable-model-invocation: true
 related-commands:
-  - /config-sync/sync-cli
+- /config-sync/sync-cli
 related-agents:
-  - agent:config-sync
+- agent:config-sync
 related-skills:
-  - skill:workflow-discipline
+- skill:workflow-discipline
 ---
 
 ## usage

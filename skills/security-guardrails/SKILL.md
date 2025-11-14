@@ -1,6 +1,7 @@
 ---
 skill: security-guardrails
-description: Comprehensive security implementation standards
+description: Comprehensive security implementation standards. Use when security guardrails
+  guidance is required.
 ---
 
 # Credential Management Security

@@ -7,9 +7,12 @@ skills:
   framework: "SIMPLE"
   classification_logic: "Directory name 'skills' indicates model-invoked autonomous capabilities"
   preserve:
-    - "name:" "description:"  # Required official fields
-    - "Use when"  # Official trigger format
-    - "tags:" "source:" "capability:"  # RFC manifest fields
+    - "name:"
+    - "description:"
+    - "Use when"
+    - "tags:"
+    - "source:"
+    - "capability:"
   remove:
     - "conversational content"
     - "unnecessary complexity"
@@ -19,11 +22,11 @@ commands:
   framework: "DEPTH"
   classification_logic: "Directory name 'commands' indicates user-invoked slash commands"
   preserve:
-    - "allowed-tools:"  # Tool permissions
-    - "argument-hint:"  # Usage guidance
-    - "(default: "  # Parameter defaults
-    - "```bash"  # Usage examples
-    - "Exit code:"  # Error handling
+    - "allowed-tools:"
+    - "argument-hint:"
+    - "(default:"
+    - "```bash"
+    - "Exit code:"
   remove:
     - "verbose explanations"
 
@@ -32,9 +35,14 @@ agents:
   framework: "COMPLEX"
   classification_logic: "Directory name 'agents' indicates subagents with delegation capabilities"
   preserve:
-    - "name:" "description:" "tools:" "model:"  # Official fields
-    - "default-skills:" "optional-skills:" "supported-commands:"  # RFC manifest fields
-    - "routing logic"  # Critical for delegation
+    - "name:"
+    - "description:"
+    - "tools:"
+    - "model:"
+    - "default-skills:"
+    - "optional-skills:"
+    - "supported-commands:"
+    - "routing logic"
   remove:
     - "redundant descriptions"
 
@@ -43,10 +51,28 @@ rules:
   framework: "SIMPLE"
   classification_logic: "Directory name 'rules' indicates imperative rule files"
   preserve:
-    - "REQUIRED:" "PROHIBITED:" "OPTIONAL:"  # Rule formats
+    - "REQUIRED:"
+    - "PROHIBITED:"
+    - "OPTIONAL:"
   remove:
     - "all narrative content"
     - "explanatory text"
+
+core:
+  directory_pattern:
+    - "AGENTS.md"
+    - "CLAUDE.md"
+    - ".claude/settings.json"
+  framework: "MINIMAL"
+  classification_logic: "Core memory and routing manifests share global dependencies and deterministic ordering"
+  preserve:
+    - "skill:"
+    - "required-skills:"
+    - "related-skills:"
+    - "routing"
+    - "permission"
+  remove:
+    - "redundant explanations"
 
 # Classification Algorithm
 # Files are classified by their directory path, not by content analysis:

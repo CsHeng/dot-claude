@@ -1,21 +1,22 @@
 ---
-command: /config-sync:adapt-commands
+name: config-sync:adapt-commands
 description: Adapt Claude commands for universal tool compatibility across AI platforms
-argument-hint: "--target=<droid|qwen|codex|opencode|amp>"
+argument-hint: --target=<droid|qwen|codex|opencode|amp>
 allowed-tools:
-  - Read
-  - Write
-  - Bash
-  - Bash(ls:*)
-  - Bash(fd:*)
-  - Bash(cat:*)
+- Read
+- Write
+- Bash
+- Bash(ls:*)
+- Bash(fd:*)
+- Bash(cat:*)
+is_background: false
 disable-model-invocation: true
 related-commands:
-  - /config-sync/sync-cli
+- /config-sync/sync-cli
 related-agents:
-  - agent:config-sync
+- agent:config-sync
 related-skills:
-  - skill:environment-validation
+- skill:environment-validation
 ---
 
 ## usage

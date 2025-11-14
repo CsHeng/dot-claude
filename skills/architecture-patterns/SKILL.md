@@ -1,6 +1,7 @@
 ---
 skill: architecture-patterns
-description: Architectural pattern guidance and layering principles
+description: Architectural pattern guidance and layering principles. Use when architecture
+  patterns guidance is required.
 ---
 
 # Core Architecture Patterns

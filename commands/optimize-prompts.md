@@ -88,7 +88,7 @@ Excluded:
 ## Workflow
 
 ### 0. Load Configuration
-- Load directory-based rules from `commands/optimize-prompts/directory-based-rules.yaml`
+- Load directory-based rules from `commands/optimize-prompts/classification-rules.yaml`
 - Load directory-based exceptions from `rules/99-llm-prompt-writing-rules.md`
 - Determine directory classification by directory structure based on official Claude Code + RFC requirements:
   - `skills/**/SKILL.md` → SIMPLE framework (model-invoked, official + RFC frontmatter)

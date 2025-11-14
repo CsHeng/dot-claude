@@ -1,14 +1,15 @@
 ---
 skill: llm-governance
-description: LLM content governance and compliance standards
+description: LLM content governance and compliance standards. Use when llm governance
+  guidance is required.
 allowed-tools:
-  - Bash(rg --pcre2 '\\*\\*')
-  - Bash(rg --pcre2 '\\p{Extended_Pictographic}')
-  - Bash(rg --pcre2 '(?<![\\`\\\\])\\*\\*(?![\\`/\\\\\\s])')
-  - Bash(rg --pcre2 '\\b(must|can|will|can|can)\\b')
-  - Read
-  - Write
-  - Edit
+- Bash(rg --pcre2 '\\*\\*')
+- Bash(rg --pcre2 '\\p{Extended_Pictographic}')
+- Bash(rg --pcre2 '(?<![\\`\\\\])\\*\\*(?![\\`/\\\\\\s])')
+- Bash(rg --pcre2 '\\b(must|can|will|can|can)\\b')
+- Read
+- Write
+- Edit
 ---
 
 # LLM Content Governance Standards

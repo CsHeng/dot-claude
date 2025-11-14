@@ -1,6 +1,7 @@
 ---
 skill: networking-controls
-description: Network security and connectivity standards
+description: Network security and connectivity standards. Use when networking controls
+  guidance is required.
 ---
 
 # Network Security Implementation

@@ -1,20 +1,21 @@
 ---
-command: /config-sync:analyze-target-tool
+name: config-sync:analyze-target-tool
 description: Analyze target tool configuration capabilities and adaptation requirements
-argument-hint: "--target=<droid|qwen|codex|opencode|amp>"
+argument-hint: --target=<droid|qwen|codex|opencode|amp>
 allowed-tools:
-  - Read
-  - Bash
-  - Bash(ls:*)
-  - Bash(fd:*)
-  - Bash(cat:*)
+- Read
+- Bash
+- Bash(ls:*)
+- Bash(fd:*)
+- Bash(cat:*)
+is_background: false
 disable-model-invocation: true
 related-commands:
-  - /config-sync/sync-cli
+- /config-sync/sync-cli
 related-agents:
-  - agent:config-sync
+- agent:config-sync
 related-skills:
-  - skill:environment-validation
+- skill:environment-validation
 ---
 
 ## usage

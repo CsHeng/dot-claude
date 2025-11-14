@@ -1,6 +1,12 @@
 ---
 name: "agent:llm-governance"
 description: "Execute LLM governance audits with deterministic rule validation and compliance reporting"
+tools:
+  - Read
+  - Bash(fd --hidden --type f --strip-cwd-prefix)
+  - Bash(rg --pcre2 *)
+  - Bash(ast-grep --json=stream --stdin)
+model: "gpt-4.1"
 default-skills:
   - skill:llm-governance
   - skill:workflow-discipline
@@ -9,7 +15,9 @@ supported-commands:
   - /optimize-prompts
 inputs:
   - CLAUDE.md target mappings
-  - Command argument `--target` specifications
+  - Directory classification rules from `commands/optimize-prompts/classification-rules.yaml`
+  - LLM governance exception rules from `rules/99-llm-prompt-writing-rules.md`
+  - Command arguments `path` and `--all`
   - File path lists for audit scope
   - Rule configuration parameters
 outputs:

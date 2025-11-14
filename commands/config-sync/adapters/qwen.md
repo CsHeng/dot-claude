@@ -1,24 +1,26 @@
 ---
-command: /config-sync:qwen
-description: Qwen CLI specific operations with TOML conversion and JSON permission manifests
-argument-hint: "--action=<sync|analyze|verify> --component=<rules,commands,settings,memory|all>"
+name: config-sync:qwen
+description: Qwen CLI specific operations with TOML conversion and JSON permission
+  manifests
+argument-hint: --action=<sync|analyze|verify> --component=<rules,commands,settings,memory|all>
 allowed-tools:
-  - Read
-  - Write
-  - Bash
-  - Bash(python3:*)
-  - Bash(jq:*)
-  - Bash(ls:*)
-  - Bash(fd:*)
-  - Bash(cat:*)
+- Read
+- Write
+- Bash
+- Bash(python3:*)
+- Bash(jq:*)
+- Bash(ls:*)
+- Bash(fd:*)
+- Bash(cat:*)
+is_background: false
 disable-model-invocation: true
 related-commands:
-  - /config-sync/sync-cli
+- /config-sync/sync-cli
 related-agents:
-  - agent:config-sync
+- agent:config-sync
 related-skills:
-  - skill:automation-language-selection
-  - skill:workflow-discipline
+- skill:automation-language-selection
+- skill:workflow-discipline
 ---
 
 ## usage
