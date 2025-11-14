@@ -5,16 +5,16 @@ version: "2.0.0"
 type: "collaboration"
 default-skills:
   - skill:workflow-discipline
-  - skill:tooling-code-tool-selection
+  - skill:automation-language-selection
 optional-skills:
-  - skill:toolchain-baseline
+  - skill:environment-validation
   - skill:language-shell
   - skill:language-python
   - skill:security-guardrails
 conditional-skills:
   - condition: "task-context"
     skills:
-      - skill:toolchain-baseline: "Comprehensive validation workflows required"
+      - skill:environment-validation: "Comprehensive validation workflows required"
       - skill:language-shell: "Shell script syntax reviews requested"
       - skill:language-python: "Python script reviews requested"
       - skill:security-guardrails: "Security-focused reviews requested"
@@ -62,10 +62,10 @@ Execute day-to-day collaboration workflows with deterministic tooling selection,
 
 ### Required Skills
 - `skill:workflow-discipline`: Maintain incremental delivery standards and deterministic execution
-- `skill:tooling-code-tool-selection`: Determine appropriate tooling strategies with validation
+- `skill:automation-language-selection`: Determine appropriate tooling strategies with validation
 
 ### Optional Skills
-- `skill:toolchain-baseline`: Comprehensive validation workflows and toolchain compatibility
+- `skill:environment-validation`: Comprehensive validation workflows and toolchain compatibility
 - `skill:language-shell`: Shell script syntax reviews and security analysis
 - `skill:language-python`: Python script reviews and validation
 - `skill:security-guardrails`: Security-focused analysis and vulnerability detection
@@ -78,7 +78,7 @@ Execute day-to-day collaboration workflows with deterministic tooling selection,
 | Shell Review | All required | skill:language-shell | Syntax, security, performance |
 | Python Review | All required | skill:language-python | Code quality, security, standards |
 | Security Review | All required | skill:security-guardrails | Vulnerability detection, best practices |
-| Complex Workflow | All required | skill:toolchain-baseline | Toolchain integration, validation |
+| Complex Workflow | All required | skill:environment-validation | Toolchain integration, validation |
 
 ## DEPTH Workflow Phases
 
@@ -312,10 +312,10 @@ Core Responsibilities:
 
 ### Required Skills (Always Loaded)
 - skill:workflow-discipline: Maintain incremental delivery standards and deterministic execution
-- skill:tooling-code-tool-selection: Determine appropriate tooling strategies with validation
+- skill:automation-language-selection: Determine appropriate tooling strategies with validation
 
 ### Optional Skills (Context-Loaded)
-- skill:toolchain-baseline: Comprehensive validation workflows and toolchain compatibility
+- skill:environment-validation: Comprehensive validation workflows and toolchain compatibility
 - skill:language-shell: Shell script syntax reviews and security analysis
 - skill:language-python: Python script reviews and validation
 - skill:security-guardrails: Security-focused analysis and vulnerability detection
@@ -327,7 +327,7 @@ Core Responsibilities:
 | Shell Review | All required | skill:language-shell | Syntax, security, performance |
 | Python Review | All required | skill:language-python | Code quality, security, standards |
 | Security Review | All required | skill:security-guardrails | Vulnerability detection, best practices |
-| Complex Workflow | All required | skill:toolchain-baseline | Toolchain integration, validation |
+| Complex Workflow | All required | skill:environment-validation | Toolchain integration, validation |
 
 ## Standardized Workflow Phases
 

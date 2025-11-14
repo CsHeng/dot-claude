@@ -2,7 +2,7 @@
 name: "doc-gen:android-sdk"
 description: Adapter for Android SDK documentation bootstrap/maintenance
 argument-hint: --mode=<bootstrap|maintain> --repo=<path> --docs=<path> --core=<path> [--demo=<path>]
-allowed-tools: Read, Write, ApplyPatch, Bash(rg:*), Bash(ls:*), Bash(find:*), Bash(tree:*), Bash(cat:*), Bash(plantuml --check-syntax:*)
+allowed-tools: Read, Write, ApplyPatch, Bash(rg:*), Bash(ls:*), Bash(fd:*), Bash(tree:*), Bash(cat:*), Bash(plantuml --check-syntax:*)
 ---
 
 ## Scope
@@ -20,7 +20,7 @@ Focus on Android libraries distributed to external apps. Capture public APIs, in
 - TODO syntax: encode metadata as query parameters (`TODO(doc-gen):docs-bootstrap/integration/setup.md?automation=auto&flow=A02[&review_required=true] — description`). Ensure the same `flow=` value appears in README and diagram filenames.
 
 ## Preparation checklist
-1. Enumerate Gradle modules (`find <core> -maxdepth 2 -name build.gradle*`).
+1. Enumerate Gradle modules (`fd --type f --max-depth 2 'build\\.gradle.*' <core>`).
 2. Identify public API surface (packages exported via `consumer-proguard-rules.pro`, `api` vs `implementation` dependencies, `@Keep` annotations).
 3. Inspect publishing configuration (groupId, artifactId, versioning) and distribution channels.
 4. Locate sample or demo apps demonstrating integration.

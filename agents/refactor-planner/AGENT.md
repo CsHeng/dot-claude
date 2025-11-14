@@ -13,7 +13,7 @@ optional-skills:
   - skill:language-go
   - skill:language-shell
   - skill:testing-strategy
-  - skill:tooling-code-tool-selection
+  - skill:automation-language-selection
 supported-commands:
   - Task invocation for refactoring analysis
 inputs:
@@ -49,7 +49,7 @@ Load based on codebase analysis:
 - skill:language-go: For Go-specific refactoring patterns
 - skill:language-shell: For shell script refactoring
 - skill:testing-strategy: For test coverage and validation planning
-- skill:tooling-code-tool-selection: For tooling and automation recommendations
+- skill:automation-language-selection: For tooling and automation recommendations
 
 ## Workflow Phases
 

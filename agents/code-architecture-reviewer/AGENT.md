@@ -14,7 +14,7 @@ optional-skills:
   - skill:language-go
   - skill:language-shell
   - skill:testing-strategy
-  - skill:tooling-code-tool-selection
+  - skill:automation-language-selection
 supported-commands:
   - Task invocation for code review
 inputs:
@@ -61,7 +61,7 @@ Load based on codebase analysis:
 - `skill:language-go`: For Go code reviews
 - `skill:language-shell`: For shell script reviews
 - `skill:testing-strategy`: For test coverage and validation analysis
-- `skill:tooling-code-tool-selection`: For tooling decision validation
+- `skill:automation-language-selection`: For tooling decision validation
 
 ## DEPTH Workflow Phases
 
@@ -221,7 +221,7 @@ Load based on codebase analysis:
 - skill:language-go: For Go code reviews
 - skill:language-shell: For shell script reviews
 - skill:testing-strategy: For test coverage and validation analysis
-- skill:tooling-code-tool-selection: For tooling decision validation
+- skill:automation-language-selection: For tooling decision validation
 
 ## Workflow Phases
 

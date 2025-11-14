@@ -3,8 +3,9 @@
     "allow": [
       "Read(/tmp/**)",
       "Write(/tmp/**)",
-      "Bash(grep:*)",
-      "Bash(find:*)",
+      "Bash(rg:*)",
+      "Bash(fd:*)",
+      "Bash(ast-grep:*)",
       "Bash(ls:*)",
       "Bash(la:*)",
       "Bash(ll:*)",

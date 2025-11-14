@@ -9,7 +9,7 @@ allowed-tools:
   - Bash
   - Bash(rg:*)
   - Bash(ls:*)
-  - Bash(find:*)
+  - Bash(fd:*)
   - Bash(tree:*)
   - Bash(cat:*)
   - Bash(plantuml --check-syntax:*)
@@ -27,7 +27,7 @@ Capture the architecture and business flows of Android apps built with Kotlin or
 - Reports bundle: ensure `<docs target>/_reports/parameters.json`, `_reports/todo.json`, `_reports/plantuml.log`, and (for delta scope) `_reports/changes.txt` receive adapter-specific details—e.g., add adapter name, default diagram inventory, recommended directories.
 
 ## Preparation checklist
-1. Map Gradle modules with `find <core> -maxdepth 2 -name build.gradle*`.
+1. Map Gradle modules with `fd --type f --max-depth 2 'build\\.gradle.*' <core>`.
 2. Identify architecture patterns: MVVM, MVI, Clean Architecture, single-Activity + navigation, etc.
 3. Locate dependency injection setup (Hilt, Dagger, Koin) and note root components and feature modules.
 4. Detect background execution frameworks (WorkManager, Coroutines, AlarmManager, JobScheduler).

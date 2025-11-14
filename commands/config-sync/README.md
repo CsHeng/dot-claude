@@ -10,7 +10,7 @@ related-commands:
 related-agents:
   - agent:config-sync
 related-skills:
-  - skill:toolchain-baseline
+  - skill:environment-validation
   - skill:workflow-discipline
   - skill:security-logging
 ---
@@ -61,7 +61,7 @@ commands/config-sync/
 
 | Command | Purpose | Required Skills |
 | --- | --- | --- |
-| `/config-sync/sync-cli` | Unified orchestration entrypoint | `skill:toolchain-baseline`, `skill:workflow-discipline`, `skill:security-logging` |
+| `/config-sync/sync-cli` | Unified orchestration entrypoint | `skill:environment-validation`, `skill:workflow-discipline`, `skill:security-logging` |
 | `/config-sync/sync-project-rules` | IDE rule directory synchronization | `skill:workflow-discipline`, `skill:security-logging` |
 | `/config-sync:adapt-*` | Target-specific configuration adaptation | Language skills based on target |
 

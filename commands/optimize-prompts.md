@@ -36,6 +36,8 @@ This command performs the following operations:
 
 ## Target Scope Filter
 
+Use `fd` for discovery:
+
 Included:
 - `commands/**/*.md`
 - `skills/**/SKILL.md`
@@ -89,6 +91,7 @@ Excluded:
 - When path provided: Include if within LLM-facing scope
 - When --all provided: Include all LLM-facing files
 - When both provided: Use --all
+- Enumerate candidates with `fd` so `.gitignore` rules are honored. Do not shell out to `find`; if exotic predicates are required, run them via `fd --exec` or filter the fd output in Python.
 
 ### 2. Load and Classify
 - Load all targets into memory

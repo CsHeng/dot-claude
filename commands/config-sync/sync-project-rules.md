@@ -1,13 +1,13 @@
 ---
 name: "config-sync:sync-project-rules"
-description: "Sync shared Claude rules into project IDE directories with proper headers"
+description: "Sync shared Claude rules into project IDE directories with proper headers (project)"
 argument-hint: "--target=<cursor|copilot|all> [--all] [--dry-run] [--verify-only] [--project-root=<path>]"
 allowed-tools:
   - Read
   - Write
   - Bash
   - Bash(ls:*)
-  - Bash(find:*)
+  - Bash(fd:*)
   - Bash(cat:*)
   - Bash(cp:*)
 is_background: false

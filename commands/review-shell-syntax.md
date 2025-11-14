@@ -1,6 +1,6 @@
 ---
 name: "command:review-shell-syntax"
-description: "Review shell script, detect violations, and propose auto-fix patches"
+description: "Review shell script, detect violations, and propose auto-fix patches (project)"
 argument-hint: "[path/to/script.sh]"
 allowed-tools:
   - Read

@@ -9,7 +9,7 @@ allowed-tools:
   - Read
   - Write
   - Bash
-  - Bash(find:*)
+  - Bash(fd:*)
   - Bash(rg:*)
   - Bash(cat:*)
 disable-model-invocation: true
@@ -23,7 +23,7 @@ related-skills:
 
 ## usage
 
-Convert Claude-specific rule content to target tool terminology while preserving technical guidelines and maintaining functionality across AI platforms.
+Execute conversion of Claude-specific rule content to target tool terminology while preserving technical guidelines and maintaining functionality across AI platforms.
 
 ## arguments
 

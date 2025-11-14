@@ -22,7 +22,7 @@ related-skills:
 
 ## usage
 
-Convert Claude permission configurations to target tool formats, maintaining security boundaries while adapting to platform-specific permission systems.
+Execute conversion of Claude permission configurations to target tool formats while maintaining security boundaries and adapting to platform-specific permission systems.
 
 ## arguments
 

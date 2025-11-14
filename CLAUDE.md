@@ -1,9 +1,15 @@
 ---
-version: 2.0.0
+file-type: memory
 description: Agent and skill selection configuration
+version: 2.0.0
 confidence: high
 impact: high
 status: active
+implementation: CLAUDE.md
+scope: Included
+related-skills:
+  - skill:workflow-discipline
+  - skill:architecture-patterns
 ---
 
 # Memory Configuration
@@ -11,12 +17,13 @@ status: active
 ## Rule-Loading Conditions
 
 ### Default Conditions
-- **ABSOLUTE MODE**: Always enabled unless explicitly overridden
-- **Language-specific rules**: Trigger based on file extensions or declared language context
-- **Security rules**: Apply to all operations involving credentials, permissions, or network access
-- **Testing rules**: Apply when operations involve test files or test execution
+Execute ABSOLUTE MODE always unless explicitly overridden
+Execute language-specific rules based on file extensions or declared language context
+Execute security rules for all operations involving credentials, permissions, or network access
+Execute testing rules when operations involve test files or test execution
 
 ### Agent Selection Conditions
+Execute routing by command patterns:
 1. Config-sync routing: `/config-sync/*` → `agent:config-sync`
 2. Workflow routing: `/draft-commit-message`, `/review-shell-syntax` → `agent:workflow-helper`
 3. Documentation routing: `/doc-gen:*` → `agent:doc-gen`
@@ -31,102 +38,121 @@ status: active
 
 ## Active Agents
 
+Execute agent mappings by command patterns:
+
 | Agent ID | Command Patterns | Default Skills | Optional Skills |
 | --- | --- | --- | --- |
-| `agent:config-sync` | `/config-sync/*` | `skill:toolchain-baseline`, `skill:workflow-discipline`, `skill:security-logging`, `skill:tooling-code-tool-selection` | Language skills based on target project |
-| `agent:llm-governance` | `/optimize-prompts` | `skill:llm-governance`, `skill:workflow-discipline` | Content-type specific skills |
-| `agent:doc-gen` | `/doc-gen:*` | `skill:workflow-discipline`, `skill:security-logging` | Architecture/language skills per project type |
-| `agent:workflow-helper` | `/draft-commit-message`, `/review-shell-syntax` | `skill:workflow-discipline`, `skill:tooling-code-tool-selection` | `skill:language-shell`, `skill:language-python`, `skill:toolchain-baseline` |
+| `agent:config-sync` | `/config-sync/*` | `skill:environment-validation`, `skill:workflow-discipline`, `skill:security-logging`, `skill:automation-language-selection`, `skill:search-and-refactor-strategy` | Language skills based on target project |
+| `agent:llm-governance` | `/optimize-prompts` | `skill:llm-governance`, `skill:workflow-discipline`, `skill:search-and-refactor-strategy` | Content-type specific skills |
+| `agent:doc-gen` | `/doc-gen:*` | `skill:workflow-discipline`, `skill:security-logging`, `skill:search-and-refactor-strategy` | Architecture/language skills per project type |
+| `agent:workflow-helper` | `/draft-commit-message`, `/review-shell-syntax` | `skill:workflow-discipline`, `skill:automation-language-selection` | `skill:language-shell`, `skill:language-python`, `skill:environment-validation` |
 | `agent:code-architecture-reviewer` | `/review-code-architecture` | `skill:architecture-patterns`, `skill:development-standards`, `skill:security-standards` | Language-specific skills based on codebase |
-| `agent:code-refactor-master` | `/refactor-*`, `/review-refactor` | `skill:architecture-patterns`, `skill:development-standards`, `skill:testing-strategy` | `skill:language-*` based on target code |
-| `agent:plan-reviewer` | `/review-plan`, `/plan-*` | `skill:workflow-discipline`, `skill:architecture-patterns`, `skill:testing-strategy` | Domain-specific skills based on plan content |
+| `agent:code-refactor-master` | `/refactor-*`, `/review-refactor` | `skill:architecture-patterns`, `skill:development-standards`, `skill:testing-strategy`, `skill:search-and-refactor-strategy` | `skill:language-*` based on target code |
+| `agent:plan-reviewer` | `/review-plan`, `/plan-*` | `skill:workflow-discipline`, `skill:architecture-patterns`, `skill:testing-strategy`, `skill:search-and-refactor-strategy` | Domain-specific skills based on plan content |
 | `agent:ts-code-error-resolver` | `/fix-*`, `/resolve-errors` | `skill:error-patterns`, `skill:development-standards`, `skill:testing-strategy` | `skill:language-*` based on error context |
-| `agent:web-research-specialist` | `/research-*`, `/web-search` | `skill:tooling-search-refactors`, `skill:workflow-discipline` | Content-specific research skills |
-| `agent:refactor-planner` | Refactoring tasks, complex restructuring | `skill:architecture-patterns`, `skill:development-standards`, `skill:workflow-discipline` | `skill:language-*`, `skill:testing-strategy` |
+| `agent:web-research-specialist` | `/research-*`, `/web-search` | `skill:search-and-refactor-strategy`, `skill:workflow-discipline` | Content-specific research skills |
+| `agent:refactor-planner` | Refactoring tasks, complex restructuring | `skill:architecture-patterns`, `skill:development-standards`, `skill:workflow-discipline`, `skill:search-and-refactor-strategy` | `skill:language-*`, `skill:testing-strategy` |
 
 ## Skill Dependencies
 
 ### Core Required Skills
+Execute mandatory skill loading:
 - `skill:workflow-discipline`: Required for all agents
 - `skill:security-logging`: Required for agents handling sensitive operations
 
 ### Conditional Required Skills
-- `skill:toolchain-baseline`: Required for development toolchain operations
+Execute conditional skill loading:
+- `skill:environment-validation`: Required for development toolchain operations
 - `skill:llm-governance`: Required for LLM-prompt modifications
 - `skill:language-*`: Required when operating on specific language files
 
 ### Optional Skills
-- `skill:tooling-code-tool-selection`: Optional for tool selection guidance
+Execute optional skill loading:
+- `skill:automation-language-selection`: Optional for automation language selection guidance
 - `skill:testing-strategy`: Optional for test-related operations
 - `skill:architecture-patterns`: Optional for architectural guidance
 
 ## Agent-Skill Mappings
 
 ### `agent:config-sync`
-- Load: `skill:toolchain-baseline`, `skill:workflow-discipline`, `skill:security-logging`, `skill:tooling-code-tool-selection`
+Execute skill loading:
+- Load: `skill:environment-validation`, `skill:workflow-discipline`, `skill:security-logging`, `skill:automation-language-selection`, `skill:search-and-refactor-strategy`
+- Dependency: `skill:environment-validation` must be loaded before `skill:search-and-refactor-strategy`
 - Conditional load: `skill:language-*` based on target project
 - Escalation: Fallback to `agent:llm-governance` for permission violations
 
 ### `agent:llm-governance`
-- Load: `skill:llm-governance`, `skill:workflow-discipline`
+Execute skill loading:
+- Load: `skill:llm-governance`, `skill:workflow-discipline`, `skill:search-and-refactor-strategy`
 - Conditional load: Content-specific skills for specialized review
 - Escalation: Notify maintainers on critical violations
 
 ### `agent:doc-gen`
-- Load: `skill:workflow-discipline`, `skill:security-logging`
+Execute skill loading:
+- Load: `skill:workflow-discipline`, `skill:security-logging`, `skill:search-and-refactor-strategy`
 - Conditional load: `skill:language-*`, `skill:architecture-patterns` per project type
 - Escalation: Fallback to `agent:config-sync` for integration issues
 
 ### `agent:workflow-helper`
-- Load: `skill:workflow-discipline`, `skill:tooling-code-tool-selection`
+Execute skill loading:
+- Load: `skill:workflow-discipline`, `skill:automation-language-selection`
 - Conditional load: Language skills based on task context
 - Escalation: Fallback to appropriate specialist agent
 
 ### `agent:code-architecture-reviewer`
+Execute skill loading:
 - Load: `skill:architecture-patterns`, `skill:development-standards`, `skill:security-standards`
 - Conditional load: `skill:language-*` based on codebase analysis
 - Escalation: Fallback to `agent:code-refactor-master` for architectural issues
 
 ### `agent:code-refactor-master`
-- Load: `skill:architecture-patterns`, `skill:development-standards`, `skill:testing-strategy`
+Execute skill loading:
+- Load: `skill:architecture-patterns`, `skill:development-standards`, `skill:testing-strategy`, `skill:search-and-refactor-strategy`
 - Conditional load: `skill:language-*` based on target code
 - Escalation: Fallback to `agent:refactor-planner` for complex restructuring
 
 ### `agent:plan-reviewer`
-- Load: `skill:workflow-discipline`, `skill:architecture-patterns`, `skill:testing-strategy`
+Execute skill loading:
+- Load: `skill:workflow-discipline`, `skill:architecture-patterns`, `skill:testing-strategy`, `skill:search-and-refactor-strategy`
 - Conditional load: Domain-specific skills based on plan content
 - Escalation: Fallback to `agent:refactor-planner` for implementation planning
 
 ### `agent:ts-code-error-resolver`
+Execute skill loading:
 - Load: `skill:error-patterns`, `skill:development-standards`, `skill:testing-strategy`
 - Conditional load: `skill:language-*` based on error context
 - Escalation: Fallback to language-specific agents for complex issues
 
 ### `agent:web-research-specialist`
-- Load: `skill:tooling-search-refactors`, `skill:workflow-discipline`
+Execute skill loading:
+- Load: `skill:search-and-refactor-strategy`, `skill:workflow-discipline`
 - Conditional load: Content-specific research skills
 - Escalation: Fallback to `agent:llm-governance` for source validation
 
 ### `agent:refactor-planner`
-- Load: `skill:architecture-patterns`, `skill:development-standards`, `skill:workflow-discipline`
+Execute skill loading:
+- Load: `skill:architecture-patterns`, `skill:development-standards`, `skill:workflow-discipline`, `skill:search-and-refactor-strategy`
 - Conditional load: `skill:language-*`, `skill:testing-strategy` based on project scope
 - Escalation: Fallback to `agent:code-refactor-master` for implementation
 
 ## Fallback Rules
 
 ### Agent Selection Failure
+Execute failure handling:
 1. No command match → Error with maintainer notification
 2. Multiple agent matches → Use most specific match
 3. Agent loading failure → Attempt fallback agent
 4. All agents failed → Escalate to maintainers
 
 ### Skill Loading Failure
+Execute failure handling:
 1. Default skill missing → Agent fails fast
 2. Optional skill missing → Continue with warning
 3. Skill validation failure → Agent fails fast
 4. Dependency cycle → Abort with diagnostic
 
 ### Critical Escalation Triggers
+Execute immediate escalation for:
 - Security rule violations
 - Permission bypass attempts
 - Unrecoverable skill loading errors
