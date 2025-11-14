@@ -28,6 +28,7 @@ Execute routing by command patterns:
 2. Workflow routing: `/draft-commit-message`, `/review-shell-syntax` → `agent:workflow-helper`
 3. Documentation routing: `/doc-gen:*` → `agent:doc-gen`
 4. LLM governance routing: `/optimize-prompts` → `agent:llm-governance`
+   Note: Official spec-based optimization (skills→SIMPLE, commands→DEPTH, agents→COMPLEX, rules→SIMPLE)
 5. Code architecture routing: `/review-code-architecture` → `agent:code-architecture-reviewer`
 6. Refactoring routing: `/refactor-*`, `/review-refactor` → `agent:code-refactor-master`
 7. Planning routing: `/review-plan`, `/plan-*` → `agent:plan-reviewer`

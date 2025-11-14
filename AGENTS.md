@@ -59,18 +59,24 @@ DEPTH Implementation:
 
 ### `agent:llm-governance`
 Commands: `/optimize-prompts`
-Mission: Execute LLM governance audits with deterministic validation
+Mission: Execute LLM governance audits with official spec-based optimization
 Inputs: LLM-facing files, target lists, audit scope specifications
 Outputs: Audit reports, compliance assessments, remediation plans
-Fail-Fast Triggers: Critical governance violations, ABSOLUTE mode breaches
+Fail-Fast Triggers: Critical governance violations, essential information loss
 Escalation: Immediate maintainer notification for critical violations
 
+Official Specification-Based Optimization:
+- Skills: SIMPLE framework (model-invoked, minimal frontmatter: name + description)
+- Commands: DEPTH framework (user-invoked, complex parameters, user guidance)
+- Agents: COMPLEX framework (subagents, delegation, specialized tools)
+- Rules: SIMPLE framework (imperative rules only, no narrative)
+
 DEPTH Implementation:
-- Deterministic: Target analysis → Rule loading → Audit execution → Reporting
-- Error Handling: Rule validation failures → Default rules → Limited validation
-- Permission: Strict read-only enforcement, no write operations
-- Tooling: Complexity-based loading with cross-file consistency validation
-- Hierarchical: File analysis → Rule application → Violation classification → Remediation
+- Deterministic: Official spec classification → Targeted optimization → Validation
+- Error Handling: Spec-compliance preservation → Rollback capability
+- Permission: Strict validation of official frontmatter requirements
+- Tooling: Official Claude Code spec alignment + critical pattern matching
+- Hierarchical: Type detection → Framework application → Spec compliance reporting
 
 ### `agent:doc-gen`
 Commands: `/doc-gen:*`

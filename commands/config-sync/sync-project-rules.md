@@ -32,7 +32,7 @@ Resolve project root from arguments, environment, or current working directory. 
 ## Execution Procedure
 
 ### 1. Project Validation
-Validate project root existence and accessibility. Verify execution context is not `~/.claude`.
+Verify @CLAUDE_PROJECT_DIR is not `~/.claude`, else raise exit code 1.
 
 ### 2. Rule Collection
 Merge global rules from `~/.claude/rules` with project-specific rules from `.claude/rules`.

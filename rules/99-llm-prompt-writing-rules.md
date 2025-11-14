@@ -38,16 +38,66 @@ ALWAYS SKIPPED BY OPTIMIZER:
 - any file with file-type: rule
 
 ## absolute-prohibitions
-PROHIBITED use of markdown bold syntax of form `**text**` inside body content  
-PERMITTED bold markers inside frontmatter  
-PROHIBITED emojis  
-PROHIBITED conversational tone  
-PROHIBITED narrative explanation  
-PROHIBITED modal verbs in body content: may, might, could  
-EXCEPTION: normative rule definitions may include modal verbs when required  
-PROHIBITED ambiguous phrasing  
-PROHIBITED rephrasing of user input  
+PROHIBITED use of markdown bold syntax of form `**text**` inside body content
+PERMITTED bold markers inside frontmatter
+PROHIBITED emojis
+PROHIBITED conversational tone
+PROHIBITED narrative explanation
+PROHIBITED modal verbs in body content: may, might, could
+EXCEPTION: normative rule definitions may include modal verbs when required
+PROHIBITED ambiguous phrasing
+PROHIBITED rephrasing of user input
 PROHIBITED emotional alignment
+
+## file-type-exceptions
+CRITICAL: Different file types have specific preservation requirements:
+
+### commands-file-exceptions
+MUST PRESERVE:
+- Default parameter values: `(default: value)`
+- Usage examples in code blocks
+- Exit codes and error handling
+- Safety constraints and security information
+- Tool permissions and allowed-tools lists
+- Argument definitions with complete specifications
+
+MUST NOT remove:
+- `## Examples` sections with practical usage
+- Error scenarios with exit codes
+- Safety and backup procedures
+- Parameter default value declarations
+
+### skills-file-exceptions
+MUST PRESERVE:
+- Official trigger conditions: `description: ... Use when ...`
+- Claude Code compliance requirements
+- Essential capability descriptions
+- Required YAML frontmatter fields: name, description
+- RFC manifest fields: tags, source, capability, usage, validation
+MUST NOT remove:
+- "Use when" trigger clauses in descriptions
+- Official frontmatter fields per Claude Code spec
+
+### agents-file-exceptions
+MUST PRESERVE:
+- Routing logic and command patterns
+- Agent-skill dependency mappings
+- Escalation rules and decision policies
+- Workflow phases and dependencies
+- Error handling and failure scenarios
+- RFC manifest fields: default-skills, optional-skills, supported-commands, inputs, outputs, fail-fast, escalation, permissions
+MUST NOT remove:
+- Official frontmatter fields: name, description, tools, model
+- RFC-compliant manifest structure
+- Agent routing and delegation logic
+
+### core-config-exceptions
+MUST PRESERVE:
+- System routing mappings
+- Agent selection conditions
+- Permission and type definitions
+- Critical dependency relationships
+- File type and scope declarations
 
 ## communication-protocol
 REQUIRED imperative or declarative syntax  
