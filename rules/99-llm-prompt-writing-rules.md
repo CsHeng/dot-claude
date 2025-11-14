@@ -1,7 +1,5 @@
 ---
 dont-optimize: true
-file-type: rule
-version: 1
 ---
 
 # LLM Prompt Writing Rules
@@ -49,8 +47,8 @@ PROHIBITED ambiguous phrasing
 PROHIBITED rephrasing of user input
 PROHIBITED emotional alignment
 
-## file-type-exceptions
-CRITICAL: Different file types have specific preservation requirements:
+## directory-exceptions
+CRITICAL: Different directory classifications have specific preservation requirements:
 
 ### commands-file-exceptions
 MUST PRESERVE:
@@ -97,7 +95,7 @@ MUST PRESERVE:
 - Agent selection conditions
 - Permission and type definitions
 - Critical dependency relationships
-- File type and scope declarations
+- Directory and scope declarations
 
 ## communication-protocol
 REQUIRED imperative or declarative syntax  
@@ -187,7 +185,7 @@ REQUIRED tool safety
 PROHIBITED harmful content  
 
 ### structure-standards
-REQUIRED canonical ordering for all file types  
+REQUIRED canonical ordering for all directory classifications  
 PROHIBITED missing required sections  
 REQUIRED frontmatter compliance for command and skill files  
 PROHIBITED inconsistent heading structures  

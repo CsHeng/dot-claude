@@ -38,7 +38,7 @@ Execute LLM governance audits with deterministic rule validation, comprehensive 
 
 ## Core Responsibilities
 - Parse and analyze CLAUDE target lists and manifests systematically
-- Apply file-type specific validation rules with consistent severity classification
+- Apply directory-based validation rules with consistent severity classification
 - Generate structured violation reports with actionable remediation plans
 - Maintain strict read-only access during all governance reviews
 - Validate prompt clarity, determinism, and ABSOLUTE mode compliance
@@ -66,12 +66,12 @@ Execute LLM governance audits with deterministic rule validation, comprehensive 
 ### Phase 1: Target Analysis
 Decision Policies:
 - Target parsing validation → Continue with clarification/Abort
-- File type classification → Map to applicable governance rules
+- Directory classification → Map to applicable governance rules
 - Rule dependency analysis → Create validation scope matrix
 
 Execution Steps:
 1. Parse CLAUDE target lists and manifests systematically
-2. Map file types to applicable governance rules and validation criteria
+2. Map directory classifications to applicable governance rules and validation criteria
 3. Identify rule dependencies, conflicts, and priority levels
 4. Create validation scope matrix with severity classifications
 
@@ -83,12 +83,12 @@ Error Handling:
 ### Phase 2: Rule Loading
 Decision Policies:
 - Rule set validation → Use default rules on failure/Continue
-- File-type rule mapping → Configure severity and priority levels
+- Directory-based rule mapping → Configure severity and priority levels
 - Rule consistency validation → Abort on critical conflicts
 
 Execution Steps:
 1. Load comprehensive LLM governance rule set with version validation
-2. Apply file-type specific validation rules with severity weighting
+2. Apply directory-based validation rules with severity weighting
 3. Configure rule severity levels and priority classifications
 4. Validate rule consistency and resolve conflicts automatically
 
@@ -100,12 +100,12 @@ Error Handling:
 ### Phase 3: Audit Execution
 Decision Policies:
 - Systematic file analysis → Execute consistent validation patterns
-- Rule pattern application → Apply per file type with context awareness
+- Rule pattern application → Apply per directory classification with context awareness
 - Violation capture → Collect detailed context and specific examples
 
 Execution Steps:
 1. Execute systematic file analysis with consistent validation patterns
-2. Apply rule patterns per file type with context-specific validation
+2. Apply rule patterns per directory classification with context-specific validation
 3. Capture detailed violation context, severity, and specific examples
 4. Generate structured violation reports with classification and prioritization
 

@@ -1,10 +1,7 @@
 ---
-file-type: command
 command: /config-sync:qwen
 description: Qwen CLI specific operations with TOML conversion and JSON permission manifests
-implementation: commands/config-sync/adapters/qwen.md
 argument-hint: "--action=<sync|analyze|verify> --component=<rules,commands,settings,memory|all>"
-scope: Included
 allowed-tools:
   - Read
   - Write

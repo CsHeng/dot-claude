@@ -1,8 +1,3 @@
----
-file-type: rule
-scope: architecture-patterns
----
-
 # Architecture Patterns Directives
 
 ## scope

@@ -1,10 +1,7 @@
 ---
-file-type: command
 command: /config-sync:adapt-rules-content
 description: Adapt Claude rule content for universal AI agent compatibility across target tools
-implementation: commands/config-sync/adapters/adapt-rules-content.md
 argument-hint: "--target=<droid|qwen|codex|opencode|amp|all>"
-scope: Included
 allowed-tools:
   - Read
   - Write

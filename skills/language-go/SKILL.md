@@ -1,9 +1,6 @@
 ---
-file-type: skill
 skill: language-go
 description: Go language patterns and best practices
-implementation: skills/language-go/SKILL.md
-scope: Included
 allowed-tools:
   - Bash(go version)
   - Bash(golangci-lint)

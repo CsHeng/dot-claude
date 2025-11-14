@@ -1,8 +1,3 @@
----
-file-type: rule
-scope: error-patterns
----
-
 # Error Handling Directives
 
 ## scope

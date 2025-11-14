@@ -1,8 +1,3 @@
----
-file-type: rule
-scope: personal-development-preferences
----
-
 # Memory Rules
 
 ## scope

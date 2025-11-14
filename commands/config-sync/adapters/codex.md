@@ -1,10 +1,7 @@
 ---
-file-type: command
 command: /config-sync:codex
 description: Execute OpenAI Codex CLI synchronization operations
-implementation: commands/config-sync/adapters/codex.md
 argument-hint: "--action=<sync|analyze|verify> --component=<rules,commands,settings,memory|all>"
-scope: Included
 allowed-tools:
   - Read
   - Write

@@ -1,8 +1,3 @@
----
-file-type: rule
-scope: development-standards
----
-
 # Development Standards Directives
 
 ## scope

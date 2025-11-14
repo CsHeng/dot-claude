@@ -80,7 +80,7 @@ Character validation standards:
 
 ### Target File Identification
 
-Apply governance to specific file types:
+Apply governance to specific directory classifications:
 - `commands//*.md`
 - `skills//*.md`
 - `rules//*.md`

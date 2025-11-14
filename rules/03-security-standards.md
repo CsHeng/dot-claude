@@ -1,8 +1,3 @@
----
-file-type: rule
-scope: security-standards
----
-
 # Security Standards Directives
 
 ## scope

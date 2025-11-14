@@ -60,7 +60,7 @@ Excluded:
 ## DEPTH Framework
 
 ### Decomposition
-- Identify file type, purpose, expected structure
+- Identify directory classification, purpose, expected structure
 - Extract sections, frontmatter, dependencies
 - Derive a structural model for rewrite
 
@@ -88,9 +88,9 @@ Excluded:
 ## Workflow
 
 ### 0. Load Configuration
-- Load file-type rules from `commands/optimize-prompts/simple-optimization.yaml`
-- Load file-type exceptions from `rules/99-llm-prompt-writing-rules.md`
-- Determine file type by directory structure based on official Claude Code + RFC requirements:
+- Load directory-based rules from `commands/optimize-prompts/directory-based-rules.yaml`
+- Load directory-based exceptions from `rules/99-llm-prompt-writing-rules.md`
+- Determine directory classification by directory structure based on official Claude Code + RFC requirements:
   - `skills/**/SKILL.md` → SIMPLE framework (model-invoked, official + RFC frontmatter)
   - `commands/**/*.md` → DEPTH framework (user-invoked, complex parameters)
   - `agents/**/*.md` → COMPLEX framework (subagents, official + RFC manifest)
@@ -103,27 +103,27 @@ Excluded:
 - Enumerate candidates with `fd` so `.gitignore` rules are honored. Do not shell out to `find`; if exotic predicates are required, run them via `fd --exec` or filter the fd output in Python.
 
 ### 2. Classify Files by Directory
-- For each target, determine file type by directory path:
+- For each target, determine directory classification by directory path:
   - `skills/**/SKILL.md` → skills type
   - `commands/**/*.md` → commands type
   - `agents/**/*.md` → agents type
   - `CLAUDE.md`, `AGENTS.md` → core type
 - Apply corresponding framework and preservation rules
-- Skip files flagged dont-optimize or with file-type: rule
+- Skip files flagged dont-optimize or with rule-type
 
 ### 3. Load and Validate
 - Load all targets into memory
-- Apply file-type specific validation before optimization
-- Check required fields and sections per file type
+- Apply directory-based validation before optimization
+- Check required fields and sections per directory type
 - Validate frontmatter compliance where required
 
 ### 4. Per-File Framework-Specific Analysis
 For each loaded file:
-- Apply assigned framework (SIMPLE, DEPTH, COMPLEX, METADATA)
-- Execute framework-specific phases based on file type
+- Apply assigned framework (SIMPLE, DEPTH, COMPLEX, MINIMAL)
+- Execute framework-specific phases based on directory type
 - Generate an in-memory rewritten candidate
 - Prohibit generation of bold markers
-- Apply file-type preservation patterns and special rules
+- Apply directory-based preservation patterns and special rules
 - Preserve the original file unchanged on disk
 
 ### 5. Official-Based Normalization
@@ -191,16 +191,16 @@ Then request explicit confirmation for writeback.
 ### 8. Writeback
 - When approved: Write candidate content to disk
   - Confirm all candidates files are written successfully
-  - Validate post-write integrity against file-type requirements
+  - Validate post-write integrity against directory requirements
 - When denied: Leave all files unchanged and retain analysis output
 
 ### 9. Validation and Rollback
 
 #### Pre-Write Validation
 For each candidate file:
-- Validate required frontmatter fields per file type
+- Validate required frontmatter fields per directory type
 - Check preservation of critical patterns (defaults, examples, exit codes)
-- Verify file-type specific structural requirements
+- Verify directory-based structural requirements
 - Ensure no critical information loss has occurred
 
 #### Post-Write Verification
@@ -208,26 +208,26 @@ After writing files:
 - Read back written files and compare with candidates
 - Validate file integrity and structure maintenance
 - Check that all critical patterns are preserved
-- Run file-type specific validation rules
+- Run directory-based validation rules
 
 #### Rollback Capability
 Maintain rollback information:
 - Create backup timestamp before any modifications
 - Store original file content in `~/.claude/backup/rollback-<timestamp>/`
-- Provide recovery commands for each file type
+- Provide recovery commands for each directory type
 - Enable selective or complete rollback if validation fails
 
 #### Validation Reports
-Official specification-based validation:
+Directory-based validation:
 - Skills: Check "Use when" conditions and minimal frontmatter
 - Commands: Verify complex frontmatter and user guidance preserved
 - Agents: Confirm subagent fields and delegation logic intact
 - Rules: Ensure only imperative rule formats remain
 
 Status Messages:
-- When validation fails: "Validation failed for <file_type>: <specific_issue>"
+- When validation fails: "Validation failed for <directory_type>: <specific_issue>"
 - When rollback needed: "Rollback initiated for <affected_files>"
-- When successful: "File-type specific optimization completed successfully"
+- When successful: "Directory-based optimization completed successfully"
 
 ## Output
 
