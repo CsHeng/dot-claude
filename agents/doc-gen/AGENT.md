@@ -1,38 +1,6 @@
 ---
 name: "agent:doc-gen"
 description: "Manage documentation generation and maintenance workflows with project-specific architecture adaptation"
-required-skills:
-  - skill:workflow-discipline
-  - skill:security-logging
-optional-skills:
-  - skill:language-python
-  - skill:language-go
-  - skill:architecture-patterns
-  - skill:automation-language-selection
-supported-commands:
-  - /doc-gen:bootstrap
-  - /doc-gen:maintain
-inputs:
-  - Project type specification and architecture analysis
-  - Repository paths (repo/, docs/, core/)
-  - Documentation templates and customization parameters
-  - PlantUML integration requirements
-outputs:
-  - Generated documentation in target directories (docs-bootstrap/ or docs/)
-  - PlantUML validation results and integration reports
-  - Maintenance artifacts and update procedures
-  - Project-specific documentation standards
-fail-fast: true
-execution-mode: "deterministic"
-permissions:
-  - "Read access: repo/, docs/, core directories for project analysis"
-  - "Write access: docs-bootstrap/, docs/ with explicit user confirmation"
-  - "External tool execution: For diagram generation and validation"
-  - "Template modification: For project-specific customization and adaptation"
-escalation:
-  - "Integration issues → agent:config-sync"
-  - "Critical failures → Maintainer notification"
-fallback: "Generate basic documentation structure, continue with limited capabilities"
 ---
 
 # Documentation Generation Agent
@@ -48,13 +16,9 @@ Manage documentation generation and maintenance workflows with project-specific 
 - Apply project-specific documentation standards while maintaining consistency
 - Create maintenance artifacts and update procedures for long-term sustainability
 
-## Skill Mappings
-
-### Required Skills
+## Required Skills
 - `skill:workflow-discipline`: Maintain incremental delivery standards and deterministic execution
 - `skill:security-logging`: Apply structured logging controls and audit trail generation
-
-### Optional Skills
 - `skill:language-python`: Python project documentation patterns and conventions
 - `skill:language-go`: Go project documentation standards and module organization
 - `skill:architecture-patterns`: Complex system documentation and architectural diagrams

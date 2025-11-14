@@ -1,6 +1,6 @@
 ---
 name: "config-sync:sync-cli"
-description: "Unified orchestrator for config-sync workflows across IDE targets"
+description: "Unified orchestrator for config-sync workflows across CLI targets"
 argument-hint: "--action=<sync|analyze|verify|adapt|plan|report> --target=<list|all> --components=<list|all>"
 allowed-tools:
   - Read
@@ -45,13 +45,14 @@ Execute unified configuration synchronization workflows across multiple CLI targ
 - `--verbose`: Enable detailed logging
 
 ## Workflow
-1. Parameter Validation: Parse and validate all command-line arguments
-2. Environment Detection: Identify IDE targets and validate accessibility
-3. Settings Integration: Merge runtime parameters with persistent settings
-4. Plan Generation: Create execution plan with phases and dependencies
-5. Phase Execution: Run determined phases in sequence with validation
-6. Result Persistence: Save execution metadata and artifacts
-7. Cleanup Operations: Manage temporary files and backup retention
+1. Check if arguments provided or use defaults (all)
+   1. Parameter Validation: Parse and validate all command-line arguments
+   2. Environment Detection: Identify CLI targets and validate accessibility
+2. Settings Integration: Merge runtime parameters with persistent settings
+3. Plan Generation: Create execution plan with phases and dependencies
+4. Phase Execution: Run determined phases in sequence with validation
+5. Result Persistence: Save execution metadata and artifacts
+6. Cleanup Operations: Manage temporary files and backup retention
 
 ### Phase Mapping
 | Action | Phases Executed |

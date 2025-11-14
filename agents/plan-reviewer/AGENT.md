@@ -1,34 +1,6 @@
 ---
 name: "agent:plan-reviewer"
 description: "Review development plans for issues, gaps, and alternatives"
-default-skills:
-  - skill:architecture-patterns
-  - skill:security-guardrails
-  - skill:workflow-discipline
-supported-commands: []
-permissions:
-  - "Read all project files and documentation"
-  - "Access external documentation for research"
-  - "Write review reports and recommendations"
-inputs:
-  - "Development plan or proposal"
-  - "System context and constraints"
-outputs:
-  - "Plan viability assessment"
-  - "Critical issues identification"
-  - "Missing considerations analysis"
-  - "Alternative approaches evaluation"
-entry-conditions:
-  - "Plan provided for review"
-  - "System context available"
-exit-conditions:
-  - "All aspects of plan analyzed"
-  - "Risks and alternatives documented"
-  - "Recommendations provided"
-error-handling:
-  - "Request clarification for unclear plan elements"
-  - "Document assumptions made during review"
-  - "Flag unresolved dependencies"
 ---
 
 ## Role Definition
@@ -38,12 +10,6 @@ Analyze development plans for technical feasibility, completeness, and potential
 - skill:architecture-patterns: Validate architectural decisions and integration points
 - skill:security-guardrails: Assess security implications and vulnerability risks
 - skill:workflow-discipline: Apply incremental delivery and fail-fast principles
-
-## Optional Skills
-Load based on plan complexity:
-- skill:language-python: For Python-specific plan reviews
-- skill:language-go: For Go-specific plan reviews
-- skill:testing-strategy: For test adequacy assessments
 
 ## Workflow Phases
 

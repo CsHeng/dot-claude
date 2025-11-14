@@ -29,41 +29,23 @@ Resolve project root from arguments, environment, or current working directory. 
 - `--project-root`: Specify project directory path
 - `CLAUDE_PROJECT_DIR`: Environment variable for project root
 
-## Execution Procedure
+## Workflow
 
-### 1. Project Validation
-Verify @CLAUDE_PROJECT_DIR is not `~/.claude`, else raise exit code 1.
-
-### 2. Rule Collection
-Merge global rules from `~/.claude/rules` with project-specific rules from `.claude/rules`.
-
-### 3. Target Resolution
-Determine IDE directories:
-- Cursor: `.cursor/rules/`
-- Copilot: `.github/instructions/`
-
-### 4. Tool Validation
-Check availability of `yq` or `python3` with PyYAML module for header processing.
-
-### 5. Header Processing
-Load IDE-specific headers from `commands/config-sync/ide-headers.yaml`. Apply headers to target files.
-
-### 6. File Operations
-Copy files to target directories with proper headers. Create directories within project boundaries only.
-
-### 7. Verification
-Generate file counts per target directory. Validate header processing success.
+1. Prompt and quit if @CLAUDE_PROJECT_DIR is `~/.claude` and no `--project-root` provided.
+2. Merge global rules from `~/.claude/rules` with project-specific rules from `.claude/rules`.
+3. Target Directory Resolution
+   - Cursor: `.cursor/rules/`
+   - Copilot: `.github/instructions/`
+4. Check availability of `yq` or `python3` with PyYAML module for header processing.
+5. Load IDE-specific headers from `commands/config-sync/ide-headers.yaml`. Apply headers to target files.
+6. Copy files to target directories with proper headers. Create directories within project boundaries only.
+7. Generate file counts per target directory. Validate header processing success.
 
 ## Error Handling
 
-### Context Errors
 Exit code 1: Invalid project root or execution from `~/.claude`
-
-### File System Errors
 Exit code 2: Target directory creation failure
 Exit code 3: File permission errors
-
-### Processing Errors
 Exit code 4: Header processing tool unavailable - continue with simple copy
 
 ## Safety Constraints

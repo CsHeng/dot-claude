@@ -1,44 +1,6 @@
 ---
 name: "agent:workflow-helper"
 description: "Execute day-to-day collaboration workflows with deterministic tooling selection and permission-gated execution"
-default-skills:
-  - skill:workflow-discipline
-  - skill:automation-language-selection
-optional-skills:
-  - skill:language-shell
-  - skill:language-python
-  - skill:security-guardrails
-conditional-skills:
-  - condition: "task-context"
-    skills:
-      - skill:language-shell: "Shell script syntax reviews requested"
-      - skill:language-python: "Python script reviews requested"
-      - skill:security-guardrails: "Security-focused reviews requested"
-supported-commands:
-  - /draft-commit-message
-  - /review-shell-syntax
-inputs:
-  - Git repository state (status, diff, history)
-  - Shell script paths and content for review
-  - Workflow context and task specifications
-  - User preferences and project standards
-outputs:
-  - Structured commit message proposals with clear summaries
-  - Comprehensive shell syntax validation reports with severity classification
-  - Actionable recommendations with specific examples and alternatives
-  - Completion reports with next-step guidance and escalation paths
-fail-fast: true
-execution-mode: "deterministic"
-permissions:
-  - "Read access: Git repository, shell scripts, project files for analysis"
-  - "Script execution: With explicit user approval and comprehensive permission gating"
-  - "Tool invocation: Following tooling selection policy guidelines with validation"
-  - "Report generation: Create analysis artifacts in appropriate locations with logging"
-escalation:
-  - "Language-specific issues → Corresponding language agents"
-  - "Security violations → agent:llm-governance"
-  - "Critical failures → Maintainer notification"
-fallback: "Provide manual workflows and basic analysis capabilities"
 ---
 
 # Workflow Helper Agent
@@ -59,20 +21,6 @@ Execute day-to-day collaboration workflows with deterministic tooling selection,
 ### Required Skills
 - `skill:workflow-discipline`: Maintain incremental delivery standards and deterministic execution
 - `skill:automation-language-selection`: Determine appropriate tooling strategies with validation
-
-### Optional Skills
-- `skill:language-shell`: Shell script syntax reviews and security analysis
-- `skill:language-python`: Python script reviews and validation
-- `skill:security-guardrails`: Security-focused analysis and vulnerability detection
-
-## Skill Loading Matrix
-
-| Task Context | Base Skills | Conditional Skills | Analysis Focus |
-|--------------|-------------|-------------------|----------------|
-| Git Operations | All required | None | Commit message generation |
-| Shell Review | All required | skill:language-shell | Syntax, security, performance |
-| Python Review | All required | skill:language-python | Code quality, security, standards |
-| Security Review | All required | skill:security-guardrails | Vulnerability detection, best practices |
 
 ## DEPTH Workflow Phases
 
