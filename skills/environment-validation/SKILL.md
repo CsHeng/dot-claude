@@ -1,15 +1,16 @@
 ---
-name: "skill:environment-validation"
-description: "Unify toolchain versions and validation rules (project, gitignored)"
+name: skill:environment-validation
+description: Unify toolchain versions and validation rules (project, gitignored).
+  Use when environment validation guidance is required.
 allowed-tools:
-  - Bash(rg --version)
-  - Bash(fd --version)
-  - Bash(ast-grep --version)
-  - Bash(python3 --version)
-  - Bash(go version)
-  - Bash(lua -v)
-  - Bash(plantuml --version)
-  - Bash(dbml2sql --version)
+- Bash(rg --version)
+- Bash(fd --version)
+- Bash(ast-grep --version)
+- Bash(python3 --version)
+- Bash(go version)
+- Bash(lua -v)
+- Bash(plantuml --version)
+- Bash(dbml2sql --version)
 ---
 
 ## Purpose

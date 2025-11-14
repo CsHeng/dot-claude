@@ -1,6 +1,7 @@
 ---
 skill: error-patterns
-description: Error handling patterns and logging standards
+description: Error handling patterns and logging standards. Use when error patterns
+  guidance is required.
 ---
 
 # Error Handling Strategy Implementation

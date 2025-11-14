@@ -1,6 +1,7 @@
 ---
 skill: testing-strategy
-description: Comprehensive testing strategies and coverage standards
+description: Comprehensive testing strategies and coverage standards. Use when testing
+  strategy guidance is required.
 ---
 
 # Test Coverage and Architecture

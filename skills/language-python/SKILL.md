@@ -1,10 +1,11 @@
 ---
 skill: language-python
-description: Python language patterns and best practices
+description: Python language patterns and best practices. Use when language python
+  guidance is required.
 allowed-tools:
-  - Bash(uv)
-  - Bash(ruff)
-  - Bash(pytest)
+- Bash(uv)
+- Bash(ruff)
+- Bash(pytest)
 ---
 
 # Python Architecture Standards

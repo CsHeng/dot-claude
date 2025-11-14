@@ -1,13 +1,14 @@
 ---
 skill: language-go
-description: Go language patterns and best practices
+description: Go language patterns and best practices. Use when language go guidance
+  is required.
 allowed-tools:
-  - Bash(go version)
-  - Bash(golangci-lint)
+- Bash(go version)
+- Bash(golangci-lint)
 related-skills:
-  - skill:environment-validation
-  - skill:development-standards
-  - skill:testing-strategy
+- skill:environment-validation
+- skill:development-standards
+- skill:testing-strategy
 ---
 
 # Go Architecture Standards

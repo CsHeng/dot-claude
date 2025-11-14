@@ -1,6 +1,7 @@
 ---
-name: "skill:workflow-patterns"
-description: "Apply multi-phase workflow and handoff patterns"
+name: skill:workflow-patterns
+description: Apply multi-phase workflow and handoff patterns. Use when workflow patterns
+  guidance is required.
 ---
 
 ## Purpose

@@ -1,8 +1,10 @@
 ---
-name: "skill:search-and-refactor-strategy"
-description: "Guide agents on when to prefer ast-grep versus ripgrep and how to chain them safely (project, gitignored)"
+name: skill:search-and-refactor-strategy
+description: Guide agents on when to prefer ast-grep versus ripgrep and how to chain
+  them safely (project, gitignored). Use when search and refactor strategy guidance
+  is required.
 allowed-tools:
-  - Bash(ast-grep --version)
+- Bash(ast-grep --version)
 ---
 
 ## Purpose

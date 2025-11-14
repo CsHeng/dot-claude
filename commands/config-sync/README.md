@@ -1,15 +1,18 @@
 ---
-command: /config-sync/README
+name: config-sync/README
 description: Configuration synchronization plugin documentation and reference
+argument-hint: ''
+allowed-tools: []
+is_background: false
 related-commands:
-  - /config-sync/sync-cli
-  - /config-sync/sync-project-rules
+- /config-sync/sync-cli
+- /config-sync/sync-project-rules
 related-agents:
-  - agent:config-sync
+- agent:config-sync
 related-skills:
-  - skill:environment-validation
-  - skill:workflow-discipline
-  - skill:security-logging
+- skill:environment-validation
+- skill:workflow-discipline
+- skill:security-logging
 ---
 
 ## usage

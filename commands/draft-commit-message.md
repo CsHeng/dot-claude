@@ -1,21 +1,22 @@
 ---
-command: /draft-commit-message
+name: draft-commit-message
 description: Propose a commit message from current git status (no commit)
-argument-hint: "[optional-summary-notes]"
+argument-hint: '[optional-summary-notes]'
 allowed-tools:
-  - Bash
-  - Bash(git rev-parse --git-dir)
-  - Bash(git status --short)
-  - Bash(git diff --cached)
-  - Bash(git diff)
+- Bash
+- Bash(git rev-parse --git-dir)
+- Bash(git status --short)
+- Bash(git diff --cached)
+- Bash(git diff)
+is_background: false
 disable-model-invocation: true
 related-commands:
-  - /config-sync/sync-cli
+- /config-sync/sync-cli
 related-agents:
-  - agent:workflow-helper
+- agent:workflow-helper
 related-skills:
-  - skill:workflow-discipline
-  - skill:automation-language-selection
+- skill:workflow-discipline
+- skill:automation-language-selection
 ---
 
 ## usage

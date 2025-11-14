@@ -1,10 +1,11 @@
 ---
 skill: deployment-docker
-description: Docker and containerization guidelines
+description: Docker and containerization guidelines. Use when deployment docker guidance
+  is required.
 related-skills:
-  - skill:environment-validation
-  - skill:security-logging
-  - skill:workflow-discipline
+- skill:environment-validation
+- skill:security-logging
+- skill:workflow-discipline
 ---
 
 # Container Optimization Patterns

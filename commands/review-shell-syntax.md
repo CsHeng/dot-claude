@@ -1,5 +1,5 @@
 ---
-name: "command:review-shell-syntax"
+name: review-shell-syntax
 description: "Review shell script, detect violations, and propose auto-fix patches (project)"
 argument-hint: "[path/to/script.sh]"
 allowed-tools:

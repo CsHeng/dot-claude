@@ -1,6 +1,7 @@
 ---
 skill: quality-standards
-description: Code quality metrics and continuous improvement
+description: Code quality metrics and continuous improvement. Use when quality standards
+  guidance is required.
 ---
 
 # Code Quality Metrics Definition
