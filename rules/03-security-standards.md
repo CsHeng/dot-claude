@@ -1,212 +1,168 @@
 ---
-# Cursor Rules
-alwaysApply: true
-
-# Copilot Instructions
-applyTo: "**/*"
-
-# Kiro Steering
-inclusion: always
+file-type: rule
+scope: security-standards
 ---
 
-# Security Guidelines and Best Practices
+# Security Standards Directives
 
-## Credential Management
+## scope
+REQUIRED: Apply these security standards to all development activities, including credential management, input validation, and secure coding practices across all projects.
 
-### Principle of Secure Storage
-- NEVER hardcode API keys, secrets, or credentials in source code
-- Store sensitive data in `.env` files or configuration files
-- Use separate configuration files for different environments (dev, staging, prod)
-- Implement proper access controls for configuration files
+## absolute-prohibitions
+PROHIBITED: Hardcode API keys, secrets, or credentials in source code
+PROHIBITED: Commit configuration files with secrets to version control
+PROHIBITED: Execute user input as system commands without sanitization
+PROHIBITED: Use weak cryptographic algorithms or insecure defaults
 
-### Environment Variables
-- Use environment variables for all sensitive configuration
-- Implement validation for required environment variables
-- Use secure defaults for all configuration options
-- Document all required environment variables
+## communication-protocol
+REQUIRED: Implement security-by-default principles
+REQUIRED: Use principle of least privilege for all access controls
+REQUIRED: Validate all inputs at application boundaries
+REQUIRED: Log security events without exposing sensitive data
 
-### Configuration File Security
-- Never commit configuration files with secrets to version control
-- Use encryption for sensitive configuration at rest
-- Implement configuration file integrity checks
-- Use configuration management tools for production environments
+## structural-rules
 
-## Input Validation and Sanitization
+### credential-management
+REQUIRED: Store sensitive data in .env files or configuration files
+OPTIONAL: Use separate configuration files for different environments (dev, staging, prod)
+REQUIRED: Implement proper access controls for configuration files
+REQUIRED: Use environment variables for all sensitive configuration
+REQUIRED: Implement validation for required environment variables
+REQUIRED: Use secure defaults for all configuration options
+REQUIRED: Document all required environment variables
+OPTIONAL: Use encryption for sensitive configuration at rest
+OPTIONAL: Implement configuration file integrity checks
+OPTIONAL: Use configuration management tools for production environments
 
-### Input Validation Principles
-- Validate and sanitize all user inputs rigorously
-- Use whitelist approach for input validation
-- Implement comprehensive input validation at application boundaries
-- Validate all data types, formats, and ranges
+## language-rules
 
-### Web Application Security
-- Implement proper CORS configuration
-- Use HTTPS in production environments
-- Validate all HTTP headers and parameters
-- Implement secure session management
+### input-validation-and-sanitization
+REQUIRED: Validate and sanitize all user inputs rigorously
+REQUIRED: Use whitelist approach for input validation
+REQUIRED: Implement comprehensive input validation at application boundaries
+REQUIRED: Validate all data types, formats, and ranges
+REQUIRED: Implement proper CORS configuration
+REQUIRED: Use HTTPS in production environments
+REQUIRED: Validate all HTTP headers and parameters
+REQUIRED: Implement secure session management
+REQUIRED: Use parameterized queries for database operations
+REQUIRED: Sanitize file paths and user-provided filenames
+OPTIONAL: Implement proper shell escaping when necessary
 
-### Command Injection Prevention
-- Never execute user input as system commands
-- Use parameterized queries for database operations
-- Sanitize file paths and user-provided filenames
-- Implement proper shell escaping when necessary
+### authentication-and-authorization
+REQUIRED: Implement strong password policies
+REQUIRED: Use secure password hashing algorithms (bcrypt, Argon2)
+OPTIONAL: Implement multi-factor authentication where appropriate
+REQUIRED: Use secure session token generation and validation
+REQUIRED: Implement role-based access control (RBAC)
+REQUIRED: Use principle of least privilege
+REQUIRED: Implement proper permission checking at all levels
+REQUIRED: Log all authorization decisions and access attempts
+REQUIRED: Use secure, HTTP-only cookies for session tokens
+REQUIRED: Implement proper session timeout and invalidation
+REQUIRED: Generate cryptographically secure session identifiers
+REQUIRED: Implement session fixation prevention
 
-## Authentication and Authorization
+## formatting-rules
 
-### Authentication Best Practices
-- Implement strong password policies
-- Use secure password hashing algorithms (bcrypt, Argon2)
-- Implement multi-factor authentication where appropriate
-- Use secure session token generation and validation
+### api-security
+REQUIRED: Use secure API key management
+REQUIRED: Implement rate limiting to prevent abuse
+REQUIRED: Use OAuth 2.0 or JWT for API authentication
+OPTIONAL: Implement API versioning for security updates
+REQUIRED: Use TLS 1.2+ for all communications
+OPTIONAL: Implement certificate pinning where appropriate
+REQUIRED: Validate SSL certificates properly
+REQUIRED: Use secure cipher suites
+REQUIRED: Implement comprehensive rate limiting strategies
+REQUIRED: Use different limits for different user types
+REQUIRED: Implement gradual penalty for abuse
+REQUIRED: Monitor and alert on rate limit violations
 
-### Authorization Patterns
-- Implement role-based access control (RBAC)
-- Use principle of least privilege
-- Implement proper permission checking at all levels
-- Log all authorization decisions and access attempts
+## naming-rules
 
-### Session Management
-- Use secure, HTTP-only cookies for session tokens
-- Implement proper session timeout and invalidation
-- Generate cryptographically secure session identifiers
-- Implement session fixation prevention
+### database-security
+REQUIRED: Use encrypted database connections
+REQUIRED: Implement database connection pooling securely
+REQUIRED: Use database-specific user accounts with limited privileges
+REQUIRED: Implement database connection timeout and retry logic
+REQUIRED: Encrypt sensitive data at rest using strong encryption
+OPTIONAL: Use transparent data encryption where available
+REQUIRED: Implement key rotation for encryption keys
+OPTIONAL: Secure encryption keys using hardware security modules where possible
+REQUIRED: Use parameterized queries exclusively
+PROHIBITED: Concatenate user input into SQL queries
+OPTIONAL: Implement stored procedures with proper parameterization
+REQUIRED: Use ORM frameworks that provide built-in SQL injection protection
 
-## API Security
+## validation-rules
 
-### API Authentication
-- Use secure API key management
-- Implement rate limiting to prevent abuse
-- Use OAuth 2.0 or JWT for API authentication
-- Implement API versioning for security updates
+### network-security
+REQUIRED: Implement proper firewall rules
+OPTIONAL: Use network segmentation to isolate sensitive systems
+REQUIRED: Implement ingress and egress filtering
+REQUIRED: Monitor and log all network traffic
+OPTIONAL: Use VPNs for administrative access
+REQUIRED: Implement secure remote access protocols
+REQUIRED: Use secure file transfer protocols (SFTP, SCP)
+PROHIBITED: Use insecure protocols (telnet, FTP, HTTP)
+REQUIRED: Implement intrusion detection systems
+REQUIRED: Monitor network traffic for anomalies
+REQUIRED: Log all network access attempts
+REQUIRED: Implement real-time security alerting
 
-### Data Protection in Transit
-- Use TLS 1.2+ for all communications
-- Implement certificate pinning where appropriate
-- Validate SSL certificates properly
-- Use secure cipher suites
+### application-security
+REQUIRED: Follow OWASP secure coding guidelines
+REQUIRED: Implement proper error handling without information disclosure
+REQUIRED: Use secure memory management practices
+REQUIRED: Implement proper logging without sensitive data
+REQUIRED: Regularly update all dependencies
+REQUIRED: Use dependency scanning tools
+REQUIRED: Implement software composition analysis
+REQUIRED: Monitor for security advisories
+OPTIONAL: Implement application sandboxing where possible
+REQUIRED: Use secure runtime configurations
+OPTIONAL: Implement proper process isolation
+REQUIRED: Monitor application behavior for anomalies
 
-### API Rate Limiting
-- Implement comprehensive rate limiting strategies
-- Use different limits for different user types
-- Implement gradual penalty for abuse
-- Monitor and alert on rate limit violations
+### container-and-infrastructure-security
+REQUIRED: Use minimal base images for containers
+REQUIRED: Implement container image scanning
+REQUIRED: Use non-root users in containers
+REQUIRED: Implement container runtime security
+REQUIRED: Use secure cloud configurations
+REQUIRED: Implement proper identity and access management
+REQUIRED: Use security groups and network ACLs
+REQUIRED: Implement infrastructure monitoring
+REQUIRED: Use dedicated secret management systems
+REQUIRED: Implement secret rotation policies
+REQUIRED: Audit secret access logs
+OPTIONAL: Use hardware security modules for critical secrets
 
-## Database Security
+### compliance-and-auditing
+REQUIRED: Implement comprehensive security logging
+REQUIRED: Conduct regular security audits and penetration testing
+REQUIRED: Maintain security incident response plans
+REQUIRED: Document all security configurations and procedures
+REQUIRED: Follow relevant industry standards (PCI-DSS, HIPAA, GDPR)
+REQUIRED: Implement data retention and deletion policies
+REQUIRED: Maintain compliance documentation
+REQUIRED: Conduct regular compliance assessments
+REQUIRED: Implement security incident response procedures
+REQUIRED: Maintain security incident contact lists
+REQUIRED: Conduct regular security incident response training
+REQUIRED: Document and learn from security incidents
 
-### Database Connection Security
-- Use encrypted database connections
-- Implement database connection pooling securely
-- Use database-specific user accounts with limited privileges
-- Implement database connection timeout and retry logic
-
-### Data Encryption
-- Encrypt sensitive data at rest using strong encryption
-- Use transparent data encryption where available
-- Implement key rotation for encryption keys
-- Secure encryption keys using hardware security modules where possible
-
-### SQL Injection Prevention
-- Use parameterized queries exclusively
-- Never concatenate user input into SQL queries
-- Implement stored procedures with proper parameterization
-- Use ORM frameworks that provide built-in SQL injection protection
-
-## Network Security
-
-### Firewall Configuration
-- Implement proper firewall rules
-- Use network segmentation to isolate sensitive systems
-- Implement ingress and egress filtering
-- Monitor and log all network traffic
-
-### Secure Communications
-- Use VPNs for administrative access
-- Implement secure remote access protocols
-- Use secure file transfer protocols (SFTP, SCP)
-- Disable insecure protocols (telnet, FTP, HTTP)
-
-### Network Monitoring
-- Implement intrusion detection systems
-- Monitor network traffic for anomalies
-- Log all network access attempts
-- Implement real-time security alerting
-
-## Application Security
-
-### Secure Coding Practices
-- Follow OWASP secure coding guidelines
-- Implement proper error handling without information disclosure
-- Use secure memory management practices
-- Implement proper logging without sensitive data
-
-### Dependency Security
-- Regularly update all dependencies
-- Use dependency scanning tools
-- Implement software composition analysis
-- Monitor for security advisories
-
-### Runtime Security
-- Implement application sandboxing where possible
-- Use secure runtime configurations
-- Implement proper process isolation
-- Monitor application behavior for anomalies
-
-## Container and Infrastructure Security
-
-### Container Security
-- Use minimal base images for containers
-- Implement container image scanning
-- Use non-root users in containers
-- Implement container runtime security
-
-### Infrastructure Security
-- Use secure cloud configurations
-- Implement proper identity and access management
-- Use security groups and network ACLs
-- Implement infrastructure monitoring
-
-### Secret Management
-- Use dedicated secret management systems
-- Implement secret rotation policies
-- Audit secret access logs
-- Use hardware security modules for critical secrets
-
-## Compliance and Auditing
-
-### Security Auditing
-- Implement comprehensive security logging
-- Regular security audits and penetration testing
-- Maintain security incident response plans
-- Document all security configurations and procedures
-
-### Compliance Requirements
-- Follow relevant industry standards (PCI-DSS, HIPAA, GDPR)
-- Implement data retention and deletion policies
-- Maintain compliance documentation
-- Regular compliance assessments
-
-### Incident Response
-- Implement security incident response procedures
-- Maintain security incident contact lists
-- Regular security incident response training
-- Document and learn from security incidents
-
-## Security Testing
-
-### Security Testing Strategy
-- Implement regular security testing
-- Use static application security testing (SAST)
-- Use dynamic application security testing (DAST)
-- Implement regular penetration testing
-
-### Code Security Review
-- Regular security code reviews
-- Use automated security scanning tools
-- Manual security testing for critical components
-- Security testing in CI/CD pipelines
-
-### Vulnerability Management
-- Implement vulnerability scanning processes
-- Prioritize and track vulnerability remediation
-- Maintain vulnerability disclosure procedures
-- Regular security assessments and updates
+### security-testing
+REQUIRED: Implement regular security testing
+REQUIRED: Use static application security testing (SAST)
+REQUIRED: Use dynamic application security testing (DAST)
+REQUIRED: Implement regular penetration testing
+REQUIRED: Conduct regular security code reviews
+REQUIRED: Use automated security scanning tools
+REQUIRED: Perform manual security testing for critical components
+REQUIRED: Include security testing in CI/CD pipelines
+REQUIRED: Implement vulnerability scanning processes
+REQUIRED: Prioritize and track vulnerability remediation
+REQUIRED: Maintain vulnerability disclosure procedures
+REQUIRED: Conduct regular security assessments and updates

@@ -78,6 +78,234 @@ declare -A TARGET_LABELS=(
     [cursor]="Cursor project rules (.cursor/rules)"
     [copilot]="VS Code Copilot instructions (.github/instructions)"
 )
+
+# IDE header configuration
+IDE_HEADERS_CONFIG="$SCRIPT_DIR/ide-headers.yaml"
+
+# Check if YAML parser is available (yq or python with yaml module)
+check_yaml_parser() {
+    if command -v yq >/dev/null 2>&1; then
+        echo "yq"
+    elif python3 -c "import yaml" >/dev/null 2>&1; then
+        echo "python"
+    else
+        echo "none"
+    fi
+}
+
+# Determine if a file should skip IDE headers entirely
+is_file_without_header() {
+    local filename="$1"
+    local yaml_parser="$2"
+
+    case "$yaml_parser" in
+        "yq")
+            local match
+            match=$(yq eval "(.files_without_headers // [])[] | select(. == \"$filename\")" "$IDE_HEADERS_CONFIG" 2>/dev/null || true)
+            if [[ -n "$match" ]]; then
+                return 0
+            fi
+            return 1
+            ;;
+        "python")
+            local result
+            result=$(FILENAME="$filename" IDE_HEADERS="$IDE_HEADERS_CONFIG" python3 - <<'PY'
+import os
+import yaml
+
+filename = os.environ["FILENAME"]
+config_path = os.environ["IDE_HEADERS"]
+with open(config_path) as f:
+    data = yaml.safe_load(f) or {}
+files = data.get("files_without_headers") or []
+if filename in files:
+    print("FOUND")
+PY
+)
+            if [[ "$result" == "FOUND" ]]; then
+                return 0
+            fi
+            return 1
+            ;;
+    esac
+
+    return 1
+}
+
+# Extract YAML configuration for a file/target pair
+extract_header_config() {
+    local filename="$1"
+    local target="$2"
+    local yaml_parser="$3"
+    local config=""
+
+    case "$yaml_parser" in
+        "yq")
+            config=$(yq eval ".file_mappings[\"$filename\"][\"$target\"] // \"__MISSING__\"" "$IDE_HEADERS_CONFIG" 2>/dev/null || echo "__MISSING__")
+            ;;
+        "python")
+            config=$(FILENAME="$filename" TARGET="$target" IDE_HEADERS="$IDE_HEADERS_CONFIG" python3 - <<'PY'
+import os
+import yaml
+
+filename = os.environ["FILENAME"]
+target = os.environ["TARGET"]
+config_path = os.environ["IDE_HEADERS"]
+with open(config_path) as f:
+    data = yaml.safe_load(f) or {}
+mapping = (data.get("file_mappings") or {}).get(filename)
+target_cfg = mapping.get(target) if mapping else None
+if target_cfg is None:
+    print("__MISSING__")
+else:
+    text = yaml.dump(target_cfg, default_flow_style=False).strip()
+    print(text if text else "{}")
+PY
+)
+            ;;
+        *)
+            return 1
+            ;;
+    esac
+
+    if [[ -z "$config" || "$config" == "__MISSING__" ]]; then
+        return 1
+    fi
+
+    echo "$config"
+}
+
+# Extract IDE header configuration for a specific file and target
+get_ide_header() {
+    local filename="$1"
+    local target="$2"
+    local yaml_parser
+    yaml_parser=$(check_yaml_parser)
+
+    if [[ "$yaml_parser" == "none" ]]; then
+        log_warning "No YAML parser found. Skipping IDE headers for $filename"
+        return 1
+    fi
+
+    if is_file_without_header "$filename" "$yaml_parser"; then
+        return 1
+    fi
+
+    local config
+    if ! config=$(extract_header_config "$filename" "$target" "$yaml_parser"); then
+        return 1
+    fi
+
+    # Check if file has headers configured and get the config
+    generate_ide_header "$target" "$config" "$yaml_parser"
+}
+
+# Generate IDE-specific header from configuration
+generate_ide_header() {
+    local target="$1"
+    local config="$2"
+    local yaml_parser="${3:-$(check_yaml_parser)}"
+
+    case "$target" in
+        "cursor")
+            if [[ "$config" == "{}" || -z "$config" || "$config" == "null" || "$config" == "--" ]]; then
+                echo -e "---\n# Cursor Rules\n---\n"
+                return
+            fi
+
+            # Parse cursor configuration
+            local cursor_content="# Cursor Rules\n"
+            case "$yaml_parser" in
+                "yq")
+                    if echo "$config" | yq eval '.alwaysApply' 2>/dev/null | grep -q "true"; then
+                        cursor_content="${cursor_content}alwaysApply: true\n"
+                    fi
+                    local globs
+                    globs=$(echo "$config" | yq eval '.globs' 2>/dev/null | tr -d '"' | grep -v "null" || echo "")
+                    if [[ -n "$globs" ]]; then
+                        cursor_content="${cursor_content}globs: $globs\n"
+                    fi
+                    ;;
+                "python")
+                    if python3 -c "
+import yaml
+config = yaml.safe_load('''$config''')
+if config and config.get('alwaysApply') == True:
+    sys.exit(0)
+else:
+    sys.exit(1)
+" 2>/dev/null; then
+                        cursor_content="${cursor_content}alwaysApply: true\n"
+                    fi
+                    local globs
+                    globs=$(python3 -c "
+import yaml
+config = yaml.safe_load('''$config''')
+if config and config.get('globs'):
+    print(config['globs'])
+" 2>/dev/null || echo "")
+                    if [[ -n "$globs" ]]; then
+                        cursor_content="${cursor_content}globs: $globs\n"
+                    fi
+                    ;;
+            esac
+            echo -e "---\n${cursor_content}---\n"
+            ;;
+
+        "copilot")
+            local apply_pattern="**/*"  # default
+            case "$yaml_parser" in
+                "yq")
+                    local pattern
+                    pattern=$(echo "$config" | yq eval '.applyTo' 2>/dev/null | tr -d '"' | grep -v "null" || echo "")
+                    if [[ -n "$pattern" ]]; then
+                        apply_pattern="$pattern"
+                    fi
+                    ;;
+                "python")
+                    local pattern
+                    pattern=$(python3 -c "
+import yaml
+config = yaml.safe_load('''$config''')
+if config and config.get('applyTo'):
+    print(config['applyTo'])
+" 2>/dev/null || echo "")
+                    if [[ -n "$pattern" ]]; then
+                        apply_pattern="$pattern"
+                    fi
+                    ;;
+            esac
+            echo -e "---\n# Copilot Instructions\napplyTo: \"$apply_pattern\"\n---\n"
+            ;;
+    esac
+}
+
+# Sync a single rule file with IDE header injection
+sync_rule_file_with_header() {
+    local source_file="$1"
+    local target_dir="$2"
+    local target="$3"
+    local filename
+    filename=$(basename "$source_file")
+    local target_file="$target_dir/$filename"
+
+    ensure_directory "$target_dir"
+
+    # Generate IDE header
+    local ide_header
+    if ide_header=$(get_ide_header "$filename" "$target"); then
+        # Create target file with IDE header + content
+        {
+            printf "%s\n" "$ide_header"
+            cat "$source_file"
+        } > "$target_file"
+        log_success "Added IDE header to $filename for $target"
+    else
+        # No IDE header configured, copy as-is
+        rsync -a "$source_file" "$target_dir/"
+        log_info "No IDE header for $filename, copied as-is"
+    fi
+}
 declare -A TARGET_DIRS=()
 
 SELECTED_TARGETS=()
@@ -255,9 +483,43 @@ sync_target() {
     local label="${TARGET_LABELS[$target]}"
 
     log_info "Syncing rules into $label"
-    local copied
-    copied=$(sync_markdown_rules "$target_dir" "${SOURCE_DIRS[@]}")
-    log_success "$label: $copied file(s) copied"
+
+    # Check if IDE headers config exists
+    if [[ ! -f "$IDE_HEADERS_CONFIG" ]]; then
+        log_warning "IDE headers config not found: $IDE_HEADERS_CONFIG"
+        log_info "Falling back to simple copy without headers"
+        local copied
+        copied=$(sync_markdown_rules "$target_dir" "${SOURCE_DIRS[@]}")
+        log_success "$label: $copied file(s) copied"
+        return
+    fi
+
+    # Check YAML parser availability
+    local yaml_parser
+    yaml_parser=$(check_yaml_parser)
+    if [[ "$yaml_parser" == "none" ]]; then
+        log_warning "No YAML parser available. Install yq or python3 with PyYAML for IDE headers"
+        log_info "Falling back to simple copy without headers"
+        local copied
+        copied=$(sync_markdown_rules "$target_dir" "${SOURCE_DIRS[@]}")
+        log_success "$label: $copied file(s) copied"
+        return
+    fi
+
+    ensure_directory "$target_dir"
+    clean_markdown_targets "$target_dir"
+
+    local total=0
+    local source_dir
+    for source_dir in "${SOURCE_DIRS[@]}"; do
+        [[ -d "$source_dir" ]] || continue
+        while IFS= read -r -d '' file; do
+            sync_rule_file_with_header "$file" "$target_dir" "$target"
+            total=$((total + 1))
+        done < <(find "$source_dir" -maxdepth 1 -type f -name "*.md" -print0)
+    done
+
+    log_success "$label: $total file(s) synced with IDE headers"
 }
 
 verify_target() {

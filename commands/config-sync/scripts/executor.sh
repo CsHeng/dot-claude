@@ -102,6 +102,20 @@ check_target_tool() {
         return 1
       fi
       ;;
+    amp)
+      local amp_dir
+      amp_dir="$(get_target_config_dir amp)"
+      if ! command -v amp >/dev/null 2>&1; then
+        log_warning "Amp CLI not found in PATH; install via https://ampcode.com/manual#cli"
+      fi
+      if [[ -d "$amp_dir" ]] || mkdir -p "$amp_dir" 2>/dev/null; then
+        log_info "Amp directory accessible: $amp_dir"
+        return 0
+      else
+        log_error "Cannot create/access Amp directory: $amp_dir"
+        return 1
+      fi
+      ;;
     *)
       log_error "Unsupported target tool: $target_tool"
       return 1

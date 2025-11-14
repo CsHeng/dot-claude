@@ -1,116 +1,118 @@
 ---
-# Cursor Rules
-alwaysApply: true
-
-# Copilot Instructions
-applyTo: "**/*"
-
-# Kiro Steering
-inclusion: always
+file-type: rule
+scope: personal-development-preferences
 ---
 
-# User Preferences and Personal Development Settings
+# Memory Rules
 
-These are personal preferences that complement the general development rules. This file serves as AI Memory and is synchronized to other AI tools for consistent behavior.
+## scope
+Define mandatory personal development preferences, tool requirements, and workflow standards synchronized across all AI tools and environments.
 
-## Tool Version Preferences
+## absolute-prohibitions
+- NEVER hardcode API keys, passwords, secrets, or sensitive credentials
+- NEVER use bold markers in any documentation or comments
+- NEVER commit configuration files containing secrets to version control
+- NEVER bypass environment variable override mechanisms
 
-### Core Preferences
-- Python: Prefer 3.13+ versions with modern type annotation syntax `X | None`
-- Go: Prefer 1.23+ versions, use `go run` instead of `go build` during development
-- Shell: Prefer `#!/bin/zsh` for interactive scripts during development
-- Lua: Use `luac -p <path>` to validate syntax, prefer Lua 5.4+ with modern features
+## communication-protocol
+- Use existing natural language patterns of target files for comments and documentation
+- Write concise, action-oriented communication avoiding narrative explanations
+- Focus on implementation details over explanatory text
+- Default to unordered lists unless sequential relationships exist
 
-### Virtual Environment Management
-- Python: Single `.venv` directory at project root
-- Package Management: Use UV as package manager
-- Environment Variables: Support environment variable overrides for all configurations
+## structural-rules
 
-## Specific Tool Configurations
+### tool-version-requirements
+- Python: REQUIRED Python 3.13+ with modern union syntax X | None
+- Go: REQUIRED Go 1.23+ with go run for development activities
+- Shell: REQUIRED #!/bin/zsh for interactive development scripts
+- Lua: REQUIRED Lua 5.4+ with luac -p <path> for syntax validation
+- PlantUML: REQUIRED version >=1.2025.9 with plantuml --check-syntax <path> validation
 
-### PlantUML
-- Use PlantUML >=1.2025.9, validate with `plantuml --check-syntax <path>`, prefer it for architecture diagrams
+### environment-management-rules
+- Python: REQUIRED single .venv directory at project root
+- Package Management: REQUIRED UV as primary package manager
+- Environment Variables: MANDATORY support for environment variable overrides on all configurations
+- Docker Compose: PROHIBITED version field in docker-compose.yml files
 
-### DBML (Database Markup Language)
-- Use dbml2sql for syntax validation, validate with `dbml2sql <path>`
-- Use original table names in Ref statements, do not use table aliases (as syntax)
+## language-rules
 
-### Docker and Containerization
-- Host Access: Use `172.17.0.1` instead of `host.docker.internal`
-- Docker Compose: Do not include version field
-- Go Builds: Use `CGO_ENABLED=0` to generate static binaries
+### python-requirements
+- Use union syntax X | None instead of Optional[X]
+- Maintain type hints for all public interfaces
+- Use f-strings for string formatting
 
-## Communication Preferences
+### go-requirements
+- Use go run for development activities
+- Build with CGO_ENABLED=0 for static binary generation
+- Use structured error wrapping with fmt.Errorf("context: %w", err)
 
-### Language Consistency
-- Use the existing natural language of target files for all comments and documentation
+### shell-requirements
+- Use #!/bin/zsh shebang for interactive development
+- Use trap 'echo "Error on line $LINENO"' ERR for error handling
+- Fail immediately on errors with set -euo pipefail
 
-### Communication Style
-- Concise: Be direct, avoid unnecessary explanations
-- Action-oriented: Focus on what needs to be done
+### dbml-requirements
+- Use dbml2sql <path> for syntax validation
+- Use original table names in Ref statements
+- PROHIBITED table aliases in reference statements
 
-## Development Workflow Preferences
+## formatting-rules
 
-### Code Development Style
-- Incremental Changes: Make changes file by file for incremental review
-- Testing Strategy: Add tests after code stabilizes, not during initial development
-- Comment Preservation: Preserve existing comments, do not delete when updating
-- Fail Fast: Exit immediately on errors
+### development-workflow-standards
+- Make incremental changes file by file for review
+- Add tests after code stabilization, not during initial development
+- Preserve existing comments when updating code
+- Exit immediately on errors (fail-fast principle)
 
-### Debug Output Format
-- Prefixes: `=== Title` (main), `--- Title` (sub), `SUCCESS: msg`, `ERROR: msg (context)`
+### debug-output-format
+- Main sections: === Title
+- Sub-sections: --- Title
+- Status messages: SUCCESS: msg, ERROR: msg (context)
 
-## Error Handling
+### documentation-standards
+- Use PlantUML for architecture diagrams
+- Explain implementation rationale, not functionality
+- Update related documentation when code or rules change
+- Use minimal formatting without bold markers
 
-### Debugging Format
-- Error messages: Include relevant variables and state
-- Shell: Use `trap 'echo "Error on line $LINENO"' ERR`
-- Python: Use specific exception types with context
-- Go: Use `fmt.Errorf("context: %w", err)`
+### logging-format-standard
+- REQUIRED format: +0800 2025-08-06 15:22:30 INFO main.go(180) | message
+- MANDATORY inclusion: timezone, line number, and execution context
 
-## Documentation
+## naming-rules
 
-### Documentation Standards
-- Diagrams: Use PlantUML for architecture diagrams
-- Comments: Explain why rather than what
-- Updates: Update related documentation when code or rules change
-- Formatting: Use sparing and minimal formatting - do not use bold markers (`**`) in documentation
-- Lists: Default to unordered lists (`-` or `*`). Use ordered lists only when items have clear sequential relationships
+### error-handling-requirements
+- Include relevant variables and state in all error messages
+- Use specific exception types with implementation context
+- Provide actionable error information for debugging
 
-### Logging Format
-- Standard: `+0800 2025-08-06 15:22:30 INFO main.go(180) | message`
-- Requirements: Include timezone, line number, context
+### project-structure-requirements
+- Single app: REQUIRED cmd/, internal/, pkg/, configs/, tests/ structure
+- Multiple apps: Independent cmd/ per app with shared/ components
+- Configuration: MANDATORY environment variable support, .env for local development only
+- Documentation: REQUIRED README.md with module overview and dependencies
 
-## Code Quality
+## validation-rules
 
-### Coverage
-- Minimum: 80%, Critical paths: 95%
-- Pre-commit: Use pre-commit for all quality checks
+### code-quality-standards
+- REQUIRED minimum 80% test coverage, 95% for critical execution paths
+- MANDATORY pre-commit hooks for all quality checks
+- PROHIBITED code that fails static analysis
 
-## Security
+### security-standards
+- MANDATORY environment variable override support for all configurations
+- REQUIRED strict validation and sanitization of all input data
+- PROHIBITED hardcoded credentials in any form
 
-### Configuration
-- Environment variables: Support overrides for all configurations
-- Security: Never hardcode API keys, passwords, secrets
-- Input validation: Strictly validate and sanitize all input
+### performance-standards
+- REQUIRED performance analysis before optimization activities
+- MANDATORY inclusion of performance metrics and health checks
+- REQUIRED appropriate caching strategies for all external calls
+- REQUIRED database connection pooling and query optimization
 
-## Project Structure
-
-### Layout
-- Single app: `cmd/`, `internal/`, `pkg/`, `configs/`, `tests/`
-- Multiple apps: Independent `cmd/` per app, `shared/` components
-- Configuration: Use environment variables, `.env` for local development
-- Documentation: README.md must include module overview and dependencies
-
-## Performance
-
-### Preferences
-- Analysis: Analyze performance bottlenecks before optimizing
-- Monitoring: Include performance metrics and health checks
-- Caching: Implement appropriate caching strategies
-- Database: Query optimization, connection pooling, indexing
-
-### Deployment
-- Docker: Multi-architecture builds with optimized image sizes
-- Security: HTTPS in production, CORS configuration, input validation
-- Logging: Structured logging with standard format
+### deployment-standards
+- Docker: REQUIRED multi-architecture builds with optimized image sizes
+- Security: REQUIRED HTTPS enforcement in production with CORS configuration
+- Logging: REQUIRED structured logging with standard format compliance
+- Host Access: REQUIRED use of 172.17.0.1 instead of host.docker.internal

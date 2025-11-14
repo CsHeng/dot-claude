@@ -1,53 +1,61 @@
 ---
 name: "config-sync:qwen"
-description: Qwen CLI specific operations with TOML conversion
-argument-hint: --action=<sync|analyze|verify> --component=<rules,commands,settings,memory|all>
+description: "Qwen CLI specific operations with TOML conversion"
+argument-hint: "--action=<sync|analyze|verify> --component=<rules,commands,settings,memory|all>"
+allowed-tools:
+  - Read
+  - Write
+  - Bash
+  - Bash(python3:*)
+  - Bash(jq:*)
+  - Bash(ls:*)
+  - Bash(find:*)
+  - Bash(cat:*)
 disable-model-invocation: true
+is_background: false
 ---
 
-# Config-Sync Qwen Command
-
-## Task
-Handle Qwen CLI-specific configuration synchronization with automatic TOML conversion during sync operations.
-
-> Multi-select support: pass comma-separated values such as `--component=rules,commands` to process multiple components in a single run.
-
-## Implementation
-
+## Usage
 ```bash
-# Parse arguments
-ACTION="sync"
-COMPONENT="all"
+/config-sync:qwen --action=<sync|analyze|verify> --component=<rules,commands,settings,memory|all>
+```
 
-for arg in "$@"; do
-  case $arg in
-    --action=*) ACTION="${arg#--action=}" ;;
-    --component=*) COMPONENT="${arg#--component=}" ;;
-  esac
-done
+## Arguments
+- **action**: Operation mode - sync, analyze, or verify
+- **component**: Components to process - comma-separated list or all
 
-# Quiet sync operation
-source ~/.claude/commands/config-sync/scripts/executor.sh
+## Workflow
+1. **Parameter Parsing**: Extract action and component specifications
+2. **Tool Validation**: Verify python3 and jq availability
+3. **Qwen Analysis**: Examine existing Qwen CLI configuration
+4. **Content Conversion**: Convert Claude formats to Qwen-compatible formats
+5. **TOML Processing**: Convert command files to TOML format
+6. **Permission Setup**: Generate JSON permission manifests
+7. **Verification**: Validate synchronization completeness
 
-if ! declare -F check_tool_installed >/dev/null 2>&1; then
-  check_tool_installed() { command -v "$1" >/dev/null 2>&1; }
-fi
+### Qwen CLI Features
+- **Command Format**: TOML conversion from Markdown
+- **Permissions**: JSON permission manifests
+- **Conversion Required**: Automatic format transformation
+- **Dependencies**: python3 and jq required for processing
 
-ensure_python_available() {
-  if ! check_tool_installed python3; then
-    echo "[qwen-adapter] python3 is required for content conversion" >&2
-    exit 1
-  fi
-}
+### Component Processing
+- **Rules**: Direct sync to Qwen rules directory
+- **Commands**: Convert from Markdown to TOML format
+- **Settings**: Generate Qwen-specific configuration files
+- **Memory**: Configure AGENTS.md and QWEN.md references
+- **Permissions**: Convert to JSON permission manifests
 
-ensure_jq_available() {
-  if ! check_tool_installed jq; then
-    echo "[qwen-adapter] jq is required for settings updates" >&2
-    exit 1
-  fi
-}
+### Dependencies
+- **python3**: Required for content conversion
+- **jq**: Required for settings updates and JSON processing
 
-# Setup directories
+## Output
+- **Converted Commands**: TOML format command files
+- **Synced Components**: Rules and settings in Qwen directories
+- **Permission Manifests**: JSON permission configurations
+- **Conversion Report**: Format transformation summary
+- **Verification Results**: Component-by-component status
 CLAUDE_ROOT="$HOME/.claude"
 QWEN_ROOT="$HOME/.qwen"
 mkdir -p "$QWEN_ROOT/commands" "$QWEN_ROOT/rules"

@@ -1,0 +1,139 @@
+# IDE Headers Configuration for Rule Files
+# This file contains all IDE-specific headers that were previously embedded in individual rule files.
+# During sync, appropriate headers are injected into target IDE files based on the filename.
+
+version: "1.0"
+created: "2025-11-13"
+description: "IDE-specific header mappings for Claude rule files synchronization"
+
+# Header templates for each IDE
+ide_templates:
+  cursor: |
+    ---
+    # Cursor Rules
+    {{cursor_config}}
+    ---
+
+  copilot: |
+    ---
+    # Copilot Instructions
+    applyTo: "{{apply_pattern}}"
+    ---
+
+# File-specific header mappings
+file_mappings:
+  "00-memory-rules.md":
+    cursor:
+      alwaysApply: true
+    copilot:
+      applyTo: "**/*"
+
+  "01-development-standards.md":
+    cursor:
+      alwaysApply: true
+    copilot:
+      applyTo: "**/*"
+
+  "02-architecture-patterns.md":
+    cursor:
+      alwaysApply: true
+    copilot:
+      applyTo: "**/*"
+
+  "03-security-standards.md":
+    cursor:
+      alwaysApply: true
+    copilot:
+      applyTo: "**/*"
+
+  "04-testing-strategy.md":
+    cursor:
+      alwaysApply: true
+    copilot:
+      applyTo: "**/*"
+
+  "05-error-patterns.md":
+    cursor:
+      alwaysApply: true
+    copilot:
+      applyTo: "**/*"
+
+  "10-python-guidelines.md":
+    cursor:
+      globs: "**/*.py"
+    copilot:
+      applyTo: "**/*.py"
+
+  "11-go-guidelines.md":
+    cursor:
+      globs: "**/*.go"
+    copilot:
+      applyTo: "**/*.go"
+
+  "12-shell-guidelines.md":
+    cursor:
+      globs: "**/*.sh"
+    copilot:
+      applyTo: "**/*.sh"
+
+  "13-docker-guidelines.md":
+    cursor:
+      globs: "/docker-compose*.yml,/Dockerfile*,/*.sh,/Makefile*"
+    copilot:
+      applyTo: "/docker-compose*.yml,/Dockerfile*,/*.sh,/Makefile*"
+
+  "20-tool-standards.md":
+    cursor: 
+      alwaysApply: true
+    copilot:
+      applyTo: "**/*"
+
+  "21-quality-standards.md":
+    cursor: 
+      alwaysApply: true
+    copilot:
+      applyTo: "**/*"
+
+  "22-logging-standards.md":
+    cursor: 
+      alwaysApply: true
+    copilot:
+      applyTo: "**/*"
+
+  "23-workflow-patterns.md":
+    cursor: 
+      alwaysApply: true
+    copilot:
+      applyTo: "**/*"
+
+  "98-communication-protocol.md":
+    cursor: 
+      alwaysApply: true
+    copilot:
+      applyTo: "**/*"
+
+  "99-llm-prompt-writing-rules.md":
+    cursor:
+      globs: "rules/**/*.md,commands/**/*.md,skills/**/*.md,agents/**/*.md,CLAUDE.md,AGENTS.md"
+    copilot:
+      applyTo: "rules/**/*.md,commands/**/*.md,skills/**/*.md,agents/**/*.md,CLAUDE.md,AGENTS.md"
+
+# Files that have no IDE headers (will be synced without headers)
+files_without_headers: []
+
+# Header generation functions
+header_generators:
+  cursor: |
+    # Generate Cursor-specific header from configuration
+    # For simple boolean flags like alwaysApply
+    # For file patterns like globs
+
+  copilot: |
+    # Generate Copilot-specific header with applyTo pattern
+    # Supports glob patterns and file-specific targeting
+
+# Notes:
+# - Files not listed in file_mappings but present in rules/ will be synced without IDE headers
+# - Empty cursor configurations (cursor: {}) still generate the header section but with no specific rules
+# - The sync process will apply headers during the adapt phase, leaving source files unchanged
+# - Target IDE directories: .cursor/rules/ and .github/instructions/

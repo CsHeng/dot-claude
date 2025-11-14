@@ -1,53 +1,106 @@
 ---
-name: "doc-gen:bootstrap"
-description: Self-contained orchestrator for documentation bootstrap and maintenance flows across multiple project types
-argument-hint: --mode=<bootstrap|maintain> --scope=<full|delta> --project-type=<android-app|android-sdk|web-admin|web-user|backend-go|backend-php> --language=<en|zh> --repo=<path> --docs=<path> --core=<path> [--demo=<path>]
-allowed-tools: Read, Write, ApplyPatch, Bash(rg:*), Bash(ls:*), Bash(find:*), Bash(tree:*), Bash(cat:*), Bash(plantuml --check-syntax:*)
+name: "doc-gen:core:bootstrap"
+description: "Self-contained orchestrator for documentation bootstrap and maintenance flows across multiple project types"
+argument-hint: "--mode=<bootstrap|maintain> --scope=<full|delta> --project-type=<android-app|android-sdk|web-admin|web-user|backend-go|backend-php> --language=<en|zh> --repo=<path> --docs=<path> --core=<path> [--demo=<path>]"
+allowed-tools:
+  - Read
+  - Write
+  - ApplyPatch
+  - Bash
+  - Bash(rg:*)
+  - Bash(ls:*)
+  - Bash(find:*)
+  - Bash(tree:*)
+  - Bash(cat:*)
+  - Bash(plantuml --check-syntax:*)
+is_background: false
 ---
 
-## Purpose
-Provide a repeatable documentation workflow that works even if external rule files change. The command gathers parameters, inspects the codebase, and delegates to the relevant adapter while enforcing the same expectations every run. Formatting helpers (parameter table, actor matrix template, TODO pattern, logging style) live in `~/.claude/commands/doc-gen/lib/common.md` and are referenced below.
+## Usage
+```bash
+/doc-gen:core:bootstrap --mode=<bootstrap|maintain> --scope=<full|delta> --project-type=<type> --language=<en|zh> --repo=<path> --docs=<path> --core=<path> [--demo=<path>]
+```
 
-- Bootstrap runs stage new content in `docs-bootstrap/` to avoid overwriting existing `docs/`. When the draft is approved, the human copies the vetted files into `docs/`.
-- Maintain runs operate directly on `docs/`.
-- Every run must produce two files in the target directory: `README.md` (summary) and `TODO.md` (actionable backlog), both aligned with the standards below.
+## Arguments
+- **mode**: bootstrap (stages to docs-bootstrap/) or maintain (in-place)
+- **scope**: full (complete regeneration) or delta (changes only)
+- **project-type**: android-app, android-sdk, web-admin, web-user, backend-go, backend-php
+- **language**: en or zh for documentation language
+- **repo**: Repository root directory
+- **docs**: Documentation output directory
+- **core**: Core documentation templates path
+- **demo**: Demo/example path (optional)
 
-## Supported project types
-- `android-app`
-- `android-sdk`
-- `web-admin` (stub)
-- `web-user` (stub)
-- `backend-go` (stub)
-- `backend-php` (stub)
+## DEPTH Workflow
 
-## Execution scopes
-- `full` (default) - regenerates the complete README/TODO set and refreshes every referenced diagram.
-- `delta` - limits work to files touched since the last successful run (based on `git diff --name-only HEAD~1..HEAD` or a provided change list) and updates only the impacted documentation sections and diagrams.
+### D - Decomposition
+- **Objective**: Self-contained orchestrator for documentation bootstrap and maintenance across project types
+- **Scope**: Parameter collection, path resolution, project analysis, adapter delegation, and validation
+- **Output**: README.md, TODO.md, parameter reports, validation results, and structured documentation
+- **Reference**: commands/doc-gen/lib/common.md, commands/doc-gen/adapters/, project-specific guidelines
 
-Detailed workflows currently exist for `android-app` and `android-sdk`. Stub adapters acknowledge missing coverage and return TODO markers for future expansion.
+### E - Explicit Reasoning
+- **Mode Isolation**: Separate bootstrap (staging) from maintain (in-place) operations
+- **Project Type Adaptation**: Route to specific adapters based on detected project structure
+- **Delta Processing**: Support incremental updates with change tracking and persistence
+- **Flow Identification**: Use consistent [A-Z][0-9][0-9] identifiers across all artifacts
+- **Quality Assurance**: Fail-fast validation with comprehensive verification steps
 
-## Adapter discovery
-- Resolve adapters using the home directory pattern: `~/.claude/commands/doc-gen/adapters/<project-type>.md`. Critical: Never use relative paths as they depend on the user's current working directory during execution.
-- Alternative: Detect the current file's location using script path resolution and construct: `$(dirname "${BASH_SOURCE[0]}")/../adapters/<project-type>.md`
-- Validate the resolved path exists before attempting to read; if not found, log the exact path attempted and fall back to the stub contract.
-- Record the canonical adapter path in logs, `_reports/parameters.json`, and the README parameter table so collaborators can reproduce the run from any working directory.
+### P - Parameters
+- **Mode Validation**: Strict validation of bootstrap vs maintain modes
+- **Project Type Verification**: Reject unsupported project types early
+- **Path Resolution**: Resolve relative paths against --repo and validate existence
+- **Language Support**: Enforce en/zh language constraints for narrative text
+- **Demo Integration**: Handle optional demo paths with secondary documentation passes
 
-## Parameter collection
+### T - Test Cases
+- **Failure Case**: Invalid project type → Error with supported options
+- **Failure Case**: Missing paths → Auto-detection or user prompt for correction
+- **Success Case**: Valid parameters → Complete documentation generation
+- **Edge Case**: Delta scope → Change list processing and incremental updates
 
-Collect inputs through a single checklist prompt followed by a quick confirmation:
+### H - Heuristics
+- **Fail Fast**: Parameter validation before any file operations
+- **Idempotent Operations**: Safe re-execution with same parameters
+- **Quality over Speed**: Prioritize accuracy and completeness
+- **Deterministic Output**: Consistent results across executions
+- **Flow Consistency**: Maintain identifier synchronization across artifacts
 
-1. Display a markdown block with checkbox options for every parameter. Pre-check defaults using `[x]` and include inline instructions so the user can toggle values by editing the block or by appending `key=value` overrides.
-2. Parse the user’s response (either the modified checklist or the key/value overrides) into normalized parameters.
-3. Send a concise confirmation message showing the resolved parameter table and request a `yes`/`no` acknowledgement before touching the filesystem. If the user edits anything during confirmation, re-run the same step.
+## Workflow
+1. **Parameter Survey**: Interactive checklist with pre-filled defaults and validation
+2. **Path Resolution**: Resolve and validate all path arguments against repository root
+3. **Project Analysis**: Inspect codebase structure, frameworks, and existing documentation
+4. **Adapter Discovery**: Validate and load project-type-specific adapter with fallback to stub
+5. **Context Harvest**: Inventory existing docs, map modules, and capture change context
+6. **Adapter Delegation**: Generate SDK deliverables first, then demo modules if specified
+7. **TODO Planning**: Build comprehensive TODO.md with automation metadata and ledger
+8. **Automated Execution**: Execute all auto tasks, track failures, and update status
+9. **Verification**: Validate completeness, syntax consistency, and flow identifier alignment
+10. **Final Handoff**: Compile statistics, report manual items, and provide recommendations
 
-### Detailed parameter configuration
+### Execution Modes
+- **Bootstrap**: Stage content in docs-bootstrap/ to avoid overwriting
+- **Maintain**: Operate directly on docs/ for updates
+- **Full**: Complete regeneration of all documentation
+- **Delta**: Process only changed files since last successful run
 
-Execution inputs (make sure every item appears in the checklist prompt):
-- Mode: `bootstrap` (default, stages to docs-bootstrap/) or `maintain` (writes in-place).
-- Scope: `full` (default) or `delta`. When using `delta`, request a change list path or fall back to `git diff --name-only HEAD~1..HEAD`.
-- Project type: `android-app`, `android-sdk`, `web-admin`, `web-user`, `backend-go`, `backend-php`.
-- Language: `en` or `zh`.
-- Repository root (`--repo`): default to the current working directory.
+### Supported Project Types
+- **android-app**: Full workflow implementation
+- **android-sdk**: Full workflow implementation
+- **web-admin**: Stub adapter (future expansion)
+- **web-user**: Stub adapter (future expansion)
+- **backend-go**: Stub adapter (future expansion)
+- **backend-php**: Stub adapter (future expansion)
+
+### Adapter Discovery
+Use home directory pattern: `~/.claude/commands/doc-gen/adapters/<project-type>.md`
+Validate path exists before reading and log canonical adapter path
+
+## Output
+- **README.md**: Project documentation with parameter table and diagrams
+- **TODO.md**: Actionable backlog with prioritized tasks
+- **Parameter Report**: Resolved configuration in _reports/parameters.json
+- **Validation Results**: Syntax checking and completeness verification
 - Documentation target (`--docs`): `docs-bootstrap/` for bootstrap, `docs/` for maintain, or a user supplied directory.
 - Code core path (`--core`): auto-detect common source roots (`app/`, `src/`, `packages/`) and offer the most likely match.
 - Demo paths (`--demo`, optional): list discovered directories such as `samples/`, `demo/`, `integration/`, or allow `none`.
@@ -65,7 +118,7 @@ Execution inputs (make sure every item appears in the checklist prompt):
 - Surface the combined results in a single README: introduce `## SDK篇` (or `## SDK Section` when `--language=en`) for core-library content and `## Demo篇` / `## Demo Section` summarizing integration learnings from the demo modules.
 - Mirror the same partitioning in TODO.md (group demo-specific items under a dedicated heading) and in the diagram/TODO identifiers described below.
 
-## Common execution rules
+### Execution Rules
 - Use fail-fast logging: prefix stage banners with `===`, sub-items with `---`, success with `SUCCESS:`, errors with `ERROR:` plus context (see `~/.claude/commands/doc-gen/lib/common.md`).
 - Quality over speed: Prioritize accuracy and completeness over quick completion. Take time to produce high-quality documentation.
 - Never mutate files outside the chosen docs directory for the current mode.
@@ -78,7 +131,7 @@ Execution inputs (make sure every item appears in the checklist prompt):
 - Store run metadata under `<docs target>/_reports/` (parameter table, change list, TODO ledger, plantuml results) so the verification step can audit the execution.
 - Use `plantuml --check-syntax` for every diagram touched and capture the output string for the README PlantUML status table.
 
-## Workflow
+### Detailed Execution Steps
 1. Parameter prompts  
    - Issue the survey prompt, parse the reply, and normalize the values.  
    - Persist the final parameter table to `<docs target>/_reports/parameters.json` and render the same information in the README.  

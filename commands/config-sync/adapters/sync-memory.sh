@@ -27,7 +27,7 @@ usage() {
 Config-Sync Memory Synchronization Command - Sync Memory Files
 
 USAGE:
-    sync-memory.sh --target <droid,qwen,codex,opencode|all> [OPTIONS]
+    sync-memory.sh --target <droid,qwen,codex,opencode,amp|all> [OPTIONS]
 
 ARGUMENTS:
     --target <tool[,tool]>  Target tool(s) for memory synchronization (required)
@@ -226,6 +226,9 @@ get_tool_config_dir() {
         "opencode")
             get_target_config_dir opencode
             ;;
+        "amp")
+            get_target_config_dir amp
+            ;;
         *)
             echo ""
             ;;
@@ -247,6 +250,9 @@ get_tool_memory_filename() {
             ;;
         "opencode")
             echo "AGENTS.md"  # OpenCode uses AGENTS.md as primary memory
+            ;;
+        "amp")
+            echo "AGENTS.md"
             ;;
         *)
             echo ""
@@ -275,9 +281,9 @@ sync_user_memory() {
         return 1
     fi
 
-    # Skip if OpenCode (handled by agents sync)
-    if [[ "$tool" == "opencode" ]]; then
-        log_info "User memory for OpenCode handled by AGENTS.md sync"
+    # Skip if tool relies exclusively on AGENTS.md
+    if [[ "$tool" == "opencode" || "$tool" == "amp" ]]; then
+        log_info "User memory for $tool handled by AGENTS.md sync"
         return 0
     fi
 
@@ -412,6 +418,18 @@ Generated: $(date)
 EOF
     fi
 
+    if [[ "$tool" == "amp" ]]; then
+        local config_home="${XDG_CONFIG_HOME:-$HOME/.config}"
+        local shared_agents="$config_home/AGENTS.md"
+        if [[ "$DRY_RUN" == true ]]; then
+            log_info "Would copy Amp AGENTS.md to $shared_agents"
+        else
+            mkdir -p "$config_home"
+            cp "$target_file" "$shared_agents"
+            log_info "Updated shared AGENTS.md at $shared_agents for Amp"
+        fi
+    fi
+
     log_success "Agents file synced for $tool: AGENTS.md"
 }
 
@@ -447,7 +465,7 @@ verify_memory_sync() {
     # Check user memory file
     local memory_filename
     memory_filename=$(get_tool_memory_filename "$tool")
-    if [[ "$tool" != "opencode" ]]; then  # OpenCode uses AGENTS.md as primary
+    if [[ "$tool" != "opencode" && "$tool" != "amp" ]]; then  # OpenCode/Amp use AGENTS.md as primary
         if [[ -f "$config_dir/$memory_filename" ]]; then
             log_success "SUCCESS: User memory file exists: $memory_filename"
         else
@@ -508,7 +526,7 @@ generate_memory_sync_report() {
 
         echo "- **$target**:"
         echo "  - Config Directory: $config_dir"
-        if [[ "$target" != "opencode" ]]; then
+        if [[ "$target" != "opencode" && "$target" != "amp" ]]; then
             echo "  - User Memory: $memory_filename"
         fi
         echo "  - Agents File: AGENTS.md"

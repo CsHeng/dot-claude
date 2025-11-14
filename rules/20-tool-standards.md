@@ -1,615 +1,143 @@
-# Development Tools and Configuration
+# Development Tools and Configuration Directives
 
-Comprehensive tool preferences and configurations for optimal development workflow.
+## Scope
+REQUIRED: Apply these standards to all development tool selection, configuration, and workflow management activities.
 
-## Tool Management
+## Absolute Prohibitions
+PROHIBITED: Use development tools without proper configuration management
+PROHIBITED: Hardcode tool versions in scripts without version management
+PROHIBITED: Mix different package managers for the same language ecosystem
+PROHIBITED: Use development tools in production without security validation
+PROHIBITED: Skip tool updates when security vulnerabilities are identified
 
+## Communication Protocol
+REQUIRED: Use consistent tool configuration across development environments
+REQUIRED: Document tool selection rationale and configuration decisions
+REQUIRED: Provide clear setup instructions for all required tools
+PROHIBITED: Use abbreviations except universally understood ones (`url`, `id`, `api`)
+
+## Structural Rules
 ### Primary Tool Manager: mise
-- Purpose: Language versions, environment variables, and PATH management
-- Configuration: `.mise.toml` or `.tool-versions` files
-- Benefits: Consistent tool versions across projects and team members
-
-#### mise Configuration
-```toml
-# .mise.toml
-[tools]
-go = "1.23.0"
-golangci-lint = "latest"
-python = "3.13"
-ruff = "latest"
-node = "20.11.0"
-docker = "latest"
-plantuml = "latest"
-
-[env]
-GOLANGCI_LINT_CACHE = ".cache/golangci-lint"
-UV_CACHE_DIR = ".cache/uv"
-PYTHONPATH = "."
-GOPATH = "~/.local/share/go"
-
-[task.test]
-description = "Run all tests"
-run = "uv run pytest tests/ -v"
-
-[task.lint]
-description = "Run linting checks"
-run = "uv run ruff check . && golangci-lint run"
-
-[task.format]
-description = "Format all code"
-run = "uv run ruff format . && goimports -w ."
-```
-
-## Language-Specific Tooling
-
-### Python Development Stack
-
-#### Package Management: UV
-```bash
-# Installation
-curl -LsSf https://astral.sh/uv/install.sh | sh
-
-# Project setup
-uv init myproject
-cd myproject
-
-# Development tools
-uv tool install ruff
-uv tool install pytest
-uv tool install pytest-cov
-
-# Usage patterns
-uv run ruff check .          # Check code quality
-uv run ruff format .         # Format code
-uv run pytest tests/ -v      # Run tests
-```
-
-#### pyproject.toml Configuration
-```toml
-[project]
-name = "myproject"
-version = "0.1.0"
-dependencies = [
-    "fastapi>=0.100.0",
-    "pydantic>=2.0.0",
-    "sqlalchemy>=2.0.0",
-]
-
-[project.optional-dependencies]
-dev = [
-    "ruff>=0.1.0",
-    "pytest>=7.0.0",
-    "pytest-cov>=4.0.0",
-    "pytest-mock>=3.11.0",
-]
-
-[tool.ruff]
-line-length = 88
-select = ["E", "W", "F", "I", "S", "C", "B", "UP"]
-target-version = "py313"
-
-[tool.ruff.lint]
-select = ["ALL"]
-ignore = ["E501", "B008", "D203", "D213"]
-
-[tool.pytest.ini_options]
-testpaths = ["tests"]
-python_files = ["test_*.py"]
-addopts = "--cov=src --cov-report=html --cov-report=term-missing"
-```
-
-### Go Development Stack
-
-#### Go Configuration
-```go
-// go.mod
-module myproject
-
-go 1.23
-
-require (
-    github.com/gin-gonic/gin v1.9.1
-    github.com/spf13/viper v1.17.0
-    github.com/spf13/cobra v1.8.0
-)
-```
-
-#### golangci-lint Configuration
-```yaml
-# .golangci.yml
-run:
-  timeout: 5m
-  tests: true
-  skip-dirs:
-    - vendor
-  skip-files:
-    - ".*\\.pb\\.go$"
-
-linters-settings:
-  gocyclo:
-    min-complexity: 15
-  goconst:
-    min-len: 3
-    min-occurrences: 3
-  gofmt:
-    simplify: true
-  goimports:
-    local-prefixes: myproject
-  misspell:
-    locale: US
-
-linters:
-  enable:
-    - gofmt
-    - goimports
-    - govet
-    - ineffassign
-    - misspell
-    - unconvert
-    - unparam
-    - nakedret
-    - prealloc
-    - gocritic
-    - gochecknoinits
-    - gosec
-    - gocyclo
-    - dupl
-    - goconst
-    - errcheck
-    - staticcheck
-    - revive
-    - unused
-    - whitespace
-
-issues:
-  exclude-rules:
-    - path: _test\.go
-      linters:
-        - gosec
-        - dupl
-        - goconst
-    - path: main\.go
-      linters:
-        - gochecknoinits
-
-output:
-  format: colored-line-number
-  print-issued-lines: true
-  print-linter-name: true
-```
-
-#### Makefile for Go Projects
-```makefile
-# Makefile
-.PHONY: build clean test lint fmt run docker-build install-tools
-
-# Variables
-APP_NAME := myproject
-VERSION := $(shell git describe --tags --always --dirty)
-LDFLAGS := -ldflags="-X main.Version=$(VERSION) -w -s"
-DOCKER_IMG := $(APP_NAME):$(VERSION)
-
-# Build targets
-build:
-	go build $(LDFLAGS) -o bin/$(APP_NAME) cmd/main.go
-
-build-all:
-	GOOS=linux GOARCH=amd64 go build $(LDFLAGS) -o bin/$(APP_NAME)-linux-amd64 cmd/main.go
-	GOOS=linux GOARCH=arm64 go build $(LDFLAGS) -o bin/$(APP_NAME)-linux-arm64 cmd/main.go
-	GOOS=darwin GOARCH=amd64 go build $(LDFLAGS) -o bin/$(APP_NAME)-darwin-amd64 cmd/main.go
-	GOOS=darwin GOARCH=arm64 go build $(LDFLAGS) -o bin/$(APP_NAME)-darwin-arm64 cmd/main.go
-
-clean:
-	rm -rf bin/
-
-test:
-	go test -v ./...
-
-test-coverage:
-	go test -v -coverprofile=coverage.out ./...
-	go tool cover -html=coverage.out -o coverage.html
-
-lint:
-	golangci-lint run
-
-fmt:
-	go fmt ./...
-	goimports -w .
-
-run:
-	go run cmd/main.go
-
-docker-build:
-	docker build -t $(DOCKER_IMG) .
-	docker build -t $(APP_NAME):latest .
-
-install-tools:
-	go install github.com/golangci/golangci-lint/cmd/golangci-lint@latest
-	go install golang.org/x/tools/cmd/goimports@latest
-	go install github.com/air-verse/air@latest
-
-dev:
-	air -c .air.toml
-```
-
-## Code Quality Tools
-
-### Python: Ruff Configuration
-```toml
-# Complete ruff configuration
-[tool.ruff]
-line-length = 88
-target-version = "py313"
-show-fixes = true
-output-format = "grouped"
-
-[tool.ruff.lint]
-select = [
-    "E",      # pycodestyle errors
-    "W",      # pycodestyle warnings
-    "F",      # pyflakes
-    "I",      # isort
-    "B",      # flake8-bugbear
-    "C",      # mccabe complexity
-    "D",      # pydocstyle
-    "UP",     # pyupgrade
-    "S",      # flake8-bandit (security)
-    "A",      # flake8-builtins
-    "COM",    # flake8-commas
-    "C4",     # flake8-comprehensions
-    "DTZ",    # flake8-datetimez
-    "T10",    # flake8-debugger
-    "EM",     # flake8-errmsg
-    "FA",     # flake8-future-annotations
-    "ISC",    # flake8-implicit-str-concat
-    "ICN",    # flake8-import-conventions
-    "G",      # flake8-logging-format
-    "INP",    # flake8-no-pep420
-    "PIE",    # flake8-pie
-    "PT",     # flake8-pytest-style
-    "RSE",    # flake8-raise
-    "RET",    # flake8-return
-    "SIM",    # flake8-simplify
-    "TID",    # flake8-tidy-imports
-    "TCH",    # flake8-type-checking
-    "INT",    # flake8-gettext
-    "ARG",    # flake8-unused-arguments
-    "PTH",    # flake8-use-pathlib
-    "ERA",    # eradicate
-    "PGH",    # pygrep-hooks
-    "PL",     # pylint
-    "TRY",    # tryceratops
-    "NPY",    # numpy-specific rules
-    "RUF",    # ruff-specific rules
-]
-
-ignore = [
-    "E501",   # line too long
-    "B008",   # do not perform function calls in argument defaults
-    "D203",   # 1 blank line required before class docstring
-    "D213",   # multi-line docstring summary should start at the second line
-    "D100",   # missing docstring in public module
-    "D101",   # missing docstring in public class
-    "D102",   # missing docstring in public method
-    "D103",   # missing docstring in public function
-    "D104",   # missing docstring in public package
-    "D105",   # missing docstring in magic method
-    "D107",   # missing docstring in __init__
-    "D401",   # first line is in imperative mood
-    "S101",   # use of assert detected
-    "S311",   # standard pseudo-random generators are not suitable for cryptographic purposes
-    "S603",   # subprocess call - check for execution of untrusted input
-]
-
-[tool.ruff.lint.per-file-ignores]
-"tests/*" = [
-    "S101",   # use of assert detected
-    "S106",   # possible hardcoded password
-    "ARG001", # unused function argument
-    "ARG002", # unused method argument
-    "PLR2004", # magic value used in comparison
-]
-"__init__.py" = ["F401"]  # unused import
-```
-
-### Pre-commit Hooks Configuration
-```yaml
-# .pre-commit-config.yaml
-repos:
-  - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.1.0
-    hooks:
-      - id: ruff
-        args: [--fix]
-      - id: ruff-format
-
-  - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.5.0
-    hooks:
-      - id: trailing-whitespace
-      - id: end-of-file-fixer
-      - id: check-yaml
-      - id: check-added-large-files
-      - id: check-merge-conflict
-      - id: debug-statements
-
-  - repo: https://github.com/pre-commit/mirrors-mypy
-    rev: v1.7.1
-    hooks:
-      - id: mypy
-        additional_dependencies: [types-all]
-
-  - repo: https://github.com/psf/black
-    rev: 23.11.0
-    hooks:
-      - id: black
-        language_version: python3.13
-
-  - repo: https://github.com/pycqa/isort
-    rev: 5.12.0
-    hooks:
-      - id: isort
-        args: ["--profile", "black"]
-```
-
-## Docker and Containerization
-
-### Dockerfile Optimization Patterns
-```dockerfile
-# Multi-stage build for Go applications
-FROM golang:1.23-alpine AS builder
-
-# Required build environment variables
-ENV CGO_ENABLED=0
-ENV GOOS=linux
-ENV GOARCH=amd64
-ENV GOGC=off
-ENV GOMAXPROCS=1
-
-WORKDIR /app
-COPY go.mod go.sum ./
-RUN go mod download
-
-COPY . .
-RUN go build -a -installsuffix cgo -gcflags="-trimpath" -asmflags="-trimpath" \
-    -ldflags="-w -s -extldflags=-static" -o main cmd/main.go
-
-# Final minimal image
-FROM scratch
-COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
-COPY --from=builder /app/main /main
-ENTRYPOINT ["/main"]
-```
-
-### Docker Compose Standards
-```yaml
-# docker-compose.yml
-version: '3.8'
-
-services:
-  app:
-    build:
-      context: .
-      dockerfile: Dockerfile
-      target: production
-    ports:
-      - "8080:8080"
-    environment:
-      - DATABASE_URL=postgresql://user:pass@db:5432/dbname
-      - REDIS_URL=redis://redis:6379
-    depends_on:
-      - db
-      - redis
-    restart: unless-stopped
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-
-  db:
-    image: postgres:15-alpine
-    environment:
-      - POSTGRES_DB=dbname
-      - POSTGRES_USER=user
-      - POSTGRES_PASSWORD=pass
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-    restart: unless-stopped
-
-  redis:
-    image: redis:7-alpine
-    restart: unless-stopped
-
-volumes:
-  postgres_data:
-```
-
-## Documentation Tools
-
-### PlantUML Integration
-```bash
-# Installation
-brew install plantuml
-
-# Usage
-plantuml -o /tmp diagram.puml  # Test grammar
-plantuml -tpng diagram.puml    # Generate PNG
-plantuml -tsvg diagram.puml    # Generate SVG
-```
-
-### Markdown Documentation Standards
-```markdown
-# Document Structure
-1. Header with purpose and scope
-2. Table of contents for long documents
-3. Code examples with syntax highlighting
-4. Diagrams using PlantUML format
-5. Links to related documentation
-
-# Code Block Standards
-```python
-# Always include language identifier
-def example_function():
-    """Example function with docstring."""
-    pass
-```
-
-# Diagram Integration
-## Architecture Overview
-```plantuml
-@startuml
-!define RECTANGLE class
-
-rectangle "Application" {
-  rectangle "API Layer" as api
-  rectangle "Service Layer" as service
-  rectangle "Data Layer" as data
-}
-
-api --> service
-service --> data
-@enduml
-```
-```
-
-## IDE and Editor Configuration
-
-### VS Code Settings
-```json
-// .vscode/settings.json
-{
-  "python.defaultInterpreterPath": ".venv/bin/python",
-  "python.terminal.activateEnvironment": true,
-  "python.linting.enabled": true,
-  "python.linting.ruffEnabled": true,
-  "python.formatting.provider": "ruff",
-  "editor.formatOnSave": true,
-  "editor.codeActionsOnSave": {
-    "source.organizeImports": true
-  },
-  "go.useLanguageServer": true,
-  "go.lintTool": "golangci-lint",
-  "go.lintFlags": ["--fast"],
-  "go.formatTool": "goimports",
-  "files.exclude": {
-    "**/__pycache__": true,
-    "**/.pytest_cache": true,
-    "**/.coverage": true,
-    "**/bin": true
-  }
-}
-```
-
-### VS Code Extensions
-```json
-// .vscode/extensions.json
-{
-  "recommendations": [
-    "ms-python.python",
-    "ms-python.ruff",
-    "golang.go",
-    "ms-vscode.vscode-json",
-    "redhat.vscode-yaml",
-    "ms-vscode-remote.remote-containers",
-    "ms-vscode.makefile-tools",
-    "plantuml.plantuml"
-  ]
-}
-```
-
-## Monitoring and Observability Tools
-
-### Logging Configuration
-```python
-# logging_config.py
-import logging
-import sys
-from datetime import datetime
-
-class ColoredFormatter(logging.Formatter):
-    """Custom formatter with colors."""
-
-    COLORS = {
-        'DEBUG': '\033[36m',    # Cyan
-        'INFO': '\033[32m',     # Green
-        'WARNING': '\033[33m',  # Yellow
-        'ERROR': '\033[31m',    # Red
-        'CRITICAL': '\033[35m', # Magenta
-        'RESET': '\033[0m'      # Reset
-    }
-
-    def format(self, record):
-        color = self.COLORS.get(record.levelname, self.COLORS['RESET'])
-        reset = self.COLORS['RESET']
-
-        # Format: +0800 2025-08-06 15:22:30 INFO main.go(180) | Descriptive message
-        timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-
-        return f"{color}+0800 {timestamp} {record.levelname} {record.filename}:{record.lineno} | {record.getMessage()}{reset}"
-
-def setup_logging(level=logging.INFO):
-    """Setup logging with custom formatter."""
-    handler = logging.StreamHandler(sys.stdout)
-    handler.setFormatter(ColoredFormatter())
-
-    root_logger = logging.getLogger()
-    root_logger.setLevel(level)
-    root_logger.addHandler(handler)
-
-    return root_logger
-```
-
-## Performance Monitoring Tools
-
-### Go Performance Tools
-```bash
-# Profiling
-go tool pprof http://localhost:6060/debug/pprof/profile
-go tool pprof http://localhost:6060/debug/pprof/heap
-go tool pprof http://localhost:6060/debug/pprof/goroutine
-
-# Benchmarking
-go test -bench=. -benchmem
-go test -bench=. -cpuprofile=cpu.prof -memprofile=mem.prof
-
-# Trace analysis
-go test -trace=trace.out
-go tool trace trace.out
-```
-
-### Python Performance Tools
-```bash
-# Profiling
-python -m cProfile -o profile.prof myscript.py
-python -c "import pstats; p=pstats.Stats('profile.prof'); p.sort_stats('cumulative'); p.print_stats()"
-
-# Memory profiling
-pip install memory-profiler
-python -m memory_profiler myscript.py
-
-# Line profiling
-pip install line_profiler
-kernprof -l -v myscript.py
-```
-
-## Security Tools
-
-### Security Scanning
-```bash
-# Go security scanning
-go install github.com/securecodewarrior/gosec/v2/cmd/gosec@latest
-gosec ./...
-
-# Python security scanning
-uv tool install bandit
-uv run bandit -r ./
-
-# Dependency vulnerability scanning
-go install github.com/sonatype-community/nancy@latest
-nancy sleuth
-
-# Container security scanning
-docker scan myimage:latest
-trivy image myimage:latest
-```
+REQUIRED: Use mise for language version management and environment configuration
+REQUIRED: Configure mise using `.mise.toml` or `.tool-versions` files
+PREFERRED: Use mise for development environment consistency across team members
+REQUIRED: Integrate mise with CI/CD pipelines for reproducible builds
+
+### Language-Specific Tooling
+
+#### Python Development Stack
+REQUIRED: Package Management: UV for Python package management and tool execution
+REQUIRED: Configuration: pyproject.toml with [project.dependencies] and [tool.uv.dev-dependencies]
+REQUIRED: Development Tools: Execute via `uv tool run` (ruff, pytest, etc.)
+REQUIRED: Virtual Environment: Single .venv directory at project root managed by mise
+PREFERRED: Pre-commit Hooks: Automated code quality checks before commits
+
+#### Go Development Stack
+REQUIRED: Package Management: Go modules with go.mod and go.sum
+REQUIRED: Development: Use `go run` instead of `go build` for development
+REQUIRED: Dependencies: Use `go mod vendor` for reproducible builds when needed
+REQUIRED: Version Specification: Go version specified in go.mod
+REQUIRED: Linting: golangci-lint for comprehensive code quality analysis
+
+#### Shell Scripting
+REQUIRED: Embedded/OpenWrt: #!/bin/sh with BusyBox ash (POSIX-only features)
+REQUIRED: Production/CI: #!/bin/bash with GNU bash 5.2+ (bash features)
+PREFERRED: Development: #!/bin/zsh for interactive scripts (zsh-specific features)
+PREFERRED: Portable: #!/bin/usr/bin/env bash for cross-platform compatibility
+
+## Language Rules
+### Tool Configuration Standards
+REQUIRED: Use consistent configuration file formats across projects
+REQUIRED: Store tool configurations in version control
+REQUIRED: Separate development and production tool configurations
+REQUIRED: Document all tool configuration options and their purposes
+PREFERRED: Use environment-specific configuration overrides when necessary
+
+### Code Quality Tools
+
+#### Python: Ruff Configuration
+REQUIRED: Use ruff for formatting, linting, and import sorting
+REQUIRED: Configure ruff in pyproject.toml under [tool.ruff] section
+PREFERRED: Enable comprehensive rule sets for maximum code quality
+REQUIRED: Configure per-file ignores for specific patterns (tests, migrations)
+PREFERRED: Use ruff's auto-fix capabilities for automated code improvements
+
+#### Go: golangci-lint Configuration
+REQUIRED: Use golangci-lint for comprehensive Go code analysis
+REQUIRED: Configure golangci-lint using .golangci.yml file
+REQUIRED: Enable essential linters: govet, errcheck, staticcheck, ineffassign
+PREFERRED: Configure project-specific linters and rules
+REQUIRED: Set appropriate complexity limits and coding standards
+
+### Pre-commit Hooks
+REQUIRED: Configure pre-commit hooks using .pre-commit-config.yaml
+REQUIRED: Include hooks for code formatting, linting, and security scanning
+REQUIRED: Test pre-commit hooks in CI/CD pipelines
+PREFERRED: Include hooks for documentation formatting and validation
+REQUIRED: Ensure hooks work efficiently without significant performance impact
+
+## Formatting Rules
+### Environment Configuration
+REQUIRED: Use mise for consistent development environment setup
+REQUIRED: Define all tool versions in mise configuration files
+REQUIRED: Use environment variables for configuration that varies between environments
+REQUIRED: Document environment setup procedures and requirements
+PREFERRED: Use mise tasks for common development workflows
+
+### IDE Configuration
+REQUIRED: Configure IDE settings to match project tooling configurations
+REQUIRED: Include IDE configuration files (.vscode/settings.json, extensions.json) in version control
+REQUIRED: Ensure IDE extensions match project requirements
+PREFERRED: Configure consistent formatting and linting integration across IDEs
+REQUIRED: Document IDE setup procedures for new team members
+
+### Documentation Standards
+REQUIRED: Use PlantUML for all architecture diagrams and flowcharts
+REQUIRED: Test PlantUML diagrams with `plantuml -o /tmp` before committing
+REQUIRED: Include PlantUML diagrams in markdown documentation
+REQUIRED: Update documentation when code or tool configurations change
+PREFERRED: Use standardized markdown formatting for all documentation
+
+## Naming Rules
+### Tool Selection
+REQUIRED: Choose tools with active maintenance and security support
+REQUIRED: Prefer tools with good integration capabilities
+REQUIRED: Use tools that support team collaboration and code review workflows
+PREFERRED: Select tools with comprehensive documentation and community support
+REQUIRED: Evaluate tools for performance and resource usage impact
+
+### Configuration Organization
+REQUIRED: Organize configuration files logically within project structure
+REQUIRED: Use clear, descriptive naming for configuration files and sections
+REQUIRED: Group related configuration options together
+PREFERRED: Use environment-specific configuration files when needed
+REQUIRED: Document all configuration options and their default values
+
+## Validation Rules
+### Tool Management
+REQUIRED: Regularly update tools to latest stable versions with security patches
+REQUIRED: Test tool updates in development environment before deployment
+REQUIRED: Monitor tool deprecation notices and migration requirements
+REQUIRED: Validate tool configurations for syntax and correctness
+PREFERRED: Use automated dependency scanning for security vulnerabilities
+
+### Performance Requirements
+REQUIRED: Monitor tool performance impact on development workflow
+REQUIRED: Optimize tool configurations for fast execution
+REQUIRED: Use caching strategies where appropriate to improve performance
+PREFERRED: Configure tools to run in parallel when possible
+REQUIRED: Measure and track development environment setup times
+
+### Security Standards
+REQUIRED: Scan tools and dependencies for known vulnerabilities
+REQUIRED: Use signed tool downloads when available
+REQUIRED: Validate tool integrity after installation
+REQUIRED: Implement principle of least privilege for tool access
+PREFERRED: Use tools with built-in security features and best practices
+
+### Integration Requirements
+REQUIRED: Integrate all tools with CI/CD pipelines
+REQUIRED: Ensure consistent tool behavior across development, testing, and production
+REQUIRED: Test tool integration with deployment and monitoring systems
+REQUIRED: Configure tools for automated quality gates and checks
+PREFERRED: Use tools that support containerization and cloud-native workflows

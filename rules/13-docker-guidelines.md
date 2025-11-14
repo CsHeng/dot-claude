@@ -1,156 +1,150 @@
----
-# Cursor Rules
-globs: /docker-compose*.yml,/Dockerfile*,/*.sh,/Makefile*
+# Docker and Containerization Directives
 
-# Copilot Instructions
-applyTo: "/docker-compose*.yml,/Dockerfile*,/*.sh,/Makefile*"
+## Scope
+REQUIRED: Apply these standards to all containerization activities, including Dockerfile creation, Docker Compose configurations, multi-architecture builds, and container orchestration.
 
-# Kiro Steering
-inclusion: fileMatch
-fileMatchPattern: ['/docker-compose*.yml', '/Dockerfile*', '/*.sh', '/Makefile*']
----
+## Absolute Prohibitions
+PROHIBITED: Use `latest` tags in production environments
+PROHIBITED: Include version field in docker-compose.yml files
+PROHIBITED: Hardcode secrets or credentials in container images
+PROHIBITED: Run containers as root user without justification
+PROHIBITED: Ignore security scanning results for images
+PROHIBITED: Use host.docker.internal for critical network access
 
-# Docker and Containerization Guidelines
+## Communication Protocol
+REQUIRED: Use clear, descriptive service and image names
+REQUIRED: Document container purpose and dependencies
+REQUIRED: Provide clear build and deployment instructions
+PROHIBITED: Use abbreviations except universally understood ones (`url`, `id`, `api`)
 
-## Build Optimization Standards
+## Structural Rules
+### Build Optimization
+REQUIRED: Use Go build environment variables for static compilation:
+REQUIRED: Set `CGO_ENABLED=0` to disable CGO for static binaries
+REQUIRED: Set `GOOS=${TARGETOS}` for target operating system
+REQUIRED: Set `GOARCH=${TARGETARCH}` for target architecture
+REQUIRED: Set `GOGC=off` to disable GC during compilation
+REQUIRED: Set `GOMAXPROCS=1` for single-core compilation efficiency
 
-### Go Build Environment Variables (Required)
-- Required environment variables for Go builds:
-  - `CGO_ENABLED=0` - Disable CGO for static binaries
-  - `GOOS=${TARGETOS}` - Target operating system
-  - `GOARCH=${TARGETARCH}` - Target architecture
-  - `GOGC=off` - Disable GC during compilation
-  - `GOMAXPROCS=1` - Single-core compilation
+### Linker Flags
+REQUIRED: Use standard optimization flags: `go build -ldflags="-w -s -extldflags=-static"`
+REQUIRED: Apply `-w` to remove DWARF debug info (30-50% size reduction)
+REQUIRED: Apply `-s` to remove symbol table (10-20% size reduction)
+REQUIRED: Apply `-extldflags=-static` to generate static binary
 
-### Required Linker Flags
-- Standard optimization flags: `go build -ldflags="-w -s -extldflags=-static"`
-- Breakdown:
-  - `-w`: Remove DWARF debug info (30-50% size reduction)
-  - `-s`: Remove symbol table (10-20% size reduction)
-  - `-extldflags=-static`: Generate static binary
+### Multi-Architecture Naming
+REQUIRED: Use strict naming pattern for multi-architecture images:
+PREFERRED: `<app-name>:amd64` for AMD64 architecture
+PREFERRED: `<app-name>:arm64` for ARM64 architecture
+PREFERRED: `<app-name>:latest` for development (current arch)
+PREFERRED: `<app-name>-slim:amd64` for optimized AMD64
+PREFERRED: `<app-name>-slim:arm64` for optimized ARM64
+PREFERRED: `<app-name>-slim:latest` for development optimized
 
-### Additional Build Optimization
-- Full build command:
-  ```bash
-  go build -a -installsuffix cgo \
-      -gcflags="-trimpath" \
-      -asmflags="-trimpath" \
-      -ldflags="-w -s -extldflags=-static"
-  ```
-- Explanation:
-  - `-a`: Force package recompilation
-  - `-installsuffix cgo`: Avoid CGO conflicts
-  - `-trimpath`: Remove source paths from output
+## Language Rules
+### Dockerfile Standards
+REQUIRED: Use multi-stage build for Go applications
+REQUIRED: Create non-root user with appropriate permissions
+REQUIRED: Set working directory using WORKDIR instruction
+REQUIRED: Include HEALTHCHECK instruction for monitoring
+REQUIRED: Use specific version tags, never 'latest' in production
+PROHIBITED: Include build tools or development dependencies in final image
 
-## Multi-Architecture Build Strategy
+### Docker Compose Standards
+REQUIRED: Use explicit service dependencies with `depends_on`
+REQUIRED: Define health checks for critical services
+REQUIRED: Use named volumes for persistent data storage
+REQUIRED: Set resource limits for production services
+PROHIBITED: Include `version:` field in docker-compose.yml files
+REQUIRED: Use `172.17.0.1` for host network access from containers
+PROHIBITED: Use `host.docker.internal` for critical network access
 
-### Image Naming Convention
-- Strict naming pattern for multi-architecture images:
-  - `<app-name>:amd64` - AMD64 architecture
-  - `<app-name>:arm64` - ARM64 architecture
-  - `<app-name>:latest` - Development (current arch)
-  - `<app-name>-slim:amd64` - Optimized AMD64
-  - `<app-name>-slim:arm64` - Optimized ARM64
-  - `<app-name>-slim:latest` - Development optimized
+### Network Configuration
+REQUIRED: Create custom bridge networks with specific subnets
+REQUIRED: Use internal networks for backend services
+REQUIRED: Configure proper service startup ordering
+REQUIRED: Implement rolling update strategies for production
+PREFERRED: Use network isolation for security boundaries
+PROHIBITED: Expose unnecessary ports to external networks
 
-### Multi-Stage Dockerfile
-- Multi-stage build for Go applications:
-  ```dockerfile
-  FROM --platform=$BUILDPLATFORM golang:1.23-alpine AS builder
-  ARG TARGETPLATFORM BUILDPLATFORM TARGETOS TARGETARCH
-  ENV CGO_ENABLED=0 GOOS=${TARGETOS} GOARCH=${TARGETARCH} GOGC=off GOMAXPROCS=1
-  ```
+## Formatting Rules
+### Security
+REQUIRED: Use specific version tags for reproducible builds
+REQUIRED: Create non-root user with minimal privileges
+REQUIRED: Set appropriate file permissions for sensitive data
+REQUIRED: Implement proper secret management strategies
+REQUIRED: Scan images for security vulnerabilities
+PROHIBITED: Store secrets in environment variables or image layers
 
-## Docker Compose Standards
+### Optimization
+REQUIRED: Use multi-stage builds for smaller final images
+REQUIRED: Use .dockerignore to exclude unnecessary files
+REQUIRED: Order Dockerfile instructions for optimal layer caching
+PREFERRED: Use alpine-based images where appropriate for size
+REQUIRED: Minimize attack surface by removing unnecessary packages
+PROHIBITED: Include debugging tools in production images
 
-### Critical Requirements
-- NEVER include `version:` field in docker-compose.yml files
-- Use `172.17.0.1` for host network access from containers
-- AVOID `host.docker.internal` (unreliable in some environments)
+### Environment Configuration
+PREFERRED: Use Dockerfile.production for production-optimized builds
+PREFERRED: Use Dockerfile.development for development with debugging tools
+PREFERRED: Use Dockerfile.test for test environment with testing tools
+REQUIRED: Maintain consistency between environment-specific Dockerfiles
+PROHIBITED: Use development configurations in production deployments
 
-### Best Practices
-- Use explicit service dependencies with `depends_on`
-- Define health checks for critical services
-- Use named volumes for persistent data
-- Set resource limits for production services
-
-## Best Practices
-
-### Security Standards
-- Use specific version tags: Never use 'latest' in production
-- Create non-root user: Add user and group with appropriate permissions
-- Set working directory: Use WORKDIR instruction
-- Set health check: Include HEALTHCHECK instruction
-- Expose port: Use EXPOSE instruction appropriately
-
-### Optimization Patterns
-- Multi-stage for smaller images: Separate build and runtime stages
-- Use .dockerignore: Exclude unnecessary files from build context
-- Leverage layer caching: Order Dockerfile instructions for optimal caching
-- Minimize image size: Use alpine-based images where appropriate
-
-### Environment-Specific Configurations
-- Dockerfile.production: Production-optimized build
-- Dockerfile.development: Development build with debugging tools
-- Dockerfile.test: Test environment with testing tools
-
-## Network Configuration
-
-### Custom Networks
-- Create custom networks: Use bridge networks with specific subnets
-- Network isolation: Use internal networks for backend services
-- Host access: Use 172.17.0.1 for reliable host access
-
+## Naming Rules
 ### Service Dependencies
-- Explicit dependencies: Use depends_on with service conditions
-- Health checks: Implement proper health checks for service readiness
-- Startup ordering: Configure proper service startup order
-
-## Orchestration Patterns
-
-### Service Dependencies
-- Dependency management: Use depends_on with conditions
-- Health checks: All services must include appropriate health checks
-- Startup ordering: Configure proper service startup order
-- Resource management: Set appropriate resource limits and reservations
+REQUIRED: Use explicit dependencies with conditions in docker-compose
+REQUIRED: Implement comprehensive health checks for service readiness
+REQUIRED: Configure proper startup ordering between services
+REQUIRED: Set appropriate resource limits and reservations
+PREFERRED: Use descriptive service names indicating purpose
+PROHIBITED: Create circular dependencies between services
 
 ### Resource Management
-- Resource limits: Set CPU and memory limits for production
-- Resource reservations: Reserve minimum resources for services
-- Restart policies: Use appropriate restart policies (unless-stopped)
-- Update strategies: Configure rolling update strategies
+REQUIRED: Set CPU and memory limits for production services
+REQUIRED: Reserve minimum resources for critical services
+REQUIRED: Use appropriate restart policies (unless-stopped)
+REQUIRED: Configure scaling policies for horizontal scaling
+PREFERRED: Monitor resource usage and adjust limits accordingly
+PROHIBITED: Allow services to consume unlimited resources
 
-## Development Workflow
-
-### Local Development Setup
-- Environment file: Create .env file from template
-- Service startup: Build and start all services with docker-compose
-- Health checks: Wait for services to be ready before running tests
-- Database setup: Run migrations and load test data automatically
+## Validation Rules
+### Development Workflow
+REQUIRED: Create .env file from template for local development
+REQUIRED: Build and start all services using docker-compose
+REQUIRED: Wait for services to be ready before running tests
+REQUIRED: Run database migrations and load test data automatically
+PREFERRED: Use docker-compose for local development environment
+PROHIBITED: Commit .env files with sensitive configuration
 
 ### Production Deployment
-- Image building: Build multi-architecture images for production
-- Service updates: Use rolling updates with health checks
-- Configuration: Use environment-specific configuration files
-- Monitoring: Include comprehensive health checks and monitoring
+REQUIRED: Build multi-architecture images for production environments
+REQUIRED: Use rolling updates with proper health checks
+REQUIRED: Use environment-specific configuration files
+REQUIRED: Include comprehensive monitoring and logging
+PROHIBITED: Deploy images without security scanning
+REQUIRED: Test deployment process in staging environment first
 
-## Monitoring and Logging
+### Monitoring
+REQUIRED: Use structured JSON logging for log aggregation
+REQUIRED: Configure log rotation to prevent disk space issues
+REQUIRED: Forward logs to centralized logging system
+REQUIRED: Use appropriate log levels (INFO, WARN, ERROR)
+PREFERRED: Include trace IDs and request IDs in all log entries
+PROHIBITED: Log sensitive information or credentials
 
-### Logging Configuration
-- Structured logging: Use JSON format for log aggregation
-- Log rotation: Configure log rotation to prevent disk space issues
-- Centralized logging: Forward logs to centralized logging system
-- Log levels: Use appropriate log levels (INFO, WARN, ERROR)
+### Health Checks
+REQUIRED: Implement application-specific health check endpoints
+REQUIRED: Check database connectivity and query performance
+REQUIRED: Monitor dependencies and external service connectivity
+REQUIRED: Track resource usage (memory, CPU, disk)
+PREFERRED: Include readiness and liveness probes for Kubernetes
+PROHIBITED: Use health checks that are too slow or resource-intensive
 
-### Health Check Patterns
-- Application health: Implement application-specific health check endpoints
-- Database health: Check database connectivity and query performance
-- Service dependencies: Health checks for external service dependencies
-- Resource monitoring: Monitor memory, CPU, and disk usage
-
-## Tool Preferences
-- Build Tools: Docker buildx for multi-architecture builds
-- Orchestration: Docker Compose for local development
-- Registry: Use container registry for image management
-- Scanning: Use security scanning tools for image vulnerability detection
-- Monitoring: Use Prometheus and Grafana for monitoring containerized applications
+### Tool Requirements
+REQUIRED: Build Tools: Docker buildx for multi-architecture builds
+REQUIRED: Orchestration: Docker Compose for local development
+REQUIRED: Registry: Use container registry for image management
+REQUIRED: Scanning: Use security scanning tools for vulnerability detection
+PREFERRED: Monitoring: Use Prometheus and Grafana for monitoring
+REQUIRED: Testing: Test containers in isolated environments

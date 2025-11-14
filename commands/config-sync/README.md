@@ -1,63 +1,102 @@
-# Config Sync Plugin (Unified CLI)
+---
+file-type: command
+command: /config-sync/README
+description: Configuration synchronization plugin documentation and reference
+implementation: commands/config-sync/README.md
+scope: Included
+related-commands:
+  - /config-sync/sync-cli
+  - /config-sync/sync-project-rules
+related-agents:
+  - agent:config-sync
+related-skills:
+  - skill:toolchain-baseline
+  - skill:workflow-discipline
+  - skill:security-logging
+---
 
-The config-sync suite now centers on a single slash command, `/config-sync/sync-cli`, which owns parameter parsing, plan generation, phase gating, and reporting for every workflow (sync, analyze, verify, adapt, plan, report).
+## usage
 
-## Layout
+Reference documentation for the config-sync plugin system. View configuration layouts, command mappings, and development guidelines.
 
-- `sync-cli.{md,sh}` – Unified slash command manifest plus entrypoint script
-- `sync-project-rules.{md,sh}` – Standalone slash command for syncing the shared rule library into IDE-facing directories
-- `adapters/` – Target-specific automation invoked during the `adapt` phase
-- `lib/common.*` – Shared helpers (parsing, logging, path resolution)
-- `lib/phases/` – Phase runners (`collect`, `analyze`, `plan`, `prepare`, `adapt`, `execute`, `verify`, `report`)
-- `lib/planners/` – Plan builders for sync/adapt flows
-- `scripts/` – Reusable shell helpers (`executor.sh`, `backup.sh`, `backup-cleanup.sh`)
-- `settings.json` – Default target/component selections, verify/dry-run preferences, backup retention settings
+## arguments
 
-## Primary Slash Command
+None - This is a documentation file. Use `/config-sync/sync-cli` for operations.
 
-| Command | Purpose |
-| --- | --- |
-| `/config-sync/sync-cli` | Unified entrypoint (`--action=<sync|analyze|verify|adapt|plan|report>`) with support for `--target`, `--components`, `--profile`, `--plan-file`, `--from-phase`, `--until-phase`, `--dry-run`, `--force`, `--adapter`, and `--format`. |
-| `/config-sync/sync-project-rules` | IDE helper that copies `~/.claude/rules` (plus project overrides) into `.cursor/rules` and `.github/instructions`, supporting `--target`, `--dry-run`, `--verify-only`, and `--project-root` or `CLAUDE_PROJECT_DIR`. The old `/config-sync:sync-project-rules` alias has been removed—use the slash command directly. |
+## workflow
 
-Adapters such as `/config-sync:adapt-permissions` or `/config-sync:droid` remain for direct tooling control, but the orchestration layer no longer exposes per-phase wrappers like `/config-sync:sync` or `/config-sync:verify`.
+1. Read configuration layouts and component mappings
+2. Identify target-specific adapter requirements
+3. Reference backup retention policies and management
+4. Follow development guidelines for extensions
 
-## Supported Targets
+## output
 
-- Factory/Droid CLI – Markdown commands, JSON permissions
-- Qwen CLI – TOML command conversion, JSON permission manifest
-- OpenAI Codex CLI – Minimal configuration with sandbox levels
-- OpenCode – JSON command format with operation-based permissions
+Complete reference documentation including:
+- Directory structure and component responsibilities
+- Command-to-agent mappings and skill requirements
+- Target system support matrix
+- Usage examples and configuration patterns
+- Backup retention management specifications
+- Development and integration guidelines
 
-## Usage Examples
+## configuration
+
+### Directory Layout
+
+```
+commands/config-sync/
+├── README.md                     # This reference documentation
+├── sync-cli.{md,sh}             # Unified slash command and implementation
+├── sync-project-rules.{md,sh}   # IDE rule synchronization
+├── adapters/                     # Target-specific automation modules
+├── lib/common.*                  # Shared utility functions
+├── lib/phases/                   # Phase execution runners
+├── lib/planners/                 # Plan generation logic
+├── scripts/                      # Reusable shell helpers
+└── settings.json                 # Default configuration and policies
+```
+
+### Command Mappings
+
+| Command | Purpose | Required Skills |
+| --- | --- | --- |
+| `/config-sync/sync-cli` | Unified orchestration entrypoint | `skill:toolchain-baseline`, `skill:workflow-discipline`, `skill:security-logging` |
+| `/config-sync/sync-project-rules` | IDE rule directory synchronization | `skill:workflow-discipline`, `skill:security-logging` |
+| `/config-sync:adapt-*` | Target-specific configuration adaptation | Language skills based on target |
+
+### Supported Targets
+
+- **Factory/Droid CLI**: Markdown commands, JSON permissions
+- **Qwen CLI**: TOML command conversion, JSON permission manifest
+- **OpenAI Codex CLI**: Minimal configuration with sandbox levels
+- **OpenCode**: JSON command format with operation-based permissions
+- **Amp CLI**: AGENTS.md guidance, `.agents/commands` mirroring, `amp.permissions` array
+
+### Usage Examples
 
 ```bash
-# Full sync with defaults
+# Full synchronization with default targets
 /config-sync/sync-cli --action=sync
 
-# Analyze opencode in table format
+# Analyze opencode target configuration
 /config-sync/sync-cli --action=analyze --target=opencode --format=table
 
-# Verify commands + permissions for droid and qwen
+# Synchronize specific Amp CLI components
+/config-sync/sync-cli --action=sync --target=amp --components=commands,settings,permissions
+
+# Verify commands and permissions for multiple targets
 /config-sync/sync-cli --action=verify --target=droid,qwen --components=commands,permissions
 
-# Re-run plan from prepare onwards
+# Execute from specific plan phase
 /config-sync/sync-cli --action=sync --plan-file=~/.claude/backup/plan-20250205-120210.json --from-phase=prepare
 ```
 
-## Backup Retention
-
-The config-sync system includes automatic backup retention management to prevent unlimited disk usage. After each successful sync operation, the system automatically cleans up old backup runs based on configurable retention settings.
-
-### Features
-- **Automatic Cleanup**: Runs after successful sync operations
-- **Configurable Retention**: Keep the latest N runs (default: 5)
-- **Safe Deletion**: Dry-run mode and integrity verification
-- **Simple Policy**: Always delete everything beyond the N most recent runs
-- **Detailed Logging**: Track all cleanup actions
+## backup-retention
 
 ### Configuration
-Backup retention is configured in `settings.json`:
+
+Backup retention policies are configured in `commands/config-sync/settings.json`:
 
 ```json
 {
@@ -72,36 +111,34 @@ Backup retention is configured in `settings.json`:
 ```
 
 ### Management Commands
+
 ```bash
 # Check current backup status
 ~/.claude/commands/config-sync/scripts/backup-cleanup.sh --status
 
-# Preview cleanup actions
+# Preview cleanup actions without execution
 ~/.claude/commands/config-sync/scripts/backup-cleanup.sh --dry-run
 
-# Manual cleanup
+# Execute manual backup cleanup
 ~/.claude/commands/config-sync/scripts/backup-cleanup.sh
 ```
 
 ### Pipeline Integration
-The cleanup phase is automatically integrated into the sync pipeline:
+
+Backup cleanup automatically integrates into the synchronization pipeline:
 ```
 collect → analyze → plan → prepare → adapt → execute → [verify] → cleanup → report
 ```
 
-Use `--until-phase=execute` to skip cleanup or `--from-phase=cleanup` to run only cleanup.
+Control cleanup execution with phase controls:
+- `--until-phase=execute`: Skip cleanup phase
+- `--from-phase=cleanup`: Execute only cleanup phase
 
-## Development Notes
+## development-guidelines
 
-- Always run phase scripts via `sync-cli.sh`; do not invoke `lib/phases/*.sh` directly.
-- Maintain strict mode (`set -euo pipefail`) in every helper per `rules/12-shell-guidelines.md`.
-- Update documentation when adding phases, planner fields, or CLI arguments so downstream tools (sequence diagrams, plan docs) stay accurate.
-- Qwen command verification requires the Python `toml` module (install with `python3 -m pip install --user toml` or ensure the module exists in the CLI’s runtime).
-
-## Agentization Mapping
-
-| Agent | Commands | Default Skills | Optional Skills |
-| --- | --- | --- | --- |
-| `agent:config-sync` | `/config-sync/sync-cli`, `/config-sync/sync-project-rules`, `/config-sync:adapt-*` | `skill:toolchain-baseline`, `skill:workflow-discipline`, `skill:security-logging` | `skill:language-python`, `skill:language-go`, `skill:language-shell` |
-
-Agent metadata lives in `agents/config-sync/AGENT.md`. Make sure command logs include the agent/skill versions so future audits can trace each run.
+1. **Phase Execution**: Always invoke phase scripts through `sync-cli.sh`. Never call `lib/phases/*.sh` directly
+2. **Shell Standards**: Maintain strict mode (`set -euo pipefail`) in all helper scripts per `rules/12-shell-guidelines.md`
+3. **Documentation Updates**: Update documentation when adding phases, planner fields, or CLI arguments to maintain downstream tool accuracy
+4. **Dependency Management**: Qwen command verification requires Python `toml` module. Install with `python3 -m pip install --user toml`
+5. **Agent Integration**: Ensure command logs include agent/skill versions for audit traceability
+6. **Error Handling**: Implement comprehensive error handling with proper logging and rollback mechanisms

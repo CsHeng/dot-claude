@@ -82,6 +82,7 @@ plantuml -tsvg docs/config-sync-project-sequence-diagram.puml
 | Qwen CLI | `~/.qwen` | `settings.json`, `permissions.json`, `QWEN.md`, `AGENTS.md`, `rules/` | TOML |
 | OpenAI Codex CLI | `~/.codex` | `config.toml`, `CODEX.md`, `AGENTS.md`, `rules/` | Markdown |
 | OpenCode | `~/.config/opencode` | `opencode.json`, optional `user-settings.json`, `AGENTS.md`, `rules/` | JSON |
+| Amp CLI | `~/.config/amp` | `settings.json`, `AGENTS.md`, global `~/.config/AGENTS.md`, `commands/`, `rules/` | Markdown + executables |
 
 ## CLI Reference
 
@@ -144,6 +145,7 @@ claude /config-sync:sync-cli --action=sync --plan-file=~/.claude/backup/plan-202
 | `/config-sync/qwen` | Qwen CLI synchronization (sync/analyze/verify sub-flags) |
 | `/config-sync/codex` | OpenAI Codex CLI synchronization (sync/analyze/verify sub-flags) |
 | `/config-sync/opencode` | OpenCode synchronization (sync/analyze/verify sub-flags) |
+| `/config-sync/amp` | Amp CLI synchronization (sync/analyze/verify sub-flags) |
 
 ### Utility Adapters
 

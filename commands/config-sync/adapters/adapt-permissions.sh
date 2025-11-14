@@ -37,7 +37,7 @@ usage() {
 Config-Sync Permission Adaptation Command - Adapt Claude Permissions
 
 USAGE:
-    adapt-permissions.sh --target <droid|qwen|codex|opencode> [OPTIONS]
+    adapt-permissions.sh --target <droid|qwen|codex|opencode|amp> [OPTIONS]
 
 ARGUMENTS:
     --target <tool>         Target tool for permission adaptation (required)
@@ -54,6 +54,7 @@ TARGET TOOLS:
     qwen                    Qwen CLI (permission guidelines)
     codex                   Codex CLI (permission guidelines)
     opencode                OpenCode CLI (operation-based permissions)
+    amp                     Amp CLI (amp.permissions array in settings.json)
 
 EXAMPLES:
     adapt-permissions.sh --target=droid
@@ -126,8 +127,8 @@ parse_arguments() {
     fi
 
     # Validate target
-    if [[ ! "$TARGET" =~ ^(droid|qwen|codex|opencode)$ ]]; then
-        echo "Error: Invalid target '$TARGET'. Must be droid, qwen, codex, or opencode" >&2
+    if [[ ! "$TARGET" =~ ^(droid|qwen|codex|opencode|amp)$ ]]; then
+        echo "Error: Invalid target '$TARGET'. Must be droid, qwen, codex, opencode, or amp" >&2
         exit 1
     fi
     # Convert to lowercase for case-insensitive comparison
@@ -556,6 +557,99 @@ PYCONF
     log_info "Permission entries written: bash=${#ALLOW_LIST[@]} allow, ${#ASK_LIST[@]} ask, ${#DENY_LIST[@]} deny"
 }
 
+adapt_amp_permissions() {
+    log_info "Adapting permissions for Amp..."
+
+    local config_dir
+    config_dir=$(get_target_config_dir "$TARGET")
+    local settings_file="$config_dir/settings.json"
+    local timestamp
+    timestamp="$(date -u +"%Y-%m-%dT%H:%M:%SZ")"
+
+    if [[ "$DRY_RUN" == true ]]; then
+        log_info "Would update amp.permissions inside $settings_file"
+        return 0
+    fi
+
+    mkdir -p "$config_dir"
+
+    local allow_env ask_env deny_env
+    allow_env=$(printf '%s\n' "${ALLOW_LIST[@]}")
+    ask_env=$(printf '%s\n' "${ASK_LIST[@]}")
+    deny_env=$(printf '%s\n' "${DENY_LIST[@]}")
+
+    AMP_ALLOW_LINES="$allow_env" \
+    AMP_ASK_LINES="$ask_env" \
+    AMP_DENY_LINES="$deny_env" \
+    AMP_PERM_TIMESTAMP="$timestamp" \
+    python3 - "$settings_file" <<'PY'
+import json
+import os
+import sys
+from pathlib import Path
+
+settings_path = Path(sys.argv[1])
+
+def load_lines(env_name: str) -> list[str]:
+    return [line.strip() for line in os.environ.get(env_name, "").splitlines() if line.strip()]
+
+def load_settings(path: Path) -> dict:
+    if not path.exists():
+        return {}
+    raw = path.read_text(encoding="utf-8").strip()
+    if not raw:
+        return {}
+    try:
+        return json.loads(raw)
+    except json.JSONDecodeError:
+        return {}
+
+def dedupe(values: list[str]) -> list[str]:
+    seen = set()
+    ordered = []
+    for item in values:
+        if item not in seen:
+            ordered.append(item)
+            seen.add(item)
+    return ordered
+
+allow_cmds = dedupe(load_lines("AMP_ALLOW_LINES"))
+ask_cmds = dedupe(load_lines("AMP_ASK_LINES"))
+deny_cmds = dedupe(load_lines("AMP_DENY_LINES"))
+timestamp = os.environ.get("AMP_PERM_TIMESTAMP")
+
+data = load_settings(settings_path)
+
+permissions = []
+
+def build_entry(action: str, commands: list[str]):
+    if not commands:
+        return None
+    return {
+        "tool": "Bash",
+        "matches": {"cmd": commands},
+        "action": action,
+    }
+
+for action, cmds in (("reject", deny_cmds), ("ask", ask_cmds), ("allow", allow_cmds)):
+    entry = build_entry(action, cmds)
+    if entry:
+        permissions.append(entry)
+
+# Always append a safe fallback rule so Amp prompts instead of assuming access
+permissions.append({"tool": "*", "action": "ask"})
+
+data["amp.permissions"] = permissions
+if timestamp:
+    data["amp.settings.lastPermissionsSync"] = timestamp
+data.setdefault("$schema", "https://ampcode.com/settings.schema.json")
+
+settings_path.write_text(json.dumps(data, indent=2) + "\n", encoding="utf-8")
+PY
+
+    log_success "Amp permissions updated in $settings_file"
+}
+
 # Generate adaptation report
 generate_adaptation_report() {
     echo "# Permission Adaptation Report"
@@ -585,6 +679,11 @@ generate_adaptation_report() {
             echo "- **Format**: JSON operation-based permissions"
             echo "- **File**: ${XDG_CONFIG_HOME:-~/.config}/opencode/opencode.json"
             echo "- **Method**: Map command permissions to operation permissions"
+            ;;
+        "amp")
+            echo "- **Format**: amp.permissions array in settings.json"
+            echo "- **File**: ${XDG_CONFIG_HOME:-~/.config}/amp/settings.json"
+            echo "- **Method**: Ordered reject/ask/allow rules plus fallback (per Amp manual)"
             ;;
     esac
     echo ""
@@ -842,6 +941,70 @@ PYVERIFY
     log_success "OpenCode permissions verified in $config_file"
 }
 
+verify_amp_permissions() {
+    local config_dir
+    config_dir=$(get_target_config_dir "$TARGET")
+    local settings_file="$config_dir/settings.json"
+
+    if [[ ! -f "$settings_file" ]]; then
+        log_error "Amp settings.json not found at $settings_file"
+        return 1
+    fi
+
+    local allow_blob ask_blob deny_blob
+    allow_blob=$(printf '%s\n' "${ALLOW_LIST[@]}")
+    ask_blob=$(printf '%s\n' "${ASK_LIST[@]}")
+    deny_blob=$(printf '%s\n' "${DENY_LIST[@]}")
+
+    AMP_ALLOW_LINES="$allow_blob" \
+    AMP_ASK_LINES="$ask_blob" \
+    AMP_DENY_LINES="$deny_blob" \
+    python3 - "$settings_file" <<'PY'
+import json, os, sys
+from pathlib import Path
+
+settings_path = Path(sys.argv[1])
+
+def has_values(env_name: str) -> bool:
+    return any(line.strip() for line in os.environ.get(env_name, "").splitlines())
+
+try:
+    data = json.loads(settings_path.read_text(encoding="utf-8"))
+except json.JSONDecodeError:
+    print("[ERROR] settings.json is not valid JSON", file=sys.stderr)
+    sys.exit(1)
+
+permissions = data.get("amp.permissions")
+if not isinstance(permissions, list) or not permissions:
+    print("[ERROR] amp.permissions array missing or empty", file=sys.stderr)
+    sys.exit(1)
+
+actions_present = {entry.get("action") for entry in permissions if isinstance(entry, dict)}
+fallback_present = any(
+    isinstance(entry, dict) and entry.get("tool") == "*"
+    for entry in permissions
+)
+
+expected = {
+    "allow": has_values("AMP_ALLOW_LINES"),
+    "ask": has_values("AMP_ASK_LINES"),
+    "reject": has_values("AMP_DENY_LINES"),
+}
+
+missing = [action for action, needed in expected.items() if needed and action not in actions_present]
+if missing:
+    print(f"[ERROR] Missing amp.permissions entries for actions: {', '.join(missing)}", file=sys.stderr)
+    sys.exit(1)
+
+if not fallback_present:
+    print("[WARN] No fallback rule with tool='*' detected", file=sys.stderr)
+
+print("[SUCCESS] amp.permissions entries verified")
+PY
+
+    log_success "Amp permissions verified in $settings_file"
+}
+
 # Main adaptation function
 run_permission_adaptation() {
     log_info "Starting permission adaptation for target: $TARGET"
@@ -867,6 +1030,9 @@ run_permission_adaptation() {
             ;;
         "opencode")
             adapt_opencode_permissions
+            ;;
+        "amp")
+            adapt_amp_permissions
             ;;
     esac
 
@@ -896,6 +1062,9 @@ run_permission_verification() {
             ;;
         "opencode")
             verify_opencode_permissions
+            ;;
+        "amp")
+            verify_amp_permissions
             ;;
     esac
 

@@ -1,73 +1,142 @@
 ---
-name: "config-sync:adapt-permissions"
-description: Adapt Claude permissions to target tool format
-argument-hint: --target=<droid|qwen|codex|opencode>
+file-type: command
+command: /config-sync:adapt-permissions
+description: Adapt Claude permissions to target tool configuration formats
+implementation: commands/config-sync/adapters/adapt-permissions.md
+argument-hint: "--target=<droid|qwen|codex|opencode|amp>"
+scope: Included
+allowed-tools:
+  - Read
+  - Write
+  - Bash
+  - Bash(cat:*)
+  - Bash(ls:*)
 disable-model-invocation: true
+related-commands:
+  - /config-sync/sync-cli
+related-agents:
+  - agent:config-sync
+related-skills:
+  - skill:security-logging
 ---
 
-## Task
-Analyze Claude's permission system and generate appropriate permission configuration for the target tool.
+## usage
 
-## Analysis Requirements
-1. Read Claude permissions:
-   - Extract `allow/ask/deny` lists from `~/.claude/settings.json`
-   - Review permission categories in `docs/permissions.md`
-   - Understand security rationale behind each permission level
+Convert Claude permission configurations to target tool formats, maintaining security boundaries while adapting to platform-specific permission systems.
 
-2. Parse target specification:
-   - Extract target tool from `--target` argument
-   - Validate target tool is supported
+## arguments
 
-3. Target tool capability assessment:
-   - Factory/Droid: Has `commandAllowlist`/`commandDenylist` in settings.json
-   - Qwen CLI: No formal permission system
-   - Codex CLI: No formal permission system
-   - OpenCode CLI: Operation-based permissions (edit/bash/webfetch) in opencode.json
+- `--target`: Target AI tool platform for permission adaptation
+  - `droid`: Factory/Droid CLI permission configuration
+  - `qwen`: Qwen CLI permission manifest
+  - `codex`: OpenAI Codex CLI sandbox configuration
+  - `opencode`: OpenCode CLI operation permissions
+  - `amp`: Amp CLI permission array
 
-4. Permission mapping strategy:
-   - Map Claude `allow` → target allowlist where supported
-   - Map Claude `deny` → target denylist where supported
-   - Handle Claude `ask` category appropriately
-   - For OpenCode: Map command permissions to operation-based permissions
-   - Document permissions that cannot be mapped
+## workflow
 
-## Permission Mapping Logic
+1. **Permission Analysis**: Extract Claude allow/ask/deny lists from `settings.json`
+2. **Target Assessment**: Evaluate target tool permission capabilities and format
+3. **Mapping Strategy**: Convert Claude permission categories to target format
+4. **Configuration Generation**: Create target-specific permission files
+5. **Security Validation**: Verify permission mapping completeness and safety
+6. **File Installation**: Apply configurations to target tool directories
+7. **Verification**: Generate mapping reports and security analysis
 
-### Claude Permission Categories
-- allow: Safe commands that run automatically
-- ask: Commands requiring user confirmation
-- deny: Dangerous commands that are completely blocked
+### target-permission-systems
 
-### Target Tool Adaptations
+**Factory/Droid CLI:**
+- Format: JSON configuration with `commandAllowlist`/`commandDenylist`
+- Location: `~/.factory/settings.json`
+- Mapping: Direct allow/deny list translation
 
-#### Factory/Droid CLI
+**Qwen CLI:**
+- Format: JSON manifest with permission arrays
+- Location: `~/.qwen/permissions.json`
+- Mapping: Allow/ask/deny array structure
+
+**OpenAI Codex CLI:**
+- Format: TOML configuration with sandbox block
+- Location: `~/.codex/config.toml`
+- Mapping: Derive sandbox mode from permission strictness
+
+**OpenCode CLI:**
+- Format: JSON with operation-based permissions
+- Location: `~/.config/opencode/opencode.json`
+- Mapping: Command categories to operation permissions
+
+**Amp CLI:**
+- Format: JSON permission array with tool matching
+- Location: `~/.config/amp/settings.json`
+- Mapping: Command patterns to permission rules
+
+### permission-mapping-logic
+
+**Direct Mapping:**
+- `allow` → target allowlist where supported
+- `deny` → target denylist where supported
+- `ask` → confirmation mechanism or high-risk denylist
+
+**Security Classification:**
+- **Safe**: Read-only operations, basic file operations
+- **Risky**: Network operations, package management, file modifications
+- **Dangerous**: System-level changes, destructive operations
+
+**Category Mapping:**
+- File editing commands → `permission.edit` (OpenCode)
+- Bash/shell commands → `permission.bash` (OpenCode)
+- Network/web commands → `permission.webfetch` (OpenCode)
+
+## output
+
+**Configuration Files:**
+- Target-specific permission configurations
+- Preserved existing non-permission settings
+- Backup files of original configurations
+
+**Documentation:**
+- Permission mapping summary with change details
+- Security considerations for unmappable permissions
+- Manual permission management guidelines
+- Verification checklist for permission effectiveness
+
+**Security Reports:**
+- Risk assessment for adapted permissions
+- Permission escalation analysis
+- Critical system protection verification
+
+## safety-constraints
+
+1. **Backup Requirement**: Create backups before modifying target configurations
+2. **Security Preservation**: Never upgrade dangerous commands from deny to allow
+3. **Conservative Approach**: Prefer stricter permissions when mapping is uncertain
+4. **Rule Ordering**: Maintain deterministic rule ordering for proper evaluation
+5. **Fallback Rules**: Include safe default rules for unmatched operations
+6. **Context Validation**: Verify target tool directories exist and are accessible
+
+## file-processing-details
+
+### factory-droid-cli
 ```json
 {
-  "commandAllowlist": [/* Claude 'allow' commands */],
-  "commandDenylist": [/* Claude 'deny' commands + high-risk 'ask' commands */]
+  "commandAllowlist": ["permitted-commands"],
+  "commandDenylist": ["blocked-commands"]
 }
 ```
 
-#### Qwen CLI
+### qwen-cli
 ```json
 {
   "version": 1,
   "permissions": {
-    "allow": [/* Claude 'allow' commands */],
-    "ask": [/* Claude 'ask' commands */],
-    "deny": [/* Claude 'deny' commands */]
+    "allow": ["claude-allow-commands"],
+    "ask": ["claude-ask-commands"],
+    "deny": ["claude-deny-commands"]
   }
 }
 ```
-- Emit `permissions.json` manifest consumed by Qwen CLI wrappers
-- Keep the manifest sorted/deduplicated for stable diffs
 
-#### Codex CLI
-- Update the `[sandbox]` block inside `~/.codex/config.toml`
-- Derive `mode`, `allow_network`, and `allow_execution` from permission strictness
-- Preserve unrelated configuration fields while rewriting the sandbox block
-
-#### OpenCode CLI
+### opencode-cli
 ```json
 {
   "permission": {
@@ -77,76 +146,63 @@ Analyze Claude's permission system and generate appropriate permission configura
   }
 }
 ```
-Map Claude command permissions to operation-based permissions:
-- File editing commands → `permission.edit`
-- Bash/shell commands → `permission.bash`
-- Network/web commands → `permission.webfetch`
 
-## Security Analysis Requirements
-1. Risk assessment:
-   - Identify commands that could cause data loss
-   - Flag system-modifying commands
-   - Note network operations and external dependencies
+### amp-cli
+```json
+{
+  "amp.permissions": [
+    { "tool": "Bash", "matches": { "cmd": ["pattern"] }, "action": "ask" },
+    { "tool": "*", "action": "ask" }
+  ]
+}
+```
 
-2. Permission classification:
-   - Safe: Read-only operations, basic file operations
-   - Risky: Network operations, package management, file modifications
-   - Dangerous: System-level changes, destructive operations
+## security-analysis
 
-3. Adaptation decisions:
-   - Never move dangerous commands from deny to allow
-   - Prefer stricter permissions when in doubt
-   - Document any permission weakening with security rationale
+1. **Risk Assessment:**
+   - Identify commands with data loss potential
+   - Flag system-modifying operations
+   - Note network dependencies and external calls
 
-## Output Requirements
+2. **Permission Classification:**
+   - Categorize commands by risk level
+   - Apply appropriate security restrictions
+   - Document classification rationale
 
-### For Factory/Droid CLI
-- Generate/overwrite `~/.factory/settings.json` with adapted permissions
-- Preserve existing non-permission settings
-- Backup original file before modification
-- NEVER add sync metadata or tracking information
+3. **Adaptation Decisions:**
+   - Never weaken security boundaries
+   - Document permission reductions with justification
+   - Maintain audit trail of all permission changes
 
-### For Qwen CLI
-- Generate/overwrite `~/.qwen/permissions.json` with allow/ask/deny arrays
-- Preserve manifest readability (indentation, stable ordering)
-- Ensure `permissions.json` is backed up by the prepare phase before mutation
-- Avoid emitting supplemental Markdown files
+## examples
 
-### For Codex CLI
-- Generate/update the `[sandbox]` block inside `~/.codex/config.toml`
-- Preserve existing `[core]`, `[sync]`, and other sections
-- Keep previously configured `enabled`, `timeout`, and `memory_limit` values when present
-- Respect `--force` semantics before overwriting structural changes
+```bash
+# Adapt permissions for Amp CLI with rule-based filtering
+/config-sync:adapt-permissions --target=amp
 
-### For OpenCode CLI
-- Generate/overwrite `~/.config/opencode/opencode.json` with adapted permissions
-- Map Claude command permissions to operation-based permissions
-- Preserve existing non-permission settings
-- Backup original file before modification
-- NEVER add sync metadata or tracking information
+# Generate Qwen CLI permission manifest
+/config-sync:adapt-permissions --target=qwen
 
-## Safety Requirements
-- Only modify target tool configuration files after confirming prepare-phase backups exist
-- Use `rsync -a` (not `cp`) for all backups to preserve metadata
-- If temporary files are needed, create them in /tmp using mktemp
-- ALWAYS clean up temporary files in /tmp immediately after use
-- NEVER leave temporary files in target tool directories
-- Preserve target tools' natural configuration structure
+# Create OpenCode operation-based permissions
+/config-sync:adapt-permissions --target=opencode
+```
 
-### Documentation Requirements
-- Permission mapping summary (what went where)
-- Security considerations for unmappable permissions
-- Manual permission management guidelines
-- Verification checklist for permission effectiveness
+## error-handling
 
-## Safety Checks
-- Validate that no dangerous commands are inappropriately allowed
-- Ensure critical system protections remain in place
-- Check for permission escalation risks
-- Verify backup files are created before modifications
+**Configuration Errors:**
+- Missing source permissions: Exit with error, provide setup instructions
+- Invalid permission format: Log error and continue with safe defaults
 
-## Error Handling
-- Handle missing or malformed permission configurations
-- Deal with unsupported target tools gracefully
-- Provide clear error messages for invalid inputs
-- Roll back changes if adaptation fails
+**Target Tool Errors:**
+- Unsupported target: List supported platforms and exit
+- Target directory inaccessible: Exit with permission details
+
+**Security Validation:**
+- Permission escalation detected: Abort with security warning
+- Dangerous command reclassification: Require explicit confirmation
+- Missing fallback rules: Exit with security concern details
+
+**File System Errors:**
+- Backup creation failure: Exit before making changes
+- Configuration write failure: Rollback if possible, exit with error
+- Permission modification failure: Log detailed error information

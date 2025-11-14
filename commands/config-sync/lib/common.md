@@ -1,39 +1,148 @@
 ---
-name: "/config-sync:lib-common"
-description: "Common helper references for config-sync commands"
+file-type: command
+command: /config-sync:lib-common
+description: Common utility function references for config-sync operations
+implementation: commands/config-sync/lib/common.md
+scope: Included
+related-commands:
+  - /config-sync/sync-cli
+  - /config-sync/sync-project-rules
+related-agents:
+  - agent:config-sync
+related-skills:
+  - skill:toolchain-baseline
+  - skill:workflow-discipline
 disable-model-invocation: true
 ---
 
-# Common Utilities Reference
+## Usage
 
-The config-sync command suite refers to these shared helper concepts when outlining shell snippets. Implementations can live in shell scripts, Python modules, or other automation tooling as long as they provide equivalent behavior.
+Reference documentation for shared utility functions used across config-sync commands. Implement these functions in your preferred automation framework.
 
-## Validation Helpers
+## Arguments
 
-- validate_target <name> – Ensure target is one of `droid`, `qwen`, `codex`, `opencode`, or `all`.
-- validate_component <name> – Confirm component value is `rules`, `permissions`, `commands`, `settings`, or `memory`.
-- check_tool_installed <name> – Verify required CLI is available in `PATH`.
+None - This is a utility reference file.
 
-## Path Resolution
+## Workflow
 
-- get_target_config_dir <tool> – Return base config directory for the tool.
-- get_target_rules_dir <tool> – Resolve rule destination path.
-- get_target_commands_dir <tool> – Resolve command destination path.
+1. Implement required validation functions
+2. Set up path resolution utilities
+3. Configure logging helpers
+4. Initialize environment and backup systems
+5. Integrate executor utilities for file operations
 
-## Logging
+## Output
 
-Provide lightweight wrappers such as `log_info`, `log_success`, `log_warning`, and `log_error` to standardize output formatting.
+Complete utility function specification including:
+- Validation helper function signatures and requirements
+- Path resolution logic for target systems
+- Logging utility standardization
+- Environment setup procedures
+- Backup and executor utility integration patterns
 
-## Environment Setup
+## Utility Functions
 
-- setup_plugin_environment – Export commonly used paths, ensure `scripts/` helpers are on `PATH`, and create temporary working directories.
+### Validation Helpers
 
-## Backup Utilities
+Implement these validation functions:
 
-Use `scripts/backup.sh` to expose a `create_backup <source> <destRoot>` function that guards any destructive operations before files are overwritten.
+```bash
+validate_target <name>
+# Validate target is one of: droid, qwen, codex, opencode, amp, all
+# Return: 0 for valid, 1 for invalid target
 
-## Executor Utilities
+validate_component <name>
+# Confirm component is one of: rules, permissions, commands, settings, memory
+# Return: 0 for valid, 1 for invalid component
 
-`scripts/executor.sh` exposes helpers for safe file writes, e.g. `write_with_checksum`, `render_template`, or `sync_with_sanitization` depending on your automation approach.
+check_tool_installed <tool_name>
+# Verify required CLI tool exists in PATH
+# Return: 0 for available, 1 for missing tool
+```
 
-These utilities are intentionally abstract so the plugin can operate across different environments. When wiring this plugin into your own workflows, implement the functions above to match your preferred automation stack.
+### Path Resolution
+
+Implement these path resolution functions:
+
+```bash
+get_target_config_dir <tool>
+# Return base configuration directory for specified tool
+# Output: Absolute path string to tool config directory
+
+get_target_rules_dir <tool>
+# Resolve rules destination path for specified tool
+# Output: Absolute path string to rules directory
+
+get_target_commands_dir <tool>
+# Resolve commands destination path for specified tool
+# Output: Absolute path string to commands directory
+```
+
+### Logging Helpers
+
+Implement standardized logging functions:
+
+```bash
+log_info <message>
+# Display informational message with standard formatting
+
+log_success <message>
+# Display success message with standard formatting
+
+log_warning <message>
+# Display warning message with standard formatting
+
+log_error <message>
+# Display error message with standard formatting
+```
+
+### Environment Setup
+
+Implement environment initialization:
+
+```bash
+setup_plugin_environment
+# Export commonly used paths to environment variables
+# Ensure scripts/ directory helpers are available in PATH
+# Create required temporary working directories
+# Return: 0 for success, 1 for initialization failure
+```
+
+### Backup Utilities
+
+Integrate with backup system:
+
+```bash
+create_backup <source_path> <destination_root>
+# Create timestamped backup of source_path in destination_root
+# Guard destructive operations before file overwrites
+# Return: 0 for success, 1 for backup failure
+```
+
+### Executor Utilities
+
+Integrate with file operation system:
+
+```bash
+write_with_checksum <source> <destination>
+# Write file with integrity checksum verification
+# Return: 0 for success, 1 for write/verification failure
+
+render_template <template_file> <output_file> <variables>
+# Process template file with variable substitution
+# Return: 0 for success, 1 for template processing failure
+
+sync_with_sanitization <source> <destination>
+# Synchronize files with content sanitization
+# Return: 0 for success, 1 for sync failure
+```
+
+## Implementation Guidelines
+
+1. **Language Independence**: Functions can be implemented in shell, Python, or other automation frameworks
+2. **Error Handling**: All functions must return appropriate exit codes (0 for success, non-zero for failure)
+3. **Path Safety**: Always resolve to absolute paths and validate directory existence
+4. **Atomic Operations**: File operations must be atomic to prevent corruption
+5. **Logging Consistency**: Use standardized message formats across all logging functions
+6. **Dependency Management**: Verify external tool dependencies before execution
+7. **Permission Handling**: Respect file system permissions and access controls

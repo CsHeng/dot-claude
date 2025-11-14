@@ -53,7 +53,7 @@ Comprehensive troubleshooting guide for the Claude Code configuration system, co
    ```bash
    # Use the review commands to validate
    /review-shell-syntax
-   /review-llm-prompts
+   /optimize-prompts
    ```
 
 ### Environment Variables Not Working
@@ -300,7 +300,7 @@ claude /doctor
 
 # Review commands for validation
 /review-shell-syntax
-/review-llm-prompts
+/optimize-prompts
 ```
 
 ### Log Locations

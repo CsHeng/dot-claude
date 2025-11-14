@@ -85,6 +85,7 @@ commands/
 │   │   ├── qwen.md               # Qwen CLI adapter
 │   │   ├── codex.md              # (config-sync adapter for Codex targets)
 │   │   ├── opencode.md           # OpenCode adapter
+│   │   ├── amp.md                # Amp adapter
 │   │   ├── analyze-target-tool.md # Tool analysis
 │   │   ├── adapt-permissions.md   # Permission mapping
 │   │   ├── adapt-commands.md      # Command conversion
@@ -97,7 +98,7 @@ commands/
 │   └── adapters/                  # Project-specific adapters
 ├── draft-commit-message.md         # Git commit helper
 ├── review-shell-syntax.md          # Shell script validation
-└── review-llm-prompts.md           # LLM prompt compliance
+└── optimize-prompts.md             # DEPTH-based LLM-facing file optimization
 ```
 
 ### Documentation
@@ -125,7 +126,8 @@ backup/
 ├── droid-<timestamp>/             # Droid configuration backups
 ├── qwen-<timestamp>/              # Qwen configuration backups
 ├── codex-<timestamp>/             # (config-sync backup for Codex target)
-└── opencode-<timestamp>/          # OpenCode configuration backups
+├── opencode-<timestamp>/          # OpenCode configuration backups
+└── amp-<timestamp>/               # Amp configuration backups
 ```
 
 ### Runtime Directories

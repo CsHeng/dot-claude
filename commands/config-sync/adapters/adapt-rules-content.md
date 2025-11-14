@@ -1,135 +1,158 @@
 ---
-name: "config-sync:adapt-rules-content"
-description: Adapt rule content for universal AI agent compatibility
-argument-hint: --target=<droid|qwen|codex|opencode|all>
+file-type: command
+command: /config-sync:adapt-rules-content
+description: Adapt Claude rule content for universal AI agent compatibility across target tools
+implementation: commands/config-sync/adapters/adapt-rules-content.md
+argument-hint: "--target=<droid|qwen|codex|opencode|amp|all>"
+scope: Included
+allowed-tools:
+  - Read
+  - Write
+  - Bash
+  - Bash(find:*)
+  - Bash(rg:*)
+  - Bash(cat:*)
 disable-model-invocation: true
+related-commands:
+  - /config-sync/sync-cli
+related-agents:
+  - agent:config-sync
+related-skills:
+  - skill:workflow-discipline
 ---
 
-## Task
-Analyze and adapt Claude-specific references in rule files to make them universally compatible across all AI development tools.
+## usage
 
-## Analysis Requirements
-1. Identify Claude-specific references:
-   - Scan all rule files for Claude-specific terminology
-   - Find references to "Claude Memory", "Claude Code", etc.
-   - Document all instances that need adaptation
+Convert Claude-specific rule content to target tool terminology while preserving technical guidelines and maintaining functionality across AI platforms.
 
-2. Determine appropriate substitutions:
-   - "Claude Memory" → "AI Memory" or "Agent Memory"
-   - "Claude Code" → "AI Development Tool" or target tool name
-   - Tool-specific references made generic
+## arguments
 
-3. Adapt content for target tool:
-   - Replace Claude-specific terminology with universal equivalents
-   - Maintain technical accuracy and intent
-   - Ensure content remains relevant for all AI agents
+- `--target`: Target AI tool platform
+  - `droid`: Factory/Droid CLI memory references
+  - `qwen`: Qwen CLI terminology adaptation
+  - `codex`: OpenAI Codex CLI content conversion
+  - `opencode`: OpenCode CLI reference updates
+  - `amp`: Amp CLI AGENTS.md integration
+  - `all`: Create universal tool-agnostic versions
 
-## Claude-Specific References Found
+## workflow
 
-### Current References:
-1. `00-memory-rules.md`:
-   - "This file serves as both Claude Memory and is synchronized to other AI tools for consistent behavior."
+1. **Content Analysis**: Scan rule files for Claude-specific terminology and references
+2. **Target Mapping**: Determine appropriate substitutions per tool requirements
+3. **Content Adaptation**: Apply terminology replacements while preserving technical content
+4. **Reference Updates**: Update memory file references and tool-specific mentions
+5. **Quality Validation**: Ensure accuracy preservation and natural language flow
+6. **File Generation**: Create target-compatible rule files
+7. **Integration Testing**: Verify cross-rule references and structure integrity
 
-2. `23-workflow-patterns.md`:
-   - "Guidelines for development workflows, tool preferences, and coding practices that is integrated into Claude memory."
-   - "### Tool Preferences to Store in Claude Memory"
+### substitution-mappings
 
-## Adaptation Strategy
-
-### Universal Substitutions:
-- "Claude Memory" → "AI Memory" (most universal)
-- "Claude Code" → "AI Development Tool" or target-specific name
-- "Integrated into Claude memory" → "Available to AI agents"
-- "Store in Claude Memory" → "Store in AI Memory"
-
-### Target-Specific Adaptations:
-
-#### For Factory/Droid CLI:
-- "Claude Memory" → "Droid Memory"
-- "Claude Code" → "Factory/Droid CLI"
-- References align with DROID.md
-
-#### For Qwen CLI:
-- "Claude Memory" → "Qwen Memory"
-- "Claude Code" → "Qwen CLI"
-- References align with QWEN.md
-
-#### For Codex CLI:
-- "Claude Memory" → "Codex Memory"
-- "Claude Code" → "Codex CLI"
-- References align with CODEX.md
-
-#### For Universal (all tools):
+**Universal Replacements:**
 - "Claude Memory" → "AI Memory"
 - "Claude Code" → "AI Development Tool"
-- Make completely tool-agnostic
+- "Store in Claude Memory" → "Store in AI Memory"
+- "Integrated into Claude memory" → "Available to AI agents"
 
-## Execution Process
+**Target-Specific Adaptations:**
+- **Factory/Droid**: Claude Memory → Droid Memory
+- **Qwen CLI**: Claude Memory → Qwen Memory, Claude Code → Qwen CLI
+- **Codex CLI**: Claude Memory → Codex Memory, Claude Code → Codex CLI
+- **OpenCode**: Align with OPENCODE.md references
+- **Amp CLI**: Claude Memory → AGENTS.md guidance, `@CLAUDE.md` → `@AGENTS.md`
 
-### For each target tool:
-1. Create adapted rule files:
-   - Read original rule files from `~/.claude/rules/`
-   - Apply target-specific substitutions
-   - Preserve all technical content and structure
-   - Update file headers and descriptions
+### content-preservation-rules
 
-2. Update synchronized rules:
-   - Replace existing rule files in target directories
-   - Maintain file structure and naming
-   - Ensure proper file permissions
+**Technical Integrity:**
+- Preserve all code examples, best practices, and technical guidelines
+- Maintain rule structure and organizational hierarchy
+- Keep cross-references between rules functional
+- Ensure technical terminology accuracy
 
-3. Verify adaptations:
-   - Check that no Claude-specific references remain
-   - Verify technical accuracy is maintained
-   - Test that content flows naturally with substitutions
+**Language Consistency:**
+- Apply natural, contextually appropriate substitutions
+- Maintain professional tone and grammatical correctness
+- Avoid awkward phrasing or forced terminology changes
+- Preserve readability and comprehension
 
-## Quality Assurance
+**Tool Appropriateness:**
+- Align references with target tool's memory system
+- Ensure context relevance for each specific platform
+- Avoid conflicting terminology within adapted content
+- Maintain coherence with target tool's documentation style
 
-### Content Integrity:
--  Technical guidelines remain unchanged
--  Code examples and practices preserved
--  Rule structure and organization maintained
--  Cross-references between rules still work
+## output
 
-### Language Consistency:
--  Substitutions feel natural and appropriate
--  No awkward phrasing or grammatical issues
--  Technical terminology remains accurate
--  Professional tone maintained
+**Generated Files:**
+- Target-adapted rule files with updated terminology
+- Preserved technical content and structure
+- Updated file headers and descriptions
 
-### Tool Appropriateness:
--  References align with target tool's memory file
--  Context makes sense for each specific tool
--  No conflicting terminology introduced
+**Documentation:**
+- Comprehensive substitution report with all changes made
+- Before/after comparisons for significant modifications
+- Guidelines for future rule content maintenance
+- Quality assurance validation results
 
-## Output Requirements
+**Quality Reports:**
+- Content integrity verification results
+- Language consistency assessment
+- Tool appropriateness validation
+- Cross-reference functionality testing
 
-### Generate:
-- Adapted rule files for each target tool
-- Summary of changes made
-- Verification that all Claude references have been addressed
-- Recommendation for ongoing maintenance
+## quality-assurance
 
-### Document:
-- List of all substitutions made
-- Before/after comparisons for major changes
-- Any content that required creative adaptation
-- Guidelines for future rule updates
+1. **Content Verification:**
+   - Technical guidelines unchanged from original
+   - Code examples and practices preserved completely
+   - Rule structure and organization maintained
+   - Cross-rule references remain functional
 
-## Safety Considerations
-- Back up original rule files before modification
-- Test that technical accuracy is preserved
-- Ensure no loss of important information
-- Maintain ability to rollback changes if needed
+2. **Language Validation:**
+   - Substitutions appear natural and appropriate
+   - No grammatical issues or awkward phrasing
+   - Technical terminology remains accurate
+   - Professional tone consistently maintained
 
-## Usage Examples
+3. **Tool Compatibility:**
+   - References align with target tool memory files
+   - Context makes sense for each specific platform
+   - No conflicting terminology introduced
+   - Integration with tool documentation verified
+
+## safety-constraints
+
+1. **Backup Creation**: Generate backups of original rule files before modification
+2. **Content Integrity**: Verify no loss of important technical information
+3. **Rollback Capability**: Maintain ability to restore original content if needed
+4. **Validation Testing**: Test that adaptations maintain rule effectiveness
+5. **Reference Consistency**: Ensure all internal references remain valid
+
+## examples
+
 ```bash
-# Adapt for all target tools
-/config-sync:adapt-rules-content--target=all
+# Adapt rules for all target tools
+/config-sync:adapt-rules-content --target=all
 
-# Adapt for specific tool
-/config-sync:adapt-rules-content--target=droid
+# Create universal tool-agnostic version
+/config-sync:adapt-rules-content --target=amp
 
-# Create universal version
-/config-sync:adapt-rules-content--target=universal
+# Adapt for specific tool platform
+/config-sync:adapt-rules-content --target=droid
 ```
+
+## error-handling
+
+**Processing Errors:**
+- Invalid target specification: List supported platforms and exit
+- File access permissions: Log specific file errors, continue with available files
+- Content parsing failures: Skip problematic files, document issues
+
+**Quality Issues:**
+- Awkward substitutions detected: Flag for manual review
+- Technical accuracy concerns: Require validation before completion
+- Reference validation failures: Generate detailed error reports
+
+**Integration Problems:**
+- Cross-rule reference failures: Document broken links, provide fixes
+- Tool compatibility issues: Flag for manual adaptation
+- Structure preservation failures: Require manual intervention

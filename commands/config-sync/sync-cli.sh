@@ -75,7 +75,7 @@ Usage: sync-cli.sh [options]
 
 Options:
   --action=<sync|analyze|verify|adapt|plan|report>
-  --target=<droid,qwen,codex,opencode|all>
+  --target=<droid,qwen,codex,opencode,amp|all>
   --components=<rules,permissions,commands,settings,memory|all>
   --adapter=<commands|permissions|rules|memory|settings>     (required for --action=adapt)
   --profile=<fast|full|custom>
