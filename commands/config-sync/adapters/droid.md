@@ -1,10 +1,7 @@
 ---
-file-type: command
 command: /config-sync:droid
 description: Droid CLI operations with full YAML frontmatter compatibility and JSON permissions
-implementation: commands/config-sync/adapters/droid.md
 argument-hint: "--action=<sync|analyze|verify> --component=<rules,commands,settings,memory|all>"
-scope: Included
 allowed-tools:
   - Read
   - Write

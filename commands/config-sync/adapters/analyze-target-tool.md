@@ -1,10 +1,7 @@
 ---
-file-type: command
 command: /config-sync:analyze-target-tool
 description: Analyze target tool configuration capabilities and adaptation requirements
-implementation: commands/config-sync/adapters/analyze-target-tool.md
 argument-hint: "--target=<droid|qwen|codex|opencode|amp>"
-scope: Included
 allowed-tools:
   - Read
   - Bash

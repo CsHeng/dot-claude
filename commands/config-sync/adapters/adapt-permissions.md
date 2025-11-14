@@ -1,10 +1,7 @@
 ---
-file-type: command
 command: /config-sync:adapt-permissions
 description: Adapt Claude permissions to target tool configuration formats
-implementation: commands/config-sync/adapters/adapt-permissions.md
 argument-hint: "--target=<droid|qwen|codex|opencode|amp>"
-scope: Included
 allowed-tools:
   - Read
   - Write

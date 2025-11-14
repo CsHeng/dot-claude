@@ -2,8 +2,6 @@
 # This file contains all IDE-specific headers that were previously embedded in individual rule files.
 # During sync, appropriate headers are injected into target IDE files based on the filename.
 
-version: "1.0"
-created: "2025-11-13"
 description: "IDE-specific header mappings for Claude rule files synchronization"
 
 # Header templates for each IDE

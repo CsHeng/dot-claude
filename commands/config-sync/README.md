@@ -1,9 +1,6 @@
 ---
-file-type: command
 command: /config-sync/README
 description: Configuration synchronization plugin documentation and reference
-implementation: commands/config-sync/README.md
-scope: Included
 related-commands:
   - /config-sync/sync-cli
   - /config-sync/sync-project-rules

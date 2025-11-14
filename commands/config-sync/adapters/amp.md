@@ -1,10 +1,7 @@
 ---
-file-type: command
 command: /config-sync:amp
 description: Amp CLI operations with AGENTS.md integration and amp.permissions configuration
-implementation: commands/config-sync/adapters/amp.md
 argument-hint: "--action=<sync|analyze|verify> --component=<rules,permissions,commands,settings,memory|all>"
-scope: Included
 allowed-tools:
   - Read
   - Write

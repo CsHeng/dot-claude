@@ -1,9 +1,6 @@
 ---
-file-type: command
 command: /doc-gen:lib-common
 description: Shared conventions and formatting standards for doc-gen adapters
-implementation: commands/doc-gen/lib/common.md
-scope: Included
 related-commands:
   - /doc-gen:bootstrap
 related-agents:

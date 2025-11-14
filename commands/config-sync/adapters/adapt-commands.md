@@ -1,10 +1,7 @@
 ---
-file-type: command
 command: /config-sync:adapt-commands
 description: Adapt Claude commands for universal tool compatibility across AI platforms
-implementation: commands/config-sync/adapters/adapt-commands.md
 argument-hint: "--target=<droid|qwen|codex|opencode|amp>"
-scope: Included
 allowed-tools:
   - Read
   - Write

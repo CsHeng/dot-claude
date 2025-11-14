@@ -1,8 +1,5 @@
 ---
-file-type: memory
 description: Agent and skill selection configuration
-implementation: CLAUDE.md
-scope: Included
 related-skills:
   - skill:workflow-discipline
   - skill:architecture-patterns

@@ -1,10 +1,7 @@
 ---
-file-type: command
 command: /config-sync:opencode
 description: OpenCode CLI operations with JSON command conversion and operation-based permissions
-implementation: commands/config-sync/adapters/opencode.md
 argument-hint: "--action=<sync|analyze|verify> --component=<rules,permissions,commands,settings,memory|all>"
-scope: Included
 allowed-tools:
   - Read
   - Write

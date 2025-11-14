@@ -1,9 +1,6 @@
 ---
-file-type: skill
 skill: security-logging
 description: Security controls and structured logging implementation
-implementation: skills/security-logging/SKILL.md
-scope: Included
 allowed-tools:
   - Bash(shellcheck)
   - Bash(grep -E '^[[:space:]]*[^[:space:]]+[[:space:]]*=')

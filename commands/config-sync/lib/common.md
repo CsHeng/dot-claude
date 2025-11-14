@@ -1,9 +1,6 @@
 ---
-file-type: command
 command: /config-sync:lib-common
 description: Common utility function references for config-sync operations
-implementation: commands/config-sync/lib/common.md
-scope: Included
 related-commands:
   - /config-sync/sync-cli
   - /config-sync/sync-project-rules

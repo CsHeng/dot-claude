@@ -1,9 +1,6 @@
 ---
-file-type: command
 command: /doc-gen/README
 description: Documentation generation plugin overview and usage reference
-implementation: commands/doc-gen/README.md
-scope: Included
 related-commands:
   - /doc-gen:bootstrap
 related-agents:

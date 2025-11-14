@@ -1,9 +1,6 @@
 ---
-file-type: skill
 skill: deployment-docker
 description: Docker and containerization guidelines
-implementation: skills/deployment-docker/SKILL.md
-scope: Included
 related-skills:
   - skill:environment-validation
   - skill:security-logging

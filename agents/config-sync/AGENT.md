@@ -1,8 +1,6 @@
 ---
 name: "agent:config-sync"
 description: "Orchestrate configuration synchronization workflows across IDE, CLI, and project environments"
-version: "2.0.0"
-type: "orchestration"
 required-skills:
   - skill:workflow-discipline
   - skill:security-logging

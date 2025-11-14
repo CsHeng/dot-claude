@@ -1,10 +1,7 @@
 ---
-file-type: command
 command: /draft-commit-message
 description: Propose a commit message from current git status (no commit)
-implementation: commands/draft-commit-message.md
 argument-hint: "[optional-summary-notes]"
-scope: Included
 allowed-tools:
   - Bash
   - Bash(git rev-parse --git-dir)

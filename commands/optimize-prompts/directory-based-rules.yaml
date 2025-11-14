@@ -1,0 +1,56 @@
+# Directory-Based Classification Rules
+# Classification based purely on directory structure, not file types
+
+# Directory Classification Rules
+skills:
+  directory_pattern: "skills/**/SKILL.md"
+  framework: "SIMPLE"
+  classification_logic: "Directory name 'skills' indicates model-invoked autonomous capabilities"
+  preserve:
+    - "name:" "description:"  # Required official fields
+    - "Use when"  # Official trigger format
+    - "tags:" "source:" "capability:"  # RFC manifest fields
+  remove:
+    - "conversational content"
+    - "unnecessary complexity"
+
+commands:
+  directory_pattern: "commands/**/*.md"
+  framework: "DEPTH"
+  classification_logic: "Directory name 'commands' indicates user-invoked slash commands"
+  preserve:
+    - "allowed-tools:"  # Tool permissions
+    - "argument-hint:"  # Usage guidance
+    - "(default: "  # Parameter defaults
+    - "```bash"  # Usage examples
+    - "Exit code:"  # Error handling
+  remove:
+    - "verbose explanations"
+
+agents:
+  directory_pattern: "agents/**/*.md"
+  framework: "COMPLEX"
+  classification_logic: "Directory name 'agents' indicates subagents with delegation capabilities"
+  preserve:
+    - "name:" "description:" "tools:" "model:"  # Official fields
+    - "default-skills:" "optional-skills:" "supported-commands:"  # RFC manifest fields
+    - "routing logic"  # Critical for delegation
+  remove:
+    - "redundant descriptions"
+
+rules:
+  directory_pattern: "rules/**/*.md"
+  framework: "SIMPLE"
+  classification_logic: "Directory name 'rules' indicates imperative rule files"
+  preserve:
+    - "REQUIRED:" "PROHIBITED:" "OPTIONAL:"  # Rule formats
+  remove:
+    - "all narrative content"
+    - "explanatory text"
+
+# Classification Algorithm
+# Files are classified by their directory path, not by content analysis:
+# 1. Check if path matches directory_pattern above
+# 2. Apply corresponding framework and preservation rules
+# 3. Use directory name as primary classification method
+# 4. No need for content-based type detection

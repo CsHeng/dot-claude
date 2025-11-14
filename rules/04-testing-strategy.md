@@ -1,8 +1,3 @@
----
-file-type: rule
-scope: testing-strategy
----
-
 # Testing Strategy Directives
 
 ## scope
