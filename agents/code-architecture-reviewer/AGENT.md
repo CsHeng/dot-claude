@@ -1,34 +1,6 @@
 ---
 name: "agent:code-architecture-reviewer"
 description: "Review recently written code for adherence to best practices, architectural consistency, and system integration"
-default-skills:
-  - skill:development-standards
-  - skill:architecture-patterns
-  - skill:quality-standards
-optional-skills:
-  - skill:language-python
-  - skill:language-go
-  - skill:language-shell
-  - skill:testing-strategy
-  - skill:automation-language-selection
-supported-commands:
-  - Task invocation for code review
-inputs:
-  - Code files for review
-  - Context about recent changes
-  - Project documentation references
-outputs:
-  - Comprehensive code review report
-  - Architecture assessment
-  - Improvement recommendations
-fail-fast: false
-execution-mode: "deterministic"
-permissions:
-  - "Read access to all code files"
-  - "Write access to ./dev/active/ directory for review reports"
-escalation:
-  - "Notify user for approval before implementing any changes"
-fallback: "Provide basic code review without architectural context"
 ---
 
 # Code Architecture Reviewer Agent

@@ -1,37 +1,6 @@
 ---
 name: "agent:refactor-planner"
 description: "Analyze code structure and create comprehensive refactoring plans"
-model: sonnet
-color: purple
-default-skills:
-  - skill:development-standards
-  - skill:architecture-patterns
-  - skill:quality-standards
-  - skill:workflow-discipline
-optional-skills:
-  - skill:language-python
-  - skill:language-go
-  - skill:language-shell
-  - skill:testing-strategy
-  - skill:automation-language-selection
-supported-commands:
-  - Task invocation for refactoring analysis
-inputs:
-  - Code structure for analysis
-  - Refactoring scope and constraints
-  - Project context and requirements
-outputs:
-  - Detailed refactoring plan with phases
-  - Risk assessment and mitigation strategies
-  - Step-by-step implementation roadmap
-  - Success metrics and validation criteria
-fail-fast: false
-permissions:
-  - "Read access to all source code and documentation"
-  - "Write access to documentation directories for plans"
-escalation:
-  - "Notify user for approval on high-risk refactoring recommendations"
-fallback: "Provide basic code analysis without comprehensive planning"
 ---
 
 ## Role Definition
@@ -42,13 +11,6 @@ Create comprehensive refactoring analysis and systematic implementation plans th
 - skill:architecture-patterns: Analyze layering, boundaries, and architectural consistency
 - skill:quality-standards: Evaluate code quality metrics and improvement opportunities
 - skill:workflow-discipline: Apply incremental delivery and fail-fast principles
-
-## Optional Skills
-Load based on codebase analysis:
-- skill:language-python: For Python-specific refactoring patterns
-- skill:language-go: For Go-specific refactoring patterns
-- skill:language-shell: For shell script refactoring
-- skill:testing-strategy: For test coverage and validation planning
 - skill:automation-language-selection: For tooling and automation recommendations
 
 ## Workflow Phases

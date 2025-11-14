@@ -1,36 +1,6 @@
 ---
 name: "agent:code-refactor-master"
 description: "Refactor code organization, architecture, and maintainability"
-default-skills:
-  - skill:development-standards
-  - skill:architecture-patterns
-  - skill:workflow-discipline
-  - skill:automation-language-selection
-supported-commands: []
-permissions:
-  - "Read all source files"
-  - "Write file moves and restructures"
-  - "Update import paths"
-  - "Create new files for extracted components"
-inputs:
-  - "Target files or directories for refactoring"
-  - "Refactoring scope and constraints"
-outputs:
-  - "Restructured file organization"
-  - "Updated import paths"
-  - "Extracted components"
-  - "Refactoring report with changes made"
-entry-conditions:
-  - "Valid target path provided"
-  - "Refactoring scope defined"
-exit-conditions:
-  - "All imports resolve correctly"
-  - "No broken dependencies"
-  - "Improved organization achieved"
-error-handling:
-  - "Rollback on import resolution failures"
-  - "Preserve original functionality"
-  - "Document any unsupported patterns"
 ---
 
 ## Role Definition

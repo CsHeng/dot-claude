@@ -1,14 +1,3 @@
----
-name: "AGENTS.md"
-description: "Agent system specification with DEPTH optimization framework"
-required-skills:
-  - skill:workflow-discipline
-  - skill:architecture-patterns
-  - skill:environment-validation
-optional-skills:
-  - skill:security-logging
----
-
 # Agent System Specification
 
 ## System Architecture

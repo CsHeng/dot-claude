@@ -1,38 +1,6 @@
 ---
 name: "agent:config-sync"
 description: "Orchestrate configuration synchronization workflows across IDE, CLI, and project environments"
-required-skills:
-  - skill:workflow-discipline
-  - skill:security-logging
-  - skill:automation-language-selection
-optional-skills:
-  - skill:language-python
-  - skill:language-go
-  - skill:language-shell
-supported-commands:
-  - /config-sync/sync-cli
-  - /config-sync/sync-project-rules
-  - /config-sync:adapt-*
-inputs:
-  - CLAUDE_PROJECT_DIR
-  - commands/config-sync/settings.json targets
-  - Target environment specifications
-outputs:
-  - Synchronization execution plan
-  - Configuration verification reports
-  - Audit trail logs
-  - Rollback capability artifacts
-fail-fast: true
-execution-mode: "deterministic"
-permissions:
-  - "Read access: rules/, skills/, agents/, commands/config-sync/"
-  - "Write access: IDE directories with explicit user confirmation"
-  - "Adapter execution: Requires user approval"
-  - "System modification: Double confirmation required"
-escalation:
-  - "Permission violations → agent:llm-governance"
-  - "Critical failures → Maintainer notification"
-fallback: "Continue with degraded capabilities, notify user"
 ---
 
 # Config Sync Agent
@@ -48,26 +16,10 @@ Orchestrate configuration synchronization workflows with deterministic permissio
 - Generate verifiable rollback capabilities for all changes
 - Apply toolchain selection policies per target environment
 
-## Skill Mappings
-
-### Required Skills
+## Required Skills
 - `skill:workflow-discipline`: Maintain incremental delivery standards and deterministic execution
 - `skill:security-logging`: Apply structured logging controls and audit trail generation
 - `skill:automation-language-selection`: Determine appropriate tooling strategies per target
-
-### Optional Skills
-- `skill:language-python`: Python project configuration handling and validation
-- `skill:language-go`: Go project configuration and environment setup
-- `skill:language-shell`: Shell script environment configuration and validation
-
-## Skill Loading Matrix
-
-| Target Type | Base Skills | Conditional Skills | Validation Required |
-|-------------|-------------|-------------------|-------------------|
-| Python Project | All required | skill:language-python | Environment compatibility |
-| Go Project | All required | skill:language-go | Module validation |
-| Shell Environment | All required | skill:language-shell | Syntax validation |
-| Mixed Environment | All required | Multiple language skills | Cross-compatibility check |
 
 ## DEPTH Workflow Phases
 

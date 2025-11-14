@@ -1,13 +1,3 @@
----
-name: "CLAUDE.md"
-description: "Memory configuration and routing rules"
-required-skills:
-  - skill:workflow-discipline
-  - skill:environment-validation
-related-skills:
-  - skill:architecture-patterns
----
-
 # Memory Configuration
 
 ## Rule-Loading Conditions

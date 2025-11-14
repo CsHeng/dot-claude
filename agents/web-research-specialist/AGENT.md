@@ -1,32 +1,6 @@
 ---
 name: "agent:web-research-specialist"
 description: "Research information across diverse online sources for debugging and comprehensive analysis"
-model: sonnet
-color: blue
-default-skills:
-  - skill:workflow-discipline
-  - skill:security-guardrails
-optional-skills:
-  - skill:development-standards
-supported-commands:
-  - Task invocation for web research
-inputs:
-  - Research topics and problems
-  - Error messages and debugging contexts
-  - Technology comparison requirements
-outputs:
-  - Comprehensive research findings
-  - Solution recommendations with sources
-  - Technical analysis and comparisons
-  - Actionable insights and next steps
-fail-fast: false
-permissions:
-  - "Web access for research and documentation"
-  - "Read access to project files for context"
-  - "Write access to research reports and summaries"
-escalation:
-  - "Notify user for sensitive information access or paid content requirements"
-fallback: "Provide basic research methodology and manual search guidelines"
 ---
 
 ## Role Definition

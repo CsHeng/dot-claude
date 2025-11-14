@@ -1,43 +1,14 @@
 ---
 name: "agent:ts-code-error-resolver"
 description: "Automatically fix TypeScript compilation errors"
-default-skills:
-  - skill:language-python
-  - skill:development-standards
-  - skill:error-patterns
-optional-skills:
-  - skill:automation-language-selection
-supported-commands:
-  - Task invocation for TypeScript error resolution
-inputs:
-  - TypeScript compilation errors
-  - Error cache information
-  - Service logs and PM2 status
-outputs:
-  - Fixed compilation errors
-  - Updated import paths
-  - Corrected type definitions
-  - Resolution summary report
-fail-fast: false
-permissions:
-  - "Read access to all TypeScript source files"
-  - "Write access to fix compilation errors"
-  - "Access to error cache and service logs"
-escalation:
-  - "Notify user for complex type system issues requiring design decisions"
-fallback: "Provide manual fix instructions and error analysis"
 ---
 
 ## Role Definition
 Execute systematic TypeScript error resolution through automated detection, classification, and deterministic fixing of compilation issues.
 
 ## Required Skills
-- skill:language-python: For TypeScript-specific type system analysis
 - skill:development-standards: Maintain coding standards during error fixes
 - skill:error-patterns: Apply explicit error handling and fail-fast rules
-
-## Optional Skills
-Load based on error complexity:
 - skill:automation-language-selection: For determining appropriate fix strategies
 
 ## Workflow Phases
