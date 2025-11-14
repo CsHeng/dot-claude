@@ -3,11 +3,11 @@
 Unified Memory → Agent → Skill architecture for Claude Code plus tooling to sync rules and commands into IDEs and external CLIs.
 
 ## Overview
-- **Memory files** (`CLAUDE.md`, `AGENTS.md`) route every task to an agent, which in turn loads the required skills.
-- **Skills** (`skills/<name>/SKILL.md`) package single capabilities (toolchain checks, workflow rules, LLM governance, etc.).
-- **Agents** (`agents/<name>/AGENT.md`) describe how slash commands should run: inputs, outputs, permissions, fail-fast rules.
-- **Commands** (`commands/**`) remain pure tools (shell scripts, documentation prompts). They rely on agents/skills for policy.
-- **Config-sync** copies the configuration into IDE workspaces or CLI tools.
+- Memory files (`CLAUDE.md`, `AGENTS.md`) route every task to an agent, which in turn loads the required skills.
+- Skills (`skills/<name>/SKILL.md`) package single capabilities (toolchain checks, workflow rules, LLM governance, etc.).
+- Agents (`agents/<name>/AGENT.md`) describe how slash commands should run: inputs, outputs, permissions, fail-fast rules.
+- Commands (`commands/**`) remain pure tools (shell scripts, documentation prompts). They rely on agents/skills for policy.
+- Config-sync copies the configuration into IDE workspaces or CLI tools.
 
 ## Repository Layout
 ```
@@ -43,9 +43,9 @@ claude /config-sync:sync-cli --action=sync --target=all --components=all
 ```
 
 ## Memory → Agent → Skill
-- **CLAUDE.md** lists agents and their default/optional skills; Memory no longer enumerates rule files directly.
-- **Agents** (e.g., `agent:config-sync`, `agent:doc-gen`, `agent:workflow-helper`) describe responsibilities, required inputs, permissions, fallback behavior.
-- **Skills** (e.g., `skill:toolchain-baseline`, `skill:workflow-discipline`, `skill:llm-governance`, `skill:language-python`) cite the relevant `rules/` sections and provide validation steps.
+- CLAUDE.md lists agents and their default/optional skills; Memory no longer enumerates rule files directly.
+- Agents (e.g., `agent:config-sync`, `agent:doc-gen`, `agent:workflow-helper`) describe responsibilities, required inputs, permissions, fallback behavior.
+- Skills (e.g., `skill:toolchain-baseline`, `skill:workflow-discipline`, `skill:llm-governance`, `skill:language-python`) cite the relevant `rules/` sections and provide validation steps.
 - Commands reference agents in their README to show which skills are active.
 
 ## Key Commands
@@ -53,7 +53,7 @@ claude /config-sync:sync-cli --action=sync --target=all --components=all
 | --- | --- | --- |
 | Config Sync | `/config-sync/sync-cli`, `/config-sync/sync-project-rules`, `/config-sync:*` | Sync rules/commands/memory to IDE and CLI targets |
 | Documentation | `/doc-gen:*` | Generate architecture/integration docs via adapters |
-| Reviews | `/review-llm-prompts`, `/review-shell-syntax` | LLM prompt governance and shell linting |
+| Reviews | `/optimize-prompts`, `/review-shell-syntax` | LLM prompt optimization and shell linting |
 | Workflow Helpers | `/commands:draft-commit-message` | Git helper |
 
 See `docs/commands.md` for the complete list.
@@ -87,7 +87,7 @@ claude /config-sync:sync-project-rules --all --project-root=/repo/path
 - Edit rules/skills/agents; CLAUDE automatically loads them
 - Run `/config-sync:sync-project-rules` after rule updates to push to IDE directories
 - Run `/config-sync:sync-cli --action=sync` to push to CLI targets
-- Use `/review-llm-prompts` to audit commands/skills/docs after changes
+- Use `/optimize-prompts` to audit and optimize LLM-facing files after changes
 
 ## Maintenance
 ```bash
@@ -102,7 +102,7 @@ claude /config-sync:sync-cli --action=verify --target=all
 ```
 
 ### Extending the System
-1. **New skill**: create `skills/<category>-<name>/SKILL.md`, cite rule sections, run `/review-llm-prompts --target=skills/<name>`.
+1. **New skill**: create `skills/<category>-<name>/SKILL.md`, cite rule sections, run `/optimize-prompts --target=skills/<name>`.
 2. **New agent**: create `agents/<domain>-<role>/AGENT.md`, hook it up to commands in their README, and add it to CLAUDE.md.
 3. **New command**: add `commands/<name>.md`, describe agent mapping, and follow the slash-command spec.
 

@@ -1,8 +1,19 @@
 ---
 name: "doc-gen:android-app"
-description: Adapter for Android application documentation bootstrap/maintenance
-argument-hint: --mode=<bootstrap|maintain> --repo=<path> --docs=<path> --core=<path> [--demo=<path>]
-allowed-tools: Read, Write, ApplyPatch, Bash(rg:*), Bash(ls:*), Bash(find:*), Bash(tree:*), Bash(cat:*), Bash(plantuml --check-syntax:*)
+description: "Adapter for Android application documentation bootstrap/maintenance"
+argument-hint: "--mode=<bootstrap|maintain> --repo=<path> --docs=<path> --core=<path> [--demo=<path>]"
+allowed-tools:
+  - Read
+  - Write
+  - ApplyPatch
+  - Bash
+  - Bash(rg:*)
+  - Bash(ls:*)
+  - Bash(find:*)
+  - Bash(tree:*)
+  - Bash(cat:*)
+  - Bash(plantuml --check-syntax:*)
+is_background: false
 ---
 
 ## Scope

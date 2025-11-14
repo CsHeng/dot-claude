@@ -30,7 +30,7 @@ The commands directory contains slash commands for various workflows including c
 │       └── web-admin.md
 ├── draft-commit-message.md         # Git commit message drafting
 ├── review-shell-syntax.md          # Shell script validation
-└── review-llm-prompts.md           # LLM prompt compliance review
+└── optimize-prompts.md             # DEPTH-based LLM-facing file optimization
 ```
 
 ## Available Commands
@@ -49,6 +49,7 @@ The commands directory contains slash commands for various workflows including c
 | `/config-sync:qwen` | Qwen CLI specific operations | Tool-specific sync/analyze/verify |
 | `/config-sync:codex` | Codex CLI-specific operations (handled via config-sync) | Tool-specific sync/analyze/verify |
 | `/config-sync:opencode` | OpenCode specific operations | Tool-specific sync/analyze/verify |
+| `/config-sync:amp` | Amp CLI specific operations | Tool-specific sync/analyze/verify |
 
 ### Documentation Generation Commands
 
@@ -67,7 +68,7 @@ The commands directory contains slash commands for various workflows including c
 |---------|---------|-------|
 | `/draft-commit-message` | Generate commit messages from git status | Current repository |
 | `/review-shell-syntax` | Validate shell script compliance | `rules/12-shell-guidelines.md` |
-| `/review-llm-prompts` | Review LLM prompt compliance | `rules/99-llm-prompt-writing-rules.md` |
+| `/optimize-prompts` | DEPTH-based LLM-facing file optimization | All LLM-facing files |
 
 ## Command Guidelines
 

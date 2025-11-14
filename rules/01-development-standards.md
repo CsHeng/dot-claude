@@ -1,147 +1,117 @@
 ---
-# Cursor Rules
-alwaysApply: true
-
-# Copilot Instructions
-applyTo: "**/*"
-
-# Kiro Steering
-inclusion: always
+file-type: rule
+scope: development-standards
 ---
 
-# General Development Guidelines
+# Development Standards Directives
 
-## Code Quality Standards
-- Use descriptive, explicit variable names that reveal intent and purpose
-- Replace hardcoded values with named constants
-- Adhere to existing project coding style and conventions
-- Prioritize code performance and security in all suggestions
+## scope
+REQUIRED: Apply these standards to all development activities across all programming languages, frameworks, and project types.
 
-## Naming Conventions
+## absolute-prohibitions
+PROHIBITED: Use abbreviations except universally understood ones (url, id, api)
+PROHIBITED: Mix high-level and low-level operations in the same function
+PROHIBITED: Ignore errors or use generic exception handling
+PROHIBITED: Write tests unless explicitly required or code is production-ready
 
-### Variables and Functions
-- Use descriptive names that reveal intent and purpose
-- Prefer `calculateTotalPrice()` over `calc()` or `getTotal()`
-- Boolean variables is questions: `isValid`, `hasPermission`, `canExecute`
-- Don't use abbreviations unless universally understood (`url`, `id`, `api`)
+## communication-protocol
+REQUIRED: Focus on implementation over explanations unless requested
+REQUIRED: Present verified information only
+REQUIRED: Reference actual project files, not generated content
+PROHIBITED: Use apologies or understanding confirmations in code or documentation
 
-### Constants and Configuration
-- Replace magic numbers with named constants
-- Use UPPER_SNAKE_CASE for constants: `MAX_RETRY_ATTEMPTS = 3`
-- Group related constants in dedicated files or sections
-- Include units in names when applicable: `TIMEOUT_SECONDS`, `MAX_FILE_SIZE_MB`
+## structural-rules
 
-## Function Design
+### function-design
+REQUIRED: Enforce single responsibility per function
+REQUIRED: Split functions requiring "and" for description
+REQUIRED: Limit function size to 10-20 lines typically
+REQUIRED: Extract complex conditionals into named helper functions
+REQUIRED: Limit parameters to maximum 3-4, use objects for more
+REQUIRED: Return early to reduce nesting
+REQUIRED: Use consistent return types
+OPTIONAL: Use explicit returns over implicit ones
 
-### Single Responsibility
-- Each function has one clear purpose
-- If you need "and" to describe what a function does, split it
-- Functions is small (typically 10-20 lines)
-- Extract complex conditionals into well-named helper functions
+### variable-and-naming
+REQUIRED: Use descriptive names revealing intent and purpose
+REQUIRED: Use explicit names: calculateTotalPrice() over calc() or getTotal()
+REQUIRED: Use Boolean variables in question format: isValid, hasPermission, canExecute
 
-### Parameters and Return Values
-- Limit function parameters (max 3-4, use objects for more)
-- Return early to reduce nesting
-- Use consistent return types
-- Prefer explicit returns over implicit ones
+### constants-and-configuration
+REQUIRED: Replace magic numbers with named constants
+REQUIRED: Use UPPER_SNAKE_CASE for constants: MAX_RETRY_ATTEMPTS = 3
+REQUIRED: Include units in constant names: TIMEOUT_SECONDS, MAX_FILE_SIZE_MB
+REQUIRED: Group related constants in dedicated files or sections
 
-## Architecture Patterns
-- Encourage modular design for maintainability and reusability
-- Ensure compatibility with project's language/framework versions
-- Use environment variables for configuration management
-- Handle edge cases and include assertions to validate assumptions
-- Keep related functionality together
-- Use consistent naming patterns for files and directories
+### file-organization
+REQUIRED: Place imports/dependencies at top of files
+REQUIRED: Organize code sections: constants, types, functions, exports
+OPTIONAL: Hide implementation details behind clear interfaces
+REQUIRED: Use appropriate data structures for problem domain
+OPTIONAL: Use consistent naming patterns for files and directories
 
-## Code Organization
+## language-rules
 
-### File Structure
-- Keep related functionality together
-- Use consistent naming patterns for files and directories
-- Place imports/dependencies at the top
-- Organize code sections logically (constants, types, functions, exports)
+### architecture
+REQUIRED: Require modular design for maintainability and reusability
+REQUIRED: Verify compatibility with project language/framework versions
+REQUIRED: Use environment variables for configuration management
+REQUIRED: Handle edge cases and include assertions for validation
+REQUIRED: Keep related functionality together
 
-### Abstraction Levels
-- Don't mix high-level and low-level operations in the same function
-- Hide implementation details behind clear interfaces
-- Use appropriate data structures for the problem domain
+### error-handling
+REQUIRED: Validate inputs at function boundaries
+REQUIRED: Handle edge cases explicitly
+REQUIRED: Use meaningful error messages
+REQUIRED: Fail fast when preconditions aren't met
+REQUIRED: Catch specific exceptions, not generic ones
+REQUIRED: Log errors with sufficient debugging context
+REQUIRED: Clean up resources in finally blocks or use-with patterns
 
-## Error Handling
+## formatting-rules
 
-### Defensive Programming
-- Validate inputs at function boundaries
-- Handle edge cases explicitly
-- Use meaningful error messages
-- Fail fast when preconditions aren't met
+### documentation-standards
+REQUIRED: Explain decision rationale, not code functionality
+REQUIRED: Document complex algorithms and business logic
+OPTIONAL: Add context for non-obvious side effects or dependencies
+OPTIONAL: Include examples for public APIs
+PROHIBITED: Write comments that restate code
+REQUIRED: Remove outdated or misleading comments immediately
 
-### Exception Management
-- Catch specific exceptions, not generic ones
-- Log errors with sufficient context for debugging
-- Clean up resources in finally blocks or use-with patterns
+### code-quality
+REQUIRED: Continuously improve code structure
+REQUIRED: Address technical debt promptly
+REQUIRED: Leave code cleaner than found
+REQUIRED: Refactor before adding new features to complex areas
+REQUIRED: Extract repeated logic into reusable functions
+REQUIRED: Create shared utilities for common operations
+REQUIRED: Maintain single sources of truth for configuration and constants
+OPTIONAL: Use templates or generators for repetitive code patterns
 
-## Documentation and Comments
+## naming-rules
 
-### When to Comment
-- Explain why decisions were made, not what the code does
-- Document complex algorithms and business logic
-- Add context for non-obvious side effects or dependencies
-- Include examples for public APIs
+### development-workflow
+REQUIRED: Make changes file by file for incremental review
+REQUIRED: Implement only explicitly requested changes
+REQUIRED: Preserve existing code structures and functionalities
+REQUIRED: Provide complete edits in single chunks per file
 
-### When NOT to Comment
-- Don't write comments that restate the code
-- Don't use comments to explain poorly named variables or functions
-- Remove outdated or misleading comments immediately
+## validation-rules
 
-## Code Quality Practices
+### testing
+REQUIRED: Write tests only when explicitly required
+REQUIRED: Test behavior, not implementation
+REQUIRED: Test edge cases and error conditions
+REQUIRED: Keep tests simple and readable
+REQUIRED: Use descriptive test names explaining scenarios
+REQUIRED: Group related tests logically
+REQUIRED: Keep test data minimal and focused
+OPTIONAL: Mock external dependencies appropriately
 
-### Refactoring
-- Continuously improve code structure
-- Address technical debt promptly
-- Leave code cleaner than you found it
-- Refactor before adding new features to complex areas
-
-### DRY Principle
-- Extract repeated logic into reusable functions
-- Create shared utilities for common operations
-- Maintain single sources of truth for configuration and constants
-- Use templates or generators for repetitive code patterns
-
-## Development Workflow
-- Make changes file by file to enable incremental review
-- Only implement explicitly requested changes
-- Preserve existing code structures and functionalities
-- Provide complete edits in single chunks per file
-- Suggest unit tests for new or modified code when explicitly required
-
-## Testing Guidelines
-
-### Test Strategy
-- Write tests only when explicitly required
-- Focus on testing behavior, not implementation
-- Test edge cases and error conditions
-- Keep tests simple and readable
-
-### Test Organization
-- Use descriptive test names that explain the scenario
-- Group related tests logically
-- Keep test data minimal and focused
-- Mock external dependencies appropriately
-
-## Version Control Standards
-
-### Commit Practices
-- Write clear, concise commit messages
-- Use imperative mood: "Add feature" not "Added feature"
-- Make atomic commits that represent single logical changes
-- Include context in commit body for complex changes
-
-### Branch Management
-- Use descriptive branch names: `feature/user-authentication`, `fix/memory-leak`
-- Keep branches focused on single features or fixes
-- Delete merged branches promptly
-
-## Communication Guidelines
-- Present verified information; don't speculate
-- Reference actual project files, not generated content
-- Focus on implementation over explanations unless requested
-- No apologies or understanding confirmations in code/docs
+### version-control
+REQUIRED: Use imperative mood for commit messages: "Add feature" not "Added feature"
+REQUIRED: Make atomic commits representing single logical changes
+OPTIONAL: Include context in commit body for complex changes
+REQUIRED: Use descriptive branch names: feature/user-authentication, fix/memory-leak
+REQUIRED: Keep branches focused on single features or fixes
+REQUIRED: Delete merged branches promptly

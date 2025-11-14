@@ -50,6 +50,7 @@ participant "Droid CLI" as droid_tool
 participant "Qwen CLI" as qwen_tool
 participant "Codex CLI" as codex_tool
 participant "OpenCode" as opencode_tool
+participant "Amp CLI" as amp_tool
 
 ' == INITIAL SETUP SEQUENCE ==
 group Initial Setup - Sync All Tools
@@ -57,7 +58,7 @@ group Initial Setup - Sync All Tools
     activate cli
 
     note over cli
-      parse_target_list("all") ⇒ droid,qwen,codex,opencode
+      parse_target_list("all") ⇒ droid,qwen,codex,opencode,amp
       parse_component_list("all") ⇒ commands,rules,settings,permissions,memory
       Phase pipeline: collect → analyze → plan → prepare → adapt → execute → verify → report
     end note
@@ -86,6 +87,11 @@ group Initial Setup - Sync All Tools
         activate opencode_tool
         opencode_tool --> analyze: OpenCode status report
         deactivate opencode_tool
+
+        analyze -> amp_tool: Check Amp installation & config
+        activate amp_tool
+        amp_tool --> analyze: Amp status report
+        deactivate amp_tool
     end
 
     analyze --> cli: Analysis complete (markdown/table/json format)
@@ -146,6 +152,11 @@ group Initial Setup - Sync All Tools
         activate opencode_tool
         opencode_tool --> cli: OpenCode configuration applied
         deactivate opencode_tool
+
+        cli -> amp_tool: Write ~/.config/amp/ configuration
+        activate amp_tool
+        amp_tool --> cli: Amp configuration applied
+        deactivate amp_tool
     end
 
     cli --> user: ✅ All tools synchronized successfully
@@ -179,6 +190,11 @@ group Verification Phase
         activate opencode_tool
         opencode_tool --> cli: OpenCode verification results
         deactivate opencode_tool
+
+        cli -> amp_tool: Verify Amp configuration integrity
+        activate amp_tool
+        amp_tool --> cli: Amp verification results
+        deactivate amp_tool
     end
 
     cli --> user: 📊 Detailed verification report with results
@@ -292,6 +308,7 @@ note right of cmd_adapter
     • TOML conversion for Qwen CLI
     • JSON conversion for OpenCode
     • Markdown preservation for Droid and Codex
+    • Markdown/executable mirroring for Amp CLI
     • Maintains command functionality across platforms
 end note
 
@@ -301,6 +318,7 @@ note right of memory_adapter
     • AGENTS.md → Universal agent instructions
     • Context preservation across tools
     • Tool-specific customization when needed
+    • Amp copies AGENTS.md into ~/.config/amp and ~/.config/
     • Maintains conversation continuity
 end note
 

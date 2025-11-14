@@ -1,23 +1,59 @@
 ---
 name: "skill:workflow-discipline"
-description: "Maintain incremental delivery, fail-fast behavior, and communication rules"
-tags: [workflow, default]
-source:
-  - rules/00-memory-rules.md#Development-Workflow-Preferences
-  - rules/00-memory-rules.md#Communication-Preferences
+description: "Maintain incremental delivery, fail-fast behavior, and structured communication"
 allowed-tools: []
-capability:
-  - "Incremental diffs, file-by-file commits, preserve existing comments"
-  - "Fail-fast with shell traps that print the failing line number"
-  - "Debug output must use `===` / `---` / `SUCCESS` / `ERROR` prefixes"
-  - "Respect the file’s existing language; eliminate unnecessary narration"
-usage:
-  - "Load by default for collaborative commands (config-sync, review, doc-gen)"
-validation:
-  - "`/review-llm-prompts` confirms command/docs follow the format"
-fallback: ""
 ---
 
-## Notes
-- Ensure command implementations emit required debug markers.
-- Combine with the agent’s fail-fast strategy.
+## Purpose
+Enforce workflow discipline including incremental development practices, fail-fast error handling, structured communication patterns, and debug output standards as defined in rules/00-memory-rules.md.
+
+## Deterministic Steps
+
+### 1. Atomic Commit Validation
+- Check: Execute `git log --oneline -1` to validate commit message focuses on single logical change
+- Verify: Run `git diff --name-only HEAD~1..HEAD` to ensure related files grouped together
+- Validate: Confirm no mixed concerns within single commit using code review
+- Enforce: Return specific error if commit violates atomic change principle
+
+### 2. Fail-Fast Mechanism Implementation
+- Check: Verify shell trap configuration with `set -euo pipefail` in all scripts
+- Validate: Confirm error handling provides line numbers and context
+- Test: Execute error conditions to ensure immediate failure propagation
+- Enforce: Require explicit error handling for all failure paths
+
+### 3. Structured Communication Compliance
+- Check: Scan output for required prefixes using pattern matching: `===`, `---`, `SUCCESS`, `ERROR`
+- Validate: Confirm debug messages follow ABSOLUTE mode without narration
+- Test: Verify communication eliminates filler content and conversational elements
+- Enforce: Return specific errors for non-compliant communication patterns
+
+### 4. Language and Context Preservation
+- Check: Validate existing code language and style patterns preserved
+- Verify: Confirm original comments and documentation maintained
+- Test: Ensure modifications respect established code context
+- Enforce: Require explicit justification for style deviations
+
+### 5. Collaborative Workflow Integration
+- Check: Validate agent handoff protocols and communication patterns
+- Verify: Confirm consistent workflow discipline across team interactions
+- Test: Ensure proper escalation and fallback mechanisms
+- Enforce: Require documentation of collaborative process changes
+
+## IO Semantics
+Input: Code modifications, workflow processes, communication patterns, debug output
+Output: Incremental changes, fail-fast behaviors, structured communication, enhanced collaboration
+Side Effects: Improved development flow, faster error detection, better communication clarity
+
+## Tool Safety
+- Test fail-fast mechanisms in controlled environments
+- Validate debug output does not expose sensitive information
+- Ensure incremental changes do not break system functionality
+- Backup code before applying automated modifications
+- Monitor workflow performance and error handling effectiveness
+
+## Validation Criteria
+- Commits atomic and focused on single logical changes
+- Fail-fast behavior implemented with proper error handling
+- Debug output follows structured prefix patterns
+- Communication respects ABSOLUTE mode and existing code context
+- Collaborative workflows consistent and efficient

@@ -118,7 +118,7 @@ backup_target_components() {
     # Backup tool-specific memory file
     local memory_filename
     memory_filename=$(get_tool_memory_filename "$target")
-    if [[ "$target" != "opencode" ]] && [[ -f "$target_dir/$memory_filename" ]]; then
+    if [[ "$target" != "opencode" && "$target" != "amp" ]] && [[ -f "$target_dir/$memory_filename" ]]; then
       if ! create_backup "$target_dir/$memory_filename" "$target_backup/$memory_filename"; then
         log_error "[backup] Failed to backup $memory_filename for $target"
         return 1
@@ -165,6 +165,11 @@ backup_target_components() {
         ;;
       opencode)
         perm_files+=("$target_dir/opencode.json")
+        ;;
+      amp)
+        if [[ "$has_settings" != true ]]; then
+          perm_files+=("$target_dir/settings.json")
+        fi
         ;;
     esac
 

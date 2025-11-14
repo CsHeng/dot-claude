@@ -6,7 +6,7 @@ set -euo pipefail
 validate_target() {
   local target="$1"
   case "$target" in
-    droid|qwen|codex|opencode|all) return 0 ;;
+    droid|qwen|codex|opencode|amp|all) return 0 ;;
     *)
       echo "[common] unsupported target: $target" >&2
       return 1
@@ -46,6 +46,9 @@ get_tool_memory_filename() {
         "opencode")
             echo "AGENTS.md"  # OpenCode uses AGENTS.md as primary memory
             ;;
+        "amp")
+            echo "AGENTS.md"
+            ;;
         *)
             echo ""
             ;;
@@ -79,6 +82,10 @@ get_target_config_dir() {
       local config_dir="${XDG_CONFIG_HOME:-$HOME/.config}/opencode"
       printf '%s\n' "$config_dir"
       ;;
+    amp)
+      local config_dir="${XDG_CONFIG_HOME:-$HOME/.config}/amp"
+      printf '%s\n' "$config_dir"
+      ;;
   esac
 }
 
@@ -89,6 +96,7 @@ get_target_rules_dir() {
     qwen)    printf '%s\n' "$HOME/.qwen/rules" ;;
     codex)   printf '%s\n' "$HOME/.codex/rules" ;;
     opencode) printf '%s\n' "$(get_target_config_dir opencode)/rules" ;;
+    amp) printf '%s\n' "$(get_target_config_dir amp)/rules" ;;
   esac
 }
 
@@ -103,6 +111,11 @@ get_target_commands_dir() {
       base="$(get_target_config_dir opencode)"
       printf '%s\n' "$base/command"
       ;;
+    amp)
+      local base
+      base="$(get_target_config_dir amp)"
+      printf '%s\n' "$base/commands"
+      ;;
   esac
 }
 
@@ -113,7 +126,7 @@ parse_target_list() {
   trimmed="$(printf '%s' "$raw" | tr '[:upper:]' '[:lower:]')"
   trimmed="${trimmed// /}"
 
-  local valid_targets=("droid" "qwen" "codex" "opencode")
+  local valid_targets=("droid" "qwen" "codex" "opencode" "amp")
 
   if [[ -z "$trimmed" ]]; then
     log_error "No target specified"
@@ -136,7 +149,7 @@ parse_target_list() {
       return 0
     fi
     case "$part" in
-      droid|qwen|codex|opencode) ;;
+      droid|qwen|codex|opencode|amp) ;;
       *)
         log_error "Invalid target specified: $part"
         return 1
