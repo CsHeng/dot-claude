@@ -6,7 +6,6 @@ default-skills:
   - skill:development-standards
   - skill:error-patterns
 optional-skills:
-  - skill:environment-validation
   - skill:automation-language-selection
 supported-commands:
   - Task invocation for TypeScript error resolution
@@ -39,7 +38,6 @@ Execute systematic TypeScript error resolution through automated detection, clas
 
 ## Optional Skills
 Load based on error complexity:
-- skill:environment-validation: For complex toolchain and build system issues
 - skill:automation-language-selection: For determining appropriate fix strategies
 
 ## Workflow Phases

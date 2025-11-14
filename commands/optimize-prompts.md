@@ -155,6 +155,7 @@ Then request explicit confirmation for writeback.
 
 ### 7. Writeback
 - When approved: Write candidate content to disk
+  - Confirm all candidates files are written successfully
 - When denied: Leave all files unchanged and retain analysis output
 
 ## Output

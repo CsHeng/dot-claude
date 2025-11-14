@@ -1,10 +1,6 @@
 ---
 skill: quality-standards
-version: 2.0.0
 description: Code quality metrics and continuous improvement
-confidence: high
-impact: high
-status: active
 ---
 
 # Code Quality Metrics Definition

@@ -1,10 +1,6 @@
 ---
 skill: security-guardrails
-version: 2.0.0
 description: Comprehensive security implementation standards
-confidence: high
-impact: high
-status: active
 ---
 
 # Credential Management Security

@@ -1,17 +1,10 @@
 ---
 name: "agent:llm-governance"
 description: "Execute LLM governance audits with deterministic rule validation and compliance reporting"
-version: "2.0.0"
-type: "governance"
 default-skills:
   - skill:llm-governance
   - skill:workflow-discipline
-optional-skills:
-  - skill:environment-validation
-conditional-skills:
-  - condition: "audit-complexity"
-    skills:
-      - skill:environment-validation: "Complex toolchain validations required"
+optional-skills: []
 supported-commands:
   - /optimize-prompts
 inputs:
@@ -57,83 +50,83 @@ Execute LLM governance audits with deterministic rule validation, comprehensive 
 - `skill:workflow-discipline`: Maintain incremental delivery standards and deterministic execution
 
 ### Optional Skills
-- `skill:environment-validation`: Complex toolchain validations and multi-project analysis
+- None currently.
 
 ## Skill Loading Matrix
 
-| Audit Complexity | Base Skills | Conditional Skills | Validation Focus |
-|------------------|-------------|-------------------|-----------------|
-| Simple File Check | All required | None | Basic governance rules |
-| Multi-File Audit | All required | skill:environment-validation | Cross-file consistency |
-| Complex Project | All required | skill:environment-validation | Toolchain integration |
-| System-Wide Review | All required | skill:environment-validation | Global compliance |
+| Audit Complexity | Base Skills (always loaded) | Additional Skills | Validation Focus |
+|------------------|----------------------------|-------------------|-----------------|
+| Simple File Check | skill:llm-governance + skill:workflow-discipline | None | Basic governance rules |
+| Multi-File Audit | skill:llm-governance + skill:workflow-discipline | None | Cross-file consistency |
+| Complex Project | skill:llm-governance + skill:workflow-discipline | None | Toolchain integration |
+| System-Wide Review | skill:llm-governance + skill:workflow-discipline | None | Global compliance |
 
 ## DEPTH Workflow Phases
 
 ### Phase 1: Target Analysis
-**Decision Policies**:
+Decision Policies:
 - Target parsing validation → Continue with clarification/Abort
 - File type classification → Map to applicable governance rules
 - Rule dependency analysis → Create validation scope matrix
 
-**Execution Steps**:
+Execution Steps:
 1. Parse CLAUDE target lists and manifests systematically
 2. Map file types to applicable governance rules and validation criteria
 3. Identify rule dependencies, conflicts, and priority levels
 4. Create validation scope matrix with severity classifications
 
-**Error Handling**:
+Error Handling:
 - Target parsing errors → Request user clarification, provide examples
 - File access errors → Skip inaccessible files, document in report
 - Rule conflict detection → Document conflicts, suggest resolutions
 
 ### Phase 2: Rule Loading
-**Decision Policies**:
+Decision Policies:
 - Rule set validation → Use default rules on failure/Continue
 - File-type rule mapping → Configure severity and priority levels
 - Rule consistency validation → Abort on critical conflicts
 
-**Execution Steps**:
+Execution Steps:
 1. Load comprehensive LLM governance rule set with version validation
 2. Apply file-type specific validation rules with severity weighting
 3. Configure rule severity levels and priority classifications
 4. Validate rule consistency and resolve conflicts automatically
 
-**Error Handling**:
+Error Handling:
 - Rule loading failures → Apply default rule set, log deficits and limitations
 - Rule configuration errors → Use standard severity levels, document deviations
 - Dependency conflicts → Attempt automatic resolution, document remaining issues
 
 ### Phase 3: Audit Execution
-**Decision Policies**:
+Decision Policies:
 - Systematic file analysis → Execute consistent validation patterns
 - Rule pattern application → Apply per file type with context awareness
 - Violation capture → Collect detailed context and specific examples
 
-**Execution Steps**:
+Execution Steps:
 1. Execute systematic file analysis with consistent validation patterns
 2. Apply rule patterns per file type with context-specific validation
 3. Capture detailed violation context, severity, and specific examples
 4. Generate structured violation reports with classification and prioritization
 
-**Error Handling**:
+Error Handling:
 - File analysis failures → Continue with available files, document analysis gaps
 - Rule application conflicts → Log conflicts, apply most restrictive rule
 - Validation engine errors → Fallback to basic rule checks, document limitations
 
 ### Phase 4: Reporting and Compliance
-**Decision Policies**:
+Decision Policies:
 - Report completeness validation → Generate full compliance assessment
 - Issue classification → Apply consistent severity and priority frameworks
 - Remediation planning → Create actionable, prioritized action plans
 
-**Execution Steps**:
+Execution Steps:
 1. Create Issue Summary with standardized severity classification
 2. Generate Remediation Plan with prioritized, actionable actions
 3. Produce Detailed Findings with specific examples and context
 4. Validate report completeness and compliance metric accuracy
 
-**Error Handling**:
+Error Handling:
 - Report generation failures → Simplify output format, maintain core findings
 - Compliance calculation errors → Use conservative estimates, document methodology
 - Output formatting issues → Fallback to plain text, ensure information preservation
@@ -151,10 +144,10 @@ Execute LLM governance audits with deterministic rule validation, comprehensive 
 | Report Generation Failure | Low | Simplify output | Maintain core findings |
 
 ### Fallback Procedures
-1. **Rule Loading Failures**: Apply basic governance standards (no emojis, ABSOLUTE mode)
-2. **File Access Failures**: Report inaccessible files, request permissions, continue audit
-3. **Complex Rule Application Failures**: Simplify to essential governance checks
-4. **Critical Governance Violations**: Immediate maintainer notification with full context
+1. Rule Loading Failures: Apply basic governance standards (no emojis, ABSOLUTE mode)
+2. File Access Failures: Report inaccessible files, request permissions, continue audit
+3. Complex Rule Application Failures: Simplify to essential governance checks
+4. Critical Governance Violations: Immediate maintainer notification with full context
 
 ## Decision Policies
 
@@ -171,8 +164,8 @@ IF no target specified:
     → Generate full compliance report
 
 IF audit complexity detected:
-    → Load environment-validation skill for enhanced validation
-    → Apply cross-file consistency checks
+    → Intensify toolchain checks (fd vs find, ast-grep availability, PATH hygiene)
+    → Apply cross-file consistency checks using the validated toolchain
     → Generate detailed compliance metrics
 ```
 
@@ -205,32 +198,32 @@ IF violation involves style/conventions:
 - Generate structured, actionable reports with specific examples
 
 ### Governance Standards
-- **Bold marker usage**: Consistent application across all content
-- **Emoji absence**: Zero tolerance for emoji usage
-- **Front matter structure**: Complete and standardized metadata
-- **Naming convention adherence**: Consistent and descriptive naming patterns
-- **Workflow determinism**: Predictable and repeatable execution patterns
+- Bold marker usage: Consistent application across all content
+- Emoji absence: Zero tolerance for emoji usage
+- Front matter structure: Complete and standardized metadata
+- Naming convention adherence: Consistent and descriptive naming patterns
+- Workflow determinism: Predictable and repeatable execution patterns
 
 ### Validation Criteria
-- **Content Quality**: Clear, concise, and actionable prompts
-- **Structural Integrity**: Proper front matter and hierarchical organization
-- **Naming Consistency**: Descriptive and standardized naming conventions
-- **ABSOLUTE Mode Application**: Precision and determinism in all content
-- **Workflow Determinism**: Predictable execution patterns and outputs
+- Content Quality: Clear, concise, and actionable prompts
+- Structural Integrity: Proper front matter and hierarchical organization
+- Naming Consistency: Descriptive and standardized naming conventions
+- ABSOLUTE Mode Application: Precision and determinism in all content
+- Workflow Determinism: Predictable execution patterns and outputs
 
 ## Output Requirements
 
 ### Required Report Structure
-1. **Executive Summary**: Critical findings and compliance metrics
-2. **Issue Summary**: Violations classified by severity and priority
-3. **Remediation Plan**: Specific, actionable steps with time estimates
-4. **Detailed Findings**: File-specific violations with examples and context
-5. **Compliance Metrics**: Trend analysis and improvement recommendations
-6. **Escalation Recommendations**: Critical issues requiring immediate attention
+1. Executive Summary: Critical findings and compliance metrics
+2. Issue Summary: Violations classified by severity and priority
+3. Remediation Plan: Specific, actionable steps with time estimates
+4. Detailed Findings: File-specific violations with examples and context
+5. Compliance Metrics: Trend analysis and improvement recommendations
+6. Escalation Recommendations: Critical issues requiring immediate attention
 
 ### Validation Criteria
-- **Report Completeness**: All audit findings documented with proper classification
-- **Actionability**: All recommendations specific and implementable
-- **Severity Accuracy**: Consistent application of severity frameworks
-- **Example Quality**: Specific, correct examples for all violation types
-- **Remediation Clarity**: Clear steps with expected outcomes and validation methods
+- Report Completeness: All audit findings documented with proper classification
+- Actionability: All recommendations specific and implementable
+- Severity Accuracy: Consistent application of severity frameworks
+- Example Quality: Specific, correct examples for all violation types
+- Remediation Clarity: Clear steps with expected outcomes and validation methods

@@ -1,8 +1,6 @@
 ---
 name: "agent:doc-gen"
 description: "Manage documentation generation and maintenance workflows with project-specific architecture adaptation"
-version: "2.0.0"
-type: "generation"
 required-skills:
   - skill:workflow-discipline
   - skill:security-logging
@@ -75,70 +73,70 @@ Manage documentation generation and maintenance workflows with project-specific 
 ## DEPTH Workflow Phases
 
 ### Phase 1: Project Analysis
-**Decision Policies**:
+Decision Policies:
 - Project type detection → Load appropriate language/architecture skills
 - Documentation mapping → Identify existing state and requirements
 - Architecture complexity → Determine need for advanced patterns
 
-**Execution Steps**:
+Execution Steps:
 1. Analyze project type, architecture, and complexity systematically
 2. Map documentation requirements, constraints, and integration points
 3. Identify existing documentation state and gap analysis requirements
 4. Create generation dependency matrix with prioritization logic
 
-**Error Handling**:
+Error Handling:
 - Project detection failures → Request user clarification, provide project type selection
 - Analysis incomplete → Continue with partial analysis, document limitations
 - Architecture complexity misassessment → Load additional skills as needed
 
 ### Phase 2: Skill Loading
-**Decision Policies**:
+Decision Policies:
 - Base skill validation → Abort on critical workflow/logging failures
 - Conditional skill loading → Load based on project type and complexity
 - Tooling compatibility → Validate tool availability and version requirements
 
-**Execution Steps**:
+Execution Steps:
 1. Load base workflow discipline and security logging skills
 2. Apply architecture patterns based on project complexity analysis
 3. Conditionally load language-specific documentation skills per project type
 4. Validate tooling compatibility and availability for generation pipeline
 
-**Error Handling**:
+Error Handling:
 - Required skill failures → Abort execution, request intervention
 - Optional skill failures → Continue with base capabilities, document deficits
 - Tooling compatibility issues → Suggest alternatives, adjust generation strategy
 
 ### Phase 3: Orchestration Execution
-**Decision Policies**:
+Decision Policies:
 - Orchestrator validation → Execute checklist systematically
 - Parameter generation → Create comprehensive parameter tables
 - Diagram validation → Ensure PlantUML integrity and integration
 
-**Execution Steps**:
+Execution Steps:
 1. Run orchestrator checklist systematically with validation at each step
 2. Generate comprehensive parameter tables and prioritized TODO lists
 3. Validate PlantUML diagrams and integration points with project context
 4. Apply project-specific documentation standards consistently
 
-**Error Handling**:
+Error Handling:
 - Checklist execution failures → Identify specific failure point, suggest manual completion
 - Parameter generation issues → Generate basic parameters, document gaps
 - Diagram validation failures → Generate warnings, continue with text output
 - Template application failures → Fallback to standard templates, document issues
 
 ### Phase 4: Output Generation
-**Decision Policies**:
+Decision Policies:
 - User confirmation → Prompt before overwriting existing documentation
 - Integrity validation → Verify generated content completeness
 - Maintenance planning → Create sustainable update procedures
 
-**Execution Steps**:
+Execution Steps:
 1. Generate documentation in target directories with user confirmation
 2. Validate generated content integrity and completeness systematically
 3. Create maintenance artifacts and update procedures for sustainability
 4. Produce verification reports with integration validation results
 
-**Error Handling**:
+Error Handling:
 - Permission errors → Escalate with specific paths and required access levels
 - Generation failures → Partial output generation, document limitations
 - Validation failures → Continue with available output, warn about deficits
@@ -157,10 +155,10 @@ Manage documentation generation and maintenance workflows with project-specific 
 | Tool Compatibility Issue | Low | Suggest alternatives | Adjust generation strategy |
 
 ### Fallback Procedures
-1. **Project Type Ambiguity**: Offer selection menu with project type options, provide intelligent defaults
-2. **Skill Loading Failures**: Generate basic documentation structure manually with available capabilities
-3. **Tool Execution Failures**: Provide manual equivalent commands and alternative workflows
-4. **Permission Validation Failures**: Generate documentation in alternate locations with clear instructions
+1. Project Type Ambiguity: Offer selection menu with project type options, provide intelligent defaults
+2. Skill Loading Failures: Generate basic documentation structure manually with available capabilities
+3. Tool Execution Failures: Provide manual equivalent commands and alternative workflows
+4. Permission Validation Failures: Generate documentation in alternate locations with clear instructions
 
 ## Decision Policies
 
@@ -217,28 +215,28 @@ IF complex architecture detected:
 - Ensure integration points with existing project documentation are seamless
 
 ### Documentation Standards
-- **Structure**: Consistent hierarchy with clear sections and subsections
-- **Content**: Project-specific adaptation with standardized formatting
-- **Diagrams**: Validated PlantUML integration with proper rendering
-- **Maintenance**: Clear procedures for updates and version management
-- **Integration**: Seamless connection with existing project documentation
+- Structure: Consistent hierarchy with clear sections and subsections
+- Content: Project-specific adaptation with standardized formatting
+- Diagrams: Validated PlantUML integration with proper rendering
+- Maintenance: Clear procedures for updates and version management
+- Integration: Seamless connection with existing project documentation
 
 ## Output Requirements
 
 ### Required Documentation Artifacts
-- **Project Overview**: Architecture description and system design
-- **API Documentation**: Interface specifications with examples
-- **Setup Instructions**: Installation, configuration, and deployment guides
-- **Maintenance Procedures**: Update processes and version management
-- **Integration Points**: Connections with other systems and documentation
-- **PlantUML Diagrams**: Validated architectural and workflow diagrams
+- Project Overview: Architecture description and system design
+- API Documentation: Interface specifications with examples
+- Setup Instructions: Installation, configuration, and deployment guides
+- Maintenance Procedures: Update processes and version management
+- Integration Points: Connections with other systems and documentation
+- PlantUML Diagrams: Validated architectural and workflow diagrams
 
 ### Validation Criteria
-- **Content Completeness**: All required sections present and populated
-- **Project Specificity**: Documentation customized for detected project type
-- **Diagram Integrity**: All PlantUML diagrams validate and render correctly
-- **Integration Validation**: Proper connections with existing documentation
-- **Maintenance Viability**: Clear procedures for ongoing updates and management
+- Content Completeness: All required sections present and populated
+- Project Specificity: Documentation customized for detected project type
+- Diagram Integrity: All PlantUML diagrams validate and render correctly
+- Integration Validation: Proper connections with existing documentation
+- Maintenance Viability: Clear procedures for ongoing updates and management
 
 ### Template Adaptation Rules
 - Apply project-specific naming conventions consistently

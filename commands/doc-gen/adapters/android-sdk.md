@@ -2,7 +2,7 @@
 name: "doc-gen:android-sdk"
 description: Adapter for Android SDK documentation bootstrap/maintenance
 argument-hint: --mode=<bootstrap|maintain> --repo=<path> --docs=<path> --core=<path> [--demo=<path>]
-allowed-tools: Read, Write, ApplyPatch, Bash(rg:*), Bash(ls:*), Bash(fd:*), Bash(tree:*), Bash(cat:*), Bash(plantuml --check-syntax:*)
+allowed-tools: Read, Write, Edit, Bash(rg:*), Bash(ls:*), Bash(fd:*), Bash(tree:*), Bash(cat:*), Bash(plantuml --check-syntax:*)
 ---
 
 ## Scope

@@ -61,19 +61,19 @@ commands/doc-gen/
 
 ### component-responsibilities
 
-**Core Orchestrator:**
+Core Orchestrator:
 - Input gathering and validation
 - Output format enforcement
 - Adapter delegation and coordination
 - Deliverable verification and validation
 
-**Project-Type Adapters:**
+Project-Type Adapters:
 - Domain-specific documentation guidance
 - Industry standard conventions
 - Technology-specific patterns
 - Asset generation templates
 
-**Shared Library:**
+Shared Library:
 - Consistent formatting conventions
 - Logging standards and patterns
 - Template structures and utilities
@@ -96,13 +96,13 @@ commands/doc-gen/
 
 ### execution-modes
 
-**Bootstrap Mode:**
+Bootstrap Mode:
 - Generate complete documentation structure
 - Create initial asset templates
 - Output to `docs-bootstrap/` directory
 - Preserve existing `docs/` content
 
-**Maintain Mode:**
+Maintain Mode:
 - Update existing documentation
 - Synchronize with current project state
 - Operate on `docs/` directory directly
@@ -110,13 +110,13 @@ commands/doc-gen/
 
 ### workflow-features
 
-**Consolidated Checklists:**
+Consolidated Checklists:
 - Mode selection guidance
 - Project-type validation
 - Language configuration
 - Path auto-suggestion and validation
 
-**Deliverable Enforcement:**
+Deliverable Enforcement:
 - Parameter summary tables
 - Asset count verification
 - Actor matrix generation
@@ -135,14 +135,14 @@ commands/doc-gen/
 
 ### adapter-development
 
-**Required Sections:**
+Required Sections:
 - Project-type specific conventions
 - Industry standard patterns
 - Technology-specific requirements
 - Asset generation guidelines
 - Validation criteria
 
-**Integration Points:**
+Integration Points:
 - Core orchestrator delegation
 - Shared library utilization
 - Parameter handling standards
@@ -156,19 +156,19 @@ commands/doc-gen/
 
 ## quality-standards
 
-**Documentation Quality:**
+Documentation Quality:
 - Comprehensive coverage of project components
 - Consistent formatting and structure
 - Clear navigation and cross-references
 - Regular maintenance and updates
 
-**Process Validation:**
+Process Validation:
 - Input parameter validation
 - Output format verification
 - Asset completeness checks
 - Integration testing results
 
-**Conformance Assurance:**
+Conformance Assurance:
 - Industry standard compliance
 - Technology-specific best practices
 - Organizational guideline adherence

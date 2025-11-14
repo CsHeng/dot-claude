@@ -5,7 +5,7 @@ argument-hint: "--mode=<bootstrap|maintain> --repo=<path> --docs=<path> --core=<
 allowed-tools:
   - Read
   - Write
-  - ApplyPatch
+  - Edit
   - Bash
   - Bash(rg:*)
   - Bash(ls:*)

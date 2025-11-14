@@ -1,10 +1,6 @@
 ---
 skill: architecture-patterns
-version: 2.0.0
 description: Architectural pattern guidance and layering principles
-confidence: high
-impact: high
-status: active
 ---
 
 # Core Architecture Patterns

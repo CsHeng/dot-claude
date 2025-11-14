@@ -4,7 +4,6 @@ description: "Orchestrate configuration synchronization workflows across IDE, CL
 version: "2.0.0"
 type: "orchestration"
 required-skills:
-  - skill:environment-validation
   - skill:workflow-discipline
   - skill:security-logging
   - skill:automation-language-selection
@@ -54,7 +53,6 @@ Orchestrate configuration synchronization workflows with deterministic permissio
 ## Skill Mappings
 
 ### Required Skills
-- `skill:environment-validation`: Validate toolchain consistency and environment compatibility
 - `skill:workflow-discipline`: Maintain incremental delivery standards and deterministic execution
 - `skill:security-logging`: Apply structured logging controls and audit trail generation
 - `skill:automation-language-selection`: Determine appropriate tooling strategies per target
@@ -76,69 +74,69 @@ Orchestrate configuration synchronization workflows with deterministic permissio
 ## DEPTH Workflow Phases
 
 ### Phase 1: Repository Analysis
-**Decision Policies**:
+Decision Policies:
 - Repository access validation → Continue/Abort
 - Target environment mapping → Load appropriate skills
 - Configuration state analysis → Generate dependency matrix
 
-**Execution Steps**:
+Execution Steps:
 1. Collect repository and rule directory structures
 2. Map target environments and constraint boundaries
 3. Analyze existing configuration state and delta requirements
 4. Create dependency matrix and execution plan
 
-**Error Handling**:
+Error Handling:
 - Repository access errors → Immediate escalation with detailed diagnostics
 - Permission denials → Clear user prompts with justification
 - Analysis failures → Continue with limited capabilities, log deficits
 
 ### Phase 2: Skill Loading
-**Decision Policies**:
+Decision Policies:
 - Base skill validation → Abort on critical failures
 - Conditional skill loading → Continue with warnings
 - Skill compatibility validation → Resolve conflicts or abort
 
-**Execution Steps**:
+Execution Steps:
 1. Load required skills for validation and logging
 2. Apply tooling selection policy based on target analysis
 3. Conditionally load language-specific skills based on project type
 4. Validate skill compatibility and dependency resolution
 
-**Error Handling**:
+Error Handling:
 - Required skill failures → Abort execution, request intervention
 - Optional skill failures → Continue with degraded capabilities
 - Compatibility conflicts → Resolve automatically or user intervention
 
 ### Phase 3: Adapter Orchestration
-**Decision Policies**:
+Decision Policies:
 - Permission validation → Prompt for approval on write operations
 - Adapter compatibility → Select appropriate adapter per target
 - Execution environment → Validate security boundaries
 
-**Execution Steps**:
+Execution Steps:
 1. Execute skill-driven validation pipeline
 2. Run adapters with explicit permission gating
 3. Maintain comprehensive audit trail for all operations
 4. Generate intermediate state artifacts for verification
 
-**Error Handling**:
+Error Handling:
 - Permission denials → Clear user prompts with specific justification
 - Adapter execution failures → Full error context capture, suggest alternatives
 - Security violations → Immediate abort and escalation to governance
 
 ### Phase 4: Verification and Reporting
-**Decision Policies**:
+Decision Policies:
 - Configuration integrity validation → Verify all changes
 - Rollback capability testing → Ensure recovery options
 - Report completeness validation → Full audit trail
 
-**Execution Steps**:
+Execution Steps:
 1. Validate configuration integrity against expected state
 2. Generate comprehensive synchronization reports
 3. Verify rollback capabilities and recovery procedures
 4. Produce final execution artifacts and audit logs
 
-**Error Handling**:
+Error Handling:
 - Integrity validation failures → Automatic rollback with user notification
 - Report generation failures → Simplified output, continue with basic validation
 - Rollback testing failures → Warning to user, document limitations
@@ -156,10 +154,10 @@ Orchestrate configuration synchronization workflows with deterministic permissio
 | Validation Failure | Low | Warning, continue | Document limitations |
 
 ### Fallback Procedures
-1. **Skill Loading Failures**: Notify user of deficits, continue with available capabilities
-2. **Adapter Execution Failures**: Provide detailed error reports, suggest manual workarounds
-3. **Permission Validation Failures**: Escalate to user with clear justification and alternatives
-4. **System-Level Errors**: Preserve current state, request maintainer intervention
+1. Skill Loading Failures: Notify user of deficits, continue with available capabilities
+2. Adapter Execution Failures: Provide detailed error reports, suggest manual workarounds
+3. Permission Validation Failures: Escalate to user with clear justification and alternatives
+4. System-Level Errors: Preserve current state, request maintainer intervention
 
 ## Decision Policies
 
@@ -228,8 +226,8 @@ IF skill conflicts detected:
 - Skill loading reports with capability assessment
 
 ### Validation Criteria
-- **Configuration integrity**: 100% verification of applied changes
-- **Rollback capability**: Tested recovery procedures for all operations
-- **Audit completeness**: Full operation logging with no gaps
-- **User consent**: Explicit approval recorded for all sensitive operations
-- **Skill compatibility**: No conflicts or dependency issues
+- Configuration integrity: 100% verification of applied changes
+- Rollback capability: Tested recovery procedures for all operations
+- Audit completeness: Full operation logging with no gaps
+- User consent: Explicit approval recorded for all sensitive operations
+- Skill compatibility: No conflicts or dependency issues

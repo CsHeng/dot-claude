@@ -5,7 +5,7 @@ argument-hint: "--mode=<bootstrap|maintain> --scope=<full|delta> --project-type=
 allowed-tools:
   - Read
   - Write
-  - ApplyPatch
+  - Edit
   - Bash
   - Bash(rg:*)
   - Bash(ls:*)

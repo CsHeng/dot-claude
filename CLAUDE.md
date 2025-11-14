@@ -1,10 +1,6 @@
 ---
 file-type: memory
 description: Agent and skill selection configuration
-version: 2.0.0
-confidence: high
-impact: high
-status: active
 implementation: CLAUDE.md
 scope: Included
 related-skills:
@@ -22,7 +18,11 @@ Execute language-specific rules based on file extensions or declared language co
 Execute security rules for all operations involving credentials, permissions, or network access
 Execute testing rules when operations involve test files or test execution
 
+### Baseline Skill Initialization
+Execute `skill:environment-validation` before dispatching any agent to enforce the canonical toolchain, prefer fd/rg/ast-grep automatically, and surface tool availability constraints for downstream skills.
+
 ### Agent Selection Conditions
+Execute routing lazily: agents remain unloaded until their command pattern matches the active request, preventing unnecessary policy loading for unrelated tasks.
 Execute routing by command patterns:
 1. Config-sync routing: `/config-sync/*` → `agent:config-sync`
 2. Workflow routing: `/draft-commit-message`, `/review-shell-syntax` → `agent:workflow-helper`
@@ -38,12 +38,12 @@ Execute routing by command patterns:
 
 ## Active Agents
 
-Execute agent mappings by command patterns:
+Execute agent mappings on demand; each row describes what loads once the matching command fires. `skill:environment-validation` is provisioned first so tool-choice hints are available before the agent-specific stack initializes.
 
 | Agent ID | Command Patterns | Default Skills | Optional Skills |
 | --- | --- | --- | --- |
 | `agent:config-sync` | `/config-sync/*` | `skill:environment-validation`, `skill:workflow-discipline`, `skill:security-logging`, `skill:automation-language-selection`, `skill:search-and-refactor-strategy` | Language skills based on target project |
-| `agent:llm-governance` | `/optimize-prompts` | `skill:llm-governance`, `skill:workflow-discipline`, `skill:search-and-refactor-strategy` | Content-type specific skills |
+| `agent:llm-governance` | `/optimize-prompts` | `skill:llm-governance`, `skill:workflow-discipline`, `skill:environment-validation` | None |
 | `agent:doc-gen` | `/doc-gen:*` | `skill:workflow-discipline`, `skill:security-logging`, `skill:search-and-refactor-strategy` | Architecture/language skills per project type |
 | `agent:workflow-helper` | `/draft-commit-message`, `/review-shell-syntax` | `skill:workflow-discipline`, `skill:automation-language-selection` | `skill:language-shell`, `skill:language-python`, `skill:environment-validation` |
 | `agent:code-architecture-reviewer` | `/review-code-architecture` | `skill:architecture-patterns`, `skill:development-standards`, `skill:security-standards` | Language-specific skills based on codebase |
@@ -57,12 +57,12 @@ Execute agent mappings by command patterns:
 
 ### Core Required Skills
 Execute mandatory skill loading:
+- `skill:environment-validation`: Required for every agent to drive tool decisions (fd vs find, rg vs grep, ast-grep availability) before other skills execute
 - `skill:workflow-discipline`: Required for all agents
 - `skill:security-logging`: Required for agents handling sensitive operations
 
 ### Conditional Required Skills
 Execute conditional skill loading:
-- `skill:environment-validation`: Required for development toolchain operations
 - `skill:llm-governance`: Required for LLM-prompt modifications
 - `skill:language-*`: Required when operating on specific language files
 
@@ -83,8 +83,8 @@ Execute skill loading:
 
 ### `agent:llm-governance`
 Execute skill loading:
-- Load: `skill:llm-governance`, `skill:workflow-discipline`, `skill:search-and-refactor-strategy`
-- Conditional load: Content-specific skills for specialized review
+- Load: `skill:llm-governance`, `skill:workflow-discipline`, `skill:environment-validation`
+- Conditional load: None (governance logic handles content-type variations internally)
 - Escalation: Notify maintainers on critical violations
 
 ### `agent:doc-gen`
