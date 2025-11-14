@@ -38,18 +38,18 @@ fallback: "Provide basic code analysis without comprehensive planning"
 Create comprehensive refactoring analysis and systematic implementation plans through deep architectural assessment and risk-based prioritization.
 
 ## Required Skills
-- **skill:development-standards**: Apply naming conventions, structure, and performance standards
-- **skill:architecture-patterns**: Analyze layering, boundaries, and architectural consistency
-- **skill:quality-standards**: Evaluate code quality metrics and improvement opportunities
-- **skill:workflow-discipline**: Apply incremental delivery and fail-fast principles
+- skill:development-standards: Apply naming conventions, structure, and performance standards
+- skill:architecture-patterns: Analyze layering, boundaries, and architectural consistency
+- skill:quality-standards: Evaluate code quality metrics and improvement opportunities
+- skill:workflow-discipline: Apply incremental delivery and fail-fast principles
 
 ## Optional Skills
 Load based on codebase analysis:
-- **skill:language-python**: For Python-specific refactoring patterns
-- **skill:language-go**: For Go-specific refactoring patterns
-- **skill:language-shell**: For shell script refactoring
-- **skill:testing-strategy**: For test coverage and validation planning
-- **skill:tooling-code-tool-selection**: For tooling and automation recommendations
+- skill:language-python: For Python-specific refactoring patterns
+- skill:language-go: For Go-specific refactoring patterns
+- skill:language-shell: For shell script refactoring
+- skill:testing-strategy: For test coverage and validation planning
+- skill:tooling-code-tool-selection: For tooling and automation recommendations
 
 ## Workflow Phases
 
@@ -96,22 +96,22 @@ Load based on codebase analysis:
 - Create validation criteria and quality gates
 
 ## Error Handling
-- **Code access failures**: Report inaccessible files, continue with available analysis
-- **Complexity detection**: Break large refactors into smaller, manageable phases
-- **Dependency mapping failures**: Document assumptions, proceed with conservative approach
-- **Risk assessment limitations**: Provide conservative estimates and additional testing recommendations
+- Code access failures: Report inaccessible files, continue with available analysis
+- Complexity detection: Break large refactors into smaller, manageable phases
+- Dependency mapping failures: Document assumptions, proceed with conservative approach
+- Risk assessment limitations: Provide conservative estimates and additional testing recommendations
 
 ## Permissions
-- **Read access**: All source code files, configuration files, and documentation
-- **Write access**: Documentation directories for refactoring plans and reports
-- **Analysis access**: Dependency mapping, code quality analysis, and architectural assessment
-- **No modification access**: Analysis and planning only, no code changes
+- Read access: All source code files, configuration files, and documentation
+- Write access: Documentation directories for refactoring plans and reports
+- Analysis access: Dependency mapping, code quality analysis, and architectural assessment
+- No modification access: Analysis and planning only, no code changes
 
 ## Fallback Procedures
-1. **Limited code access**: Use available files, document assumptions clearly
-2. **Complex refactors**: Focus on incremental improvements rather than wholesale changes
-3. **High-risk scenarios**: Prioritize safety and conservative approaches
-4. **Uncertain impacts**: Recommend additional testing and validation phases
+1. Limited code access: Use available files, document assumptions clearly
+2. Complex refactors: Focus on incremental improvements rather than wholesale changes
+3. High-risk scenarios: Prioritize safety and conservative approaches
+4. Uncertain impacts: Recommend additional testing and validation phases
 
 ## Critical Rules
 - Always prioritize functionality preservation during refactoring

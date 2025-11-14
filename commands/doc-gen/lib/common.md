@@ -43,17 +43,17 @@ Complete convention specifications including:
 
 ### message-formatting
 
-**Heading Hierarchy:**
+Heading Hierarchy:
 - Use `=== Stage` for high-level section headings
 - Use `--- Detail` for sub-items and detailed information
 
-**Status Prefixes:**
+Status Prefixes:
 - `SUCCESS:` Prefix for successful action completion
 - `ERROR:` Prefix for error conditions and failures
 - `WARNING:` Prefix for cautionary information
 - `INFO:` Prefix for informational messages
 
-**Message Structure:**
+Message Structure:
 ```
 === Stage Name
 --- Detail information about the stage
@@ -79,12 +79,12 @@ ERROR: Description of error condition
 
 ### todo-format-specification
 
-**Required Format:**
+Required Format:
 - Every actionable item must start with `TODO(doc-gen):`
 - Append repository-relative path in parentheses
 - Include specific component or file reference
 
-**Examples:**
+Examples:
 ```markdown
 TODO(doc-gen): document authentication flow (docs/architecture/auth.md)
 TODO(doc-gen): create API endpoint documentation (docs/api/endpoints.md)
@@ -106,18 +106,18 @@ TODO(doc-gen): review dependency injection patterns (src/main/java/com/example/d
 
 ### plantuml-procedures
 
-**File Organization:**
+File Organization:
 - Store diagrams under selected docs directory (`docs/diagrams/`)
 - Maintain alias registry at top of each diagram
 - Use consistent naming conventions
 
-**Validation Process:**
+Validation Process:
 1. Run syntax validation: `plantuml --check-syntax <diagram-file>`
 2. Capture validation output string
 3. Place validation results in README under PlantUML section
 4. Document any syntax issues or warnings
 
-**Quality Standards:**
+Quality Standards:
 - All diagrams must pass syntax validation
 - Include descriptive aliases and comments
 - Maintain consistent styling across diagrams
@@ -127,7 +127,7 @@ TODO(doc-gen): review dependency injection patterns (src/main/java/com/example/d
 
 ### inventory-checklist
 
-**File Counting:**
+File Counting:
 ```bash
 # Count markdown files
 find <docs> -name "*.md" -type f | wc -l
@@ -136,13 +136,13 @@ find <docs> -name "*.md" -type f | wc -l
 find <docs> -name "*.puml" -type f | wc -l
 ```
 
-**Asset Documentation:**
+Asset Documentation:
 - List significant documentation assets with relative paths
 - Include README files, ADRs, flow charts
 - Document generated vs. manual assets
 - Track asset dependencies and relationships
 
-**Verification Criteria:**
+Verification Criteria:
 - All referenced files exist and are accessible
 - Asset counts match expected totals
 - Cross-references are valid and current
@@ -152,33 +152,33 @@ find <docs> -name "*.puml" -type f | wc -l
 
 ### consistency-checks
 
-1. **Format Compliance**: Verify all templates follow specified structures
-2. **Naming Conventions**: Ensure consistent file and component naming
-3. **Cross-Reference Validation**: Check all internal links and references
-4. **Content Completeness**: Validate all required sections are present
+1. Format Compliance: Verify all templates follow specified structures
+2. Naming Conventions: Ensure consistent file and component naming
+3. Cross-Reference Validation: Check all internal links and references
+4. Content Completeness: Validate all required sections are present
 
 ### validation-procedures
 
-1. **Template Usage**: Confirm proper application of all template formats
-2. **Syntax Verification**: Validate PlantUML and structured data formats
-3. **Accessibility Check**: Ensure documentation is navigable and understandable
-4. **Integration Testing**: Verify adapter compatibility with shared standards
+1. Template Usage: Confirm proper application of all template formats
+2. Syntax Verification: Validate PlantUML and structured data formats
+3. Accessibility Check: Ensure documentation is navigable and understandable
+4. Integration Testing: Verify adapter compatibility with shared standards
 
 ## error-handling
 
 ### validation-failures
 
-**Template Format Issues:**
+Template Format Issues:
 - Document specific formatting violations
 - Provide correction examples
 - Flag for manual review and correction
 
-**Asset Validation Problems:**
+Asset Validation Problems:
 - List missing or inaccessible files
 - Document broken references
 - Suggest correction strategies
 
-**PlantUML Syntax Errors:**
+PlantUML Syntax Errors:
 - Capture specific syntax error messages
 - Provide corrected diagram examples
 - Document common syntax issues and solutions

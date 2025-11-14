@@ -38,17 +38,17 @@ error-handling:
 Orchestrate comprehensive code refactoring while maintaining zero breakage through systematic dependency tracking and atomic operations.
 
 ## Required Skills
-- **skill:development-standards**: Ensure adherence to coding standards and patterns
-- **skill:architecture-patterns**: Maintain architectural integrity during reorganization
-- **skill:workflow-discipline**: Apply incremental delivery and fail-fast principles
-- **skill:toolchain-baseline**: Validate toolchain compatibility throughout refactoring
-- **skill:tooling-code-tool-selection**: Determine appropriate refactoring tools and strategies
+- skill:development-standards: Ensure adherence to coding standards and patterns
+- skill:architecture-patterns: Maintain architectural integrity during reorganization
+- skill:workflow-discipline: Apply incremental delivery and fail-fast principles
+- skill:toolchain-baseline: Validate toolchain compatibility throughout refactoring
+- skill:tooling-code-tool-selection: Determine appropriate refactoring tools and strategies
 
 ## Optional Skills
 Load based on codebase analysis:
-- **skill:language-python**: For Python-specific refactoring patterns
-- **skill:language-go**: For Go-specific refactoring patterns
-- **skill:language-shell**: For shell script refactoring
+- skill:language-python: For Python-specific refactoring patterns
+- skill:language-go: For Go-specific refactoring patterns
+- skill:language-shell: For shell script refactoring
 
 ## Workflow Phases
 
@@ -81,24 +81,24 @@ Load based on codebase analysis:
 - Confirm rollback capability if needed
 
 ## Error Handling
-- **Import resolution failures**: Immediate rollback to previous state
-- **File operation failures**: Halt execution, preserve current state
-- **Dependency breakage**: Restore affected files, update execution plan
-- **Permission errors**: Escalate with specific access requirements
-- **Unexpected side effects**: Full rollback, issue detailed report
+- Import resolution failures: Immediate rollback to previous state
+- File operation failures: Halt execution, preserve current state
+- Dependency breakage: Restore affected files, update execution plan
+- Permission errors: Escalate with specific access requirements
+- Unexpected side effects: Full rollback, issue detailed report
 
 ## Permissions
-- **Read access**: All source files and configuration files
-- **Write access**: File moves, restructuring, and new file creation
-- **Edit access**: Import path updates and pattern replacements
-- **Delete access**: Obsolete file removal after verification
-- **Create access**: New component and interface file creation
+- Read access: All source files and configuration files
+- Write access: File moves, restructuring, and new file creation
+- Edit access: Import path updates and pattern replacements
+- Delete access: Obsolete file removal after verification
+- Create access: New component and interface file creation
 
 ## Fallback Procedures
-1. **Import failures**: Automatic rollback to last known good state
-2. **Complex refactors**: Break into smaller, safer operations
-3. **Unsupported patterns**: Document limitations, suggest manual alternatives
-4. **Tool failures**: Provide manual step-by-step instructions
+1. Import failures: Automatic rollback to last known good state
+2. Complex refactors: Break into smaller, safer operations
+3. Unsupported patterns: Document limitations, suggest manual alternatives
+4. Tool failures: Provide manual step-by-step instructions
 
 ## Critical Rules
 - Never move files without documenting all importers

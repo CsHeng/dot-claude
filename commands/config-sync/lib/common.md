@@ -139,10 +139,10 @@ sync_with_sanitization <source> <destination>
 
 ## Implementation Guidelines
 
-1. **Language Independence**: Functions can be implemented in shell, Python, or other automation frameworks
-2. **Error Handling**: All functions must return appropriate exit codes (0 for success, non-zero for failure)
-3. **Path Safety**: Always resolve to absolute paths and validate directory existence
-4. **Atomic Operations**: File operations must be atomic to prevent corruption
-5. **Logging Consistency**: Use standardized message formats across all logging functions
-6. **Dependency Management**: Verify external tool dependencies before execution
-7. **Permission Handling**: Respect file system permissions and access controls
+1. Language Independence: Functions can be implemented in shell, Python, or other automation frameworks
+2. Error Handling: All functions must return appropriate exit codes (0 for success, non-zero for failure)
+3. Path Safety: Always resolve to absolute paths and validate directory existence
+4. Atomic Operations: File operations must be atomic to prevent corruption
+5. Logging Consistency: Use standardized message formats across all logging functions
+6. Dependency Management: Verify external tool dependencies before execution
+7. Permission Handling: Respect file system permissions and access controls

@@ -9,28 +9,28 @@ allowed-tools:
   - Bash(shellcheck)
 ---
 
-# **Shell Script Safety Standards**
+# Shell Script Safety Standards
 
-## **Strict Mode Implementation**
+## Strict Mode Implementation
 
-### **Mandatory Strict Mode Configuration**
+### Mandatory Strict Mode Configuration
 
-**Apply strict mode to all shell scripts:**
+Apply strict mode to all shell scripts:
 ```bash
 #!/usr/bin/env bash
 set -euo pipefail
 IFS=$'\n\t'
 ```
 
-**Strict mode components:**
+Strict mode components:
 - `set -e`: Exit immediately on command failure
 - `set -u`: Treat unset variables as errors
 - `set -o pipefail`: Exit on pipeline failures
 - `IFS=$'\n\t'`: Safe field separator handling
 
-### **Error Handling and Traps**
+### Error Handling and Traps
 
-**Implement comprehensive error handling:**
+Implement comprehensive error handling:
 ```bash
 #!/usr/bin/env bash
 set -euo pipefail
@@ -56,17 +56,17 @@ cleanup_resources() {
 }
 ```
 
-## **Variable Safety and Quoting**
+## Variable Safety and Quoting
 
-### **Safe Variable Practices**
+### Safe Variable Practices
 
-**Apply safe variable handling:**
+Apply safe variable handling:
 - Quote all variable expansions: `"$variable"`
 - Use parameter expansion for defaults: `"${VAR:-default}"`
 - Validate variables before use
 - Use arrays for lists instead of space-separated strings
 
-**Safe variable expansion patterns:**
+Safe variable expansion patterns:
 ```bash
 # Always quote variables
 echo "Processing file: $filename"          # Unsafe
@@ -88,9 +88,9 @@ for file in "${files[@]}"; do
 done
 ```
 
-### **Parameter Expansion Safety**
+### Parameter Expansion Safety
 
-**Use safe parameter expansion:**
+Use safe parameter expansion:
 ```bash
 # Length checking
 if [[ ${#input_string} -gt 100 ]]; then
@@ -111,17 +111,17 @@ basename="${filename#prefix_}"
 extension="${filename%.txt}"
 ```
 
-## **Portable Shell Programming**
+## Portable Shell Programming
 
-### **POSIX Compliance Standards**
+### POSIX Compliance Standards
 
-**Write portable shell scripts:**
+Write portable shell scripts:
 - Use `#!/bin/sh` for POSIX compliance when Bash features not needed
 - Avoid Bash-specific extensions in portable scripts
 - Test with multiple shell interpreters
 - Use standard Unix utilities with portable options
 
-**Portable scripting patterns:**
+Portable scripting patterns:
 ```bash
 #!/bin/sh
 # POSIX-compliant script
@@ -145,9 +145,9 @@ for file in *.txt; do
 done
 ```
 
-### **Bash-Specific Features**
+### Bash-Specific Features
 
-**Use Bash features appropriately:**
+Use Bash features appropriately:
 ```bash
 #!/usr/bin/env bash
 # Bash-specific script
@@ -170,11 +170,11 @@ shopt -s extglob
 rm -rf !(*.txt|*.md)
 ```
 
-## **Input Validation and Security**
+## Input Validation and Security
 
-### **Input Sanitization**
+### Input Sanitization
 
-**Validate all external inputs:**
+Validate all external inputs:
 ```bash
 #!/usr/bin/env bash
 set -euo pipefail
@@ -211,9 +211,9 @@ validate_number() {
 }
 ```
 
-### **Secure File Operations**
+### Secure File Operations
 
-**Apply secure file handling:**
+Apply secure file handling:
 ```bash
 # Secure temporary file creation
 create_temp_file() {
@@ -246,11 +246,11 @@ safe_directory_operation() {
 }
 ```
 
-## **Process and Resource Management**
+## Process and Resource Management
 
-### **Process Handling**
+### Process Handling
 
-**Manage processes safely:**
+Manage processes safely:
 ```bash
 # Background process management
 start_background_process() {
@@ -291,9 +291,9 @@ monitor_process() {
 }
 ```
 
-### **Resource Cleanup**
+### Resource Cleanup
 
-**Implement proper resource cleanup:**
+Implement proper resource cleanup:
 ```bash
 #!/usr/bin/env bash
 set -euo pipefail
@@ -334,11 +334,11 @@ trap 'cleanup_resources; trap - SIGTERM; kill -s SIGTERM $$' SIGTERM
 trap 'cleanup_resources; trap - SIGINT; kill -s SIGINT $$' SIGINT
 ```
 
-## **ShellCheck Integration**
+## ShellCheck Integration
 
-### **Static Analysis Configuration**
+### Static Analysis Configuration
 
-**Use ShellCheck for quality assurance:**
+Use ShellCheck for quality assurance:
 ```bash
 #!/usr/bin/env bash
 # shellcheck disable=SC2001  # Allow sed substitution
@@ -364,9 +364,9 @@ legacy_function() {
 }
 ```
 
-### **Automated ShellCheck Integration**
+### Automated ShellCheck Integration
 
-**Integrate ShellCheck in development workflow:**
+Integrate ShellCheck in development workflow:
 ```bash
 #!/bin/bash
 # check-shell-scripts.sh

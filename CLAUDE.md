@@ -11,16 +11,16 @@ status: active
 ## Rule-Loading Conditions
 
 ### Default Conditions
-- ABSOLUTE MODE: Always enabled unless explicitly overridden
-- Language-specific rules: Trigger based on file extensions or declared language context
-- Security rules: Apply to all operations involving credentials, permissions, or network access
-- Testing rules: Apply when operations involve test files or test execution
+- **ABSOLUTE MODE**: Always enabled unless explicitly overridden
+- **Language-specific rules**: Trigger based on file extensions or declared language context
+- **Security rules**: Apply to all operations involving credentials, permissions, or network access
+- **Testing rules**: Apply when operations involve test files or test execution
 
 ### Agent Selection Conditions
 1. Config-sync routing: `/config-sync/*` → `agent:config-sync`
-2. Workflow routing: `/draft-commit-message*`, `/review-shell-syntax` → `agent:workflow-helper`
+2. Workflow routing: `/draft-commit-message`, `/review-shell-syntax` → `agent:workflow-helper`
 3. Documentation routing: `/doc-gen:*` → `agent:doc-gen`
-4. LLM governance routing: `/optimize-prompts*` → `agent:llm-governance`
+4. LLM governance routing: `/optimize-prompts` → `agent:llm-governance`
 5. Code architecture routing: `/review-code-architecture` → `agent:code-architecture-reviewer`
 6. Refactoring routing: `/refactor-*`, `/review-refactor` → `agent:code-refactor-master`
 7. Planning routing: `/review-plan`, `/plan-*` → `agent:plan-reviewer`
@@ -34,9 +34,9 @@ status: active
 | Agent ID | Command Patterns | Default Skills | Optional Skills |
 | --- | --- | --- | --- |
 | `agent:config-sync` | `/config-sync/*` | `skill:toolchain-baseline`, `skill:workflow-discipline`, `skill:security-logging`, `skill:tooling-code-tool-selection` | Language skills based on target project |
-| `agent:llm-governance` | `/optimize-prompts*` | `skill:llm-governance`, `skill:workflow-discipline` | Content-type specific skills |
+| `agent:llm-governance` | `/optimize-prompts` | `skill:llm-governance`, `skill:workflow-discipline` | Content-type specific skills |
 | `agent:doc-gen` | `/doc-gen:*` | `skill:workflow-discipline`, `skill:security-logging` | Architecture/language skills per project type |
-| `agent:workflow-helper` | `/draft-commit-message*`, `/review-shell-syntax` | `skill:workflow-discipline`, `skill:tooling-code-tool-selection` | `skill:language-shell`, `skill:language-python`, `skill:toolchain-baseline` |
+| `agent:workflow-helper` | `/draft-commit-message`, `/review-shell-syntax` | `skill:workflow-discipline`, `skill:tooling-code-tool-selection` | `skill:language-shell`, `skill:language-python`, `skill:toolchain-baseline` |
 | `agent:code-architecture-reviewer` | `/review-code-architecture` | `skill:architecture-patterns`, `skill:development-standards`, `skill:security-standards` | Language-specific skills based on codebase |
 | `agent:code-refactor-master` | `/refactor-*`, `/review-refactor` | `skill:architecture-patterns`, `skill:development-standards`, `skill:testing-strategy` | `skill:language-*` based on target code |
 | `agent:plan-reviewer` | `/review-plan`, `/plan-*` | `skill:workflow-discipline`, `skill:architecture-patterns`, `skill:testing-strategy` | Domain-specific skills based on plan content |

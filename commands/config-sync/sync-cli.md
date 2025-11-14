@@ -1,10 +1,7 @@
 ---
-file-type: command
-command: /config-sync/sync-cli
-description: Unified orchestrator for config-sync workflows across IDE targets
-implementation: commands/config-sync/sync-cli.md
+name: "config-sync:sync-cli"
+description: "Unified orchestrator for config-sync workflows across IDE targets"
 argument-hint: "--action=<sync|analyze|verify|adapt|plan|report> --target=<list|all> --components=<list|all>"
-scope: Included
 allowed-tools:
   - Read
   - Write
@@ -14,14 +11,7 @@ allowed-tools:
   - Bash(ls:*)
   - Bash(find:*)
   - Bash(cat:*)
-related-commands:
-  - /config-sync/sync-project-rules
-related-agents:
-  - agent:config-sync
-related-skills:
-  - skill:toolchain-baseline
-  - skill:workflow-discipline
-  - skill:security-logging
+is_background: false
 ---
 
 ## Usage
@@ -58,13 +48,13 @@ Execute unified configuration synchronization workflows across multiple IDE targ
 
 ## Workflow
 
-1. **Parameter Validation**: Parse and validate all command-line arguments
-2. **Environment Detection**: Identify IDE targets and validate accessibility
-3. **Settings Integration**: Merge runtime parameters with persistent settings
-4. **Plan Generation**: Create execution plan with phases and dependencies
-5. **Phase Execution**: Run determined phases in sequence with validation
-6. **Result Persistence**: Save execution metadata and artifacts
-7. **Cleanup Operations**: Manage temporary files and backup retention
+1. Parameter Validation: Parse and validate all command-line arguments
+2. Environment Detection: Identify IDE targets and validate accessibility
+3. Settings Integration: Merge runtime parameters with persistent settings
+4. Plan Generation: Create execution plan with phases and dependencies
+5. Phase Execution: Run determined phases in sequence with validation
+6. Result Persistence: Save execution metadata and artifacts
+7. Cleanup Operations: Manage temporary files and backup retention
 
 ### Phase Mapping
 
@@ -79,13 +69,13 @@ Execute unified configuration synchronization workflows across multiple IDE targ
 
 ## Output
 
-**Generated Artifacts:**
+Generated Artifacts:
 - Plan file: `~/.claude/backup/plan-<timestamp>.json`
 - Run logs: `~/.claude/backup/run-<timestamp>/logs/*.log`
 - Execution report: `~/.claude/backup/run-<timestamp>/metadata/report.json`
 - Console output: Structured progress and error messages
 
-**Exit Codes:**
+Exit Codes:
 - 0: Successful completion
 - 1: Parameter validation failure
 - 2: Environment detection failure
@@ -95,12 +85,12 @@ Execute unified configuration synchronization workflows across multiple IDE targ
 
 ## Safety Constraints
 
-1. **Parameter Validation**: Validate all parameters before file operations
-2. **Target Accessibility**: Verify target system directories are accessible
-3. **Backup Creation**: Create automatic backups before modifications
-4. **Rollback Capability**: Maintain rollback information for failed operations
-5. **Permission Checks**: Validate write permissions before execution
-6. **Dependency Verification**: Ensure required tools and dependencies are available
+1. Parameter Validation: Validate all parameters before file operations
+2. Target Accessibility: Verify target system directories are accessible
+3. Backup Creation: Create automatic backups before modifications
+4. Rollback Capability: Maintain rollback information for failed operations
+5. Permission Checks: Validate write permissions before execution
+6. Dependency Verification: Ensure required tools and dependencies are available
 
 ## Examples
 
@@ -126,17 +116,17 @@ Execute unified configuration synchronization workflows across multiple IDE targ
 
 ## Error Handling
 
-**Parameter Errors:**
+Parameter Errors:
 - Invalid action: Display supported actions and exit with code 1
 - Invalid target: List supported targets and exit with code 1
 - Invalid component: Show valid component types and exit with code 1
 
-**Environment Errors:**
+Environment Errors:
 - Target inaccessible: Log error and continue with available targets
 - Permission denied: Exit with code 4 after logging affected paths
 - Missing dependencies: Exit with code 2 after listing requirements
 
-**Execution Errors:**
+Execution Errors:
 - Phase failure: Log detailed error information and exit with code 3
 - Configuration validation: Exit with code 5 after reporting violations
 - File system errors: Log specific error and attempt rollback

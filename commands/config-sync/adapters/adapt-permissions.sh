@@ -661,29 +661,29 @@ generate_adaptation_report() {
     echo "## Adaptation Summary"
     case "$TARGET" in
         "droid")
-            echo "- **Format**: JSON allowlist/denylist"
-            echo "- **File**: ~/.factory/settings.json"
-            echo "- **Method**: Map Claude allow/ask/deny to commandAllowlist/commandDenylist"
+            echo "- Format: JSON allowlist/denylist"
+            echo "- File: ~/.factory/settings.json"
+            echo "- Method: Map Claude allow/ask/deny to commandAllowlist/commandDenylist"
             ;;
         "qwen")
-            echo "- **Format**: JSON permission manifest"
-            echo "- **File**: ~/.qwen/permissions.json"
-            echo "- **Method**: Structured allow/ask/deny mapping consumed by the CLI"
+            echo "- Format: JSON permission manifest"
+            echo "- File: ~/.qwen/permissions.json"
+            echo "- Method: Structured allow/ask/deny mapping consumed by the CLI"
             ;;
         "codex")
-            echo "- **Format**: TOML sandbox configuration"
-            echo "- **File**: ~/.codex/config.toml"
-            echo "- **Method**: Set sandbox mode based on permission restrictiveness"
+            echo "- Format: TOML sandbox configuration"
+            echo "- File: ~/.codex/config.toml"
+            echo "- Method: Set sandbox mode based on permission restrictiveness"
             ;;
         "opencode")
-            echo "- **Format**: JSON operation-based permissions"
-            echo "- **File**: ${XDG_CONFIG_HOME:-~/.config}/opencode/opencode.json"
-            echo "- **Method**: Map command permissions to operation permissions"
+            echo "- Format: JSON operation-based permissions"
+            echo "- File: ${XDG_CONFIG_HOME:-~/.config}/opencode/opencode.json"
+            echo "- Method: Map command permissions to operation permissions"
             ;;
         "amp")
-            echo "- **Format**: amp.permissions array in settings.json"
-            echo "- **File**: ${XDG_CONFIG_HOME:-~/.config}/amp/settings.json"
-            echo "- **Method**: Ordered reject/ask/allow rules plus fallback (per Amp manual)"
+            echo "- Format: amp.permissions array in settings.json"
+            echo "- File: ${XDG_CONFIG_HOME:-~/.config}/amp/settings.json"
+            echo "- Method: Ordered reject/ask/allow rules plus fallback (per Amp manual)"
             ;;
     esac
     echo ""

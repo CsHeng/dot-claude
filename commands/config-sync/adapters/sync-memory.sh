@@ -337,19 +337,19 @@ sync_agents_file() {
 The following agent capabilities are specifically configured for $tool_name:
 
 #### File Operations
-- **Format**: $tool_name-compatible file editing
-- **Scope**: Workspace and configuration directories
-- **Syntax**: Adapted for $tool_name command structure
+- Format: $tool_name-compatible file editing
+- Scope: Workspace and configuration directories
+- Syntax: Adapted for $tool_name command structure
 
 #### Command Execution
-- **Safety**: Permission-based command filtering
-- **Scope**: Development and build tools
-- **Integration**: $tool_name-specific tool integration
+- Safety: Permission-based command filtering
+- Scope: Development and build tools
+- Integration: $tool_name-specific tool integration
 
 #### Analysis and Review
-- **Code Analysis**: Multi-language code review
-- **Pattern Recognition**: Development pattern identification
-- **Best Practices**: Industry standard compliance
+- Code Analysis: Multi-language code review
+- Pattern Recognition: Development pattern identification
+- Best Practices: Industry standard compliance
 
 ### $tool_name Integration Notes
 This agents file has been synchronized from Claude Code and adapted for $tool_name usage patterns.
@@ -405,10 +405,10 @@ EOF
 
 ## Usage Guidelines
 
-1. **File Operations**: Use file editing commands for code modifications
-2. **Analysis**: Leverage analysis agents for code review and optimization
-3. **Configuration**: Manage settings and permissions through configuration agents
-4. **Workflow**: Automate development tasks with workflow agents
+1. File Operations: Use file editing commands for code modifications
+2. Analysis: Leverage analysis agents for code review and optimization
+3. Configuration: Manage settings and permissions through configuration agents
+4. Workflow: Automate development tasks with workflow agents
 
 ## Integration Notes
 
@@ -512,9 +512,9 @@ generate_memory_sync_report() {
     echo ""
 
     echo "## Sync Summary"
-    echo "- **Targets Processed**: ${#targets[@]}"
-    echo "- **Components Synced**: ${#components[@]}"
-    echo "- **Mode**: $(if [[ $DRY_RUN == true ]]; then echo "Dry Run (no changes made)"; else echo "Live Sync"; fi)"
+    echo "- Targets Processed: ${#targets[@]}"
+    echo "- Components Synced: ${#components[@]}"
+    echo "- Mode: $(if [[ $DRY_RUN == true ]]; then echo "Dry Run (no changes made)"; else echo "Live Sync"; fi)"
     echo ""
 
     echo "## Memory Files by Tool"
@@ -524,7 +524,7 @@ generate_memory_sync_report() {
         local memory_filename
         memory_filename=$(get_tool_memory_filename "$target")
 
-        echo "- **$target**:"
+        echo "- $target:"
         echo "  - Config Directory: $config_dir"
         if [[ "$target" != "opencode" && "$target" != "amp" ]]; then
             echo "  - User Memory: $memory_filename"
@@ -538,10 +538,10 @@ generate_memory_sync_report() {
     for component in "${components[@]}"; do
         case "$component" in
             "user")
-                echo "- **User Memory**: CLAUDE.md adaptations for each tool"
+                echo "- User Memory: CLAUDE.md adaptations for each tool"
                 ;;
             "agents")
-                echo "- **Agents**: AGENTS.md with tool-specific capabilities"
+                echo "- Agents: AGENTS.md with tool-specific capabilities"
                 ;;
         esac
     done
@@ -555,9 +555,9 @@ generate_memory_sync_report() {
     done
 
     if [[ $total_issues -eq 0 ]]; then
-        echo "SUCCESS: **All memory files verified successfully**"
+        echo "SUCCESS: All memory files verified successfully"
     else
-        echo "WARNING:  **$total_issues issues found during verification**"
+        echo "WARNING:  $total_issues issues found during verification"
     fi
     echo ""
 
@@ -637,7 +637,7 @@ run_memory_sync() {
         # Verify sync
         verify_memory_sync "$target_tool"
 
-        echo "SUCCESS: **$target_tool**: Memory sync completed"
+        echo "SUCCESS: $target_tool: Memory sync completed"
     done
 
     # Generate final report

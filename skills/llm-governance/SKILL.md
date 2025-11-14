@@ -66,11 +66,11 @@ Code block exception handling:
 - Maintain markdown syntax integrity
 - Validate code block boundaries accurately
 
-### Emoji and Unicode Character Removal
+### Unicode Character Removal:
 
 Eliminate all emoji characters:
 - Search pattern: `\\p{Extended_Pictographic}`
-- Replace emojis with text descriptions when necessary
+- Replace emojis with text descriptions when required
 - Maintain only standard ASCII characters
 - Preserve technical Unicode symbols when appropriate
 

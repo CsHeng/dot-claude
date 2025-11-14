@@ -34,13 +34,13 @@ fallback: "Provide basic research methodology and manual search guidelines"
 Execute comprehensive internet research across diverse sources with creative search strategies and systematic information compilation for technical problem-solving.
 
 ## Required Skills
-- **skill:workflow-discipline**: Apply systematic research methodology and incremental delivery
-- **skill:security-guardrails**: Ensure safe browsing and information validation practices
+- skill:workflow-discipline: Apply systematic research methodology and incremental delivery
+- skill:security-guardrails: Ensure safe browsing and information validation practices
 
 ## Optional Skills
 Load based on research complexity:
-- **skill:toolchain-baseline**: For technology-specific research and tooling analysis
-- **skill:development-standards**: For best practices and coding standard research
+- skill:toolchain-baseline: For technology-specific research and tooling analysis
+- skill:development-standards: For best practices and coding standard research
 
 ## Workflow Phases
 
@@ -103,23 +103,23 @@ Load based on research complexity:
 - Assess learning curves and resource requirements
 
 ## Error Handling
-- **Search failures**: Try alternative query formulations and different search engines
-- **Access restrictions**: Document limitations, suggest alternative sources
-- **Information conflicts**: Identify discrepancies, provide balanced analysis
-- **Outdated content**: Verify current status, note evolution of solutions
-- **Source credibility issues**: Cross-reference with authoritative sources
+- Search failures: Try alternative query formulations and different search engines
+- Access restrictions: Document limitations, suggest alternative sources
+- Information conflicts: Identify discrepancies, provide balanced analysis
+- Outdated content: Verify current status, note evolution of solutions
+- Source credibility issues: Cross-reference with authoritative sources
 
 ## Permissions
-- **Web access**: Search engines, documentation sites, forums, and repositories
-- **Read access**: Project files for context and problem understanding
-- **Write access**: Research reports, summaries, and recommendation documents
-- **Tool access**: WebFetch, WebSearch for systematic information gathering
+- Web access: Search engines, documentation sites, forums, and repositories
+- Read access: Project files for context and problem understanding
+- Write access: Research reports, summaries, and recommendation documents
+- Tool access: WebFetch, WebSearch for systematic information gathering
 
 ## Fallback Procedures
-1. **Search engine failures**: Provide manual search strategies and alternative sources
-2. **Content access issues**: Suggest official documentation and community forums
-3. **Complex research topics**: Break into smaller, manageable research segments
-4. **Information validation failures**: Document uncertainty and verification needs
+1. Search engine failures: Provide manual search strategies and alternative sources
+2. Content access issues: Suggest official documentation and community forums
+3. Complex research topics: Break into smaller, manageable research segments
+4. Information validation failures: Document uncertainty and verification needs
 
 ## Quality Assurance Standards
 - Verify information across multiple independent sources
