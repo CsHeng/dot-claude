@@ -4,10 +4,10 @@ description: "Orchestrate configuration synchronization workflows across IDE, CL
 version: "2.0.0"
 type: "orchestration"
 required-skills:
-  - skill:toolchain-baseline
+  - skill:environment-validation
   - skill:workflow-discipline
   - skill:security-logging
-  - skill:tooling-code-tool-selection
+  - skill:automation-language-selection
 optional-skills:
   - skill:language-python
   - skill:language-go
@@ -54,10 +54,10 @@ Orchestrate configuration synchronization workflows with deterministic permissio
 ## Skill Mappings
 
 ### Required Skills
-- `skill:toolchain-baseline`: Validate toolchain consistency and environment compatibility
+- `skill:environment-validation`: Validate toolchain consistency and environment compatibility
 - `skill:workflow-discipline`: Maintain incremental delivery standards and deterministic execution
 - `skill:security-logging`: Apply structured logging controls and audit trail generation
-- `skill:tooling-code-tool-selection`: Determine appropriate tooling strategies per target
+- `skill:automation-language-selection`: Determine appropriate tooling strategies per target
 
 ### Optional Skills
 - `skill:language-python`: Python project configuration handling and validation

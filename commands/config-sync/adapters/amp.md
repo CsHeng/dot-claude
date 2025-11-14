@@ -10,7 +10,7 @@ allowed-tools:
   - Write
   - Bash
   - Bash(ls:*)
-  - Bash(find:*)
+  - Bash(fd:*)
   - Bash(cat:*)
 disable-model-invocation: true
 related-commands:

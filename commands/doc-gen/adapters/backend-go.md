@@ -7,7 +7,7 @@ allowed-tools:
   - Write
   - Bash
   - Bash(ls:*)
-  - Bash(find:*)
+  - Bash(fd:*)
 disable-model-invocation: true
 is_background: false
 ---

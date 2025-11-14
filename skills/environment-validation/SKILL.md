@@ -1,9 +1,13 @@
 ---
-name: "skill:toolchain-baseline"
-description: "Unify toolchain versions and validation rules"
+name: "skill:environment-validation"
+description: "Unify toolchain versions and validation rules (project, gitignored)"
 allowed-tools:
+  - Bash(rg --version)
+  - Bash(fd --version)
+  - Bash(ast-grep --version)
   - Bash(python3 --version)
   - Bash(go version)
+  - Bash(lua -v)
   - Bash(plantuml --version)
   - Bash(dbml2sql --version)
 ---
@@ -23,6 +27,9 @@ Execute `python3 --version | rg '3\\.1[3-9]'` for Python 3.13+ validation
 Execute `go version | rg 'go1\\.2[3-9]'` for Go 1.23+ validation
 Execute `plantuml --version` for PlantUML availability check
 Execute `dbml2sql --version` for dbml2sql availability check
+Execute `rg --version` to confirm ripgrep availability
+Execute `fd --version` to confirm `.gitignore` aware file discovery support
+Execute `ast-grep --version` to confirm structural search and refactoring tool availability
 
 ### 2. Toolchain Requirements Enforcement
 Validate Python >= 3.13 requirement compliance
@@ -60,5 +67,7 @@ Python version >= 3.13 confirmed and functional
 Go version >= 1.23 confirmed and functional
 PlantUML >= 1.2025.9 available and operational
 dbml2sql tool available and functional
+Ripgrep and fd available and functional
+ast-grep available and functional for structural analysis
 All tools in PATH and working correctly
 Environment management practices properly configured

@@ -1,7 +1,10 @@
 ---
-name: "config-sync:qwen"
-description: "Qwen CLI specific operations with TOML conversion"
+file-type: command
+command: /config-sync:qwen
+description: Qwen CLI specific operations with TOML conversion and JSON permission manifests
+implementation: commands/config-sync/adapters/qwen.md
 argument-hint: "--action=<sync|analyze|verify> --component=<rules,commands,settings,memory|all>"
+scope: Included
 allowed-tools:
   - Read
   - Write
@@ -9,22 +12,37 @@ allowed-tools:
   - Bash(python3:*)
   - Bash(jq:*)
   - Bash(ls:*)
-  - Bash(find:*)
+  - Bash(fd:*)
   - Bash(cat:*)
 disable-model-invocation: true
-is_background: false
+related-commands:
+  - /config-sync/sync-cli
+related-agents:
+  - agent:config-sync
+related-skills:
+  - skill:automation-language-selection
+  - skill:workflow-discipline
 ---
 
-## Usage
-```bash
-/config-sync:qwen --action=<sync|analyze|verify> --component=<rules,commands,settings,memory|all>
-```
+## usage
 
-## Arguments
-- action: Operation mode - sync, analyze, or verify
-- component: Components to process - comma-separated list or all
+Execute Qwen CLI synchronization operations with TOML format conversion from Markdown commands and JSON permission manifest generation.
 
-## Workflow
+## arguments
+
+- `--action`: Operation mode
+  - `sync`: Complete synchronization of components
+  - `analyze`: Analyze current configuration state
+  - `verify`: Validate synchronization completeness
+- `--component`: Components to process (comma-separated or `all`)
+  - `rules`: Rule file synchronization
+  - `commands`: TOML format conversion from Markdown
+  - `settings`: Qwen-specific configuration generation
+  - `memory`: Memory file integration and reference management
+  - `all`: All components (default)
+
+## workflow
+
 1. Parameter Parsing: Extract action and component specifications
 2. Tool Validation: Verify python3 and jq availability
 3. Qwen Analysis: Examine existing Qwen CLI configuration
@@ -33,118 +51,100 @@ is_background: false
 6. Permission Setup: Generate JSON permission manifests
 7. Verification: Validate synchronization completeness
 
-### Qwen CLI Features
-- Command Format: TOML conversion from Markdown
-- Permissions: JSON permission manifests
-- Conversion Required: Automatic format transformation
-- Dependencies: python3 and jq required for processing
+### qwen-cli-features
 
-### Component Processing
+Format Requirements:
+- Command Format: TOML conversion from Markdown required
+- Permissions: JSON permission manifests with allow/ask/deny arrays
+- Dependencies: python3 for TOML processing, jq for JSON manipulation
+- Conversion Required: Automatic format transformation from Claude structures
+
+Component Processing:
 - Rules: Direct sync to Qwen rules directory
 - Commands: Convert from Markdown to TOML format
 - Settings: Generate Qwen-specific configuration files
 - Memory: Configure AGENTS.md and QWEN.md references
 - Permissions: Convert to JSON permission manifests
 
-### Dependencies
-- python3: Required for content conversion
+### implementation-requirements
+
+Tool Dependencies:
+- python3: Required for content conversion and TOML processing
 - jq: Required for settings updates and JSON processing
 
-## Output
-- Converted Commands: TOML format command files
-- Synced Components: Rules and settings in Qwen directories
-- Permission Manifests: JSON permission configurations
-- Conversion Report: Format transformation summary
-- Verification Results: Component-by-component status
-CLAUDE_ROOT="$HOME/.claude"
-QWEN_ROOT="$HOME/.qwen"
-mkdir -p "$QWEN_ROOT/commands" "$QWEN_ROOT/rules"
+Directory Structure:
+- Source: `$HOME/.claude/` (Claude configuration)
+- Target: `$HOME/.qwen/` (Qwen CLI configuration)
 
-case "$COMPONENT" in
-  all|commands)
-    # Sync ALL commands (not just config-sync)
-    SOURCE_COMMANDS="$CLAUDE_ROOT/commands"
-    TARGET_COMMANDS="$QWEN_ROOT/commands"
-    if [[ -d "$SOURCE_COMMANDS" ]]; then
-      while IFS= read -r -d '' cmd_file; do
-        rel_path="${cmd_file#$SOURCE_COMMANDS/}"
-        rel_path="${rel_path%.md}.toml"
-        toml_file="$TARGET_COMMANDS/$rel_path"
+### conversion-process
 
-        convert_markdown_to_toml "$cmd_file" "$toml_file" "qwen"
-      done < <(find "$SOURCE_COMMANDS" -type f -name "*.md" -print0)
+Command Conversion:
+- Extract command metadata from YAML frontmatter
+- Convert to TOML format with proper syntax
+- Preserve functionality and argument handling
+- Validate TOML structure before writing
 
-      # Remove stray Markdown command files from target
-      while IFS= read -r -d '' stale_md; do
-        echo "[qwen-adapter] Removing stray markdown command: $stale_md" >&2
-        rm "$stale_md"
-      done < <(find "$TARGET_COMMANDS" -type f -name "*.md" -print0)
-    else
-      echo "[qwen-adapter] Skipping commands sync, no source commands at $SOURCE_COMMANDS" >&2
-    fi
-    ;;
-esac
+Rule Processing:
+- Remove YAML frontmatter from rule files
+- Preserve content structure and organization
+- Update memory references for Qwen compatibility
+- Maintain rule cross-references
 
-case "$COMPONENT" in
-  all|rules)
-    SOURCE_RULES="$CLAUDE_ROOT/rules"
-    TARGET_RULES="$QWEN_ROOT/rules"
-    if [[ -d "$SOURCE_RULES" ]]; then
-      ensure_python_available
-      python3 - "$SOURCE_RULES" "$TARGET_RULES" <<'PY'
-import sys
-from pathlib import Path
+## output
 
-src_base = Path(sys.argv[1])
-dst_base = Path(sys.argv[2])
-dst_base.mkdir(parents=True, exist_ok=True)
+Generated Files:
+- TOML format command files
+- Synchronized rules and settings in Qwen directories
+- JSON permission configurations
+- Updated memory references
 
-for src in src_base.rglob('*.md'):
-    rel = src.relative_to(src_base)
-    dst = dst_base / rel
-    dst.parent.mkdir(parents=True, exist_ok=True)
+Processing Reports:
+- Conversion summary with success/failure counts
+- TOML validation results
+- Permission mapping analysis
+- Dependency verification status
 
-    content = src.read_text(encoding='utf-8')
-    if content.startswith('---\n'):
-        closing = content.find('\n---', 4)
-        if closing != -1:
-            content = content[closing + 4:]
+Quality Metrics:
+- Format conversion accuracy verification
+- Feature preservation assessment
+- Integration capability validation
 
-    content = content.lstrip()
+## safety-constraints
 
-    if dst.exists():
-        current = dst.read_text(encoding='utf-8')
-        if current == content:
-            continue
+1. Dependency Validation: Verify python3 and jq availability before processing
+2. Format Validation: Ensure generated TOML files are syntactically correct
+3. Backup Creation: Create backups before overwriting existing configurations
+4. Atomic Operations: Use temporary files and atomic moves to prevent corruption
 
-    dst.write_text(content, encoding='utf-8')
-PY
-    else
-      echo "[qwen-adapter] Skipping rules sync, no source rules at $SOURCE_RULES" >&2
-    fi
-    ;;
-esac
+## examples
 
-case "$COMPONENT" in
-  all|settings)
-    SETTINGS_FILE="$QWEN_ROOT/settings.json"
-    mkdir -p "$QWEN_ROOT"
-    ensure_jq_available
+```bash
+# Complete Qwen CLI synchronization
+/config-sync:qwen --action=sync --component=all
 
-    if [[ -f "$SETTINGS_FILE" ]]; then
-      tmp_file="$(mktemp)"
-      jq '(
-            if has("model") and (.model|type=="object") then . else . + {"model":{"name":"qwen-max"}} end
-          )
-          | (if has("temperature") then . else . + {"temperature":0.1} end)
-          | (if has("$version") then . else . + {"$version":2} end)
-          ' "$SETTINGS_FILE" > "$tmp_file"
-      mv "$tmp_file" "$SETTINGS_FILE"
-    else
-      jq -n '{"model":{"name":"qwen-max"},"temperature":0.1,"$version":2}' > "$SETTINGS_FILE"
-    fi
-    ;;
-esac
+# Convert commands to TOML format
+/config-sync:qwen --action=sync --component=commands
 
-echo "Qwen sync complete: $COMPONENT"
+# Generate permission manifests
+/config-sync:qwen --action=sync --component=permissions
+
+# Verify synchronization completeness
+/config-sync:qwen --action=verify
 ```
+
+## error-handling
+
+Dependency Errors:
+- Missing python3: Exit with installation guidance
+- Missing jq: Exit with installation instructions
+- Tool version incompatibility: Document requirements
+
+Conversion Errors:
+- TOML syntax failures: Log specific errors, skip problematic files
+- Frontmatter parsing problems: Document issues, continue with available content
+- Permission mapping conflicts: Apply conservative defaults
+
+File System Errors:
+- Directory creation failures: Exit with permission details
+- File write permission errors: Document access issues
+- Backup creation problems: Abort before making changes

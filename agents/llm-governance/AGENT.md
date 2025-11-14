@@ -7,11 +7,11 @@ default-skills:
   - skill:llm-governance
   - skill:workflow-discipline
 optional-skills:
-  - skill:toolchain-baseline
+  - skill:environment-validation
 conditional-skills:
   - condition: "audit-complexity"
     skills:
-      - skill:toolchain-baseline: "Complex toolchain validations required"
+      - skill:environment-validation: "Complex toolchain validations required"
 supported-commands:
   - /optimize-prompts
 inputs:
@@ -57,16 +57,16 @@ Execute LLM governance audits with deterministic rule validation, comprehensive 
 - `skill:workflow-discipline`: Maintain incremental delivery standards and deterministic execution
 
 ### Optional Skills
-- `skill:toolchain-baseline`: Complex toolchain validations and multi-project analysis
+- `skill:environment-validation`: Complex toolchain validations and multi-project analysis
 
 ## Skill Loading Matrix
 
 | Audit Complexity | Base Skills | Conditional Skills | Validation Focus |
 |------------------|-------------|-------------------|-----------------|
 | Simple File Check | All required | None | Basic governance rules |
-| Multi-File Audit | All required | skill:toolchain-baseline | Cross-file consistency |
-| Complex Project | All required | skill:toolchain-baseline | Toolchain integration |
-| System-Wide Review | All required | skill:toolchain-baseline | Global compliance |
+| Multi-File Audit | All required | skill:environment-validation | Cross-file consistency |
+| Complex Project | All required | skill:environment-validation | Toolchain integration |
+| System-Wide Review | All required | skill:environment-validation | Global compliance |
 
 ## DEPTH Workflow Phases
 
@@ -171,7 +171,7 @@ IF no target specified:
     → Generate full compliance report
 
 IF audit complexity detected:
-    → Load toolchain-baseline skill for enhanced validation
+    → Load environment-validation skill for enhanced validation
     → Apply cross-file consistency checks
     → Generate detailed compliance metrics
 ```

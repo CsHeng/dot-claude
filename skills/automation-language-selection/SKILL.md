@@ -1,5 +1,5 @@
 ---
-name: "skill:tooling-code-tool-selection"
+name: "skill:automation-language-selection"
 description: "Choose between Shell and Python for generated automation code based on task traits"
 ---
 

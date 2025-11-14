@@ -1,14 +1,17 @@
 ---
+file-type: skill
 skill: security-logging
-version: 2.0.0
 description: Security controls and structured logging implementation
-confidence: high
-impact: high
-status: active
+implementation: skills/security-logging/SKILL.md
+scope: Included
 allowed-tools:
   - Bash(shellcheck)
   - Bash(grep -E '^[[:space:]]*[^[:space:]]+[[:space:]]*=')
   - Bash(rg --pcre2 'password|secret|key|token')
+related-skills:
+  - skill:environment-validation
+  - skill:development-standards
+  - skill:workflow-discipline
 ---
 
 # Input Validation Security
@@ -17,7 +20,7 @@ allowed-tools:
 
 ### Multi-Layer Validation Implementation
 
-Apply input validation at all system boundaries:
+Execute input validation at all system boundaries:
 ```python
 import re
 import bleach
@@ -80,7 +83,7 @@ class SecurityValidator:
 
 ### API Request Validation
 
-Implement comprehensive API security:
+Execute comprehensive API security:
 ```python
 from flask import Flask, request, jsonify
 from functools import wraps
@@ -125,7 +128,7 @@ class APISecurityMiddleware:
 
 ### Secret Detection and Removal
 
-Identify and eliminate hardcoded secrets:
+Execute identification and elimination of hardcoded secrets:
 ```bash
 #!/bin/bash
 # secret-scanner.sh
@@ -181,7 +184,7 @@ replace_secrets_with_env() {
 
 ### Security Event Logging
 
-Implement comprehensive security logging:
+Execute comprehensive security logging:
 ```python
 import json
 import logging
@@ -211,7 +214,7 @@ class SecurityLogger:
 
     def log_security_event(self, event_type: str, severity: str,
                           details: Dict[str, Any], user_id: Optional[str] = None):
-        """Log structured security event"""
+        """Execute structured security event logging"""
         timestamp = datetime.utcnow().isoformat() + 'Z'
 
         # Create event hash for integrity
@@ -248,7 +251,7 @@ class SecurityLogger:
     def log_authentication_event(self, success: bool, user_id: str,
                                ip_address: str, user_agent: str,
                                failure_reason: Optional[str] = None):
-        """Log authentication attempt"""
+        """Execute authentication attempt logging"""
         event_type = 'login_success' if success else 'login_failure'
         severity = 'INFO' if success else 'HIGH'
 
@@ -266,7 +269,7 @@ class SecurityLogger:
     def log_authorization_event(self, user_id: str, resource: str,
                                action: str, success: bool,
                                ip_address: str):
-        """Log authorization attempt"""
+        """Execute authorization attempt logging"""
         event_type = 'authorization_success' if success else 'authorization_failure'
         severity = 'INFO' if success else 'MEDIUM'
 
@@ -281,7 +284,7 @@ class SecurityLogger:
 
     def log_privilege_escalation(self, user_id: str, old_role: str,
                                new_role: str, ip_address: str):
-        """Log privilege escalation"""
+        """Execute privilege escalation logging"""
         details = {
             'old_role': old_role,
             'new_role': new_role,
@@ -291,7 +294,7 @@ class SecurityLogger:
         self.log_security_event('privilege_escalation', 'HIGH', details, user_id)
 
     def _get_hash_key(self) -> bytes:
-        """Get key for integrity hashing"""
+        """Execute key retrieval for integrity hashing"""
         key_file = '/etc/security/log-integrity.key'
         try:
             with open(key_file, 'rb') as f:
@@ -309,7 +312,7 @@ class SecurityLogger:
 
 ### Log Integrity and Auditing
 
-Implement tamper-evident logging:
+Execute tamper-evident logging implementation:
 ```python
 import hashlib
 import json
@@ -323,19 +326,19 @@ class LogIntegrityMonitor:
         self.chain = self._load_chain()
 
     def _load_chain(self) -> List[str]:
-        """Load existing log chain"""
+        """Execute existing log chain loading"""
         if self.chain_file.exists():
             with open(self.chain_file, 'r') as f:
                 return json.load(f)
         return []
 
     def _save_chain(self):
-        """Save log chain"""
+        """Execute log chain saving"""
         with open(self.chain_file, 'w') as f:
             json.dump(self.chain, f, indent=2)
 
     def add_log_entry(self, log_entry: Dict[str, Any]) -> str:
-        """Add entry to tamper-evident log chain"""
+        """Execute entry addition to tamper-evident log chain"""
         entry_json = json.dumps(log_entry, sort_keys=True)
 
         # Create hash of entry with previous hash
@@ -351,7 +354,7 @@ class LogIntegrityMonitor:
         return entry_hash
 
     def verify_log_integrity(self) -> bool:
-        """Verify log chain integrity"""
+        """Execute log chain integrity verification"""
         log_files = sorted(self.log_directory.glob('*.log'))
 
         for i, log_file in enumerate(log_files):
@@ -366,7 +369,7 @@ class LogIntegrityMonitor:
         return True
 
     def _calculate_file_hash(self, file_path: Path) -> str:
-        """Calculate SHA256 hash of file"""
+        """Execute SHA256 hash calculation for file"""
         hash_sha256 = hashlib.sha256()
         with open(file_path, 'rb') as f:
             for chunk in iter(lambda: f.read(4096), b""):
@@ -378,7 +381,7 @@ class LogIntegrityMonitor:
 
 ### Multi-Factor Authentication
 
-Implement comprehensive access controls:
+Execute comprehensive access controls:
 ```python
 import pyotp
 import qrcode
@@ -392,7 +395,7 @@ class AuthenticationService:
         self.lockout_duration = timedelta(minutes=15)
 
     def enable_mfa(self, user_id: str) -> str:
-        """Enable MFA for user and return provisioning URI"""
+        """Execute MFA enabling for user and return provisioning URI"""
         # Generate secret
         secret = pyotp.random_base32()
 
@@ -409,7 +412,7 @@ class AuthenticationService:
         return provisioning_uri
 
     def verify_mfa(self, user_id: str, token: str) -> bool:
-        """Verify MFA token"""
+        """Execute MFA token verification"""
         secret = self._get_mfa_secret(user_id)
         if not secret:
             return False
@@ -418,7 +421,7 @@ class AuthenticationService:
         return totp.verify(token, valid_window=1)  # Allow 1 step tolerance
 
     def is_account_locked(self, user_id: str) -> bool:
-        """Check if account is locked due to failed attempts"""
+        """Execute account lockout status check"""
         if user_id not in self.failed_attempts:
             return False
 
@@ -434,7 +437,7 @@ class AuthenticationService:
         return False
 
     def record_failed_attempt(self, user_id: str):
-        """Record failed login attempt"""
+        """Execute failed login attempt recording"""
         if user_id not in self.failed_attempts:
             self.failed_attempts[user_id] = [0, datetime.now()]
 
@@ -442,17 +445,17 @@ class AuthenticationService:
         self.failed_attempts[user_id] = [attempts + 1, datetime.now()]
 
     def reset_attempts(self, user_id: str):
-        """Reset failed attempts after successful login"""
+        """Execute failed attempts reset after successful login"""
         if user_id in self.failed_attempts:
             del self.failed_attempts[user_id]
 
     def _store_mfa_secret(self, user_id: str, secret: str):
-        """Store MFA secret securely"""
+        """Execute MFA secret secure storage"""
         # In production, use encrypted database or key management service
         pass
 
     def _get_mfa_secret(self, user_id: str) -> Optional[str]:
-        """Retrieve MFA secret securely"""
+        """Execute MFA secret secure retrieval"""
         # In production, retrieve from encrypted storage
         return None  # Placeholder
 ```

@@ -8,7 +8,7 @@ required-skills:
   - skill:architecture-patterns
 optional-skills:
   - skill:security-logging
-  - skill:toolchain-baseline
+  - skill:environment-validation
 ---
 
 # Agent System Specification
@@ -128,7 +128,7 @@ Security Context:
 
 Audit Complexity:
   trigger: "multi-file or system-wide analysis"
-  action: "Load toolchain-baseline skill"
+  action: "Load environment-validation skill"
   validation: "Tool availability and compatibility"
 ```
 

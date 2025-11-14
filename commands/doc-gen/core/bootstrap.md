@@ -1,6 +1,6 @@
 ---
 name: "doc-gen:core:bootstrap"
-description: "Self-contained orchestrator for documentation bootstrap and maintenance flows across multiple project types"
+description: "Self-contained orchestrator for documentation bootstrap and maintenance flows across multiple project types (project, gitignored)"
 argument-hint: "--mode=<bootstrap|maintain> --scope=<full|delta> --project-type=<android-app|android-sdk|web-admin|web-user|backend-go|backend-php> --language=<en|zh> --repo=<path> --docs=<path> --core=<path> [--demo=<path>]"
 allowed-tools:
   - Read
@@ -9,7 +9,7 @@ allowed-tools:
   - Bash
   - Bash(rg:*)
   - Bash(ls:*)
-  - Bash(find:*)
+  - Bash(fd:*)
   - Bash(tree:*)
   - Bash(cat:*)
   - Bash(plantuml --check-syntax:*)
@@ -137,7 +137,7 @@ Validate path exists before reading and log canonical adapter path
    - Persist the final parameter table to `<docs target>/_reports/parameters.json` and render the same information in the README.  
    - Abort early if the user does not confirm.
 2. Context harvest  
-   - Run `ls`, `find`, and `rg` across `--core` to map modules, detect frameworks, and surface notable files.  
+  - Run `ls`, `fd`, and `rg` across `--core` to map modules, detect frameworks, and surface notable files.  
   - Inventory existing documentation: count markdown files, PlantUML diagrams, ADRs, and other assets in both the target directory and any auxiliary `docs/`.  
    - Capture additional doc bundles (e.g., `docs-release/`) as read-only references, include their counts in the inventory table, and store their paths in `_reports/parameters.json`.  
    - For `delta` scope, intersect the discovery results with the captured change list and note any skipped areas in TODO.md.

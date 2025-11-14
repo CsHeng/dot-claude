@@ -29,7 +29,7 @@ This RFC defines a unified taxonomy (Memory → Agent → Skill → Command) to 
 - **Workflow**: higher-order coordination across multiple commands handled by agents.
 
 ## Naming Rules
-- Skill IDs: `skill:<category>-<name>` (e.g., `skill:toolchain-baseline`).
+- Skill IDs: `skill:<category>-<name>` (e.g., `skill:environment-validation`).
 - Agent IDs: `agent:<domain>-<role>` (e.g., `agent:config-sync`).
 - Directories: `skills/<category>-<name>/SKILL.md`, `agents/<domain>-<role>/AGENT.md`.
 - Tags: controlled vocabulary (toolchain, workflow, language, security, memory, testing, etc.) for routing.
@@ -86,6 +86,19 @@ rg -l -t go 'time\.Sleep' | xargs ast-grep run -l Go -p 'time.Sleep($DUR)' -r 't
 - Match unit: `ast-grep` operates on AST nodes; `rg` operates on lines.
 - False positives: `ast-grep` stays low; `rg` depends entirely on your regex quality.
 - Rewrite safety: `ast-grep` is first-class; `rg` rewrites require ad-hoc `sed`/`awk` logic and risk collateral edits.
+
+### fd vs find (gitignore-aware discovery)
+- Default to `fd` for file discovery so `.gitignore`, `.ignore`, and `.fdignore` are honored automatically, mirroring the ignore rules that `rg` uses for searches.
+- Reach for `fd --no-ignore` when ignored paths (vendor bundles, build output) must be inspected, or `fd --ignore-vcs` when you only want to bypass `.gitignore` but still respect `.ignore`/`.fdignore`.
+- Combine `fd` with `rg`/`ast-grep` rather than invoking legacy `find`; when `find` is unavoidable (exotic predicates), wrap the call with `git check-ignore -q "$path"` so ignored files stay filtered.
+
+```bash
+# Tracked Gradle scripts within two directory levels
+fd --type f --max-depth 2 'build\.gradle.*' android/
+
+# Inspect ignored artifacts explicitly
+fd --no-ignore --hidden --type f 'report\.json' .
+```
 
 ## Directory Layout & Sync
 ```

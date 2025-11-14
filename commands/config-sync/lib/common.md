@@ -10,7 +10,7 @@ related-commands:
 related-agents:
   - agent:config-sync
 related-skills:
-  - skill:toolchain-baseline
+  - skill:environment-validation
   - skill:workflow-discipline
 disable-model-invocation: true
 ---

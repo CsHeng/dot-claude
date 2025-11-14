@@ -10,7 +10,7 @@ allowed-tools:
   - Write
   - Bash
   - Bash(ls:*)
-  - Bash(find:*)
+  - Bash(fd:*)
   - Bash(cat:*)
 disable-model-invocation: true
 related-commands:
@@ -18,12 +18,12 @@ related-commands:
 related-agents:
   - agent:config-sync
 related-skills:
-  - skill:toolchain-baseline
+  - skill:environment-validation
 ---
 
 ## usage
 
-Convert Claude command specifications to target-specific formats for universal AI tool compatibility.
+Execute conversion of Claude command specifications to target-specific formats for universal AI tool compatibility.
 
 ## arguments
 
@@ -39,7 +39,7 @@ Convert Claude command specifications to target-specific formats for universal A
 1. Command Inventory: Scan `commands/` directory and categorize by functionality
 2. Target Validation: Verify target tool compatibility and requirements
 3. Structure Analysis: Review frontmatter and argument handling patterns
-4. Compatibility Assessment: Identify Claude-specific features needing adaptation
+4. Compatibility Assessment: Identify Claude-specific features requiring adaptation
 5. Universal Adaptation: Apply target-specific transformations
 6. Output Generation: Create adapted command files with validation
 7. Quality Assurance: Verify syntax, structure, and functionality preservation

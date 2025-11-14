@@ -10,7 +10,7 @@ optional-skills:
   - skill:language-python
   - skill:language-go
   - skill:architecture-patterns
-  - skill:tooling-code-tool-selection
+  - skill:automation-language-selection
 supported-commands:
   - /doc-gen:bootstrap
   - /doc-gen:maintain
@@ -60,7 +60,7 @@ Manage documentation generation and maintenance workflows with project-specific 
 - `skill:language-python`: Python project documentation patterns and conventions
 - `skill:language-go`: Go project documentation standards and module organization
 - `skill:architecture-patterns`: Complex system documentation and architectural diagrams
-- `skill:tooling-code-tool-selection`: Documentation toolchain decisions and optimization
+- `skill:automation-language-selection`: Documentation toolchain decisions and optimization
 
 ## Skill Loading Matrix
 
@@ -70,7 +70,7 @@ Manage documentation generation and maintenance workflows with project-specific 
 | Go Project | All required | skill:language-go | Package docs, GoDoc standards |
 | Complex System | All required | skill:architecture-patterns | Architecture diagrams, system design |
 | Mixed Stack | All required | Multiple language skills | Cross-platform integration docs |
-| Toolchain-Heavy | All required | skill:tooling-code-tool-selection | Toolchain setup and automation docs |
+| Toolchain-Heavy | All required | skill:automation-language-selection | Toolchain setup and automation docs |
 
 ## DEPTH Workflow Phases
 

@@ -1,10 +1,13 @@
 ---
+file-type: skill
 skill: deployment-docker
-version: 2.0.0
 description: Docker and containerization guidelines
-confidence: high
-impact: high
-status: active
+implementation: skills/deployment-docker/SKILL.md
+scope: Included
+related-skills:
+  - skill:environment-validation
+  - skill:security-logging
+  - skill:workflow-discipline
 ---
 
 # Container Optimization Patterns
@@ -13,7 +16,7 @@ status: active
 
 ### Minimal Base Image Requirements
 
-Use lightweight, secure base images:
+Execute lightweight, secure base image selection:
 - Prefer alpine-based images for minimal footprint
 - Use distroless images for maximum security
 - Select official images with active maintenance
@@ -27,7 +30,7 @@ Image versioning enforcement:
 
 ### Multi-Stage Build Implementation
 
-Optimize build process with multi-stage builds:
+Execute optimized build process with multi-stage builds:
 - Separate build and runtime environments
 - Copy only necessary artifacts to final stage
 - Use build caches for faster incremental builds
@@ -43,7 +46,7 @@ Layer optimization strategies:
 
 ### Container Runtime Security
 
-Implement non-root execution:
+Execute non-root user implementation:
 - Create and use dedicated service users
 - Set appropriate file permissions
 - Use `USER` directive in Dockerfile
@@ -57,7 +60,7 @@ Security scanning and validation:
 
 ### Secret Management Implementation
 
-Externalize all secrets:
+Execute external secret management:
 - Use environment variables for configuration
 - Implement secret management services (HashiCorp Vault, AWS Secrets Manager)
 - Never bake secrets in container images
@@ -89,7 +92,7 @@ Health check implementation:
 
 ### Container Orchestration Patterns
 
-Kubernetes deployment configuration:
+Execute Kubernetes deployment configuration:
 - Use proper resource requests and limits
 - Implement liveness and readiness probes
 - Configure appropriate replica sets
@@ -105,7 +108,7 @@ Service mesh integration:
 
 ### CI/CD Container Build Pipeline
 
-Automated build process:
+Execute automated build process:
 - Integrate Docker builds in CI pipelines
 - Implement automated testing in containers
 - Use multi-environment deployment strategies
@@ -119,7 +122,7 @@ Image registry management:
 
 ### Environment Configuration
 
-Configuration management:
+Execute configuration management:
 - Use ConfigMaps for application configuration
 - Implement environment-specific overrides
 - Apply configuration validation
@@ -137,7 +140,7 @@ Data persistence strategies:
 
 ### Application Performance Monitoring
 
-Instrument container applications:
+Execute container application instrumentation:
 - Export application metrics via Prometheus
 - Implement distributed tracing with Jaeger or Zipkin
 - Configure log aggregation with ELK or Loki
@@ -151,7 +154,7 @@ Infrastructure monitoring:
 
 ### Security Monitoring
 
-Container security monitoring:
+Execute container security monitoring:
 - Implement runtime security monitoring
 - Monitor for unusual container behavior
 - Apply security policies and controls

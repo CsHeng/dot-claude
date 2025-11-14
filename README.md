@@ -45,7 +45,7 @@ claude /config-sync:sync-cli --action=sync --target=all --components=all
 ## Memory → Agent → Skill
 - CLAUDE.md lists agents and their default/optional skills; Memory no longer enumerates rule files directly.
 - Agents (e.g., `agent:config-sync`, `agent:doc-gen`, `agent:workflow-helper`) describe responsibilities, required inputs, permissions, fallback behavior.
-- Skills (e.g., `skill:toolchain-baseline`, `skill:workflow-discipline`, `skill:llm-governance`, `skill:language-python`) cite the relevant `rules/` sections and provide validation steps.
+- Skills (e.g., `skill:environment-validation`, `skill:workflow-discipline`, `skill:llm-governance`, `skill:language-python`) cite the relevant `rules/` sections and provide validation steps.
 - Commands reference agents in their README to show which skills are active.
 
 ## Key Commands

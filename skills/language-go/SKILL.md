@@ -1,13 +1,16 @@
 ---
+file-type: skill
 skill: language-go
-version: 2.0.0
 description: Go language patterns and best practices
-confidence: high
-impact: high
-status: active
+implementation: skills/language-go/SKILL.md
+scope: Included
 allowed-tools:
   - Bash(go version)
   - Bash(golangci-lint)
+related-skills:
+  - skill:environment-validation
+  - skill:development-standards
+  - skill:testing-strategy
 ---
 
 # Go Architecture Standards
@@ -16,7 +19,7 @@ allowed-tools:
 
 ### Project Layout Requirements
 
-Implement standard Go project structure:
+Execute standard Go project structure:
 ```
 project/
 ├── cmd/
@@ -43,7 +46,7 @@ Package organization principles:
 
 ### Dependency Management
 
-Maintain clean dependency graph:
+Execute clean dependency graph maintenance:
 - Keep dependencies minimal and well-maintained
 - Use semantic versioning for dependency constraints
 - Regularly update dependencies for security patches
@@ -59,7 +62,7 @@ Module best practices:
 
 ### Explicit Error Handling
 
-Apply Go error handling conventions:
+Execute Go error handling conventions:
 - Always handle returned errors explicitly
 - Use multiple return values for error information
 - Implement proper error wrapping with context
@@ -86,7 +89,7 @@ func (e BusinessError) Error() string {
 
 ### Error Interface Implementation
 
-Implement proper error interfaces:
+Execute proper error interface implementation:
 - Use `errors.Is()` for error type checking
 - Use `errors.As()` for error type assertion
 - Create sentinel errors for expected conditions
@@ -109,7 +112,7 @@ func (e TimeoutError) Timeout() bool {
 
 ### Go Formatting and Style
 
-Apply consistent formatting standards:
+Execute consistent formatting standards:
 - Use `gofmt` for all code formatting
 - Implement `goimports` for import management
 - Use `golint` for style guidance
@@ -123,7 +126,7 @@ Naming conventions:
 
 ### Static Analysis Implementation
 
-Integrate golangci-lint in development:
+Execute golangci-lint integration in development:
 - Configure comprehensive rule set
 - Run analysis in CI/CD pipeline
 - Fix all high-severity issues
@@ -151,7 +154,7 @@ linters:
 
 ### Build Configuration
 
-Implement standardized build process:
+Execute standardized build process:
 - Set minimum Go version to 1.23
 - Use `CGO_ENABLED=0` for static binaries
 - Implement cross-compilation for multiple targets
@@ -173,7 +176,7 @@ GOOS=darwin GOARCH=amd64 go build ${LDFLAGS} -o bin/app-darwin-amd64 cmd/app/mai
 
 ### Testing Implementation
 
-Comprehensive testing strategy:
+Execute comprehensive testing strategy:
 - Implement table-driven tests for data-driven scenarios
 - Use benchmark tests for performance-critical code
 - Apply race condition testing with `-race` flag
@@ -221,7 +224,7 @@ func TestProcessInput(t *testing.T) {
 
 ### Goroutine Management
 
-Implement proper goroutine patterns:
+Execute proper goroutine pattern implementation:
 - Use worker pools for managing concurrent tasks
 - Implement graceful shutdown with context cancellation
 - Avoid goroutine leaks by proper cleanup
@@ -253,7 +256,7 @@ func (w Worker) Start(ctx context.Context) {
 
 ### Resource Management
 
-Implement efficient resource usage:
+Execute efficient resource usage implementation:
 - Use sync.Pool for object reuse
 - Implement proper connection pooling
 - Apply memory profiling to identify leaks
@@ -269,7 +272,7 @@ Memory optimization techniques:
 
 ### Secure Coding Practices
 
-Apply Go security best practices:
+Execute Go security best practices:
 - Validate all external inputs at boundaries
 - Use constant-time comparison for sensitive data
 - Implement proper random number generation
@@ -296,7 +299,7 @@ func hashPassword(password string) (string, error) {
 
 ### Dependency Security
 
-Maintain secure dependencies:
+Execute secure dependency maintenance:
 - Regularly scan for known vulnerabilities
 - Use tools like `govulncheck` for security analysis
 - Update dependencies with security patches promptly

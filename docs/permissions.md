@@ -68,7 +68,7 @@ These commands are considered safe and do not modify system state or cause destr
 - `history:*`, `fc -l:*` - History viewing
 
 #### Specific Tools
-- `Bash(grep:*)`, `Bash(find:*)` - Search and find
+- `Bash(rg:*)`, `Bash(fd:*)`, `Bash(ast-grep:*)` - Repository-aware search and refactors
 - `Bash(gdiff:*)` - GNU diff
 - `Bash(mkdir:*)`, `Bash(chmod:*)` - Directory creation and permission setting
 
@@ -202,8 +202,8 @@ Deny (Highest Priority) > Ask > Allow (Lowest Priority)
   "permissions": {
     "defaultMode": "plan",
     "allow": [
-      "Bash(grep:*)",
-      "Bash(find:*)",
+      "Bash(rg:*)",
+      "Bash(fd:*)",
       "Bash(project-specific-deploy:*)"  // Project deployment tool
     ],
     "ask": [
@@ -269,7 +269,8 @@ Deny (Highest Priority) > Ask > Allow (Lowest Priority)
       "Bash(git status:*)",
       "Bash(git log:*)",
       "Bash(cat:*)",
-      "Bash(grep:*)"
+      "Bash(rg:*)",
+      "Bash(fd:*)"
     ],
     "deny": [
       "Bash(rm:*)",

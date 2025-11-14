@@ -9,7 +9,7 @@ allowed-tools:
   - Bash
   - Bash(rg:*)
   - Bash(ls:*)
-  - Bash(find:*)
+  - Bash(fd:*)
   - Bash(cat:*)
 is_background: false
 ---

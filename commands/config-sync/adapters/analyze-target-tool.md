@@ -9,7 +9,7 @@ allowed-tools:
   - Read
   - Bash
   - Bash(ls:*)
-  - Bash(find:*)
+  - Bash(fd:*)
   - Bash(cat:*)
 disable-model-invocation: true
 related-commands:
@@ -17,7 +17,7 @@ related-commands:
 related-agents:
   - agent:config-sync
 related-skills:
-  - skill:toolchain-baseline
+  - skill:environment-validation
 ---
 
 ## usage
