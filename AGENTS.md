@@ -10,7 +10,7 @@
 
 All agents instantiate lazily—no agent initializes until its slash-command pattern is invoked. Before handing control to any agent, Memory automatically loads `skill:environment-validation` so tooling decisions (fd vs find, rg vs grep, ast-grep detection, PATH hygiene) are resolved once and propagated to subsequent skills.
 
-Reference: `docs/agentization/taxonomy-rfc.md`
+Reference: `docs/taxonomy-rfc.md`
 
 ### DEPTH Framework Requirements
 All agents implement standardized DEPTH optimization:
@@ -266,7 +266,7 @@ Shell Scripts:
 
 | Component | Location | Purpose | Validation |
 |-----------|----------|---------|------------|
-| Taxonomy | `docs/agentization/taxonomy-rfc.md` | System architecture rules | Version compatibility |
+| Taxonomy | `docs/taxonomy-rfc.md` | System architecture rules | Version compatibility |
 | Memory | `CLAUDE.md` | Agent routing and skill mappings | Routing completeness |
 | Skills | `skills/` | Capability manifests | Manifest validation |
 | Agents | `agents/` | Command execution contracts | DEPTH optimization |

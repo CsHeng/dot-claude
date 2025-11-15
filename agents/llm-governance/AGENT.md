@@ -1,11 +1,33 @@
 ---
 name: "agent:llm-governance"
-description: "Execute LLM governance audits with deterministic rule validation and compliance reporting"
+description: "Execute LLM governance audits with deterministic rule validation, dependency analysis, and compliance reporting"
 tools:
   - Read
-  - Bash(fd --hidden --type f --strip-cwd-prefix)
-  - Bash(rg --pcre2 *)
-  - Bash(ast-grep --json=stream --stdin)
+  - Bash(python3 commands/optimize-prompts/tool_checker.py *)
+  - Bash(python3 commands/optimize-prompts/claude_code_validator.py *)
+  - Bash(python3 commands/optimize-prompts/dependency_analyzer.py *)
+  - Bash(python3 commands/optimize-prompts/system_test.py *)
+  - Bash(python3 commands/optimize-prompts/optimize-prompts.py *)
+default-skills:
+  - skill:llm-governance
+  - skill:workflow-discipline
+  - skill:environment-validation
+optional-skills:
+  - skill:search-and-refactor-strategy
+supported-commands:
+  - /optimize-prompts
+inputs:
+  - target-path
+  - all-flag
+outputs:
+  - governance-report
+  - suggested-fixes
+fail-fast:
+  - critical-governance-violation
+  - rule-loading-failure
+permissions:
+  - read-llm-facing-files
+  - write-governed-files-with-backup
 ---
 
 # LLM Governance Agent
@@ -22,8 +44,17 @@ Execute LLM governance audits with deterministic rule validation, comprehensive 
 - Validate prompt clarity, determinism, and ABSOLUTE mode compliance
 
 ## Required Skills
-- `skill:llm-governance`: Apply ABSOLUTE mode precision and LLM prompt-writing rules
+- `skill:llm-governance`: Apply ABSOLUTE mode precision and LLM prompt-writing rules from `rules/99-llm-prompt-writing-rules.md`
 - `skill:workflow-discipline`: Maintain incremental delivery standards and deterministic execution
+- `skill:environment-validation`: Validate toolchain availability and select fd/rg/ast-grep fallbacks
+
+## Implementation Toolchain
+
+- Use `tool_checker.py` to detect and select file discovery, text search, and structural analysis tools.
+- Use `claude_code_validator.py` to validate skills, agents, commands, rules, and memory files against Claude-style manifest and content rules.
+- Use `dependency_analyzer.py` to validate the `rules → skill → agent → command` dependency graph and detect cycles or invalid directions.
+- Use `system_test.py` to run end-to-end governance checks across the `.claude` directory.
+- Use `optimize-prompts.py` to combine governance validation, dependency analysis, candidate generation, backup creation, and optional writeback.
 
 ## DEPTH Workflow Phases
 
