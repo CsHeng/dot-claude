@@ -61,23 +61,24 @@ commands/config-sync/
 
 | Command | Purpose | Required Skills |
 | --- | --- | --- |
-| `/config-sync/sync-cli` | Unified orchestration entrypoint | `skill:environment-validation`, `skill:workflow-discipline`, `skill:security-logging` |
-| `/config-sync/sync-project-rules` | IDE rule directory synchronization | `skill:workflow-discipline`, `skill:security-logging` |
-| `/config-sync:adapt-*` | Target-specific configuration adaptation | Language skills based on target |
+| `/config-sync/sync-cli` | Unified orchestration entrypoint for CLI targets | `skill:environment-validation`, `skill:workflow-discipline`, `skill:security-logging`, `skill:config-sync-cli-workflow`, `skill:config-sync-target-adaptation` |
+| `/config-sync/sync-project-rules` | IDE rule directory synchronization for projects | `skill:workflow-discipline`, `skill:security-logging`, `skill:config-sync-project-rules-sync` |
 
 ### Supported Targets
 
-| Target CLI | Config Directory | Adapter | Components | Special Requirements |
-|------------|------------------|---------|------------|---------------------|
-| Droid CLI | `~/.factory` | `adapters/droid.*` | all | Full YAML frontmatter support |
-| Qwen CLI | `~/.qwen` | `adapters/qwen.*` | all | Python `toml` module required |
-| OpenAI Codex CLI | `~/.codex` | `adapters/codex.*` | all | Minimal configuration |
-| OpenCode | `~/.config/opencode` | `adapters/opencode.*` | all | JSON command format |
-| Amp CLI | `~/.config/amp` | `adapters/amp.*` | all | Global memory support |
+| Target CLI | Config Directory | Components | Special Requirements |
+|------------|------------------|------------|---------------------|
+| Droid CLI | `~/.factory` | all | Full YAML frontmatter support |
+| Qwen CLI | `~/.qwen` | all | Python `toml` module required |
+| OpenAI Codex CLI | `~/.codex` | all | Minimal configuration |
+| OpenCode | `~/.config/opencode` | all | JSON command format |
+| Amp CLI | `~/.config/amp` | all | Global memory support |
 
 Components: `rules`, `permissions`, `commands`, `settings`, `memory`
 
-Key Implementation Details: See `lib/common.sh` for configuration mappings and `adapters/` for tool-specific logic.
+Key Implementation Details: See `lib/common.sh` for configuration mappings and
+`adapters/` for tool-specific logic, which are invoked indirectly via
+`/config-sync/sync-cli` and the `skill:config-sync-target-adaptation` skill.
 
 ### Usage Examples
 
