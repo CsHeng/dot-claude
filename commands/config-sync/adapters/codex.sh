@@ -211,47 +211,8 @@ sync_rules() {
 }
 
 sync_permissions() {
-    log_info "Syncing permissions to Codex..."
-
-    if [[ "$DRY_RUN" == true ]]; then
-        log_info "Would create Codex permissions configuration"
-        return 0
-    fi
-
-    local target_file="$CODEX_CONFIG_DIR/permissions.toml"
-
-    # Create simplified permissions for Codex
-    cat > "$target_file" << 'EOF'
-# Codex CLI Permissions Configuration
-# Simplified permission system for OpenAI Codex
-
-[permissions]
-# Default permission level for operations
-default = "workspace-write"
-
-# Sandbox access levels
-[sandbox]
-read_only = false
-workspace_write = true
-full_access = false
-
-# Allowed operations
-[operations]
-file_read = true
-file_write = true
-file_delete = false
-command_execute = false
-network_access = false
-
-# Tool restrictions
-[tools]
-allow_git = true
-allow_file_operations = true
-allow_system_commands = false
-allow_network_access = false
-EOF
-
-    log_success "Permissions configuration created: $target_file"
+    log_info "Codex CLI does not provide a configurable permission model; skipping permissions sync"
+    return 0
 }
 
 sync_commands() {
@@ -309,64 +270,8 @@ sync_commands() {
 }
 
 sync_settings() {
-    log_info "Syncing settings to Codex..."
-
-    if [[ "$DRY_RUN" == true ]]; then
-        log_info "Would create or update Codex settings configuration"
-        return 0
-    fi
-
-    local target_file="$CODEX_SETTINGS_FILE"
-    mkdir -p "$CODEX_CONFIG_DIR"
-
-    if [[ -f "$target_file" && "$FORCE" != true ]]; then
-        log_info "Codex settings already exist; preserving sandbox configuration (use --force to regenerate)"
-        return 0
-    fi
-
-    # Note: Backup handled by unified prepare phase
-    # No need for individual file backup
-
-    # Create minimal Codex configuration
-    cat > "$target_file" << EOF
-# Codex CLI Configuration
-# Minimal configuration for OpenAI Codex
-
-[core]
-# API configuration (requires user to set API key)
-api_key = ""  # Set your OpenAI API key here
-model = "code-davinci-002"
-temperature = 0.1
-max_tokens = 1000
-
-[editor]
-# Editor preferences
-tab_size = 4
-use_tabs = false
-line_wrap = true
-
-[generation]
-# Code generation preferences
-language = "auto"
-style = "consistent"
-include_comments = true
-
-[sandbox]
-# Sandbox security settings
-mode = "workspace-write"
-allow_network = true
-allow_execution = true
-enabled = true
-timeout = 30
-memory_limit = "512MB"
-
-[sync]
-source = "claude-code-sync"
-last_sync = "$(date -u +"%Y-%m-%dT%H:%M:%SZ")"
-EOF
-
-    log_warning "WARNING:  IMPORTANT: Edit $target_file to set your OpenAI API key"
-    log_success "Settings configuration created: $target_file"
+    log_info "Codex settings are user-managed; skipping settings sync"
+    return 0
 }
 
 sync_memory() {
@@ -571,22 +476,22 @@ verify_codex() {
         echo "SUCCESS: Codex CLI is installed"
     fi
 
-    # Verify config directory
+    # Verify config directory (optional for Codex)
     if [[ ! -d "$CODEX_CONFIG_DIR" ]]; then
-        echo "ERROR: Config directory missing: $CODEX_CONFIG_DIR"
-        ((errors += 1))
+        echo "WARNING:  Config directory missing: $CODEX_CONFIG_DIR"
+        ((warnings += 1))
     else
         echo "SUCCESS: Config directory exists"
     fi
 
-    # Verify settings file
+    # Verify settings file (optional for Codex, user-managed)
     if [[ ! -f "$CODEX_SETTINGS_FILE" ]]; then
-        echo "ERROR: Settings file missing: $CODEX_SETTINGS_FILE"
-        ((errors += 1))
+        echo "WARNING:  Settings file missing: $CODEX_SETTINGS_FILE (user-managed, not synced)"
+        ((warnings += 1))
     else
         echo "SUCCESS: Settings file exists"
 
-        # Check API key
+        # Check API key (best-effort only)
         if ! grep -q "api_key.*[^\"[:space:]]" "$CODEX_SETTINGS_FILE"; then
             echo "WARNING:  API key not configured"
             ((warnings += 1))

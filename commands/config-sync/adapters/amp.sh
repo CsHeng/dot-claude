@@ -177,41 +177,8 @@ sync_commands() {
 }
 
 sync_settings() {
-    log_info "Syncing Amp settings..."
-
-    if [[ "$DRY_RUN" == true ]]; then
-        log_info "Would (re)generate $AMP_SETTINGS_FILE"
-        return 0
-    fi
-
-    mkdir -p "$AMP_CONFIG_DIR"
-
-    if [[ -f "$AMP_SETTINGS_FILE" && "$FORCE" != true ]]; then
-        log_info "Amp settings already exist; use --force to regenerate"
-        return 0
-    fi
-
-    local timestamp
-    timestamp="$(date -u +"%Y-%m-%dT%H:%M:%SZ")"
-    cat > "$AMP_SETTINGS_FILE" <<EOF
-{
-  "\$schema": "https://ampcode.com/settings.schema.json",
-  "amp.anthropic.thinking.enabled": true,
-  "amp.experimental.planMode": false,
-  "amp.permissions": [],
-  "amp.git.commit.ampThread.enabled": true,
-  "amp.git.commit.coauthor.enabled": true,
-  "amp.mcpServers": {},
-  "amp.mcpPermissions": [],
-  "amp.terminal.commands.nodeSpawn.loadProfile": "always",
-  "amp.todos.enabled": true,
-  "amp.tools.disable": [],
-  "amp.tools.stopTimeout": 300,
-  "amp.settings.generatedAt": "$timestamp"
-}
-EOF
-
-    log_success "Amp settings written to $AMP_SETTINGS_FILE"
+    log_info "Amp settings (non-permission fields) are user-managed; skipping settings sync"
+    return 0
 }
 
 sync_memory() {

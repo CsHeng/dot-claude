@@ -29,7 +29,7 @@ Execute unified configuration synchronization workflows across multiple CLI targ
   - Supported: `droid`, `qwen`, `codex`, `opencode`, `amp`
   - Default: `all`
 - `--components`: Component types (comma-separated or `all`)
-  - Supported: `rules`, `permissions`, `commands`, `settings`, `memory`
+  - Supported: `rules`, `permissions`, `commands`, `memory`
   - Default: `all`
 - `--adapter`: Specific adapter for adapt phase (optional)
 - `--profile`: Execution profile
@@ -107,7 +107,7 @@ Exit Codes:
 /config-sync/sync-cli --action=sync --plan-file=~/.claude/backup/plan-20250205-120210.json --from-phase=prepare
 
 # Fast profile execution for specific components
-/config-sync/sync-cli --action=sync --profile=fast --components=commands,settings
+/config-sync/sync-cli --action=sync --profile=fast --components=commands
 ```
 
 ## Error Handling

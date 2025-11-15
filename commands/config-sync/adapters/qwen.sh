@@ -304,49 +304,7 @@ sync_rules() {
 }
 
 sync_settings() {
-  local settings_file="$QWEN_ROOT/settings.json"
-
-  log_info "Syncing Qwen settings..."
-
-  if ! command -v jq >/dev/null 2>&1; then
-    log_warn "jq not available, skipping settings sync"
-    return 0
-  fi
-
-  if [[ "$DRY_RUN" == "true" ]]; then
-    log_info "Would create/update settings file: $settings_file"
-    return 0
-  fi
-
-  # Create basic settings if they don't exist
-  if [[ -f "$settings_file" ]]; then
-    log_info "Updating existing settings file"
-    local temp_file
-    temp_file=$(mktemp)
-
-    if jq '(
-          if has("model") and (.model|type=="object") then . else . + {"model":{"name":"qwen-max"}} end
-        )
-        | (if has("temperature") then . else . + {"temperature":0.1} end)
-        | (if has("$version") then . else . + {"$version":2} end)
-        ' "$settings_file" > "$temp_file"; then
-      mv "$temp_file" "$settings_file"
-      log_info "✓ Settings updated"
-    else
-      log_error "✗ Failed to update settings"
-      rm -f "$temp_file"
-      return 1
-    fi
-  else
-    log_info "Creating new settings file"
-    if jq -n '{"model":{"name":"qwen-max"},"temperature":0.1,"$version":2}' > "$settings_file"; then
-      log_info "✓ Settings created"
-    else
-      log_error "✗ Failed to create settings"
-      return 1
-    fi
-  fi
-
+  log_info "Qwen settings are user-managed; skipping settings sync"
   return 0
 }
 
