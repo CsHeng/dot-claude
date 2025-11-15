@@ -3,11 +3,11 @@ name: "agent:llm-governance"
 description: "Execute LLM governance audits with deterministic rule validation, dependency analysis, and compliance reporting"
 tools:
   - Read
-  - Bash(python3 commands/optimize-prompts/tool_checker.py *)
-  - Bash(python3 commands/optimize-prompts/claude_code_validator.py *)
-  - Bash(python3 commands/optimize-prompts/dependency_analyzer.py *)
-  - Bash(python3 commands/optimize-prompts/system_test.py *)
-  - Bash(python3 commands/optimize-prompts/optimize-prompts.py *)
+  - Bash(python3 commands/llm-governance/optimize-prompts/tool_checker.py *)
+  - Bash(python3 commands/llm-governance/optimize-prompts/claude_code_validator.py *)
+  - Bash(python3 commands/llm-governance/optimize-prompts/dependency_analyzer.py *)
+  - Bash(python3 commands/llm-governance/optimize-prompts/system_test.py *)
+  - Bash(python3 commands/llm-governance/optimize-prompts/optimize-prompts.py *)
 default-skills:
   - skill:llm-governance
   - skill:workflow-discipline
@@ -15,7 +15,7 @@ default-skills:
 optional-skills:
   - skill:search-and-refactor-strategy
 supported-commands:
-  - /optimize-prompts
+  - /llm-governance/optimize-prompts
 inputs:
   - target-path
   - all-flag

@@ -98,7 +98,7 @@ commands/
 │   └── adapters/                  # Project-specific adapters
 ├── draft-commit-message.md         # Git commit helper
 ├── review-shell-syntax.md          # Shell script validation
-└── optimize-prompts.md             # DEPTH-based LLM-facing file optimization
+└── llm-governance/optimize-prompts.md  # DEPTH-based LLM-facing file optimization (llm-governance:optimize-prompts)
 ```
 
 ### Documentation

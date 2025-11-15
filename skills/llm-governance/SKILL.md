@@ -2,8 +2,8 @@
 name: skill:llm-governance
 description: LLM content governance and compliance standards. Use when llm governance guidance is required.
 allowed-tools:
-- Bash(python3 commands/optimize-prompts/tool_checker.py *)
-- Bash(python3 commands/optimize-prompts/claude_code_validator.py *)
+- Bash(python3 commands/llm-governance/optimize-prompts/tool_checker.py *)
+- Bash(python3 commands/llm-governance/optimize-prompts/claude_code_validator.py *)
 - Read
 - Write
 - Edit
@@ -44,7 +44,7 @@ Side effects: Backups created by orchestration commands before modifications; no
 
 ### 3. Automated Validation
 
-- Run `python3 commands/optimize-prompts/claude_code_validator.py <directory>` across the selected scope.
+- Run `python3 commands/llm-governance/optimize-prompts/claude_code_validator.py <directory>` across the selected scope.
 - For each file, detect:
   - Body bold markers outside code blocks.
   - Emoji and decorative Unicode characters.
@@ -68,7 +68,7 @@ Side effects: Backups created by orchestration commands before modifications; no
 
 ### 5. Integration with Orchestration Commands
 
-- Delegate bulk analysis, candidate generation, backup creation, and writeback decisions to `/optimize-prompts` and `agent:llm-governance`.
+- Delegate bulk analysis, candidate generation, backup creation, and writeback decisions to `/llm-governance/optimize-prompts` and `agent:llm-governance`.
 - Use this skill to interpret validator results, derive rewrite strategies, and keep governance behavior aligned with rule files.
 
 ## Validation Criteria

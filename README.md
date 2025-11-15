@@ -53,7 +53,7 @@ claude /config-sync:sync-cli --action=sync --target=all --components=all
 | --- | --- | --- |
 | Config Sync | `/config-sync/sync-cli`, `/config-sync/sync-project-rules`, `/config-sync:*` | Sync rules/commands/memory to IDE and CLI targets |
 | Documentation | `/doc-gen:*` | Generate architecture/integration docs via adapters |
-| Reviews | `/optimize-prompts`, `/review-shell-syntax` | LLM prompt optimization and shell linting |
+| Reviews | `/llm-governance/optimize-prompts`, `/review-shell-syntax` | LLM prompt optimization and shell linting |
 | Workflow Helpers | `/commands:draft-commit-message` | Git helper |
 
 See `docs/commands.md` for the complete list.
@@ -87,7 +87,7 @@ claude /config-sync:sync-project-rules --all --project-root=/repo/path
 - Edit rules/skills/agents; CLAUDE automatically loads them
 - Run `/config-sync:sync-project-rules` after rule updates to push to IDE directories
 - Run `/config-sync:sync-cli --action=sync` to push to CLI targets
-- Use `/optimize-prompts` to audit and optimize LLM-facing files after changes
+- Use `/llm-governance/optimize-prompts` to audit and optimize LLM-facing files after changes
 
 ## Maintenance
 ```bash
@@ -102,7 +102,7 @@ claude /config-sync:sync-cli --action=verify --target=all
 ```
 
 ### Extending the System
-1. **New skill**: create `skills/<category>-<name>/SKILL.md`, cite rule sections, run `/optimize-prompts --target=skills/<name>`, and load `skill:skill-creator` for the canonical workflow plus bootstrap scripts (`skills/skill-creator/SKILL.md`).
+1. **New skill**: create `skills/<category>-<name>/SKILL.md`, cite rule sections, run `/llm-governance/optimize-prompts --target=skills/<name>`, and load `skill:skill-creator` for the canonical workflow plus bootstrap scripts (`skills/skill-creator/SKILL.md`).
 2. **New agent**: create `agents/<domain>-<role>/AGENT.md`, hook it up to commands in their README, and add it to CLAUDE.md.
 3. **New command**: add `commands/<name>.md`, describe agent mapping, and follow the slash-command spec.
 

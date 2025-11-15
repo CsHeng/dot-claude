@@ -1,6 +1,6 @@
 # Optimize-Prompts Optimization Implementation
 
-This directory contains the optimized implementation of the `/optimize-prompts` command with enhanced tool availability, validation, and dependency analysis capabilities.
+This directory contains the optimized implementation of the `/llm-governance/optimize-prompts` command with enhanced tool availability, validation, and dependency analysis capabilities.
 
 ## What Was Optimized
 
@@ -45,7 +45,7 @@ This directory contains the optimized implementation of the `/optimize-prompts` 
 - `claude_code_validator.py` - Specification-style compliance validator
 - `dependency_analyzer.py` - Cross-file dependency relationship analyzer
 - `system_test.py` - Comprehensive system testing framework
-- `optimize-prompts.py` - Main optimized `/optimize-prompts` implementation
+- `optimize-prompts.py` - Main optimized `/llm-governance/optimize-prompts` implementation
 - `optimize-prompts-simple.py` - Simplified implementation without external dependencies
 - `classification-rules.yaml` - Directory-based classification and preservation rules for LLM-facing files
 
@@ -54,36 +54,36 @@ This directory contains the optimized implementation of the `/optimize-prompts` 
 ### Tool Availability Check
 
 ```bash
-python3 commands/optimize-prompts/tool_checker.py
+python3 commands/llm-governance/optimize-prompts/tool_checker.py
 ```
 
 ### Governance Validation
 
 ```bash
-python3 commands/optimize-prompts/claude_code_validator.py /path/to/.claude
+python3 commands/llm-governance/optimize-prompts/claude_code_validator.py /path/to/.claude
 ```
 
 ### Dependency Analysis
 
 ```bash
-python3 commands/optimize-prompts/dependency_analyzer.py /path/to/.claude
+python3 commands/llm-governance/optimize-prompts/dependency_analyzer.py /path/to/.claude
 ```
 
 ### Comprehensive System Test
 
 ```bash
-python3 commands/optimize-prompts/system_test.py /path/to/.claude
+python3 commands/llm-governance/optimize-prompts/system_test.py /path/to/.claude
 ```
 
 ### End-to-End Optimize-Prompts Execution
 
 ```bash
-python3 commands/optimize-prompts/optimize-prompts.py --all --root /path/to/.claude
+python3 commands/llm-governance/optimize-prompts/optimize-prompts.py --all --root /path/to/.claude
 ```
 
 ## Integration with Taxonomy and Rules
 
-- Taxonomy source of truth: `docs/agentization/taxonomy-rfc.md`
+- Taxonomy source of truth: `docs/taxonomy-rfc.md`
 - Directory classification and preservation behavior: `classification-rules.yaml`
 - LLM prompt-writing rules and governance standards: `rules/99-llm-prompt-writing-rules.md`
 

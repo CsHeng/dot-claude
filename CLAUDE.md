@@ -7,7 +7,7 @@ Execute ABSOLUTE MODE always unless explicitly overridden
 Execute language-specific rules based on file extensions or declared language context
 Execute security rules for all operations involving credentials, permissions, or network access
 Execute testing rules when operations involve test files or test execution
-Execute directory classification from `commands/optimize-prompts/classification-rules.yaml` before routing `/optimize-prompts`
+Execute directory classification from `commands/llm-governance/optimize-prompts/classification-rules.yaml` before routing `/llm-governance/optimize-prompts`
 Execute governance exceptions from `rules/99-llm-prompt-writing-rules.md` immediately after classification rules load
 
 ### Baseline Skill Initialization
@@ -19,7 +19,7 @@ Execute routing by command patterns:
 1. Config-sync routing: `/config-sync/*` → `agent:config-sync`
 2. Workflow routing: `/draft-commit-message`, `/review-shell-syntax` → `agent:workflow-helper`
 3. Documentation routing: `/doc-gen:*` → `agent:doc-gen`
-4. LLM governance routing: `/optimize-prompts` → `agent:llm-governance`
+4. LLM governance routing: `/llm-governance/optimize-prompts` → `agent:llm-governance`
    Note: Official spec-based optimization (skills→SIMPLE, commands→DEPTH, agents→COMPLEX, rules→SIMPLE)
 5. Code architecture routing: `/review-code-architecture` → `agent:code-architecture-reviewer`
 6. Refactoring routing: `/refactor-*`, `/review-refactor` → `agent:code-refactor-master`
@@ -36,7 +36,7 @@ Execute agent mappings on demand; each row describes what loads once the matchin
 | Agent ID | Command Patterns | Default Skills | Optional Skills |
 | --- | --- | --- | --- |
 | `agent:config-sync` | `/config-sync/*` | `skill:environment-validation`, `skill:workflow-discipline`, `skill:security-logging`, `skill:automation-language-selection`, `skill:search-and-refactor-strategy` | Language skills based on target project |
-| `agent:llm-governance` | `/optimize-prompts` | `skill:llm-governance`, `skill:workflow-discipline`, `skill:environment-validation` | None |
+| `agent:llm-governance` | `/llm-governance/optimize-prompts` | `skill:llm-governance`, `skill:workflow-discipline`, `skill:environment-validation` | None |
 | `agent:doc-gen` | `/doc-gen:*` | `skill:workflow-discipline`, `skill:security-logging`, `skill:search-and-refactor-strategy` | Architecture/language skills per project type |
 | `agent:workflow-helper` | `/draft-commit-message`, `/review-shell-syntax` | `skill:workflow-discipline`, `skill:automation-language-selection` | `skill:language-shell`, `skill:language-python`, `skill:environment-validation` |
 | `agent:code-architecture-reviewer` | `/review-code-architecture` | `skill:architecture-patterns`, `skill:development-standards`, `skill:security-standards` | Language-specific skills based on codebase |

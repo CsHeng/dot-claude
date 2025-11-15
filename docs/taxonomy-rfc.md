@@ -16,7 +16,7 @@ The taxonomy is derived from and aligned with external Claude Code specification
 ## Scope
 - Entry file: `CLAUDE.md`
 - Directories: `rules/`, `skills/`, `agents/`, `commands/`, `requirements/`, `docs/`
-- Supported commands: config-sync, optimize-prompts, doc-gen, draft-commit-message, review-shell-syntax, etc.
+- Supported commands: config-sync, llm-governance:optimize-prompts, doc-gen, draft-commit-message, review-shell-syntax, etc.
 - Execution environments: Codex CLI, Claude Code, Qwen CLI, IDE/CI sync destinations
 
 ## Goals
@@ -40,7 +40,7 @@ The `llm-governance` domain is responsible for:
 - Defining rules and standards for all LLM-facing assets.
 - Providing skills that apply those rules deterministically.
 - Providing agents (such as `agent:llm-governance`) that orchestrate governance workflows.
-- Exposing user-facing commands (such as `/optimize-prompts`) that optimize, validate, and report on LLM-facing assets.
+- Exposing user-facing commands (such as `/llm-governance/optimize-prompts`) that optimize, validate, and report on LLM-facing assets.
 
 ## Concepts
 - **Memory**: entry points (CLAUDE) that route tasks and declare default agents/skills.
@@ -142,7 +142,7 @@ fd --no-ignore --hidden --type f 'report\.json' .
 ```
 
 - config-sync copies `rules/`, `skills/`, `agents/`, and `CLAUDE.md` to IDE/CI targets.
-- optimize-prompts expands its default targets to include the new directories and validates manifest structure.
+- llm-governance:optimize-prompts expands its default targets to include the new directories and validates manifest structure.
 
 ## Conflict Handling
 - A rule section can map to only one core skill; if multiple skills need it, wrap it as a child skill or reference another skill explicitly.
@@ -162,7 +162,7 @@ fd --no-ignore --hidden --type f 'report\.json' .
 ## Approval Flow
 1. Submit a PR with the agentization issue template (goals, commands, skills, risks, checklist).
 2. Require two reviewers (command owner and prompt/rule owner).
-3. Run `/optimize-prompts --target=<files>` and attach results.
+3. Run `/llm-governance/optimize-prompts --target=<files>` and attach results.
 4. If scripts or tools change, run relevant linters/tests (shellcheck, `plantuml --check-syntax`, `dbml2sql`, etc.).
 5. Perform a config-sync dry run to confirm new directories are recognized.
 
@@ -188,8 +188,8 @@ See `requirements/01-claude.md` for the Phase 0‑5 timeline:
 ## Acceptance Criteria
 - CLAUDE references agents only and links to this RFC.
 - At least four skills (toolchain, workflow, llm-governance, language-python) implemented with the template.
-- At least two agents (config-sync, llm-governance) defined and passing optimize-prompts.
-- optimize-prompts, config-sync, and agent-matrix scripts updated.
+- At least two agents (config-sync, llm-governance) defined and passing llm-governance:optimize-prompts.
+- llm-governance:optimize-prompts, config-sync, and agent-matrix scripts updated.
 - Version matrix, changelog, and regression logs available.
 
 ## Terminology
