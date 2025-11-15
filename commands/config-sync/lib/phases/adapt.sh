@@ -87,12 +87,8 @@ phase_adapt() {
       memory)
         __phase_adapt_run_memory || failures=1
         ;;
-      rules|commands|settings)
+      rules|commands)
         for target in "${SELECTED_TARGETS[@]}"; do
-          if [[ "$component" == "settings" && "$target" == "qwen" && "$FORCE" != true ]]; then
-            log_warning "[adapt] Skipping Qwen settings (use --force to override)"
-            continue
-          fi
           __phase_adapt_run_target_component "$target" "$component" || failures=1
         done
         ;;

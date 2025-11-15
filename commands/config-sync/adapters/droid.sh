@@ -302,51 +302,7 @@ sync_rules() {
 }
 
 sync_settings() {
-  local settings_file="$DROID_ROOT/settings.json"
-
-  log_info "Syncing Factory/Droid settings..."
-
-  if ! command -v jq >/dev/null 2>&1; then
-    log_warn "jq not available, skipping settings sync"
-    return 0
-  fi
-
-  if [[ "$DRY_RUN" == "true" ]]; then
-    log_info "Would create/update settings file: $settings_file"
-    return 0
-  fi
-
-  if [[ -f "$settings_file" ]]; then
-    # Note: Backup handled by unified prepare phase
-    log_info "Settings backup handled by unified prepare phase"
-    log_info "Updating existing settings file"
-    local temp_file
-    temp_file=$(mktemp)
-
-    # Update or add Factory-specific settings
-    if jq '(
-          if has("model") then . else . + {"model":"claude-3-5-sonnet-20241022"} end
-        )
-        | (if has("temperature") then . else . + {"temperature":0.1} end)
-        | (if has("maxTokens") then . else . + {"maxTokens":4096} end)
-        ' "$settings_file" > "$temp_file"; then
-      mv "$temp_file" "$settings_file"
-      log_info "✓ Settings updated"
-    else
-      log_error "✗ Failed to update settings"
-      rm -f "$temp_file"
-      return 1
-    fi
-  else
-    log_info "Creating new settings file"
-    if jq -n '{"model":"claude-3-5-sonnet-20241022","temperature":0.1,"maxTokens":4096}' > "$settings_file"; then
-      log_info "✓ Settings created"
-    else
-      log_error "✗ Failed to create settings"
-      return 1
-    fi
-  fi
-
+  log_info "Droid settings are user-managed; skipping settings sync"
   return 0
 }
 

@@ -66,19 +66,21 @@ commands/config-sync/
 
 ### Supported Targets
 
-| Target CLI | Config Directory | Components | Special Requirements |
-|------------|------------------|------------|---------------------|
-| Droid CLI | `~/.factory` | all | Full YAML frontmatter support |
-| Qwen CLI | `~/.qwen` | all | Python `toml` module required |
-| OpenAI Codex CLI | `~/.codex` | all | Minimal configuration |
-| OpenCode | `~/.config/opencode` | all | JSON command format |
-| Amp CLI | `~/.config/amp` | all | Global memory support |
+| Target CLI       | Config Resolver                    | Components | Special Requirements |
+|------------------|------------------------------------|------------|----------------------|
+| Droid CLI        | `get_target_config_dir droid`      | all        | Full YAML frontmatter support |
+| Qwen CLI         | `get_target_config_dir qwen`       | all        | Python `toml` module required |
+| OpenAI Codex CLI | `get_target_config_dir codex`      | all        | Minimal configuration |
+| OpenCode         | `get_target_config_dir opencode`   | all        | JSON command format |
+| Amp CLI          | `get_target_config_dir amp`        | all        | Global memory support |
 
-Components: `rules`, `permissions`, `commands`, `settings`, `memory`
+Components: `rules`, `permissions`, `commands`, `memory`
 
-Key Implementation Details: See `lib/common.sh` for configuration mappings and
-`adapters/` for tool-specific logic, which are invoked indirectly via
-`/config-sync/sync-cli` and the `skill:config-sync-target-adaptation` skill.
+Key Implementation Details: All target config/commands/rules directories are
+resolved via `lib/common.sh` helpers (`get_target_config_dir`,
+`get_target_commands_dir`, `get_target_rules_dir`). `adapters/` provide
+tool-specific logic and are invoked indirectly via `/config-sync/sync-cli`
+and the `skill:config-sync-target-adaptation` skill.
 
 ### Usage Examples
 
