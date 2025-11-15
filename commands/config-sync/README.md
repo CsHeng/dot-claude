@@ -67,11 +67,17 @@ commands/config-sync/
 
 ### Supported Targets
 
-- Factory/Droid CLI: Markdown commands, JSON permissions
-- Qwen CLI: TOML command conversion, JSON permission manifest
-- OpenAI Codex CLI: Minimal configuration with sandbox levels
-- OpenCode: JSON command format with operation-based permissions
-- Amp CLI: AGENTS.md guidance, `.agents/commands` mirroring, `amp.permissions` array
+| Target CLI | Config Directory | Adapter | Components | Special Requirements |
+|------------|------------------|---------|------------|---------------------|
+| Droid CLI | `~/.factory` | `adapters/droid.*` | all | Full YAML frontmatter support |
+| Qwen CLI | `~/.qwen` | `adapters/qwen.*` | all | Python `toml` module required |
+| OpenAI Codex CLI | `~/.codex` | `adapters/codex.*` | all | Minimal configuration |
+| OpenCode | `~/.config/opencode` | `adapters/opencode.*` | all | JSON command format |
+| Amp CLI | `~/.config/amp` | `adapters/amp.*` | all | Global memory support |
+
+Components: `rules`, `permissions`, `commands`, `settings`, `memory`
+
+Key Implementation Details: See `lib/common.sh` for configuration mappings and `adapters/` for tool-specific logic.
 
 ### Usage Examples
 
@@ -142,3 +148,18 @@ Control cleanup execution with phase controls:
 4. Dependency Management: Qwen command verification requires Python `toml` module. Install with `python3 -m pip install --user toml`
 5. Agent Integration: Ensure command logs include agent/skill versions for audit traceability
 6. Error Handling: Implement comprehensive error handling with proper logging and rollback mechanisms
+
+## reference-links
+
+### Config Sync System Documentation
+- User Guide: `docs/config-sync-guide.md` - Complete system overview and usage
+- CLI Reference: `sync-cli.md` - Command line interface documentation  
+- Sequence Diagram: `docs/config-sync-cli-sequence-diagram.puml` - Workflow visualization
+
+### Original Reference Sources (for mapping rules)
+- [Claude Code Subagents](https://code.claude.com/docs/en/sub-agents) - Source configuration format
+- [Claude Code Slash Commands](https://code.claude.com/docs/en/slash-commands) - Source command format
+- [Claude Code Agent Skills](https://code.claude.com/docs/en/skills) - Claude Code specific features
+- [Factory Custom Droids](https://docs.factory.ai/cli/configuration/custom-droids) - Droid target format
+- [Factory Custom Commands](https://docs.factory.ai/cli/configuration/custom-slash-commands) - Droid command format
+- [Factory AGENTS.md](https://docs.factory.ai/cli/configuration/agents-md) - AGENTS.md reference

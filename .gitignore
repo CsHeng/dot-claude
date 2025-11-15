@@ -6,6 +6,11 @@
 /.github
 /.kiro
 
+# Python cache files
+__pycache__/
+*.py[cod]
+*$py.class
+
 # user temporary requirements
 /requirements
 
