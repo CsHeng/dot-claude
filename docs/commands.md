@@ -30,7 +30,7 @@ The commands directory contains slash commands for various workflows including c
 │       └── web-admin.md
 ├── draft-commit-message.md         # Git commit message drafting
 ├── review-shell-syntax.md          # Shell script validation
-└── optimize-prompts.md             # DEPTH-based LLM-facing file optimization
+└── llm-governance/optimize-prompts.md  # DEPTH-based LLM-facing file optimization
 ```
 
 ## Available Commands
@@ -68,7 +68,7 @@ The commands directory contains slash commands for various workflows including c
 |---------|---------|-------|
 | `/draft-commit-message` | Generate commit messages from git status | Current repository |
 | `/review-shell-syntax` | Validate shell script compliance | `rules/12-shell-guidelines.md` |
-| `/optimize-prompts` | DEPTH-based LLM-facing file optimization | All LLM-facing files |
+| `/llm-governance/optimize-prompts` | DEPTH-based LLM-facing file optimization | All LLM-facing files |
 
 ## Command Guidelines
 

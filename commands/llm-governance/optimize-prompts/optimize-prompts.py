@@ -2,8 +2,8 @@
 """
 Optimize-Prompts Command Implementation
 
-This script implements the /optimize-prompts command with all the optimizations
-including tool fallbacks, Claude Code specification validation, and dependency analysis.
+This script implements the /llm-governance/optimize-prompts command with all the optimizations
+including tool fallbacks, Claude Code-style specification validation, and dependency analysis.
 """
 
 import sys
@@ -144,7 +144,7 @@ class OptimizePrompts:
         patterns: List[str] = []
 
         # Load directory classification patterns from classification-rules.yaml when available
-        classification_file = self.root_dir / "commands" / "optimize-prompts" / "classification-rules.yaml"
+        classification_file = self.root_dir / "commands" / "llm-governance" / "optimize-prompts" / "classification-rules.yaml"
         if classification_file.exists():
             try:
                 with open(classification_file, "r", encoding="utf-8") as f:
@@ -470,9 +470,9 @@ class OptimizePrompts:
     def _print_usage(self):
         """Print usage information."""
         print("\nUsage:")
-        print("  /optimize-prompts [path]     # Optimize specific file")
-        print("  /optimize-prompts --all      # Optimize all LLM-facing files")
-        print("\nThis command optimizes LLM-facing files for Claude Code compliance.")
+        print("  /llm-governance/optimize-prompts [path]     # Optimize specific file")
+        print("  /llm-governance/optimize-prompts --all      # Optimize all LLM-facing files")
+        print("\nThis command optimizes LLM-facing files for llm-governance compliance.")
 
 
 def main():

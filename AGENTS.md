@@ -47,7 +47,7 @@ DEPTH Implementation:
 - Hierarchical: Dependencies → Adapter execution → System integration
 
 ### `agent:llm-governance`
-Commands: `/optimize-prompts`
+Commands: `/llm-governance/optimize-prompts`
 Mission: Execute LLM governance audits with official spec-based optimization
 Inputs: LLM-facing files, target lists, audit scope specifications
 Outputs: Audit reports, compliance assessments, remediation plans
@@ -272,7 +272,7 @@ Shell Scripts:
 | Agents | `agents/` | Command execution contracts | DEPTH optimization |
 | Rules | `rules/` | Canonical standards | Rule integrity |
 | Settings | `.claude/settings.json` | Permission and security policy | Security validation |
-| Directory Classification | `commands/optimize-prompts/classification-rules.yaml` | Directory-to-framework routing | Version-matched with `rules/99-llm-prompt-writing-rules.md` |
+| Directory Classification | `commands/llm-governance/optimize-prompts/classification-rules.yaml` | Directory-to-framework routing | Version-matched with `rules/99-llm-prompt-writing-rules.md` |
 
 ## Critical Failure Modes
 

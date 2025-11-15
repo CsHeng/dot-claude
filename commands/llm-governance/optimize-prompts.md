@@ -1,21 +1,21 @@
 ---
-name: "optimize-prompts"
-description: "Run LLM governance audits and optional deterministic fixes for LLM-facing files using rule-driven schemas and dedicated analysis tools"
+name: "llm-governance:optimize-prompts"
+description: "Run llm-governance design-time audits and optional deterministic fixes for LLM-facing files using rule-driven schemas and dedicated analysis tools"
 argument-hint: "[path/to/file] [--all]"
 allowed-tools:
   - Read
   - Write
   - Execute
-  - Bash(python3 commands/optimize-prompts/optimize-prompts.py *)
-  - Bash(python3 commands/optimize-prompts/system_test.py *)
+  - Bash(python3 commands/llm-governance/optimize-prompts/optimize-prompts.py *)
+  - Bash(python3 commands/llm-governance/optimize-prompts/system_test.py *)
 is_background: false
 dont-optimize: true
 ---
 
 ## usage
 
-/optimize-prompts [path]
-/optimize-prompts --all
+/llm-governance/optimize-prompts [path]
+/llm-governance/optimize-prompts --all
 
 ## arguments
 
@@ -28,8 +28,8 @@ dont-optimize: true
    - `skill:llm-governance`
    - `skill:workflow-discipline`
    - `skill:environment-validation`
-2. Validate the toolchain with `python3 commands/optimize-prompts/tool_checker.py` and select fd, rg, and ast-grep fallbacks when available.
-3. Resolve target files from the repository root using taxonomy rules and `commands/optimize-prompts/classification-rules.yaml`:
+2. Validate the toolchain with `python3 commands/llm-governance/optimize-prompts/tool_checker.py` and select fd, rg, and ast-grep fallbacks when available.
+3. Resolve target files from the repository root using taxonomy rules and `commands/llm-governance/optimize-prompts/classification-rules.yaml`:
    - Include `commands/**/*.md`, `skills/**/SKILL.md`, `agents/**/AGENT.md`, `rules/**/*.md`, `CLAUDE.md`, `AGENTS.md`, and `.claude/settings.json`.
    - Exclude documentation, examples, tests, IDE metadata, backup directories, and files flagged with `dont-optimize: true`.
 4. Apply governance rules from `rules/99-llm-prompt-writing-rules.md` and related rule files through `skill:llm-governance` using `claude_code_validator.py`.
@@ -55,4 +55,3 @@ dont-optimize: true
   - `0`: Audit completed without fatal errors.
   - `1`: Tooling or validation failure.
   - `130`: Operation cancelled by user.
-
