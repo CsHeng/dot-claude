@@ -1,13 +1,56 @@
 ---
 name: "agent:config-sync"
 description: "Orchestrate configuration synchronization workflows across IDE, CLI, and project environments"
+tools:
+  - Read
+  - Write
+  - Bash
+default-skills:
+  - skill:environment-validation
+  - skill:workflow-discipline
+  - skill:security-logging
+  - skill:automation-language-selection
+  - skill:config-sync-cli-workflow
+  - skill:config-sync-project-rules-sync
+  - skill:config-sync-target-adaptation
+optional-skills:
+  - skill:search-and-refactor-strategy
+supported-commands:
+  - /config-sync/sync-cli
+  - /config-sync/sync-project-rules
+inputs:
+  - cli-action
+  - target-tools
+  - components
+  - project-root
+  - profile
+  - plan-file
+  - flags
+outputs:
+  - sync-plan
+  - execution-report
+  - audit-log
+  - backup-metadata
+fail-fast:
+  - repository-access-error
+  - permission-denied
+  - invalid-target
+  - security-violation
+  - backup-failure
+permissions:
+  - read-llm-facing-files
+  - read-target-config-directories
+  - write-target-config-directories
+  - create-and-manage-backups
 ---
 
 # Config Sync Agent
 
 ## Mission
 
-Orchestrate configuration synchronization workflows with deterministic permission handling and comprehensive audit capabilities.
+Orchestrate configuration synchronization workflows with deterministic
+permission handling, phase-based execution, and comprehensive audit
+capabilities across CLI targets and project IDE environments.
 
 ## Core Responsibilities
 - Analyze repository state and mapping target environments
@@ -17,9 +60,13 @@ Orchestrate configuration synchronization workflows with deterministic permissio
 - Apply toolchain selection policies per target environment
 
 ## Required Skills
+- `skill:environment-validation`: Validate and select the toolchain (fd/rg/ast-grep) before other skills run
 - `skill:workflow-discipline`: Maintain incremental delivery standards and deterministic execution
 - `skill:security-logging`: Apply structured logging controls and audit trail generation
 - `skill:automation-language-selection`: Determine appropriate tooling strategies per target
+- `skill:config-sync-cli-workflow`: Drive the multi-target CLI synchronization pipeline
+- `skill:config-sync-project-rules-sync`: Handle project-level IDE rule synchronization
+- `skill:config-sync-target-adaptation`: Coordinate target-specific adapter execution
 
 ## DEPTH Workflow Phases
 
