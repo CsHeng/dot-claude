@@ -4,8 +4,8 @@ Config-Sync is a unified system for synchronizing Claude configuration across mu
 
 ## Architecture Overview
 
-The system operates on an 8-phase pipeline:
-`collect → analyze → plan → prepare → adapt → execute → verify → report`
+The system operates on a 9-phase pipeline:
+`collect → analyze → plan → prepare → adapt → execute → verify → cleanup → report`
 
 ### Phase Pipeline Details
 
@@ -20,23 +20,23 @@ The system operates on an 8-phase pipeline:
 
 ### Backup System
 
-The backup system uses a **unified centralized approach** during the **prepare** phase:
+The backup system uses a unified centralized approach during the prepare and cleanup phases:
 
-- **Location**: `~/.claude/backup/run-TIMESTAMP/backups/`
-- **Scope**: Complete target configuration directories
-- **Strategy**: Single comprehensive backup operation per tool
-- **Structure**: Organized by tool with timestamped subdirectories
+- **Location**: `~/.claude/backup/run-<timestamp>/backups/`
+- **Scope**: Complete target configuration directories per tool
+- **Strategy**: Single comprehensive backup operation per tool, with retention managed by cleanup
+- **Structure**: Organized by tool within each run directory
 
 #### Unified Backup Structure
 ```
-~/.claude/backup/run-TIMESTAMP/
+~/.claude/backup/run-<timestamp>/
 ├── backups/
 │   ├── droid/              # Complete ~/.factory/ backup
 │   ├── qwen/               # Complete ~/.qwen/ backup
 │   ├── codex/              # Complete ~/.codex/ backup
 │   └── opencode/           # Complete ~/.config/opencode/ backup
-├── logs/
-└── metadata/
+├── logs/                   # Execution logs for this run
+└── metadata/               # Plan, summary, and status metadata
 ```
 
 #### Backup Features

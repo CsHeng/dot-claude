@@ -1,22 +1,34 @@
 ---
-skill: quality-standards
+name: quality-standards
 description: Code quality metrics and continuous improvement. Use when quality standards
   guidance is required.
+mode: cross-cutting-quality
+capability-level: 2
 ---
 
-# Code Quality Metrics Definition
+## Purpose
 
-## Complexity Measurement Standards
+Define code quality metrics and continuous improvement guidelines that can be applied across services and languages, with explicit thresholds for complexity, maintainability, and static analysis coverage.
 
-### Cyclomatic Complexity Enforcement
+## IO Semantics
 
-Apply cyclomatic complexity thresholds:
+Input: Code repositories and quality reports that need structured metrics and thresholds.
+
+Output: Measurable targets and configuration examples for complexity, maintainability, and static analysis that can be enforced in CI.
+
+Side Effects: Introducing or tightening quality standards may require refactoring, additional tests, and tooling configuration updates.
+
+## Deterministic Steps
+
+### 1. Complexity Measurement Standards
+
+Enforce cyclomatic complexity thresholds:
 - Simple functions: complexity ≤ 5
 - Moderate functions: complexity ≤ 10
 - Complex functions: complexity ≤ 15
 - Refactor functions exceeding 20 complexity
 
-Complexity calculation guidelines:
+Apply complexity calculation guidelines:
 ```python
 # Example of acceptable complexity (complexity = 5)
 def process_user_data(user_data):
@@ -39,7 +51,7 @@ def complex_business_logic(data):  # REFACTOR: Too complex
     pass
 ```
 
-### Maintainability Index Tracking
+### 2. Maintainability Index Tracking
 
 Implement maintainability measurement:
 - Target maintainability index: 70+ for new code
@@ -47,15 +59,13 @@ Implement maintainability measurement:
 - Track index trends over time
 - Prioritize refactoring for low-index modules
 
-Maintainability factors:
+Account for maintainability factors:
 - Code volume (lines of code)
 - Cyclomatic complexity
 - Halstead volume metrics
 - Comment density
 
-## Static Analysis Integration
-
-### Comprehensive Linting Configuration
+### 3. Static Analysis Integration
 
 Implement multi-language static analysis:
 

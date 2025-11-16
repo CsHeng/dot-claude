@@ -1,14 +1,26 @@
 ---
-skill: testing-strategy
+name: testing-strategy
 description: Comprehensive testing strategies and coverage standards. Use when testing
   strategy guidance is required.
+mode: cross-cutting-testing
+capability-level: 2
 ---
 
-# Test Coverage and Architecture
+## Purpose
 
-## Coverage Requirements Enforcement
+Provide comprehensive testing strategies and coverage standards that can be applied across services, including thresholds, critical path tests, and environment setup.
 
-### Coverage Target Implementation
+## IO Semantics
+
+Input: Test suites, coverage reports, and service architectures that require structured testing guidance.
+
+Output: Concrete coverage targets, configuration examples, and critical path testing patterns that can be enforced in CI.
+
+Side Effects: Raising coverage thresholds or enforcing new critical paths may require additional tests and refactoring.
+
+## Deterministic Steps
+
+### 1. Coverage Requirements Enforcement
 
 Apply mandatory coverage thresholds:
 - Overall code coverage: ≥ 80%
@@ -16,7 +28,7 @@ Apply mandatory coverage thresholds:
 - Security-related code coverage: ≥ 90%
 - New feature coverage: ≥ 85% before merge
 
-Coverage configuration examples:
+Apply coverage configuration examples:
 ```yaml
 # .pytest.ini for Python
 [tool:pytest]
@@ -41,7 +53,7 @@ test-coverage:
 		awk '{if ($1 < 80) {print "Coverage below 80%: " $1 "%"; exit 1} else {print "Coverage: " $1 "%"}}'
 ```
 
-### Critical Path Testing
+### 2. Critical Path Testing
 
 Identify and prioritize critical paths:
 ```python

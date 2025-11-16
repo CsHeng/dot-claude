@@ -43,17 +43,43 @@ The `llm-governance` domain is responsible for:
 - Exposing user-facing commands (such as `/llm-governance/optimize-prompts`) that optimize, validate, and report on LLM-facing assets.
 
 ## Concepts
-- **Memory**: entry points (CLAUDE) that route tasks and declare default agents/skills.
-- **Rule**: canonical policy documents under `rules/` that define requirements and constraints. Rules are never executed directly; skills reference them as their normative source of truth.
-- **Agent**: orchestration unit (subagent) that binds default/optional skills to commands with clear inputs, outputs, fail-fast rules, and permissions.
-- **Skill**: single capability module that encapsulates how to apply one or more `rules/` sections with defined scope and validation steps.
-- **Command**: executable slash command or script that serves as a user entry point. Commands describe parameters and usage but must not embed rule logic; they route work to agents/skills.
-- **Adapter**: command-specific extension for particular targets (e.g., config-sync adapters).
-- **Workflow**: higher-order coordination across multiple commands handled by agents.
+- Memory: entry points (CLAUDE) that route tasks and declare default agents/skills.
+- Rule: canonical policy documents under `rules/` that define requirements and constraints. Rules are never executed directly; skills reference them as their normative source of truth.
+- Agent: orchestration unit (subagent) that binds default/optional skills to commands with clear inputs, outputs, fail-fast rules, and permissions. Agents execute work in a small number of explicit phases (for example, variants of “plan / act / observe / adjust”) so that behavior can be inspected and tested.
+- Skill: single capability module that encapsulates how to apply one or more `rules/` sections and any associated implementation artefacts (scripts, templates, tools, config) with defined scope and validation steps. Rules remain normative; implementations may change without rewriting the rule text.
+- Command: executable slash command or script that serves as a user entry point. Commands describe parameters and usage but must not embed rule logic; they route work to agents/skills.
+- Adapter: command-specific extension for particular targets (e.g., config-sync adapters).
+- Workflow: higher-order coordination across multiple commands handled by agents.
 
 There are two complementary dependency graphs:
-- **Execution graph**: `Memory → Agent → Skill` (commands are user-facing entry points that select an agent/skill stack).
-- **Policy graph**: `Rule → Skill → Agent → Command` (rules define behavior; skills implement rules; agents orchestrate skills; commands expose capabilities to users).
+- Execution graph: `Memory → Agent → Skill` (commands are user-facing entry points that select an agent/skill stack).
+- Policy graph: `Rule → Skill → Agent → Command` (rules define behavior; skills implement rules; agents orchestrate skills; commands expose capabilities to users).
+
+## Spec Alignment (Informative)
+
+This taxonomy reuses terminology from Claude Code and related agent documentation but does not depend on any single external framework. The intended mapping is:
+
+- Memory ≈ project-level routing and default configuration (main entrypoint for agents and skills).
+- Agent ≈ subagent with its own system behavior, tools, and execution phases.
+- Skill ≈ reusable capability unit, backed by rule sections and implementation artefacts.
+- Command ≈ slash command or IDE entrypoint that binds user input to an agent/skill stack.
+- Rule ≈ normative policy specification that skills implement.
+
+Projects may additionally define long-lived workspaces, knowledge bases, or other higher-level constructs; those become LLM-facing only when surfaced through skills (for example, by adding a skill that exposes selected `docs/**` content as governed context).
+
+## Capability Axis (Informative)
+
+In addition to structural roles (Memory, Agent, Skill, Rule, Command, Adapter), agents and skills can be described along a capability axis. Implementations MAY use the following informal levels:
+
+- Level 0 – Single-shot behavior with no tools and no cross-step state.
+- Level 1 – Tool-using behavior that remains effectively stateless across steps.
+- Level 2 – Multi-step workflows with local task memory.
+- Level 3 – Planning and coordination across sub-goals or subagents.
+- Level 4 – Long-running, monitored systems with metrics, rollback, and self-healing behavior.
+
+Each agent SHOULD make its internal loop explicit in terms of a small set of phases (for example, “sense / plan / act / observe / learn”), but the choice of phase names and decomposition is implementation-defined. Specific conventions (for example, DEPTH-style decompositions) MAY be adopted where they fit naturally; they are not required by this RFC.
+
+Capability levels are descriptive in this document. Future rules and tooling MAY add stricter requirements for particular domains or levels, but the core taxonomy remains valid independent of any specific capability labelling scheme.
 
 ## Naming Rules
 - Skill IDs: `skill:<category>-<name>` (e.g., `skill:environment-validation`).
@@ -64,6 +90,8 @@ There are two complementary dependency graphs:
 - Manifest required fields:
   - Skill: `name`, `description`, `tags`, `source`, `capability`, `usage`, `validation`, `allowed-tools`.
   - Agent: `name`, `description`, `default-skills`, `optional-skills`, `supported-commands`, `inputs`, `outputs`, `fail-fast`, `escalation`, `permissions`.
+
+Agents and skills MAY additionally declare optional capability-related fields (for example, an agent-level capability indicator or a skill “mode” flag) where this is useful for governance or tooling. Such fields are advisory unless made mandatory by explicit rules under `rules/`.
 
 ## Load Order
 1. Memory chooses candidate agents based on task context (command, files, language, request).
@@ -77,6 +105,18 @@ There are two complementary dependency graphs:
 - File types (e.g., `**/*.py`) trigger language skills.
 - Metadata (security, testing, LLM-facing) activates corresponding skills.
 - If multiple agents qualify, Memory selects the higher-priority one or prompts the user.
+
+## Frameworks and Styles
+
+The system MAY adopt named execution and prompt frameworks for LLM-facing assets, such as:
+- SIMPLE-style frontmatter for skills.
+- DEPTH-like phase decompositions for commands or agents.
+- Other community styles for reasoning, tool use, or planning, as documented under `rules/99-llm-prompt-writing-rules.md`.
+
+These frameworks are optional and layered on top of the taxonomy:
+- They MUST NOT introduce additional required schema fields beyond those defined in this RFC unless such requirements are explicitly codified in `rules/`.
+- They SHOULD be applied only where they improve clarity, robustness, or governance.
+- They MUST NOT change the fundamental relationships between Memory, Agent, Skill, Rule, Command, and Adapter.
 
 ## Tooling Guidance: ast-grep vs ripgrep
 Codifying search/edit behavior as a skill requires clear defaults for when to rely on structural versus textual tooling:
@@ -138,7 +178,9 @@ fd --no-ignore --hidden --type f 'report\.json' .
 ├── agents/<domain>-<role>/AGENT.md
 ├── commands/
 ├── docs/
-└── scripts/tests/agent-matrix.sh
+└── commands/agent-ops/scripts/
+    ├── agent-matrix.sh
+    └── skill-matrix.sh
 ```
 
 - config-sync copies `rules/`, `skills/`, `agents/`, and `CLAUDE.md` to IDE/CI targets.
@@ -189,7 +231,9 @@ See `requirements/01-claude.md` for the Phase 0‑5 timeline:
 - CLAUDE references agents only and links to this RFC.
 - At least four skills (toolchain, workflow, llm-governance, language-python) implemented with the template.
 - At least two agents (config-sync, llm-governance) defined and passing llm-governance:optimize-prompts.
-- llm-governance:optimize-prompts, config-sync, and agent-matrix scripts updated.
+- Capability axis fields (`capability-level`, `mode`, `loop-style`) present for all core agents and key skills, consistent with `rules/96-capability-levels.md`.
+- Style labels (`style`) present for core agents and commands in major domains (config-sync, llm-governance, doc-gen, workflow-helper) using the controlled vocabulary in `rules/99-llm-prompt-writing-rules.md`.
+- llm-governance:optimize-prompts, config-sync, agent-matrix, and skill-matrix scripts updated to reflect capability and style metadata.
 - Version matrix, changelog, and regression logs available.
 
 ## Terminology

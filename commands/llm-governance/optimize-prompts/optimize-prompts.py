@@ -19,7 +19,7 @@ import yaml
 
 # Import our optimized tools
 from tool_checker import ToolChecker
-from claude_code_validator import ClaudeCodeValidator
+from llm_spec_validator import LLMSpecValidator
 from dependency_analyzer import DependencyAnalyzer
 
 
@@ -29,7 +29,7 @@ class OptimizePrompts:
     def __init__(self, root_dir: str):
         self.root_dir = Path(root_dir).resolve()
         self.tool_checker = ToolChecker()
-        self.validator = ClaudeCodeValidator()
+        self.validator = LLMSpecValidator()
         self.dependency_analyzer = DependencyAnalyzer()
         self.candidates = {}
         self.original_files = {}

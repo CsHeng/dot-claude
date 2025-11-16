@@ -24,7 +24,7 @@ This directory contains the optimized implementation of the `/llm-governance/opt
 ### Phase 2: Validation Enhancement (Completed)
 
 4. Claude Code Style Specification Validator
-   - `claude_code_validator.py` for manifest and content compliance
+   - `llm_spec_validator.py` for manifest and content compliance
    - Validates frontmatter fields, naming conventions, and content rules
    - Detects narrative content, emojis, and formatting violations
 
@@ -42,7 +42,7 @@ This directory contains the optimized implementation of the `/llm-governance/opt
 ## Files in This Directory
 
 - `tool_checker.py` - Tool availability and fallback management
-- `claude_code_validator.py` - Specification-style compliance validator
+- `llm_spec_validator.py` - Specification-style compliance validator
 - `dependency_analyzer.py` - Cross-file dependency relationship analyzer
 - `system_test.py` - Comprehensive system testing framework
 - `optimize-prompts.py` - Main optimized `/llm-governance/optimize-prompts` implementation
@@ -60,7 +60,7 @@ python3 commands/llm-governance/optimize-prompts/tool_checker.py
 ### Governance Validation
 
 ```bash
-python3 commands/llm-governance/optimize-prompts/claude_code_validator.py /path/to/.claude
+python3 commands/llm-governance/optimize-prompts/llm_spec_validator.py /path/to/.claude
 ```
 
 ### Dependency Analysis
@@ -87,5 +87,4 @@ python3 commands/llm-governance/optimize-prompts/optimize-prompts.py --all --roo
 - Directory classification and preservation behavior: `classification-rules.yaml`
 - LLM prompt-writing rules and governance standards: `rules/99-llm-prompt-writing-rules.md`
 
-`optimize-prompts.py` reads `classification-rules.yaml` to discover LLM-facing files, applies governance rules via `claude_code_validator.py`, validates dependencies via `dependency_analyzer.py`, and orchestrates backups and optional writeback for approved changes.
-
+`optimize-prompts.py` reads `classification-rules.yaml` to discover LLM-facing files, applies governance rules via `llm_spec_validator.py`, validates dependencies via `dependency_analyzer.py`, and orchestrates backups and optional writeback for approved changes.

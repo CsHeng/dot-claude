@@ -1,14 +1,26 @@
 ---
-skill: security-guardrails
+name: security-guardrails
 description: Comprehensive security implementation standards. Use when security guardrails
   guidance is required.
+mode: cross-cutting-security
+capability-level: 2
 ---
 
-# Credential Management Security
+## Purpose
 
-## Secure Storage Implementation
+Provide comprehensive security implementation standards covering credential management, secret rotation, input validation, and other guardrails that can be reused across services.
 
-### Environment Variable Security
+## IO Semantics
+
+Input: Service configurations, deployment environments, and code paths that handle credentials or security-sensitive operations.
+
+Output: Concrete policies, code templates, and operational procedures for secure storage, rotation, and validation of secrets.
+
+Side Effects: Applying these guardrails may require changes to deployment pipelines, secret management systems, and runtime configuration.
+
+## Deterministic Steps
+
+### 1. Credential Management Security
 
 Implement secure credential handling:
 - Use environment variables for all configuration secrets
@@ -16,7 +28,7 @@ Implement secure credential handling:
 - Implement proper access controls for credential files
 - Use secret management services for production environments
 
-Secure credential patterns:
+Apply secure credential patterns:
 ```python
 # Secure credential access
 import os
@@ -46,7 +58,7 @@ class SecureConfig:
         return self.cipher_suite.decrypt(encrypted_value.encode()).decode()
 ```
 
-### Secret Rotation Implementation
+### 2. Secret Rotation Implementation
 
 Automate secret lifecycle management:
 ```bash

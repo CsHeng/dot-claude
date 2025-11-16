@@ -14,7 +14,23 @@ allowed-tools:
   - Bash(cat:*)
   - Bash(plantuml --check-syntax:*)
 is_background: false
+style: tool-first
 ---
+
+## Usage
+
+Use this adapter via `/doc-gen:core:bootstrap` with `--project-type=android-app`. The core command reads this file to decide what documentation and TODOs to generate for Android applications.
+
+## Arguments
+
+No additional CLI arguments beyond those accepted by `/doc-gen:core:bootstrap`. Mode, repository, docs, core, and demo paths are inherited from the core command.
+
+## Workflow
+
+1. Scope: Capture the architecture and business flows of Android apps built with Kotlin or Java.
+2. Mandatory outputs: Actor matrix, validated PlantUML diagrams, critical flow summaries, TODO backlog and ledger, and reports bundle.
+3. Preparation: Map Gradle modules, detect architecture patterns and DI setup, locate background execution frameworks, list third-party SDKs.
+4. Automation defaults: Treat all covered deliverables as `automation=auto`, marking TODOs as completed once drafts are generated; use `review_required=true` for items needing human validation.
 
 ## Scope
 Capture the architecture and business flows of Android apps built with Kotlin or Java. The staged deliverables live in whichever docs directory the orchestrator selected. Use the chosen language for narrative sections; keep code identifiers in their native form.
@@ -25,6 +41,12 @@ Capture the architecture and business flows of Android apps built with Kotlin or
 - Critical flows summary: describe the entry points, core modules, and side effects for the prioritized flows listed below.
 - TODO backlog & ledger: break down into architecture, feature modules, operations, and PlantUML tasks. Every entry uses `TODO(doc-gen):` plus a path in parentheses and sets `automation=auto`. If human validation is recommended, add `review_required=true` and explain why in the notes. Mirror the same structure in `<docs target>/_reports/todo.json` so the orchestrator can track status.
 - Reports bundle: ensure `<docs target>/_reports/parameters.json`, `_reports/todo.json`, `_reports/plantuml.log`, and (for delta scope) `_reports/changes.txt` receive adapter-specific details—e.g., add adapter name, default diagram inventory, recommended directories.
+## Output
+
+When used by the core orchestrator, this adapter must result in:
+- README sections and TODO entries reflecting actor matrix, critical flows, and operations.
+- At least one validated PlantUML diagram per documented flow, with results logged in `_reports/plantuml.log`.
+- A populated TODO backlog and ledger in both TODO.md and `_reports/todo.json`, aligned with the flows and modules described above.
 
 ## Preparation checklist
 1. Map Gradle modules with `fd --type f --max-depth 2 'build\\.gradle.*' <core>`.

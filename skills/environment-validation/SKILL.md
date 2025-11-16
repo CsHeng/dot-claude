@@ -1,5 +1,5 @@
 ---
-name: skill:environment-validation
+name: environment-validation
 description: Unify toolchain versions and validation rules (project, gitignored).
   Use when environment validation guidance is required.
 allowed-tools:
@@ -11,9 +11,10 @@ allowed-tools:
 - Bash(lua -v)
 - Bash(plantuml --version)
 - Bash(dbml2sql --version)
-- Bash(find --version)
 - Bash(which *)
 - Bash(command -v *)
+mode: stateless-validation
+capability-level: 1
 ---
 
 ## Purpose
@@ -34,7 +35,6 @@ Execute `dbml2sql --version` for dbml2sql availability check
 Execute `rg --version` to confirm ripgrep availability
 Execute `fd --version` to confirm `.gitignore` aware file discovery support
 Execute `ast-grep --version` to confirm structural search and refactoring tool availability
-Execute `find --version` to confirm basic file discovery fallback availability
 Execute `which find` and `command -v find` to verify find command availability
 
 ### 2. Toolchain Requirements Enforcement

@@ -1,7 +1,9 @@
 ---
-skill: language-python
+name: language-python
 description: Python language patterns and best practices. Use when language python
   guidance is required.
+mode: language-guidelines
+capability-level: 1
 allowed-tools:
 - Bash(uv)
 - Bash(ruff)

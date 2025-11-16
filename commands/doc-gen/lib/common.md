@@ -13,15 +13,15 @@ related-skills:
 disable-model-invocation: true
 ---
 
-## usage
+## Usage
 
 Reference documentation for shared conventions used across doc-gen adapters to maintain consistency and standardization without external rule dependencies.
 
-## arguments
+## Arguments
 
 None - This is a conventions reference file.
 
-## workflow
+## Workflow
 
 1. Reference logging standards for consistent output formatting
 2. Apply parameter summary table templates for documentation
@@ -30,7 +30,7 @@ None - This is a conventions reference file.
 5. Implement PlantUML validation procedures for diagram quality
 6. Use inventory checklist for asset management and verification
 
-## output
+## Output
 
 Complete convention specifications including:
 - Logging format standards and message patterns

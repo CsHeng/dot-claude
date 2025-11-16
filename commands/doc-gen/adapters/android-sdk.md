@@ -2,8 +2,33 @@
 name: "doc-gen:android-sdk"
 description: Adapter for Android SDK documentation bootstrap/maintenance
 argument-hint: --mode=<bootstrap|maintain> --repo=<path> --docs=<path> --core=<path> [--demo=<path>]
-allowed-tools: Read, Write, Edit, Bash(rg:*), Bash(ls:*), Bash(fd:*), Bash(tree:*), Bash(cat:*), Bash(plantuml --check-syntax:*)
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - Bash(rg:*)
+  - Bash(ls:*)
+  - Bash(fd:*)
+  - Bash(tree:*)
+  - Bash(cat:*)
+  - Bash(plantuml --check-syntax:*)
+style: tool-first
 ---
+
+## Usage
+
+Use this adapter via `/doc-gen:core:bootstrap` with `--project-type=android-sdk`. The core command reads this file to determine SDK-specific documentation and TODO requirements.
+
+## Arguments
+
+No additional CLI arguments beyond those accepted by `/doc-gen:core:bootstrap`. Mode, repository, docs, core, and demo paths are inherited from the core command.
+
+## Workflow
+
+1. Scope: Focus on Android libraries distributed to external apps and capture public APIs, contracts, lifecycle guarantees, and backend communication.
+2. Mandatory outputs: Actor matrix, validated PlantUML diagrams, integration checklist, TODO backlog and ledger, and reports bundle.
+3. Preparation: Enumerate modules, detect API surfaces, inspect publishing configuration, locate samples/demos.
+4. Automation defaults: Treat deliverables as `automation=auto`, mark TODOs as completed once drafts exist, and use `review_required=true` when human validation is recommended.
 
 ## Scope
 Focus on Android libraries distributed to external apps. Capture public APIs, integration contracts, lifecycle guarantees, and backend communication. Honor the chosen `--language` for narrative text. Treat any additional documentation bundles discovered during bootstrap (e.g., `docs-release/`) as read-only references: quote their insights, but never modify them.
@@ -18,6 +43,13 @@ Focus on Android libraries distributed to external apps. Capture public APIs, in
 - Flow identifiers: assign every major flow an ID matching `[A-Z][0-9][0-9]` (e.g., `A01` for SDK initialization, `D02` for demo login). Reuse the same ID across README headings, PlantUML diagram filenames and `@startuml` bodies, TODO entries, and open-question notes.
 - Repository references: in the SDK section cite ≥3 repository-relative paths with line numbers (e.g., `zhiqusdk/.../ZhiquGameSDK.java:55`); in the Demo section cite ≥2 such references. Use the same references to justify TODO entries and diagram narratives.
 - TODO syntax: encode metadata as query parameters (`TODO(doc-gen):docs-bootstrap/integration/setup.md?automation=auto&flow=A02[&review_required=true] — description`). Ensure the same `flow=` value appears in README and diagram filenames.
+
+## Output
+
+When used by the core orchestrator, this adapter must result in:
+- README sections and TODO entries reflecting the SDK actor matrix, flows, and backend/telemetry notes.
+- At least one validated PlantUML diagram per documented flow, with results logged in `_reports/plantuml.log`.
+- A populated TODO backlog and ledger in both TODO.md and `_reports/todo.json`, aligned with the flows, modules, and repository references described above.
 
 ## Preparation checklist
 1. Enumerate Gradle modules (`fd --type f --max-depth 2 'build\\.gradle.*' <core>`).

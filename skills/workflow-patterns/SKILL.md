@@ -1,7 +1,9 @@
 ---
-name: skill:workflow-patterns
+name: workflow-patterns
 description: Apply multi-phase workflow and handoff patterns. Use when workflow patterns
   guidance is required.
+mode: cross-cutting-governance
+capability-level: 2
 ---
 
 ## Purpose

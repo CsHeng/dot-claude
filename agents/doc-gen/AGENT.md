@@ -1,6 +1,10 @@
 ---
 name: "agent:doc-gen"
 description: "Manage documentation generation and maintenance workflows with project-specific architecture adaptation"
+tools: []
+capability-level: 2
+loop-style: DEPTH
+style: tool-first
 ---
 
 # Documentation Generation Agent
@@ -8,6 +12,12 @@ description: "Manage documentation generation and maintenance workflows with pro
 ## Mission
 
 Manage documentation generation and maintenance workflows with project-specific architecture adaptation, deterministic output generation, and comprehensive validation.
+
+## Capability Profile
+
+- capability-level: 2
+- loop-style: DEPTH
+- execution-mode: documentation generation and maintenance
 
 ## Core Responsibilities
 - Analyze project architecture and map documentation requirements systematically
@@ -23,6 +33,7 @@ Manage documentation generation and maintenance workflows with project-specific 
 - `skill:language-go`: Go project documentation standards and module organization
 - `skill:architecture-patterns`: Complex system documentation and architectural diagrams
 - `skill:automation-language-selection`: Documentation toolchain decisions and optimization
+ - `skill:project-doc-gen-overview`: Provide doc-gen architecture and directory context when required
 
 ## Skill Loading Matrix
 

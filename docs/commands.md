@@ -8,17 +8,9 @@ The commands directory contains slash commands for various workflows including c
 ├── config-sync/                    # Config-sync command suite
 │   ├── sync-cli.md                # Main orchestrator for CLI tool sync
 │   ├── sync-project-rules.md      # Project rules sync for IDEs
-│   ├── adapters/                  # Tool-specific adapters
-│   │   ├── analyze-target-tool.md # Target tool analysis
-│   │   ├── adapt-permissions.md   # Permission mapping
-│   │   ├── adapt-commands.md      # Command format conversion
-│   │   ├── adapt-rules-content.md # Rules normalization
-│   │   ├── droid.md              # Droid CLI adapter
-│   │   ├── qwen.md               # Qwen CLI adapter
-│   │   ├── codex.md              # (config-sync adapter for Codex targets)
-│   │   └── opencode.md           # OpenCode adapter
-│   ├── lib/                       # Shared guidance
-│   └── scripts/                   # Bash helpers
+│   ├── adapters/                  # Target-specific shell adapters (*.sh)
+│   ├── lib/                       # Shared guidance and phase runners
+│   └── scripts/                   # Bash helpers (backup cleanup, diagnostics)
 ├── doc-gen/                        # Documentation generation commands
 │   ├── core/
 │   │   └── bootstrap.md           # Main documentation orchestrator
@@ -30,7 +22,11 @@ The commands directory contains slash commands for various workflows including c
 │       └── web-admin.md
 ├── draft-commit-message.md         # Git commit message drafting
 ├── review-shell-syntax.md          # Shell script validation
-└── llm-governance/optimize-prompts.md  # DEPTH-based LLM-facing file optimization
+├── llm-governance/optimize-prompts.md  # LLM-facing manifest optimization
+└── agent-ops/                      # AgentOps utilities
+    ├── health-report.md            # Agent and skill health reporting
+    ├── agent-matrix.md             # Agent capability matrix view
+    └── skill-matrix.md             # Skill capability matrix view
 ```
 
 ## Available Commands
@@ -39,17 +35,8 @@ The commands directory contains slash commands for various workflows including c
 
 | Command | Purpose | Key Features |
 |---------|---------|--------------|
-| `claude /config-sync:sync-cli` | Main orchestrator for CLI tool synchronization | 8-phase pipeline, multi-target support, verification |
+| `claude /config-sync:sync-cli` | Main orchestrator for CLI tool synchronization | 9-phase pipeline, multi-target support, verification and cleanup |
 | `claude /config-sync:sync-project-rules` | Sync Claude rules to IDE projects | Cursor/VS Code Copilot integration, auto-detection |
-| `/config-sync:analyze-target-tool` | Analyze specific tool capabilities | Installation checks, configuration audit |
-| `/config-sync:adapt-permissions` | Map Claude permissions to tool formats | Security-first approach, format conversion |
-| `/config-sync:adapt-commands` | Convert command formats between tools | Markdown ↔ TOML ↔ JSON conversion |
-| `/config-sync:adapt-rules-content` | Normalize rules for different platforms | Cross-platform compatibility |
-| `/config-sync:droid` | Droid CLI specific operations | Tool-specific sync/analyze/verify |
-| `/config-sync:qwen` | Qwen CLI specific operations | Tool-specific sync/analyze/verify |
-| `/config-sync:codex` | Codex CLI-specific operations (handled via config-sync) | Tool-specific sync/analyze/verify |
-| `/config-sync:opencode` | OpenCode specific operations | Tool-specific sync/analyze/verify |
-| `/config-sync:amp` | Amp CLI specific operations | Tool-specific sync/analyze/verify |
 
 ### Documentation Generation Commands
 
@@ -68,7 +55,10 @@ The commands directory contains slash commands for various workflows including c
 |---------|---------|-------|
 | `/draft-commit-message` | Generate commit messages from git status | Current repository |
 | `/review-shell-syntax` | Validate shell script compliance | `rules/12-shell-guidelines.md` |
-| `/llm-governance/optimize-prompts` | DEPTH-based LLM-facing file optimization | All LLM-facing files |
+| `/llm-governance/optimize-prompts` | Governance-driven LLM-facing file optimization | All LLM-facing files |
+| `/agent-ops:health-report` | Read-only health report for agents, skills, backups, and governance runs | `.claude/backup`, matrices, and manifests |
+| `/agent-ops:agent-matrix` | Show capability and style matrix for all agents | Current `.claude` directory or provided root |
+| `/agent-ops:skill-matrix` | Show capability and style matrix for all skills | Current `.claude` directory or provided root |
 
 ## Command Guidelines
 
@@ -81,7 +71,6 @@ Each command file must include YAML frontmatter with:
 
 ### Naming Conventions
 - Use slash-style names for top-level handlers
-- Adapter references use registered aliases (e.g., `/config-sync:adapt-permissions`)
 - Reference other commands via published slash form, not file paths
 
 ### Development Best Practices

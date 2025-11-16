@@ -14,6 +14,7 @@ allowed-tools:
   - Bash(cat:*)
   - Bash(plantuml --check-syntax:*)
 is_background: false
+style: tool-first
 ---
 
 ## Usage

@@ -5,6 +5,9 @@ tools:
   - Read
   - Write
   - Bash
+capability-level: 3
+loop-style: DEPTH
+style: tool-first
 default-skills:
   - skill:environment-validation
   - skill:workflow-discipline
@@ -15,6 +18,7 @@ default-skills:
   - skill:config-sync-target-adaptation
 optional-skills:
   - skill:search-and-refactor-strategy
+  - skill:project-config-sync-overview
 supported-commands:
   - /config-sync/sync-cli
   - /config-sync/sync-project-rules
@@ -51,6 +55,12 @@ permissions:
 Orchestrate configuration synchronization workflows with deterministic
 permission handling, phase-based execution, and comprehensive audit
 capabilities across CLI targets and project IDE environments.
+
+## Capability Profile
+
+- capability-level: 3
+- loop-style: DEPTH
+- execution-mode: configuration synchronization with backups and audit artifacts
 
 ## Core Responsibilities
 - Analyze repository state and mapping target environments

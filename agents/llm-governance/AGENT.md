@@ -4,10 +4,13 @@ description: "Execute LLM governance audits with deterministic rule validation, 
 tools:
   - Read
   - Bash(python3 commands/llm-governance/optimize-prompts/tool_checker.py *)
-  - Bash(python3 commands/llm-governance/optimize-prompts/claude_code_validator.py *)
+  - Bash(python3 commands/llm-governance/optimize-prompts/llm_spec_validator.py *)
   - Bash(python3 commands/llm-governance/optimize-prompts/dependency_analyzer.py *)
   - Bash(python3 commands/llm-governance/optimize-prompts/system_test.py *)
   - Bash(python3 commands/llm-governance/optimize-prompts/optimize-prompts.py *)
+capability-level: 3
+loop-style: DEPTH
+style: minimal-chat
 default-skills:
   - skill:llm-governance
   - skill:workflow-discipline
@@ -36,6 +39,12 @@ permissions:
 
 Execute LLM governance audits with deterministic rule validation, comprehensive compliance reporting, and strict read-only enforcement.
 
+## Capability Profile
+
+- capability-level: 3
+- loop-style: DEPTH
+- execution-mode: read-only governance with structured remediation output
+
 ## Core Responsibilities
 - Parse and analyze CLAUDE target lists and manifests systematically
 - Apply directory-based validation rules with consistent severity classification
@@ -51,7 +60,7 @@ Execute LLM governance audits with deterministic rule validation, comprehensive 
 ## Implementation Toolchain
 
 - Use `tool_checker.py` to detect and select file discovery, text search, and structural analysis tools.
-- Use `claude_code_validator.py` to validate skills, agents, commands, rules, and memory files against Claude-style manifest and content rules.
+- Use `llm_spec_validator.py` to validate skills, agents, commands, rules, and memory files against manifest and content rules.
 - Use `dependency_analyzer.py` to validate the `rules → skill → agent → command` dependency graph and detect cycles or invalid directions.
 - Use `system_test.py` to run end-to-end governance checks across the `.claude` directory.
 - Use `optimize-prompts.py` to combine governance validation, dependency analysis, candidate generation, backup creation, and optional writeback.

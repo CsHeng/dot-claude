@@ -1,7 +1,9 @@
 ---
-skill: deployment-docker
+name: deployment-docker
 description: Docker and containerization guidelines. Use when deployment docker guidance
   is required.
+mode: deployment-guidelines
+capability-level: 2
 related-skills:
 - skill:environment-validation
 - skill:security-logging

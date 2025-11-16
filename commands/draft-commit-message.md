@@ -9,25 +9,18 @@ allowed-tools:
 - Bash(git diff --cached)
 - Bash(git diff)
 is_background: false
-disable-model-invocation: true
-related-commands:
-- /config-sync/sync-cli
-related-agents:
-- agent:workflow-helper
-related-skills:
-- skill:workflow-discipline
-- skill:automation-language-selection
+style: reasoning-first
 ---
 
-## usage
+## Usage
 
 Execute analysis of current git repository state and generate formatted commit message proposals without executing commits.
 
-## arguments
+## Arguments
 
 - `optional-summary-notes`: Additional context to incorporate into the commit message
 
-## workflow
+## Workflow
 
 1. Repository Validation: Verify current directory contains .git directory
 2. Status Collection: Execute git status to identify changed files
@@ -55,7 +48,7 @@ Change Categorization:
 - test: Test additions and modifications
 - chore: Build process, dependency, and maintenance changes
 
-## output
+## Output
 
 Generated Commit Message:
 - Subject line with imperative mood (max 50 characters)
@@ -73,7 +66,7 @@ User Guidance:
 - Recommendations for staging specific changes
 - Context for understanding commit impact
 
-## quality-standards
+## Quality Standards
 
 Message Formatting:
 - Use imperative mood in subject line
@@ -87,14 +80,14 @@ Content Requirements:
 - Explain why changes are necessary
 - Reference relevant issue numbers when applicable
 
-## safety-constraints
+## Safety Constraints
 
 1. Read-Only Operation: Never execute git commit automatically
 2. Repository Validation: Ensure valid git repository before analysis
 3. Confirmation Required: Always wait for explicit user approval
 4. Backup Awareness: Remind user of current repository state
 
-## examples
+## Examples
 
 ```bash
 # Generate commit message for current changes
@@ -107,7 +100,7 @@ Content Requirements:
 /draft-commit-message "Complete user profile feature implementation"
 ```
 
-## error-handling
+## Error Handling
 
 Repository Errors:
 - Not a git repository: Error with git init suggestion

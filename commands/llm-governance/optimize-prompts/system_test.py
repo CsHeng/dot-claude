@@ -85,7 +85,7 @@ def run_claude_validator(directory: str) -> Tuple[bool, str, int]:
     """Test Claude Code specification compliance."""
     try:
         result = subprocess.run(
-            ['python3', 'claude_code_validator.py', directory],
+            ['python3', 'llm_spec_validator.py', directory],
             capture_output=True,
             text=True,
             timeout=60
