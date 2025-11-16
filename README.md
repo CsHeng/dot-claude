@@ -13,12 +13,12 @@ Unified Memory → Agent → Skill architecture for Claude Code plus tooling to 
 ```
 .claude/
 ├── agents/                 # Agent manifests (execution contracts)
-├── commands/               # Slash commands (config-sync, doc-gen, etc.)
-├── docs/                   # Documentation and guides
+├── commands/               # Slash commands (config-sync, doc-gen, governance, agent-ops)
+├── docs/                   # Documentation and guides (human-facing)
 ├── rules/                  # Development standards referenced by skills
-├── skills/                 # Skill manifests (single capability)
-├── AGENTS.md               # Operator guide (this repo)
-├── CLAUDE.md               # Memory routing table for Claude Code
+├── skills/                 # Skill manifests (single capability bundles)
+├── AGENTS.md               # Operator guide for agents and system behavior
+├── CLAUDE.md               # Memory routing table (agent and skill selection)
 └── settings.json           # Global preferences / permissions
 ```
 
@@ -51,10 +51,11 @@ claude /config-sync:sync-cli --action=sync --target=all --components=all
 ## Key Commands
 | Category | Commands | Purpose |
 | --- | --- | --- |
-| Config Sync | `/config-sync/sync-cli`, `/config-sync/sync-project-rules`, `/config-sync:*` | Sync rules/commands/memory to IDE and CLI targets |
+| Config Sync | `/config-sync/sync-cli`, `/config-sync/sync-project-rules` | Sync rules/commands/memory to IDE and CLI targets |
 | Documentation | `/doc-gen:*` | Generate architecture/integration docs via adapters |
 | Reviews | `/llm-governance/optimize-prompts`, `/review-shell-syntax` | LLM prompt optimization and shell linting |
-| Workflow Helpers | `/commands:draft-commit-message` | Git helper |
+| Workflow Helpers | `/draft-commit-message` | Git commit helper |
+| AgentOps | `/agent-ops:health-report` | Read-only health report for agents, skills, backups, and governance runs |
 
 See `docs/commands.md` for the complete list.
 
@@ -65,10 +66,10 @@ See `docs/commands.md` for the complete list.
 - `settings.json` plus `.claude/settings.json` control tool permissions (allow/ask/deny)
 
 ## Config-Sync Overview
-- Targets: `droid`, `qwen`, `codex`, `opencode`, `claude`, and IDE project directories
+- Targets: `droid`, `qwen`, `codex`, `opencode`, `amp`, and IDE project directories
 - Components: `rules`, `permissions`, `commands`, `settings`, `memory`
-- Pipeline: collect → analyze → plan → prepare → adapt → execute → verify → report
-- Backups: `~/.claude/backup/run-<timestamp>/`
+- Pipeline: collect → analyze → plan → prepare → adapt → execute → verify → cleanup → report
+- Backups: `~/.claude/backup/run-<timestamp>/backups/` with logs and metadata per run
 - Logs and plans show agent/skill versions for auditing
 
 ### Examples
@@ -103,10 +104,11 @@ claude /config-sync:sync-cli --action=verify --target=all
 
 ### Extending the System
 1. **New skill**: create `skills/<category>-<name>/SKILL.md`, cite rule sections, run `/llm-governance/optimize-prompts --target=skills/<name>`, and load `skill:skill-creator` for the canonical workflow plus bootstrap scripts (`skills/skill-creator/SKILL.md`).
-2. **New agent**: create `agents/<domain>-<role>/AGENT.md`, hook it up to commands in their README, and add it to CLAUDE.md.
+2. **New agent**: create `agents/<domain>-<role>/AGENT.md`, hook it up to commands in their README, and add it to `CLAUDE.md` and `AGENTS.md`.
 3. **New command**: add `commands/<name>.md`, describe agent mapping, and follow the slash-command spec.
 
-Refer to `requirements/01-claude.md` for the complete taxonomy, workflows, and action plan. 
+Refer to `docs/taxonomy-rfc.md` and `docs/taxonomy-v2-plan.md` for the complete taxonomy, workflows, and action plan.
+
 3. **Settings**: Update appropriate settings file
 
 📖 **[Maintenance Guide](docs/directory-structure.md#migration-guide)**

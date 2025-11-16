@@ -1,7 +1,9 @@
 ---
-skill: networking-controls
+name: networking-controls
 description: Network security and connectivity standards. Use when networking controls
   guidance is required.
+mode: cross-cutting-security
+capability-level: 2
 ---
 
 # Network Security Implementation

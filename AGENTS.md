@@ -12,6 +12,16 @@ All agents instantiate lazily—no agent initializes until its slash-command pat
 
 Reference: `docs/taxonomy-rfc.md`
 
+### Capability Axis Summary
+Agents and skills are annotated with a capability axis so governance and tooling can reason about their behavior:
+- Level 0: Single-step helpers with no tools and no persistent state
+- Level 1: Tool-using helpers with short, stateless workflows
+- Level 2: Multi-step workflows with local task memory and deterministic phases
+- Level 3: Planning agents coordinating multiple phases, skills, or subagents
+- Level 4: Long-running system agents with monitoring, rollback, and self-healing behavior
+
+Capability levels are defined normatively in `rules/96-capability-levels.md` and implemented via manifest fields (`capability-level`, `mode`, `loop-style`) constrained by the manifest standards under `rules/97-*.md`.
+
 ### DEPTH Framework Requirements
 All agents implement standardized DEPTH optimization:
 - D: Deterministic workflow phases with clear decision policies
@@ -171,6 +181,21 @@ DEPTH Implementation:
 - Permission: Enforce security policies from `.claude/settings.json`
 - Tooling: Browserless fetch + verification tooling validated up front
 - Hierarchical: Escalates policy or security incidents to governance agent
+
+### `agent:agent-ops`
+Commands: `/agent-ops:*`
+Mission: Analyze backups, sync records, and governance reports to produce health summaries and rollback suggestions for the agent and skill system
+Inputs: Backup root, run metadata scope, config-sync scope, governance report scope
+Outputs: Health reports, risk summaries, rollback candidate lists, sync drift summaries
+Fail-Fast Triggers: Missing backup root, unreadable run metadata, malformed rollback directories
+Escalation: `agent:llm-governance` for rule or governance inconsistencies
+
+DEPTH Implementation:
+- Deterministic: Inventory collection → Drift and coverage analysis → Rollback candidate identification → Reporting
+- Error Handling: Treat missing or malformed artefacts as advisory issues with clear diagnostics
+- Permission: Enforce strict read-only access to backups, logs, and reports
+- Tooling: Use validated discovery and search tools surfaced by `skill:environment-validation`
+- Hierarchical: Report findings to maintainers and governance agents rather than applying changes directly
 
 ### `agent:refactor-planner`
 Commands: invoked automatically by refactor/plan workflows

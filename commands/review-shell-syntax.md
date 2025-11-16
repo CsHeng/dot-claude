@@ -10,10 +10,7 @@ allowed-tools:
   - Bash(zsh -n:*)
   - Bash(shellcheck -f gcc -S error -o null:*)
 is_background: false
-required-skills:
-  - skill:workflow-discipline
-  - skill:language-shell
-  - skill:development-standards
+style: tool-first
 ---
 
 ## Usage

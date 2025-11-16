@@ -15,22 +15,22 @@ related-skills:
 - skill:security-logging
 ---
 
-## usage
+## Usage
 
 Reference documentation for the config-sync plugin system. View configuration layouts, command mappings, and development guidelines.
 
-## arguments
+## Arguments
 
 None - This is a documentation file. Use `/config-sync/sync-cli` for operations.
 
-## workflow
+## Workflow
 
 1. Read configuration layouts and component mappings
 2. Identify target-specific adapter requirements
 3. Reference backup retention policies and management
 4. Follow development guidelines for extensions
 
-## output
+## Output
 
 Complete reference documentation including:
 - Directory structure and component responsibilities

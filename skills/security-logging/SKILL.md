@@ -1,7 +1,9 @@
 ---
-skill: security-logging
+name: security-logging
 description: Security controls and structured logging implementation. Use when security
   logging guidance is required.
+mode: cross-cutting-security
+capability-level: 2
 allowed-tools:
 - Bash(shellcheck)
 - Bash(grep -E '^[[:space:]]*[^[:space:]]+[[:space:]]*=')
@@ -12,11 +14,21 @@ related-skills:
 - skill:workflow-discipline
 ---
 
-# Input Validation Security
+## Purpose
 
-## Comprehensive Input Sanitization
+Define security-focused logging and input validation standards so that services can detect, trace, and audit security-relevant events consistently.
 
-### Multi-Layer Validation Implementation
+## IO Semantics
+
+Input: Application logs, inbound requests, and configuration surfaces that must be validated or monitored for security.
+
+Output: Structured logging and validation patterns that flag suspicious input, support incident response, and integrate with monitoring systems.
+
+Side Effects: When adopted, may increase log volume and require tuning of alerting rules and storage policies.
+
+## Deterministic Steps
+
+### 1. Input Validation Security
 
 Execute input validation at all system boundaries:
 ```python

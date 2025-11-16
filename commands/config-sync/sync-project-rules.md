@@ -41,6 +41,13 @@ Resolve project root from arguments, environment, or current working directory. 
 6. Copy files to target directories with proper headers. Create directories within project boundaries only.
 7. Generate file counts per target directory. Validate header processing success.
 
+## Output
+
+Outputs:
+- Project IDE rule directories populated under `.cursor/rules/` and `.github/instructions/` according to the selected targets.
+- Per-target markdown file counts printed to standard output.
+- When `--dry-run` or `--verify-only` is set, planned destinations and counts printed only and no files copied.
+
 ## Error Handling
 
 Exit code 1: Invalid project root or execution from `~/.claude`

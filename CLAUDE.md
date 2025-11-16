@@ -26,8 +26,9 @@ Execute routing by command patterns:
 7. Planning routing: `/review-plan`, `/plan-*` → `agent:plan-reviewer`
 8. Error resolution routing: `/fix-*`, `/resolve-errors` → `agent:ts-code-error-resolver`
 9. Research routing: `/research-*`, `/web-search` → `agent:web-research-specialist`
-10. Content-based routing: Files with specific extensions → trigger corresponding language skills
-11. Metadata routing: LLM-prompt editing → `agent:llm-governance`
+10. AgentOps routing: `/agent-ops:health-report` → `agent:agent-ops`
+11. Content-based routing: Files with specific extensions → trigger corresponding language skills
+12. Metadata routing: LLM-prompt editing → `agent:llm-governance`
 
 ## Active Agents
 
@@ -35,9 +36,9 @@ Execute agent mappings on demand; each row describes what loads once the matchin
 
 | Agent ID | Command Patterns | Default Skills | Optional Skills |
 | --- | --- | --- | --- |
-| `agent:config-sync` | `/config-sync/*` | `skill:environment-validation`, `skill:workflow-discipline`, `skill:security-logging`, `skill:automation-language-selection`, `skill:search-and-refactor-strategy` | Language skills based on target project |
+| `agent:config-sync` | `/config-sync/*` | `skill:environment-validation`, `skill:workflow-discipline`, `skill:security-logging`, `skill:automation-language-selection`, `skill:config-sync-cli-workflow`, `skill:config-sync-project-rules-sync`, `skill:config-sync-target-adaptation` | `skill:search-and-refactor-strategy`, `skill:project-config-sync-overview`, language skills based on target project |
 | `agent:llm-governance` | `/llm-governance/optimize-prompts` | `skill:llm-governance`, `skill:workflow-discipline`, `skill:environment-validation` | None |
-| `agent:doc-gen` | `/doc-gen:*` | `skill:workflow-discipline`, `skill:security-logging`, `skill:search-and-refactor-strategy` | Architecture/language skills per project type |
+| `agent:doc-gen` | `/doc-gen:*` | `skill:workflow-discipline`, `skill:security-logging`, `skill:search-and-refactor-strategy`, `skill:architecture-patterns`, `skill:language-python`, `skill:language-go` | `skill:project-doc-gen-overview`, other language skills per project type |
 | `agent:workflow-helper` | `/draft-commit-message`, `/review-shell-syntax` | `skill:workflow-discipline`, `skill:automation-language-selection` | `skill:language-shell`, `skill:language-python`, `skill:environment-validation` |
 | `agent:code-architecture-reviewer` | `/review-code-architecture` | `skill:architecture-patterns`, `skill:development-standards`, `skill:security-standards` | Language-specific skills based on codebase |
 | `agent:code-refactor-master` | `/refactor-*`, `/review-refactor` | `skill:architecture-patterns`, `skill:development-standards`, `skill:testing-strategy`, `skill:search-and-refactor-strategy` | `skill:language-*` based on target code |
@@ -45,6 +46,7 @@ Execute agent mappings on demand; each row describes what loads once the matchin
 | `agent:ts-code-error-resolver` | `/fix-*`, `/resolve-errors` | `skill:error-patterns`, `skill:development-standards`, `skill:testing-strategy` | `skill:language-*` based on error context |
 | `agent:web-research-specialist` | `/research-*`, `/web-search` | `skill:search-and-refactor-strategy`, `skill:workflow-discipline` | Content-specific research skills |
 | `agent:refactor-planner` | Refactoring tasks, complex restructuring | `skill:architecture-patterns`, `skill:development-standards`, `skill:workflow-discipline`, `skill:search-and-refactor-strategy` | `skill:language-*`, `skill:testing-strategy` |
+| `agent:agent-ops` | `/agent-ops:health-report` | `skill:workflow-discipline`, `skill:environment-validation` | `skill:project-config-sync-overview`, `skill:project-doc-gen-overview` |
 
 ## Skill Dependencies
 
@@ -69,7 +71,8 @@ Execute optional skill loading:
 
 ### `agent:config-sync`
 Execute skill loading:
-- Load: `skill:environment-validation`, `skill:workflow-discipline`, `skill:security-logging`, `skill:automation-language-selection`, `skill:search-and-refactor-strategy`
+- Load: `skill:environment-validation`, `skill:workflow-discipline`, `skill:security-logging`, `skill:automation-language-selection`, `skill:config-sync-cli-workflow`, `skill:config-sync-project-rules-sync`, `skill:config-sync-target-adaptation`
+- Optional load: `skill:search-and-refactor-strategy`, `skill:project-config-sync-overview`
 - Dependency: `skill:environment-validation` must be loaded before `skill:search-and-refactor-strategy`
 - Conditional load: `skill:language-*` based on target project
 - Escalation: Fallback to `agent:llm-governance` for permission violations
@@ -82,8 +85,9 @@ Execute skill loading:
 
 ### `agent:doc-gen`
 Execute skill loading:
-- Load: `skill:workflow-discipline`, `skill:security-logging`, `skill:search-and-refactor-strategy`
-- Conditional load: `skill:language-*`, `skill:architecture-patterns` per project type
+- Load: `skill:workflow-discipline`, `skill:security-logging`, `skill:search-and-refactor-strategy`, `skill:architecture-patterns`, `skill:language-python`, `skill:language-go`
+- Optional load: `skill:project-doc-gen-overview`
+- Conditional load: additional `skill:language-*` per project type
 - Escalation: Fallback to `agent:config-sync` for integration issues
 
 ### `agent:workflow-helper`

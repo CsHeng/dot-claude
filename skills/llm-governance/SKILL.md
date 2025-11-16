@@ -1,12 +1,22 @@
 ---
-name: skill:llm-governance
+name: llm-governance
 description: LLM content governance and compliance standards. Use when llm governance guidance is required.
+mode: governance-core
+capability-level: 2
+style: minimal-chat
+source:
+  - rules/97-skills-manifest-standards.md
+  - rules/97-agents-manifest-standards.md
+  - rules/97-commands-manifest-standards.md
+  - rules/99-llm-prompt-writing-rules.md
 allowed-tools:
 - Bash(python3 commands/llm-governance/optimize-prompts/tool_checker.py *)
-- Bash(python3 commands/llm-governance/optimize-prompts/claude_code_validator.py *)
+- Bash(python3 commands/llm-governance/optimize-prompts/llm_spec_validator.py *)
 - Read
 - Write
 - Edit
+mode: stateful-governance
+capability-level: 2
 ---
 
 ## Purpose
@@ -44,7 +54,7 @@ Side effects: Backups created by orchestration commands before modifications; no
 
 ### 3. Automated Validation
 
-- Run `python3 commands/llm-governance/optimize-prompts/claude_code_validator.py <directory>` across the selected scope.
+- Run `python3 commands/llm-governance/optimize-prompts/llm_spec_validator.py <directory>` across the selected scope.
 - For each file, detect:
   - Body bold markers outside code blocks.
   - Emoji and decorative Unicode characters.

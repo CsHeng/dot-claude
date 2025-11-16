@@ -1,7 +1,10 @@
 ---
-skill: architecture-patterns
+name: architecture-patterns
 description: Architectural pattern guidance and layering principles. Use when architecture
   patterns guidance is required.
+mode: cross-cutting-architecture
+capability-level: 2
+style: reasoning-first
 ---
 
 # Core Architecture Patterns

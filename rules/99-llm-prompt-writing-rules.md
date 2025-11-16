@@ -15,7 +15,7 @@ MANDATORY on:
 - .claude/settings.json
 
 EXCLUDED:
-docs/**, README*, src/**, examples/**, tests/**, ide/**
+docs/**, README*, commands/**/README*.md, src/**, examples/**, tests/**, ide/**
 
 ALWAYS SKIPPED BY OPTIMIZER:
 - any file containing dont-optimize: true
@@ -23,7 +23,7 @@ ALWAYS SKIPPED BY OPTIMIZER:
 - any file with file-type: rule
 
 ## absolute-prohibitions
-PROHIBITED use of markdown bold syntax of form `**text**` inside body content
+PROHIBITED markdown bold markers in body content
 PERMITTED bold markers inside frontmatter
 PROHIBITED emojis
 PROHIBITED conversational tone
@@ -56,43 +56,21 @@ REQUIRED canonical ordering for all rule files:
 10. depth-compatibility
 
 ### command-files
-REQUIRED YAML frontmatter  
-REQUIRED frontmatter key order:
-1. name
-2. description
-3. argument-hint
-4. allowed-tools
-5. is_background
-
-REQUIRED types:
-- name: string  
-- description: string  
-- argument-hint: string  
-- allowed-tools: list  
-- is_background: boolean  
-
-REQUIRED body sections:
-- usage  
-- arguments  
-- workflow  
-- output  
-
+REQUIRED manifest schema compliance with `rules/97-commands-manifest-standards.md`  
+REQUIRED frontmatter fields and types as defined in command manifest standards  
+REQUIRED core body sections Usage, Arguments, Workflow, Output as defined in command manifest standards  
 REQUIRED deterministic instruction sequences  
 
 ### skill-files
-REQUIRED frontmatter:
-- name: string  
-- description: string  
-OPTIONAL: allowed-tools: list  
-REQUIRED IO semantics  
-REQUIRED deterministic, tool-safe steps  
+REQUIRED manifest schema compliance with `rules/97-skills-manifest-standards.md`  
+REQUIRED frontmatter fields and types as defined in skill manifest standards  
+REQUIRED explicit IO semantics in body content  
+REQUIRED deterministic, tool-safe steps in body content  
 
 ### agent-files
-REQUIRED agent role definition  
-REQUIRED required-skills list  
-REQUIRED workflow phases  
-REQUIRED decision policies  
-REQUIRED error handling patterns  
+REQUIRED manifest schema compliance with `rules/97-agents-manifest-standards.md`  
+REQUIRED explicit agent role definition in body content  
+REQUIRED body sections describing required skills, workflow phases, decision policies, and error handling patterns  
 
 ### rule-files
 REQUIRED canonical ordering  
@@ -175,6 +153,7 @@ REQUIRED lowercase kebab-case filenames
 REQUIRED semantic directory placement  
 REQUIRED directive naming for rule files  
 REQUIRED consistent naming patterns across file categories  
+REQUIRED style labels, when present in manifests, to match documented style guide names  
 
 ## validation-rules
 
@@ -196,6 +175,12 @@ REQUIRED cross-file consistency
 PROHIBITED broken references  
 REQUIRED alignment with repository directory semantics  
 
+### style-compatibility
+OPTIONAL style fields in manifests to describe prompt or execution style  
+REQUIRED style values, when present, to use a controlled vocabulary documented in this file  
+REQUIRED treat style mismatches between directory type and declared style as warnings, not blocking errors  
+PROHIBITED schema requirements that depend on style labels for validity  
+
 ## narrative-detection
 A paragraph is narrative when any condition holds:
 - does not begin with an action verb  
@@ -206,20 +191,44 @@ A paragraph is narrative when any condition holds:
 Narrative paragraphs MUST be removed or rewritten into imperative form.
 
 ## depth-compatibility
-Rewrite commands rely on the DEPTH model. Files must satisfy:
+REQUIRED compatibility with structured execution frameworks used by rewrite commands  
+Files must satisfy:
 
 decomposition:
-- purpose, sections, and dependencies must be extractable
+- ensure purpose, sections, and dependencies are extractable as distinct phases
 
 explicit reasoning:
-- constraints, assumptions, and invariants must be derivable from the content
+- ensure constraints, assumptions, and invariants are derivable from the content
 
 parameters:
-- frontmatter and structure must fully specify behavior  
-- required fields must be present and normalized
+- ensure frontmatter and structure fully specify behavior  
+- ensure required fields are present and normalized
 
 tests:
-- normal, edge, and failure cases must be inferable
+- ensure normal, edge, and failure cases are inferable
 
 heuristics:
-- rules must be compatible with deterministic normalization and tool-safety
+- ensure rules remain compatible with deterministic normalization and tool-safety
+
+frameworks:
+- PERMITTED use of named frameworks such as SIMPLE, DEPTH, COMPLEX, and community loop styles
+- PROHIBITED schema requirements that depend on a specific named framework
+- REQUIRED alignment between chosen frameworks and rule content only when it improves clarity, determinism, or tool-safety
+
+### style-guides
+REQUIRED define style labels in terms of directive patterns and structure instead of schema fields  
+
+#### reasoning-first
+REQUIRED present short, structured reasoning before tools or final answers  
+REQUIRED surface assumptions, plan, and checks explicitly when this style is declared  
+PROHIBITED conversational storytelling or open-ended exploration in governed content  
+
+#### tool-first
+REQUIRED list tools, parameters, and error handling decisions before narrative guidance  
+REQUIRED keep command specifications and agent workflows focused on concrete actions and safeguards  
+PROHIBITED delaying tool selection behind long reasoning sections in command manifests  
+
+#### minimal-chat
+REQUIRED keep outputs limited to structured fields, tables, or bullet lists with no filler prose  
+REQUIRED use this style for IDE, CI, and governance agents that must produce machine-consumable output  
+PROHIBITED conversational fillers, acknowledgements, or small talk in minimal-chat content  

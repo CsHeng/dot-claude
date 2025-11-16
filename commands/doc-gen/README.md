@@ -14,22 +14,22 @@ related-skills:
 disable-model-invocation: true
 ---
 
-## usage
+## Usage
 
 Reference documentation for the doc-gen plugin system. View architecture documentation workflows, component organization, and integration guidelines.
 
-## arguments
+## Arguments
 
 None - This is a documentation file. Use `/doc-gen:bootstrap` for operations.
 
-## workflow
+## Workflow
 
 1. Read plugin architecture and component organization
 2. Identify project-type specific adapter requirements
 3. Reference shared conventions and standards
 4. Follow integration guidelines for new project types
 
-## output
+## Output
 
 Complete reference documentation including:
 - Plugin architecture and component responsibilities

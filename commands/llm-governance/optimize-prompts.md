@@ -9,20 +9,20 @@ allowed-tools:
   - Bash(python3 commands/llm-governance/optimize-prompts/optimize-prompts.py *)
   - Bash(python3 commands/llm-governance/optimize-prompts/system_test.py *)
 is_background: false
-dont-optimize: true
+style: minimal-chat
 ---
 
-## usage
+## Usage
 
 /llm-governance/optimize-prompts [path]
 /llm-governance/optimize-prompts --all
 
-## arguments
+## Arguments
 
 - `path`: Target file or directory inside the current project. When omitted, use the default LLM-facing scope.
 - `--all`: Audit all LLM-facing files defined by taxonomy and rule configuration. When present, ignore `path`.
 
-## workflow
+## Workflow
 
 1. Route the request to `agent:llm-governance` and load default skills:
    - `skill:llm-governance`
@@ -32,7 +32,7 @@ dont-optimize: true
 3. Resolve target files from the repository root using taxonomy rules and `commands/llm-governance/optimize-prompts/classification-rules.yaml`:
    - Include `commands/**/*.md`, `skills/**/SKILL.md`, `agents/**/AGENT.md`, `rules/**/*.md`, `CLAUDE.md`, `AGENTS.md`, and `.claude/settings.json`.
    - Exclude documentation, examples, tests, IDE metadata, backup directories, and files flagged with `dont-optimize: true`.
-4. Apply governance rules from `rules/99-llm-prompt-writing-rules.md` and related rule files through `skill:llm-governance` using `claude_code_validator.py`.
+4. Apply governance rules from `rules/99-llm-prompt-writing-rules.md` and related rule files through `skill:llm-governance` using `llm_spec_validator.py`.
 5. Analyze cross-file dependencies with `dependency_analyzer.py` to validate the `rules → skill → agent → command` graph and detect cycles or invalid directions.
 6. Generate per-file candidates and batch summaries with `optimize-prompts.py`:
    - Keep original files unchanged until explicit approval.
@@ -42,7 +42,7 @@ dont-optimize: true
    - Write only approved candidates to disk.
    - Optionally run `system_test.py` for full-system validation after changes.
 
-## output
+## Output
 
 - Per file:
   - Governance issues with severity and rule references.

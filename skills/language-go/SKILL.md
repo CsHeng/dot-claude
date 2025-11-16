@@ -1,7 +1,9 @@
 ---
-skill: language-go
+name: language-go
 description: Go language patterns and best practices. Use when language go guidance
   is required.
+mode: language-guidelines
+capability-level: 1
 allowed-tools:
 - Bash(go version)
 - Bash(golangci-lint)

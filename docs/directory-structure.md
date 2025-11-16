@@ -78,27 +78,19 @@ Custom commands that extend Claude Code functionality:
 ```
 commands/
 ├── config-sync/                    # Multi-tool sync utilities
-│   ├── sync-cli.md                # Main CLI orchestrator
-│   ├── sync-project-rules.md      # IDE rules sync
-│   ├── adapters/                  # Tool-specific adapters
-│   │   ├── droid.md              # Droid CLI adapter
-│   │   ├── qwen.md               # Qwen CLI adapter
-│   │   ├── codex.md              # (config-sync adapter for Codex targets)
-│   │   ├── opencode.md           # OpenCode adapter
-│   │   ├── amp.md                # Amp adapter
-│   │   ├── analyze-target-tool.md # Tool analysis
-│   │   ├── adapt-permissions.md   # Permission mapping
-│   │   ├── adapt-commands.md      # Command conversion
-│   │   └── adapt-rules-content.md # Rules normalization
-│   ├── lib/                       # Shared guidance
-│   └── scripts/                   # Bash helpers
+│   ├── sync-cli.{md,sh}          # Unified CLI orchestrator
+│   ├── sync-project-rules.{md,sh} # IDE rules sync
+│   ├── adapters/                  # Target-specific shell adapters (*.sh)
+│   ├── lib/                       # Shared guidance and phase runners
+│   └── scripts/                   # Backup cleanup and diagnostics
 ├── doc-gen/                        # Documentation generation
 │   ├── core/
 │   │   └── bootstrap.md           # Main orchestrator
 │   └── adapters/                  # Project-specific adapters
 ├── draft-commit-message.md         # Git commit helper
 ├── review-shell-syntax.md          # Shell script validation
-└── llm-governance/optimize-prompts.md  # DEPTH-based LLM-facing file optimization (llm-governance:optimize-prompts)
+├── llm-governance/optimize-prompts.md  # LLM-facing manifest optimization (llm-governance:optimize-prompts)
+└── agent-ops/health-report.md      # AgentOps health-report command
 ```
 
 ### Documentation
@@ -123,11 +115,11 @@ Automatic backups created during sync operations:
 ```
 backup/
 ├── plan-<timestamp>.json          # Execution plans for resumption
-├── droid-<timestamp>/             # Droid configuration backups
-├── qwen-<timestamp>/              # Qwen configuration backups
-├── codex-<timestamp>/             # (config-sync backup for Codex target)
-├── opencode-<timestamp>/          # OpenCode configuration backups
-└── amp-<timestamp>/               # Amp configuration backups
+├── run-<timestamp>/               # Per-run backups, logs, metadata
+│   ├── backups/                   # Target-specific configuration snapshots
+│   ├── logs/                      # Run logs
+│   └── metadata/                  # Summary and plan metadata
+└── rollback-<timestamp>/          # Rollback candidates created by governance or sync flows
 ```
 
 ### Runtime Directories

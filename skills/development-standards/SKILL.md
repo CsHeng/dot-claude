@@ -1,16 +1,28 @@
 ---
-skill: development-standards
+name: development-standards
 description: Development standards and best practices. Use when development standards
   guidance is required.
+mode: cross-cutting-standards
+capability-level: 2
 ---
 
-# Code Quality Standards
+## Purpose
 
-## Naming Convention Enforcement
+Provide development standards and best practices that can be applied consistently across languages to improve maintainability, readability, and correctness in new and existing code.
 
-### Identifier Naming Rules
+## IO Semantics
 
-Apply consistent naming conventions across all code:
+Input: Codebases, configuration files, and development workflows that require consistent standards.
+
+Output: Concrete naming, structure, performance, and review expectations that can be enforced via linters, CI pipelines, and manual reviews.
+
+Side Effects: When applied, may require refactoring existing code, updating style guides, and adjusting linters or CI configurations.
+
+## Deterministic Steps
+
+### 1. Naming Convention Enforcement
+
+Enforce identifier naming rules consistently:
 
 Variables and Functions:
 - Use camelCase for JavaScript/TypeScript variables and functions
@@ -30,19 +42,15 @@ Constants and Configuration:
 - Group related constants in logical structures
 - Avoid magic numbers and string literals
 
-### Naming Consistency Validation
-
-Implement automated naming validation:
+Perform naming consistency validation:
 - Use linters with naming convention rules
 - Configure language-specific style guides
 - Apply naming convention checks in CI/CD
 - Enforce consistent naming across interfaces
 
-## Code Structure Principles
+### 2. Code Structure Principles
 
-### Single Responsibility Implementation
-
-Apply SOLID principles systematically:
+Apply single responsibility and modularity principles systematically:
 
 Single Responsibility Principle:
 - Each function performs one clear action
@@ -56,9 +64,7 @@ Open/Closed Principle:
 - Implement plugin architectures
 - Avoid modifying existing code for new features
 
-### Modularity and Dependency Management
-
-Implement clean module boundaries:
+Enforce clean module boundaries and dependency management:
 - Define clear interfaces between modules
 - Use dependency injection for loose coupling
 - Apply the dependency inversion principle
@@ -70,9 +76,7 @@ Module organization patterns:
 - Use consistent import/export patterns
 - Implement proper abstraction levels
 
-## Performance Optimization Guidelines
-
-### Algorithm Efficiency Standards
+### 3. Performance Optimization Guidelines
 
 Apply appropriate algorithmic complexity:
 - Use O(1) for constant-time operations

@@ -1,7 +1,9 @@
 ---
-skill: error-patterns
+name: error-patterns
 description: Error handling patterns and logging standards. Use when error patterns
   guidance is required.
+mode: cross-cutting-error-handling
+capability-level: 2
 ---
 
 # Error Handling Strategy Implementation

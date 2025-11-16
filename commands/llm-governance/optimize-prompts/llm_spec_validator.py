@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """
-Claude Code Official Specification Validator
+LLM Specification Validator
 
-This script validates that skills, agents, and commands comply with
-the official Claude Code specifications from docs.claude.com
+Validate skills, agents, commands, rules, and memory files against
+the manifest and prompt-writing rules used by this repository.
 """
 
 import re
@@ -29,16 +29,19 @@ class ValidationError:
         return f"[{self.severity.upper()}] {location}: {self.message}"
 
 
-class ClaudeCodeValidator:
-    """Validates files against Claude Code official specifications."""
+class LLMSpecValidator:
+    """Validates files against manifest and prompt-writing specifications."""
+
+    # Controlled vocabulary for style labels; keep in sync with rules/99-llm-prompt-writing-rules.md
+    ALLOWED_STYLES = {"reasoning-first", "tool-first", "minimal-chat"}
     
     def __init__(self):
-        self.errors = []
-        self.warnings = []
+        self.errors: List[ValidationError] = []
+        self.warnings: List[ValidationError] = []
     
     def validate_file(self, file_path: Path) -> List[ValidationError]:
         """Validate a single file based on its type and location."""
-        errors = []
+        errors: List[ValidationError] = []
         
         # Determine file type from path
         if file_path.name == "SKILL.md":
@@ -54,7 +57,7 @@ class ClaudeCodeValidator:
         
         return errors
     
-    def _parse_frontmatter(self, file_path: Path) -> Tuple[Optional[Dict], List[str], List[str]]:
+    def _parse_frontmatter(self, file_path: Path) -> Tuple[Optional[Dict[str, Any]], List[str], List[str]]:
         """Parse YAML frontmatter from a markdown file."""
         try:
             with open(file_path, 'r', encoding='utf-8') as f:
@@ -63,7 +66,7 @@ class ClaudeCodeValidator:
             if not lines or not lines[0].strip() == '---':
                 return None, lines, ["Missing frontmatter"]
             
-            frontmatter_lines = []
+            frontmatter_lines: List[str] = []
             i = 1
             for i, line in enumerate(lines[1:], 1):
                 if line.strip() == '---':
@@ -81,9 +84,40 @@ class ClaudeCodeValidator:
         except Exception as e:
             return None, [], [f"File reading error: {e}"]
     
+    def _validate_style_field(self, frontmatter: Dict[str, Any], file_path: Path) -> List[ValidationError]:
+        """Validate optional style field against controlled vocabulary."""
+        errors: List[ValidationError] = []
+        if "style" not in frontmatter:
+            return errors
+        
+        value = frontmatter["style"]
+        styles: List[str] = []
+        
+        if isinstance(value, str):
+            styles = [value]
+        elif isinstance(value, list):
+            for item in value:
+                if not isinstance(item, str):
+                    errors.append(ValidationError("critical", str(file_path), "style entries must be strings"))
+                    return errors
+            styles = value
+        else:
+            errors.append(ValidationError("critical", str(file_path), "style must be a string or list of strings"))
+            return errors
+        
+        for style in styles:
+            if style not in self.ALLOWED_STYLES:
+                errors.append(ValidationError("warning", str(file_path), f"Unknown style label: {style}"))
+        
+        # Optional compatibility hints: keep advisory only
+        if "commands" in file_path.parts and any(s == "reasoning-first" for s in styles):
+            errors.append(ValidationError("warning", str(file_path), "reasoning-first style on command manifests may reduce determinism; consider tool-first or minimal-chat"))
+        
+        return errors
+    
     def _validate_skill(self, file_path: Path) -> List[ValidationError]:
-        """Validate a SKILL.md file against official specifications."""
-        errors = []
+        """Validate a SKILL.md file against specifications."""
+        errors: List[ValidationError] = []
         
         frontmatter, content, parse_errors = self._parse_frontmatter(file_path)
         if parse_errors:
@@ -125,13 +159,25 @@ class ClaudeCodeValidator:
             if not isinstance(allowed_tools, list):
                 errors.append(ValidationError('critical', str(file_path), "allowed-tools must be a list"))
             else:
-                valid_tools = [
-                    'Read', 'Write', 'Edit', 'Create', 'Delete', 'List', 'Search',
-                    'Bash', 'Execute', 'Grep', 'Glob', 'LSP', 'Browser', 'WebSearch'
-                ]
                 for tool in allowed_tools:
-                    if tool not in valid_tools:
-                        errors.append(ValidationError('warning', str(file_path), f"Unknown tool in allowed-tools: {tool}"))
+                    if not isinstance(tool, str):
+                        errors.append(ValidationError('critical', str(file_path), "each allowed-tools entry must be a string"))
+
+        # Capability axis validation for skills
+        if 'capability-level' in frontmatter:
+            level = frontmatter['capability-level']
+            if not isinstance(level, int):
+                errors.append(ValidationError('critical', str(file_path), "capability-level must be an integer"))
+            elif level < 0 or level > 4:
+                errors.append(ValidationError('critical', str(file_path), "capability-level must be between 0 and 4"))
+
+        if 'mode' in frontmatter:
+            mode = frontmatter['mode']
+            if not isinstance(mode, str):
+                errors.append(ValidationError('critical', str(file_path), "mode must be a string"))
+        
+        # Style validation (optional)
+        errors.extend(self._validate_style_field(frontmatter, file_path))
         
         # Content validation
         content_text = ''.join(content)
@@ -148,12 +194,21 @@ class ClaudeCodeValidator:
         # Check for emojis
         if self._has_emojis(content_text):
             errors.append(ValidationError('critical', str(file_path), "Content contains emojis"))
+
+        # Capability-level structural expectations
+        if 'capability-level' in frontmatter:
+            level = frontmatter['capability-level']
+            if isinstance(level, int) and level >= 2:
+                if "## IO Semantics" not in content_text:
+                    errors.append(ValidationError('warning', str(file_path), "Capability level >= 2 but missing IO Semantics section"))
+                if "## Deterministic Steps" not in content_text:
+                    errors.append(ValidationError('warning', str(file_path), "Capability level >= 2 but missing Deterministic Steps section"))
         
         return errors
     
     def _validate_command(self, file_path: Path) -> List[ValidationError]:
         """Validate a command markdown file."""
-        errors = []
+        errors: List[ValidationError] = []
         
         frontmatter, content, parse_errors = self._parse_frontmatter(file_path)
         if parse_errors:
@@ -182,6 +237,9 @@ class ClaudeCodeValidator:
             if field in frontmatter and not isinstance(frontmatter[field], expected_type):
                 errors.append(ValidationError('critical', str(file_path), f"{field} must be of type {expected_type.__name__}"))
         
+        # Style validation (optional)
+        errors.extend(self._validate_style_field(frontmatter, file_path))
+        
         # Content structure validation
         content_text = ''.join(content)
         required_sections = ['usage', 'arguments', 'workflow', 'output']
@@ -194,7 +252,7 @@ class ClaudeCodeValidator:
     
     def _validate_agent(self, file_path: Path) -> List[ValidationError]:
         """Validate an AGENT.md file."""
-        errors = []
+        errors: List[ValidationError] = []
         
         frontmatter, content, parse_errors = self._parse_frontmatter(file_path)
         if parse_errors:
@@ -215,12 +273,38 @@ class ClaudeCodeValidator:
         missing_rfc = [field for field in rfc_fields if field not in frontmatter]
         if missing_rfc:
             errors.append(ValidationError('warning', str(file_path), f"Consider adding RFC fields: {', '.join(missing_rfc)}"))
+
+        # Capability axis validation for agents
+        if 'capability-level' in frontmatter:
+            level = frontmatter['capability-level']
+            if not isinstance(level, int):
+                errors.append(ValidationError('critical', str(file_path), "capability-level must be an integer"))
+            elif level < 0 or level > 4:
+                errors.append(ValidationError('critical', str(file_path), "capability-level must be between 0 and 4"))
+
+        if 'loop-style' in frontmatter:
+            loop_style = frontmatter['loop-style']
+            if not isinstance(loop_style, str):
+                errors.append(ValidationError('critical', str(file_path), "loop-style must be a string"))
+
+        # Style validation (optional)
+        errors.extend(self._validate_style_field(frontmatter, file_path))
+
+        # Capability-level structural expectations for agents
+        content_text = ''.join(content)
+        if 'capability-level' in frontmatter:
+            level = frontmatter['capability-level']
+            if isinstance(level, int) and level >= 3:
+                if 'loop-style' not in frontmatter:
+                    errors.append(ValidationError('critical', str(file_path), "level 3+ agents must declare loop-style in frontmatter"))
+                if "## Capability Profile" not in content_text:
+                    errors.append(ValidationError('warning', str(file_path), "level 3+ agents should document a Capability Profile section"))
         
         return errors
     
     def _validate_memory(self, file_path: Path) -> List[ValidationError]:
         """Validate memory files (CLAUDE.md, AGENTS.md)."""
-        errors = []
+        errors: List[ValidationError] = []
         
         frontmatter, content, parse_errors = self._parse_frontmatter(file_path)
         
@@ -241,7 +325,7 @@ class ClaudeCodeValidator:
     
     def _validate_rule(self, file_path: Path) -> List[ValidationError]:
         """Validate a rule file."""
-        errors = []
+        errors: List[ValidationError] = []
         
         content_text = ''
         try:
@@ -298,19 +382,17 @@ class ClaudeCodeValidator:
         """Check if text contains emojis."""
         emoji_pattern = re.compile(
             "["
-            "\U0001F600-\U0001F64F"  # emoticons
+            "\U0001F600-\U0001F64F"  # emoticons / smileys
             "\U0001F300-\U0001F5FF"  # symbols & pictographs
             "\U0001F680-\U0001F6FF"  # transport & map symbols
-            "\U0001F1E0-\U0001F1FF"  # flags (iOS)
-            "\U00002702-\U000027B0"
-            "\U000024C2-\U0001F251"
+            "\U0001F1E0-\U0001F1FF"  # regional indicator flags
             "]+", flags=re.UNICODE
         )
         return bool(emoji_pattern.search(text))
     
     def validate_directory(self, directory: Path) -> Dict[str, List[ValidationError]]:
         """Validate all relevant files in a directory."""
-        results = {}
+        results: Dict[str, List[ValidationError]] = {}
         
         # Find all relevant files
         patterns = [
@@ -324,10 +406,14 @@ class ClaudeCodeValidator:
         
         for pattern in patterns:
             for file_path in directory.glob(pattern):
-                if file_path.is_file():
-                    errors = self.validate_file(file_path)
-                    if errors:
-                        results[str(file_path)] = errors
+                if not file_path.is_file():
+                    continue
+                # Skip backup and rollback artefacts; validation targets live manifests and rules only
+                if any(part == "backup" for part in file_path.parts):
+                    continue
+                errors = self.validate_file(file_path)
+                if errors:
+                    results[str(file_path)] = errors
         
         return results
 
@@ -335,7 +421,7 @@ class ClaudeCodeValidator:
 def main():
     """Main function for standalone usage."""
     if len(sys.argv) != 2:
-        print("Usage: python3 claude_code_validator.py <directory>")
+        print("Usage: python3 llm_spec_validator.py <directory>")
         sys.exit(1)
     
     directory = Path(sys.argv[1])
@@ -343,7 +429,7 @@ def main():
         print(f"Error: Directory {directory} does not exist")
         sys.exit(1)
     
-    validator = ClaudeCodeValidator()
+    validator = LLMSpecValidator()
     results = validator.validate_directory(directory)
     
     if not results:

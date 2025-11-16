@@ -12,6 +12,7 @@ allowed-tools:
   - Bash(fd:*)
   - Bash(cat:*)
 is_background: false
+style: tool-first
 ---
 
 ## Usage
@@ -63,6 +64,33 @@ Execute unified configuration synchronization workflows across multiple CLI targ
 | adapt | adapt → execute |
 | plan | collect → analyze → plan → prepare |
 | report | report |
+
+## DEPTH Phases
+
+### D – Decomposition
+- Define the nine-phase pipeline: collect, analyze, plan, prepare, adapt, execute, verify, cleanup, report.
+- Keep each phase logically isolated with clear inputs and outputs.
+- Ensure every action is assigned to a single phase without overlap.
+
+### E – Explicit Reasoning
+- Analyze current state and target capabilities during collect and analyze.
+- Record constraints, assumptions, and invariants in the execution plan.
+- Log decisions and derived dependencies for later verification and reporting.
+
+### P – Parameters
+- Normalize CLI arguments and merge them with persistent settings.
+- Validate all parameters before any file operation.
+- Persist the resolved parameter set into the plan and run metadata.
+
+### T – Tests
+- Verify configuration integrity during verify and report phases.
+- Validate backups, target accessibility, and dependency availability.
+- Capture normal, edge, and failure cases in logs and reports.
+
+### H – Heuristics
+- Apply execution profiles (fast, full, custom) for performance and safety tradeoffs.
+- Use phase gating (`--from-phase`, `--until-phase`) to resume or limit runs.
+- Prefer conservative behavior on ambiguity: fail fast, keep backups, and require explicit force flags.
 
 ## Output
 Generated Artifacts:

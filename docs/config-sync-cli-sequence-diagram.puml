@@ -39,11 +39,11 @@ skinparam note {
 ' Actors and Participants
 actor "User" as user
 participant "config-sync CLI" as cli
-participant "Analyze Target" as analyze
-participant "Permission Adapter" as perm_adapter
-participant "Command Adapter" as cmd_adapter
-participant "Rules Adapter" as rules_adapter
-participant "Memory Adapter" as memory_adapter
+participant "Analyze Target (internal)" as analyze
+participant "Permission Adapter (internal)" as perm_adapter
+participant "Command Adapter (internal)" as cmd_adapter
+participant "Rules Adapter (internal)" as rules_adapter
+participant "Memory Adapter (internal)" as memory_adapter
 
 participant "Claude Config" as claude_config
 participant "Droid CLI" as droid_tool
@@ -60,11 +60,11 @@ group Initial Setup - Sync All Tools
     note over cli
       parse_target_list("all") ⇒ droid,qwen,codex,opencode,amp
       parse_component_list("all") ⇒ commands,rules,settings,permissions,memory
-      Phase pipeline: collect → analyze → plan → prepare → adapt → execute → verify → report
+      Phase pipeline: collect → analyze → plan → prepare → adapt → execute → verify → cleanup → report
     end note
 
     == Collect & Analyze Phase ==
-    cli -> analyze: /config-sync/analyze-target-tool --target=all
+    cli -> analyze: analyze-target-tool (internal) --target=all
     activate analyze
 
     par Parallel Tool Analysis
@@ -106,19 +106,19 @@ group Initial Setup - Sync All Tools
 
     == Adaptation Phase ==
     par Parallel Adapter Processing
-        cli -> perm_adapter: /config-sync/adapt-permissions --target=all
+        cli -> perm_adapter: adapt-permissions (internal) --target=all
         activate perm_adapter
         note right of perm_adapter: Map Claude allow/ask/deny\\nto tool-specific formats
         perm_adapter --> cli: Permission adaptation complete
         deactivate perm_adapter
 
-        cli -> cmd_adapter: /config-sync/adapt-commands --target=all
+        cli -> cmd_adapter: adapt-commands (internal) --target=all
         activate cmd_adapter
         note right of cmd_adapter: Convert Claude markdown commands\\nto tool-specific formats (TOML/JSON)
         cmd_adapter --> cli: Command adaptation complete
         deactivate cmd_adapter
 
-        cli -> rules_adapter: /config-sync/adapt-rules-content --target=all
+        cli -> rules_adapter: adapt-rules-content (internal) --target=all
         activate rules_adapter
         note right of rules_adapter: Normalize rules\\nfor non-Claude platforms
         rules_adapter --> cli: Rules adaptation complete
@@ -229,7 +229,7 @@ group Error Handling and Recovery
     user -> cli: /config-sync/sync-cli --action=sync --target=codex --components=permissions
     activate cli
 
-    cli -> perm_adapter: /config-sync/adapt-permissions --target=codex
+    cli -> perm_adapter: adapt-permissions (internal) --target=codex
     activate perm_adapter
     perm_adapter --> cli: Permissions adapted for Codex
     deactivate perm_adapter

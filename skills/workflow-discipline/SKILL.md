@@ -1,8 +1,11 @@
 ---
-name: skill:workflow-discipline
+name: workflow-discipline
 description: Maintain incremental delivery, fail-fast behavior, and structured communication.
   Use when workflow discipline guidance is required.
+mode: cross-cutting-governance
+capability-level: 1
 allowed-tools: []
+style: reasoning-first
 ---
 
 ## Purpose

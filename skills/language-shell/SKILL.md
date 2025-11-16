@@ -1,7 +1,9 @@
 ---
-skill: language-shell
+name: language-shell
 description: Shell scripting standards and safety practices. Use when language shell
   guidance is required.
+mode: language-guidelines
+capability-level: 1
 allowed-tools:
 - Bash(shellcheck)
 ---
