@@ -3,12 +3,27 @@
 ## Rule-Loading Conditions
 
 ### Default Conditions
-Execute ABSOLUTE MODE always unless explicitly overridden
+Execute communication protocol from `rules/98-communication-protocol.md` in TERSE MODE for all responses unless explanation triggers are present
+Execute EXPLANATION MODE communication from `rules/98-communication-protocol.md` only when user input contains explicit explanation triggers
+Execute communication mode profiles from `rules/98-communication-modes.md` when the user selects a named output style
 Execute language-specific rules based on file extensions or declared language context
 Execute security rules for all operations involving credentials, permissions, or network access
 Execute testing rules when operations involve test files or test execution
 Execute directory classification from `commands/llm-governance/optimize-prompts/classification-rules.yaml` before routing `/llm-governance/optimize-prompts`
 Execute governance exceptions from `rules/99-llm-prompt-writing-rules.md` immediately after classification rules load
+
+### Explanation Trigger Conditions
+Treat the following as explanation triggers that switch communication to EXPLANATION MODE for the current response:
+- "explain more", "be more verbose", "help me understand"
+- "详细说明", "详细解释", "更详细", "帮我理解"
+Treat similar explicit user requests for more detail as explanation triggers
+
+### Communication Mode Selection
+Initialize conversation communication mode to TERSE MODE with EXPLANATION MODE override semantics from `rules/98-communication-protocol.md`
+Treat explicit `/output-style <mode>` commands as communication mode selections following `rules/98-communication-modes.md`
+Support the following mode identifiers: professional, friendly, candid, quirky, efficient, nerdy, cynical, troll
+Allow equivalent natural-language requests that unambiguously map to these identifiers (for example, "use a friendly tone", "说话友好一点") as communication mode selections
+Persist the selected communication mode for all subsequent responses until the user issues a new `/output-style <mode>` command or an explicit reset such as `/output-style reset` or `/output-style terse`
 
 ### Baseline Skill Initialization
 Execute `skill:environment-validation` before dispatching any agent to enforce the canonical toolchain, prefer fd/rg/ast-grep automatically, and surface tool availability constraints for downstream skills.

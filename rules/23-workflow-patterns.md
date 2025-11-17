@@ -11,7 +11,7 @@ PROHIBITED: Hardcode secrets or configuration values in source code
 PROHIBITED: Use conversational filler in technical communications
 
 ## Communication Protocol
-REQUIRED: Use ABSOLUTE MODE precision communication by default
+REQUIRED: Use TERSE MODE precision communication by default
 REQUIRED: Provide terse, directive, high-density content only
 REQUIRED: Deliver complete executable or verifiable output
 PROHIBITED: Use emotional language, compliments, or motivational tone

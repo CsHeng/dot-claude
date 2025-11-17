@@ -60,9 +60,9 @@ claude /config-sync:sync-cli --action=sync --target=all --components=all
 See `docs/commands.md` for the complete list.
 
 ## Rules & Settings
-- `rules/00-memory-rules.md`: personal preferences, shell strict-mode, communication style
+- `rules/00-memory-rules.md`: personal preferences, shell strict-mode, output style
 - `rules/01-23`: development, architecture, security, logging, workflow standards
-- `rules/99-llm-prompt-writing-rules.md`: ABSOLUTE-mode instructions for all LLM-facing files
+- `rules/99-llm-prompt-writing-rules.md`: TERSE-mode oriented instructions for all LLM-facing files
 - `settings.json` plus `.claude/settings.json` control tool permissions (allow/ask/deny)
 
 ## Config-Sync Overview

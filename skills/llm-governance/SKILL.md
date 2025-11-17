@@ -21,7 +21,7 @@ capability-level: 2
 
 ## Purpose
 
-Enforce LLM content governance for all LLM-facing files using ABSOLUTE mode, rule-driven validation, and deterministic tooling.
+Enforce LLM content governance for all LLM-facing files using TERSE mode defaults, rule-driven validation, and deterministic tooling.
 
 Apply rules from `rules/99-llm-prompt-writing-rules.md` and related governance rule files through standardized validators instead of ad-hoc scripts.
 
@@ -64,7 +64,7 @@ Side effects: Backups created by orchestration commands before modifications; no
 
 ### 4. Content Normalization Guidelines
 
-- Enforce ABSOLUTE mode:
+- Enforce TERSE mode:
   - Rewrite narrative paragraphs into imperative directives.
   - Remove conversational fillers and hedging language.
   - Maintain high information density and precise terminology.
@@ -85,6 +85,6 @@ Side effects: Backups created by orchestration commands before modifications; no
 
 - No body bold markers outside code blocks in LLM-facing files.
 - No emoji or decorative Unicode characters in governed content.
-- Communication is terse, directive, and ABSOLUTE-mode compliant.
+- Communication is terse, directive, and TERSE-mode compliant.
 - Required frontmatter fields and sections are present for each governed directory classification.
 - All governance violations are either resolved or documented with justification in governance reports.
