@@ -50,10 +50,10 @@ Execute LLM governance audits with deterministic rule validation, comprehensive 
 - Apply directory-based validation rules with consistent severity classification
 - Generate structured violation reports with actionable remediation plans
 - Maintain strict read-only access during all governance reviews
-- Validate prompt clarity, determinism, and ABSOLUTE mode compliance
+- Validate prompt clarity, determinism, and TERSE mode compliance
 
 ## Required Skills
-- `skill:llm-governance`: Apply ABSOLUTE mode precision and LLM prompt-writing rules from `rules/99-llm-prompt-writing-rules.md`
+- `skill:llm-governance`: Apply TERSE mode precision and LLM prompt-writing rules from `rules/99-llm-prompt-writing-rules.md`
 - `skill:workflow-discipline`: Maintain incremental delivery standards and deterministic execution
 - `skill:environment-validation`: Validate toolchain availability and select fd/rg/ast-grep fallbacks
 
@@ -148,7 +148,7 @@ Error Handling:
 | Report Generation Failure | Low | Simplify output | Maintain core findings |
 
 ### Fallback Procedures
-1. Rule Loading Failures: Apply basic governance standards (no emojis, ABSOLUTE mode)
+1. Rule Loading Failures: Apply basic governance standards (no emojis, TERSE mode)
 2. File Access Failures: Report inaccessible files, request permissions, continue audit
 3. Complex Rule Application Failures: Simplify to essential governance checks
 4. Critical Governance Violations: Immediate maintainer notification with full context
@@ -175,7 +175,7 @@ IF audit complexity detected:
 
 ### Violation Classification Logic
 ```
-IF violation involves ABSOLUTE mode:
+IF violation involves TERSE mode:
     → Critical severity, immediate escalation
     → Requires immediate remediation
 
@@ -195,7 +195,7 @@ IF violation involves style/conventions:
 ## Critical Constraints
 
 ### Absolute Requirements
-- Apply ABSOLUTE mode precision to all content analysis without exception
+- Apply TERSE mode precision to all content analysis without exception
 - Enforce consistent naming conventions and structural standards
 - Validate prompt clarity, determinism, and absence of conversational filler
 - Maintain strict read-only access during all governance reviews
@@ -208,11 +208,10 @@ IF violation involves style/conventions:
 - Naming convention adherence: Consistent and descriptive naming patterns
 - Workflow determinism: Predictable and repeatable execution patterns
 
-### Validation Criteria
 - Content Quality: Clear, concise, and actionable prompts
 - Structural Integrity: Proper front matter and hierarchical organization
 - Naming Consistency: Descriptive and standardized naming conventions
-- ABSOLUTE Mode Application: Precision and determinism in all content
+- TERSE Mode Application: Precision and determinism in all content
 - Workflow Determinism: Predictable execution patterns and outputs
 
 ## Output Requirements

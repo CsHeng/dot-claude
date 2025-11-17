@@ -17,7 +17,7 @@ REQUIRED: Provide clear, actionable log messages that aid troubleshooting
 PROHIBITED: Use conversational tone or unnecessary filler text in log messages
 
 ## Structural Rules
-### Required Log Format
+### App Log Format
 REQUIRED: Use standard log format: `+0800 2025-08-06 15:22:30 INFO main.go(180) | Descriptive message`
 REQUIRED: Include timezone offset (+0800 or appropriate timezone)
 REQUIRED: Include timestamp in YYYY-MM-DD HH:MM:SS format
@@ -25,6 +25,14 @@ REQUIRED: Include log level (DEBUG, INFO, WARN, ERROR, FATAL)
 REQUIRED: Include file and line number in format file.extension(line)
 REQUIRED: Use pipe character (|) as separator before message
 REQUIRED: Provide descriptive, actionable message content
+
+### HTTP Access Log Format (GoAccess-Compatible)
+REQUIRED: Use a GoAccess-supported HTTP access log format for web traffic analysis
+REQUIRED: Prefer a single standard format across services (e.g., NCSA Combined Log Format)
+REQUIRED: When using virtual hosts, use the corresponding "with Virtual Host" variant where supported
+REQUIRED: Keep HTTP access logs separate from application logs that use the standard log format above
+PREFERRED: Use NCSA Combined Log Format (or equivalent `combined` format in web servers) so GoAccess can parse logs with its default presets
+PREFERRED: Document the chosen access log format and location per service (e.g., in service README or ops runbook)
 
 ### Log Level Guidelines
 REQUIRED: DEBUG: Detailed diagnostic information for development only
