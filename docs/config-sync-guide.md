@@ -112,6 +112,7 @@ All operations use: `claude /config-sync:sync-cli --action=<ACTION> [FLAGS]`
 - **settings** - Tool config files, respecting force flags
 - **permissions** - Allow/ask/deny lists mapped to native formats
 - **memory** - CLAUDE.md and AGENTS.md derivatives tailored per tool
+- **styles** - Output-style manifests that define preferred output styles such as Default, Explanatory, and Learning; support is optional and adapter-specific
 
 ### Usage Examples
 

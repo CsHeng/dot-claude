@@ -1,16 +1,16 @@
 ---
-name: doc-gen:lib-common
+name: doc-gen:lib:common
 description: Shared conventions and formatting standards for doc-gen adapters
 argument-hint: ''
 allowed-tools: []
 is_background: false
+disable-model-invocation: true
 related-commands:
 - /doc-gen:bootstrap
 related-agents:
 - agent:doc-gen
 related-skills:
 - skill:workflow-discipline
-disable-model-invocation: true
 ---
 
 ## Usage

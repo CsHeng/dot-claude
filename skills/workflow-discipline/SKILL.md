@@ -9,12 +9,10 @@ style: reasoning-first
 source:
   - rules/00-memory-rules.md
   - rules/23-workflow-patterns.md
-  - rules/98-communication-protocol.md
-  - rules/98-communication-modes.md
 ---
 
 ## Purpose
-Enforce workflow discipline including incremental development practices, fail-fast error handling, structured communication patterns, and debug output standards as defined in rules/00-memory-rules.md, rules/23-workflow-patterns.md, rules/98-communication-protocol.md, and rules/98-communication-modes.md.
+Enforce workflow discipline including incremental development practices, fail-fast error handling, structured communication patterns, and debug output standards as defined in rules/00-memory-rules.md and rules/23-workflow-patterns.md.
 
 ## Deterministic Steps
 
@@ -32,9 +30,9 @@ Enforce workflow discipline including incremental development practices, fail-fa
 
 ### 3. Structured Communication Compliance
 - Check: Scan output for required prefixes using pattern matching: `===`, `---`, `SUCCESS`, `ERROR`
-- Validate: Confirm debug messages follow TERSE MODE communication without narration when no explanation triggers are present
-- Validate: Confirm EXPLANATION MODE communication is used only when explicit explanation triggers are present
-- Validate: Confirm any active communication mode matches the identifiers and semantics from rules/98-communication-modes.md
+- Validate: Confirm debug messages follow concise, directive communication without narration when no explanation triggers are present
+- Validate: Confirm structured, detailed communication patterns are used only when explicit explanation triggers are present or the active output style prefers explanatory behavior
+- Validate: Confirm any active output style matches established workflow requirements and structural communication standards
 - Test: Verify communication eliminates filler content and conversational elements in all modes
 - Enforce: Return specific errors for non-compliant communication patterns
 
@@ -66,5 +64,5 @@ Side Effects: Improved development flow, faster error detection, better communic
 - Commits atomic and focused on single logical changes
 - Fail-fast behavior implemented with proper error handling
 - Debug output follows structured prefix patterns
-- Communication respects TERSE mode and existing code context
+- Communication respects concise, directive patterns and existing code context
 - Collaborative workflows consistent and efficient

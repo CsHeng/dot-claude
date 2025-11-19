@@ -12,6 +12,7 @@ allowed-tools:
   - Bash(tree:*)
   - Bash(cat:*)
   - Bash(plantuml --check-syntax:*)
+is_background: false
 style: tool-first
 ---
 

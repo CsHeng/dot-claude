@@ -1,18 +1,3 @@
----
-name: doc-gen/README
-description: Documentation generation plugin overview and usage reference
-argument-hint: ''
-allowed-tools: []
-is_background: false
-related-commands:
-- /doc-gen:bootstrap
-related-agents:
-- agent:doc-gen
-related-skills:
-- skill:workflow-discipline
-- skill:security-logging
-disable-model-invocation: true
----
 
 ## Usage
 

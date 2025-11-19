@@ -6,6 +6,7 @@ mode: language-guidelines
 capability-level: 1
 allowed-tools:
 - Bash(shellcheck)
+source: rules/12-shell-guidelines.md
 ---
 
 # Shell Script Safety Standards

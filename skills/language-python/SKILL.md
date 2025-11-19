@@ -8,6 +8,7 @@ allowed-tools:
 - Bash(uv)
 - Bash(ruff)
 - Bash(pytest)
+source: rules/10-python-guidelines.md
 ---
 
 # Python Architecture Standards

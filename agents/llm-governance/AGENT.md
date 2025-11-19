@@ -15,6 +15,7 @@ default-skills:
   - skill:llm-governance
   - skill:workflow-discipline
   - skill:environment-validation
+  - skill:output-style-governance
 optional-skills:
   - skill:search-and-refactor-strategy
 supported-commands:
@@ -56,6 +57,7 @@ Execute LLM governance audits with deterministic rule validation, comprehensive 
 - `skill:llm-governance`: Apply TERSE mode precision and LLM prompt-writing rules from `rules/99-llm-prompt-writing-rules.md`
 - `skill:workflow-discipline`: Maintain incremental delivery standards and deterministic execution
 - `skill:environment-validation`: Validate toolchain availability and select fd/rg/ast-grep fallbacks
+- `skill:output-style-governance`: Validate output-style manifests under `output-styles/` in the user workspace against `rules/98-communication-protocol.md` and `rules/98-output-styles.md`
 
 ## Implementation Toolchain
 

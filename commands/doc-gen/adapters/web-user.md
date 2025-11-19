@@ -2,6 +2,7 @@
 name: "doc-gen:web-user"
 description: Stub adapter for web user-facing frontend documentation workflow
 argument-hint: --mode=<bootstrap|maintain> --repo=<path> --docs=<path> --core=<path>
+is_background: false
 ---
 
 ## Usage

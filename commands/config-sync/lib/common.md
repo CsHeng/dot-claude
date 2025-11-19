@@ -4,6 +4,7 @@ description: Common utility function references for config-sync operations
 argument-hint: ''
 allowed-tools: []
 is_background: false
+disable-model-invocation: true
 related-commands:
 - /config-sync/sync-cli
 - /config-sync/sync-project-rules
@@ -12,7 +13,6 @@ related-agents:
 related-skills:
 - skill:environment-validation
 - skill:workflow-discipline
-disable-model-invocation: true
 ---
 
 ## Usage

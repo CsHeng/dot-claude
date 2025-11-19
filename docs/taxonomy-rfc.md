@@ -6,7 +6,7 @@ The current CLI relies on `CLAUDE.md` and numerous `rules/*.md` files to describ
 - `rules/*` are hard to reuse and often conflict or overlap.
 - Commands such as review or config-sync cannot validate future skills or agents.
 
-This RFC defines a unified taxonomy (Memory → Agent → Skill → Command) to guide the directory refactor and supporting tooling.
+This RFC defines a unified taxonomy (Memory → Output style → Agent → Skill → Command) to guide the directory refactor and supporting tooling.
 
 The taxonomy is derived from and aligned with external Claude Code specifications:
 - Subagents: https://code.claude.com/docs/en/sub-agents
@@ -15,7 +15,7 @@ The taxonomy is derived from and aligned with external Claude Code specification
 
 ## Scope
 - Entry file: `CLAUDE.md`
-- Directories: `rules/`, `skills/`, `agents/`, `commands/`, `requirements/`, `docs/`
+- Directories: `rules/`, `skills/`, `agents/`, `commands/`, `requirements/`, `docs/`, `output-styles/`
 - Supported commands: config-sync, llm-governance:optimize-prompts, doc-gen, draft-commit-message, review-shell-syntax, etc.
 - Execution environments: Codex CLI, Claude Code, Qwen CLI, IDE/CI sync destinations
 
@@ -28,11 +28,12 @@ The taxonomy is derived from and aligned with external Claude Code specification
 ## LLM-Facing Governance Domain
 
 This taxonomy treats LLM-facing assets as a first-class domain. LLM-facing content is any file whose primary reader is a model rather than a human, including:
-- System and routing manifests (`CLAUDE.md`, `AGENTS.md`).
-- Agent and skill manifests (`agents/**/AGENT.md`, `skills/**/SKILL.md`).
-- Slash command manifests and usage files under `commands/`.
-- Governance and prompt-writing rules under `rules/`.
-- Core configuration such as `.claude/settings.json`.
+- System and routing manifests (`CLAUDE.md`, `AGENTS.md`)
+- Agent and skill manifests (`agents/**/AGENT.md`, `skills/**/SKILL.md`)
+- Slash command manifests and usage files under `commands/`
+- Governance and prompt-writing rules under `rules/`
+- Core configuration such as `.claude/settings.json`
+- Output style manifests under `output-styles/`
 
 Human-facing documentation (for example `docs/**`, project READMEs, and troubleshooting guides) is not governed by this taxonomy unless explicitly referenced by rules.
 
@@ -44,6 +45,7 @@ The `llm-governance` domain is responsible for:
 
 ## Concepts
 - Memory: entry points (CLAUDE) that route tasks and declare default agents/skills.
+- Output style: a named system-prompt preset selected via `/output-style` or settings, stored as Markdown with frontmatter in `output-styles/`. Output styles configure the main delegate agent’s behavior (for example, Default, Explanatory, Learning) while remaining subject to protocol invariants under `rules/98-communication-protocol.md`.
 - Rule: canonical policy documents under `rules/` that define requirements and constraints. Rules are never executed directly; skills reference them as their normative source of truth.
 - Agent: orchestration unit (subagent) that binds default/optional skills to commands with clear inputs, outputs, fail-fast rules, and permissions. Agents execute work in a small number of explicit phases (for example, variants of “plan / act / observe / adjust”) so that behavior can be inspected and tested.
 - Skill: single capability module that encapsulates how to apply one or more `rules/` sections and any associated implementation artefacts (scripts, templates, tools, config) with defined scope and validation steps. Rules remain normative; implementations may change without rewriting the rule text.
@@ -52,8 +54,8 @@ The `llm-governance` domain is responsible for:
 - Workflow: higher-order coordination across multiple commands handled by agents.
 
 There are two complementary dependency graphs:
-- Execution graph: `Memory → Agent → Skill` (commands are user-facing entry points that select an agent/skill stack).
-- Policy graph: `Rule → Skill → Agent → Command` (rules define behavior; skills implement rules; agents orchestrate skills; commands expose capabilities to users).
+- Execution graph: `Memory → Output style → Agent → Skill` (commands such as `/output-style` and task-specific slash commands select an output style and then an agent/skill stack).
+- Policy graph: `Rule → Output-style manifest → Skill → Agent → Command` (rules define behavior; style manifests implement output-style rules; skills implement both rules and style manifests; agents orchestrate skills; commands expose capabilities to users).
 
 ## Spec Alignment (Informative)
 

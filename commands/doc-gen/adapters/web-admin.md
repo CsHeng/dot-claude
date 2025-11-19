@@ -2,6 +2,7 @@
 name: "doc-gen:web-admin"
 description: Stub adapter for web admin documentation workflow
 argument-hint: --mode=<bootstrap|maintain> --repo=<path> --docs=<path> --core=<path>
+is_background: false
 ---
 
 ## Usage

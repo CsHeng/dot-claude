@@ -8,7 +8,6 @@ allowed-tools:
   - Bash
   - Bash(ls:*)
   - Bash(fd:*)
-disable-model-invocation: true
 is_background: false
 ---
 

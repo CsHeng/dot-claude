@@ -67,7 +67,7 @@ rules/
 ├── 21-quality-standards.md         # Code quality
 ├── 22-logging-standards.md         # Logging standards
 ├── 23-workflow-patterns.md         # Workflow patterns
-├── 98-communication-protocol.md    # ABSOLUTE MODE communication
+├── 98-communication-protocol.md    # communication protocols
 ├── 99-llm-prompt-writing-rules.md  # AI/LLM agent development
 ```
 
