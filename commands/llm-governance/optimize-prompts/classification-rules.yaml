@@ -74,6 +74,17 @@ core:
   remove:
     - "redundant explanations"
 
+output-styles:
+  directory_pattern: "output-styles/**/*.md"
+  framework: "SIMPLE"
+  classification_logic: "Output style manifests that configure system-prompt presets for the main delegate agent"
+  preserve:
+    - "name:"
+    - "description:"
+    - "keep-coding-instructions:"
+  remove:
+    - "narrative content not tied to style behavior"
+
 # Classification Algorithm
 # Files are classified by their directory path, not by content analysis:
 # 1. Check if path matches directory_pattern above

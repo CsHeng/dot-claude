@@ -3,9 +3,9 @@
 ## Rule-Loading Conditions
 
 ### Default Conditions
-Execute communication protocol from `rules/98-communication-protocol.md` in TERSE MODE for all responses unless explanation triggers are present
-Execute EXPLANATION MODE communication from `rules/98-communication-protocol.md` only when user input contains explicit explanation triggers
-Execute communication mode profiles from `rules/98-communication-modes.md` when the user selects a named output style
+Execute communication protocol from `rules/98-communication-protocol.md` in TERSE MODE for all responses unless explanation triggers are present or the active output style prefers explanatory behavior
+Execute EXPLANATORY MODE communication patterns from `rules/98-communication-protocol.md` only when user input contains explicit explanation triggers or the active output style prefers explanatory behavior
+Execute preferred output style behavior from `rules/98-output-styles.md` and the active output-style manifest when the user selects a named output style
 Execute language-specific rules based on file extensions or declared language context
 Execute security rules for all operations involving credentials, permissions, or network access
 Execute testing rules when operations involve test files or test execution
@@ -13,17 +13,16 @@ Execute directory classification from `commands/llm-governance/optimize-prompts/
 Execute governance exceptions from `rules/99-llm-prompt-writing-rules.md` immediately after classification rules load
 
 ### Explanation Trigger Conditions
-Treat the following as explanation triggers that switch communication to EXPLANATION MODE for the current response:
+Treat the following as explanation triggers that switch communication to EXPLANATORY MODE for the current response (even when the default output style prefers terse behavior):
 - "explain more", "be more verbose", "help me understand"
 - "详细说明", "详细解释", "更详细", "帮我理解"
 Treat similar explicit user requests for more detail as explanation triggers
 
-### Communication Mode Selection
-Initialize conversation communication mode to TERSE MODE with EXPLANATION MODE override semantics from `rules/98-communication-protocol.md`
-Treat explicit `/output-style <mode>` commands as communication mode selections following `rules/98-communication-modes.md`
-Support the following mode identifiers: professional, friendly, candid, quirky, efficient, nerdy, cynical, troll
-Allow equivalent natural-language requests that unambiguously map to these identifiers (for example, "use a friendly tone", "说话友好一点") as communication mode selections
-Persist the selected communication mode for all subsequent responses until the user issues a new `/output-style <mode>` command or an explicit reset such as `/output-style reset` or `/output-style terse`
+### Output Style Selection
+Initialize conversation output behavior using TERSE MODE semantics from `rules/98-communication-protocol.md` and the `default` output style from `output-styles/default.md` unless overridden by settings
+Treat explicit `/output-style <name>` commands as preferred output style selections following `rules/98-output-styles.md`
+Allow equivalent natural-language requests that unambiguously map to style identifiers (for example, "use learning mode", "讲解多一点") as output style selections
+Persist the selected output style for all subsequent responses until the user issues a new `/output-style <name>` command or an explicit reset such as `/output-style reset` or a project-defined default
 
 ### Baseline Skill Initialization
 Execute `skill:environment-validation` before dispatching any agent to enforce the canonical toolchain, prefer fd/rg/ast-grep automatically, and surface tool availability constraints for downstream skills.
@@ -54,7 +53,7 @@ Execute agent mappings on demand; each row describes what loads once the matchin
 | `agent:config-sync` | `/config-sync/*` | `skill:environment-validation`, `skill:workflow-discipline`, `skill:security-logging`, `skill:automation-language-selection`, `skill:config-sync-cli-workflow`, `skill:config-sync-project-rules-sync`, `skill:config-sync-target-adaptation` | `skill:search-and-refactor-strategy`, `skill:project-config-sync-overview`, language skills based on target project |
 | `agent:llm-governance` | `/llm-governance/optimize-prompts` | `skill:llm-governance`, `skill:workflow-discipline`, `skill:environment-validation` | None |
 | `agent:doc-gen` | `/doc-gen:*` | `skill:workflow-discipline`, `skill:security-logging`, `skill:search-and-refactor-strategy`, `skill:architecture-patterns`, `skill:language-python`, `skill:language-go` | `skill:project-doc-gen-overview`, other language skills per project type |
-| `agent:workflow-helper` | `/draft-commit-message`, `/review-shell-syntax` | `skill:workflow-discipline`, `skill:automation-language-selection` | `skill:language-shell`, `skill:language-python`, `skill:environment-validation` |
+| `agent:workflow-helper` | `/draft-commit-message`, `/review-shell-syntax` | `skill:workflow-discipline`, `skill:automation-language-selection` | `skill:language-shell`, `skill:language-python`, `skill:language-go`, `skill:environment-validation` |
 | `agent:code-architecture-reviewer` | `/review-code-architecture` | `skill:architecture-patterns`, `skill:development-standards`, `skill:security-standards` | Language-specific skills based on codebase |
 | `agent:code-refactor-master` | `/refactor-*`, `/review-refactor` | `skill:architecture-patterns`, `skill:development-standards`, `skill:testing-strategy`, `skill:search-and-refactor-strategy` | `skill:language-*` based on target code |
 | `agent:plan-reviewer` | `/review-plan`, `/plan-*` | `skill:workflow-discipline`, `skill:architecture-patterns`, `skill:testing-strategy`, `skill:search-and-refactor-strategy` | Domain-specific skills based on plan content |
@@ -108,7 +107,7 @@ Execute skill loading:
 ### `agent:workflow-helper`
 Execute skill loading:
 - Load: `skill:workflow-discipline`, `skill:automation-language-selection`
-- Conditional load: Language skills based on task context
+- Conditional load: `skill:language-shell` for `/review-shell-syntax` command, `skill:language-python` for Python files/tasks, `skill:language-go` for Go files/tasks, Language skills based on task context
 - Escalation: Fallback to appropriate specialist agent
 
 ### `agent:code-architecture-reviewer`

@@ -11,6 +11,7 @@ related-skills:
 - skill:environment-validation
 - skill:development-standards
 - skill:testing-strategy
+source: rules/11-go-guidelines.md
 ---
 
 # Go Architecture Standards

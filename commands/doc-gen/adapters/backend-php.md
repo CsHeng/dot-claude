@@ -2,6 +2,7 @@
 name: "doc-gen:backend-php"
 description: Stub adapter for PHP backend documentation workflow
 argument-hint: --mode=<bootstrap|maintain> --repo=<path> --docs=<path> --core=<path>
+is_background: false
 ---
 
 ## Usage
