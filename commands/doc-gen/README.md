@@ -39,8 +39,7 @@ commands/doc-gen/
 │   ├── backend-php.md          # PHP backend service guidance
 │   ├── web-admin.md            # Web admin interface guidance
 │   └── web-user.md             # Web user interface guidance
-├── lib/                        # Shared utilities and conventions
-│   └── common.md               # Common formatting and logging standards
+├── lib/                        # Shared automation helpers (shell libraries, etc.)
 └── settings.json               # Default runtime configuration
 ```
 
@@ -107,6 +106,90 @@ Deliverable Enforcement:
 - Actor matrix generation
 - PlantUML validation results
 - TODO backlog management
+
+## shared-conventions
+
+### Logging Standards
+
+- Headings: `=== Stage` for major phases, `--- Detail` for supporting notes.
+- Status prefixes: `SUCCESS:`, `ERROR:`, `WARNING:`, `INFO:` to keep adapter logs machine-friendly.
+- Message example:
+
+```
+=== Stage Name
+--- Context for the stage
+SUCCESS: Action completed successfully
+```
+
+### Template Structures
+
+Parameter summary table:
+
+```markdown
+| Parameter      | Value |
+| -------------- | ----- |
+| Mode           | [bootstrap|maintain] |
+| Project Type   | [project-type] |
+| Language       | [language] |
+| Repository     | [repo-path] |
+| Core Path      | [core-path] |
+| Docs Target    | [docs-path] |
+| Demo Path      | [demo-path or n/a] |
+```
+
+TODO format:
+- Prefix every actionable item with `TODO(doc-gen):`.
+- Include repository-relative path in parentheses.
+
+Example: `TODO(doc-gen): document authentication flow (docs/architecture/auth.md)`
+
+Actor matrix template:
+
+```markdown
+| Actor | Role | Code references | Notes |
+| --- | --- | --- | --- |
+| End User | Primary system user | app/src/.../MainActivity.kt | Main persona |
+| Admin User | System administration | admin/src/.../AdminController.java | Privileged access |
+| API Client | External integration | api/src/.../ClientService.php | Third-party access |
+| System Service | Background processing | services/src/.../Worker.go | Automated tasks |
+```
+
+### Diagram Validation
+
+PlantUML checklist:
+1. Store diagrams under `docs/diagrams/` with consistent naming/alias registry.
+2. Run `plantuml --check-syntax <diagram-file>` and capture the output.
+3. Record validation status in project docs; describe unresolved warnings.
+
+Standards:
+- Every diagram must pass syntax validation and include legends for complex notation.
+- Maintain consistent styling and descriptive aliases.
+
+### Asset Management
+
+Inventory helpers:
+
+```bash
+find <docs> -name "*.md" -type f | wc -l     # Markdown count
+find <docs> -name "*.puml" -type f | wc -l    # PlantUML count
+```
+
+Checklist:
+- Track significant docs assets with relative paths.
+- Distinguish generated vs manual content.
+- Verify all references exist and counts match expectations.
+
+### Quality Assurance
+
+Consistency checks:
+1. Format compliance with templates above.
+2. Naming conventions aligned across adapters.
+3. Cross-reference validation for internal links.
+4. Content completeness for required sections.
+
+Validation procedures:
+- Document pass/fail criteria for each adapter deliverable (tables, actor matrix, TODO backlog, diagram validation summary).
+- Capture QA notes in the generated README output so `/doc-gen:bootstrap` runs leave an audit trail.
 
 ## integration-guidelines
 

@@ -1,0 +1,76 @@
+{
+  "version": "1.1",
+  "updated_at": "2025-11-20T05:06:02Z",
+  "targets": {
+    "droid": {
+      "tool_name": "droid",
+      "configDir": ".factory",
+      "components": {
+        "commands": "commands",
+        "rules": "rules",
+        "skills": "skills",
+        "agents": "agents",
+        "output_styles": "output-styles",
+        "permissions": null,
+        "settings": "settings.json",
+        "memory": "AGENTS.md"
+      }
+    },
+    "opencode": {
+      "tool_name": "opencode",
+      "configDir": ".config/opencode",
+      "components": {
+        "commands": "command",
+        "rules": "rules",
+        "skills": "skills",
+        "agents": "agent",
+        "output_styles": "output-styles",
+        "permissions": "permissions.json",
+        "settings": "settings.json",
+        "memory": "AGENTS.md"
+      }
+    },
+    "qwen": {
+      "tool_name": "qwen",
+      "configDir": ".qwen",
+      "components": {
+        "commands": "commands",
+        "rules": "rules",
+        "skills": "skills",
+        "agents": "agents",
+        "output_styles": "output-styles",
+        "permissions": null,
+        "settings": "settings.json",
+        "memory": "AGENTS.md"
+      }
+    },
+    "codex": {
+      "tool_name": "codex",
+      "configDir": ".codex",
+      "components": {
+        "commands": "commands",
+        "rules": "rules",
+        "skills": "skills",
+        "agents": "agents",
+        "output_styles": "output-styles",
+        "permissions": null,
+        "settings": "settings.json",
+        "memory": "AGENTS.md"
+      }
+    },
+    "amp": {
+      "tool_name": "amp",
+      "configDir": ".config/amp",
+      "components": {
+        "commands": "commands",
+        "rules": "rules",
+        "skills": "skills",
+        "agents": "agents",
+        "output_styles": "output-styles",
+        "permissions": null,
+        "settings": "settings.json",
+        "memory": "AGENTS.md"
+      }
+    }
+  }
+}

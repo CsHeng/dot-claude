@@ -7,6 +7,13 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 CLAUDE_ROOT="$(cd "$HOME/.claude" && pwd -P)"
 CURRENT_DIR="$(pwd -P)"
 
+LIB_DIR="${SCRIPT_DIR}/lib"
+if [[ -f "$LIB_DIR/common.sh" ]]; then
+    # Initialize config-sync environment so Python modules are importable.
+    # shellcheck disable=SC1090
+    source "$LIB_DIR/common.sh"
+fi
+
 log_info() {
     printf '[INFO] %s\n' "$1"
 }
@@ -82,202 +89,24 @@ declare -A TARGET_LABELS=(
 # IDE header configuration
 IDE_HEADERS_CONFIG="$SCRIPT_DIR/ide-headers.yaml"
 
-# Check if YAML parser is available (yq or python with yaml module)
-check_yaml_parser() {
-    if command -v yq >/dev/null 2>&1; then
-        echo "yq"
-    elif python3 -c "import yaml" >/dev/null 2>&1; then
-        echo "python"
-    else
-        echo "none"
-    fi
-}
-
-# Determine if a file should skip IDE headers entirely
-is_file_without_header() {
-    local filename="$1"
-    local yaml_parser="$2"
-
-    case "$yaml_parser" in
-        "yq")
-            local match
-            match=$(yq eval "(.files_without_headers // [])[] | select(. == \"$filename\")" "$IDE_HEADERS_CONFIG" 2>/dev/null || true)
-            if [[ -n "$match" ]]; then
-                return 0
-            fi
-            return 1
-            ;;
-        "python")
-            local result
-            result=$(FILENAME="$filename" IDE_HEADERS="$IDE_HEADERS_CONFIG" python3 - <<'PY'
-import os
-import yaml
-
-filename = os.environ["FILENAME"]
-config_path = os.environ["IDE_HEADERS"]
-with open(config_path) as f:
-    data = yaml.safe_load(f) or {}
-files = data.get("files_without_headers") or []
-if filename in files:
-    print("FOUND")
-PY
-)
-            if [[ "$result" == "FOUND" ]]; then
-                return 0
-            fi
-            return 1
-            ;;
-    esac
-
-    return 1
-}
-
-# Extract YAML configuration for a file/target pair
-extract_header_config() {
-    local filename="$1"
-    local target="$2"
-    local yaml_parser="$3"
-    local config=""
-
-    case "$yaml_parser" in
-        "yq")
-            config=$(yq eval ".file_mappings[\"$filename\"][\"$target\"] // \"__MISSING__\"" "$IDE_HEADERS_CONFIG" 2>/dev/null || echo "__MISSING__")
-            ;;
-        "python")
-            config=$(FILENAME="$filename" TARGET="$target" IDE_HEADERS="$IDE_HEADERS_CONFIG" python3 - <<'PY'
-import os
-import yaml
-
-filename = os.environ["FILENAME"]
-target = os.environ["TARGET"]
-config_path = os.environ["IDE_HEADERS"]
-with open(config_path) as f:
-    data = yaml.safe_load(f) or {}
-mapping = (data.get("file_mappings") or {}).get(filename)
-target_cfg = mapping.get(target) if mapping else None
-if target_cfg is None:
-    print("__MISSING__")
-else:
-    text = yaml.dump(target_cfg, default_flow_style=False).strip()
-    print(text if text else "{}")
-PY
-)
-            ;;
-        *)
-            return 1
-            ;;
-    esac
-
-    if [[ -z "$config" || "$config" == "__MISSING__" ]]; then
-        return 1
-    fi
-
-    echo "$config"
-}
-
-# Extract IDE header configuration for a specific file and target
 get_ide_header() {
     local filename="$1"
     local target="$2"
-    local yaml_parser
-    yaml_parser=$(check_yaml_parser)
 
-    if [[ "$yaml_parser" == "none" ]]; then
-        log_warning "No YAML parser found. Skipping IDE headers for $filename"
+    if ! command -v python3 >/dev/null 2>&1; then
+        log_warning "python3 not found. Skipping IDE headers for $filename"
         return 1
     fi
 
-    if is_file_without_header "$filename" "$yaml_parser"; then
-        return 1
+    local header
+    if header=$(python3 -m config_sync.ide_headers generate --config "$IDE_HEADERS_CONFIG" --filename "$filename" --target "$target" 2>/dev/null); then
+        if [[ -n "$header" ]]; then
+            printf "%s\n" "$header"
+            return 0
+        fi
     fi
 
-    local config
-    if ! config=$(extract_header_config "$filename" "$target" "$yaml_parser"); then
-        return 1
-    fi
-
-    # Check if file has headers configured and get the config
-    generate_ide_header "$target" "$config" "$yaml_parser"
-}
-
-# Generate IDE-specific header from configuration
-generate_ide_header() {
-    local target="$1"
-    local config="$2"
-    local yaml_parser="${3:-$(check_yaml_parser)}"
-
-    case "$target" in
-        "cursor")
-            if [[ "$config" == "{}" || -z "$config" || "$config" == "null" || "$config" == "--" ]]; then
-                echo -e "---\n# Cursor Rules\n---\n"
-                return
-            fi
-
-            # Parse cursor configuration
-            local cursor_content="# Cursor Rules\n"
-            case "$yaml_parser" in
-                "yq")
-                    if echo "$config" | yq eval '.alwaysApply' 2>/dev/null | grep -q "true"; then
-                        cursor_content="${cursor_content}alwaysApply: true\n"
-                    fi
-                    local globs
-                    globs=$(echo "$config" | yq eval '.globs' 2>/dev/null | tr -d '"' | grep -v "null" || echo "")
-                    if [[ -n "$globs" ]]; then
-                        cursor_content="${cursor_content}globs: $globs\n"
-                    fi
-                    ;;
-                "python")
-                    if python3 -c "
-import yaml
-config = yaml.safe_load('''$config''')
-if config and config.get('alwaysApply') == True:
-    sys.exit(0)
-else:
-    sys.exit(1)
-" 2>/dev/null; then
-                        cursor_content="${cursor_content}alwaysApply: true\n"
-                    fi
-                    local globs
-                    globs=$(python3 -c "
-import yaml
-config = yaml.safe_load('''$config''')
-if config and config.get('globs'):
-    print(config['globs'])
-" 2>/dev/null || echo "")
-                    if [[ -n "$globs" ]]; then
-                        cursor_content="${cursor_content}globs: $globs\n"
-                    fi
-                    ;;
-            esac
-            echo -e "---\n${cursor_content}---\n"
-            ;;
-
-        "copilot")
-            local apply_pattern="**/*"  # default
-            case "$yaml_parser" in
-                "yq")
-                    local pattern
-                    pattern=$(echo "$config" | yq eval '.applyTo' 2>/dev/null | tr -d '"' | grep -v "null" || echo "")
-                    if [[ -n "$pattern" ]]; then
-                        apply_pattern="$pattern"
-                    fi
-                    ;;
-                "python")
-                    local pattern
-                    pattern=$(python3 -c "
-import yaml
-config = yaml.safe_load('''$config''')
-if config and config.get('applyTo'):
-    print(config['applyTo'])
-" 2>/dev/null || echo "")
-                    if [[ -n "$pattern" ]]; then
-                        apply_pattern="$pattern"
-                    fi
-                    ;;
-            esac
-            echo -e "---\n# Copilot Instructions\napplyTo: \"$apply_pattern\"\n---\n"
-            ;;
-    esac
+    return 1
 }
 
 # Sync a single rule file with IDE header injection

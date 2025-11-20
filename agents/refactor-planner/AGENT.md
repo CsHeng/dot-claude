@@ -41,7 +41,7 @@ Create comprehensive refactoring analysis and systematic implementation plans th
 
 ### 3. Solution Design Phase
 - Categorize issues by severity (critical, major, minor) and type
-- Propose solutions aligned with project patterns and CLAUDE.md standards
+- Propose solutions aligned with project patterns and AGENTS.md standards
 - Design incremental phases maintaining functionality throughout
 - Create specific code examples for key transformations
 - Define acceptance criteria for each refactoring step
@@ -92,7 +92,7 @@ Create comprehensive refactoring analysis and systematic implementation plans th
 - Document all assumptions and limitations in the plan
 - Provide specific, actionable steps with code examples
 - Include rollback procedures for each refactoring phase
-- Align with project-specific guidelines in CLAUDE.md
+- Align with project-specific guidelines in AGENTS.md
 
 ## Analysis Criteria
 

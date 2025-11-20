@@ -1,7 +1,6 @@
-__phase_adapt_run_target_component() {
+__phase_adapt_run_target_commands() {
   local target="$1"
-  local component="$2"
-  local action="${3:-sync}"
+  local action="${2:-sync}"
   local adapter_script="$ADAPTERS_DIR/${target}.sh"
 
   if [[ ! -f "$adapter_script" ]]; then
@@ -9,17 +8,17 @@ __phase_adapt_run_target_component() {
     return 0
   fi
 
-  local args=("--action=$action" "--component=$component")
+  local args=("--action=$action" "--component=commands")
   $DRY_RUN && args+=("--dry-run")
   $FORCE && args+=("--force")
   $VERBOSE && args+=("--verbose")
 
-  log_info "[adapt] Running adapter for $target ($component)"
+  log_info "[adapt] Running commands adapter for $target"
   if bash "$adapter_script" "${args[@]}"; then
     return 0
   fi
 
-  log_error "[adapt] Adapter failed for $target ($component)"
+  log_error "[adapt] Commands adapter failed for $target"
   return 1
 }
 
@@ -48,7 +47,7 @@ __phase_adapt_run_permissions() {
 }
 
 __phase_adapt_run_memory() {
-  local script="$ADAPTERS_DIR/sync-memory.sh"
+  local script="$CLI_ROOT/scripts/sync-memory.sh"
   if [[ ! -f "$script" ]]; then
     log_warning "[adapt] Memory adapter missing; skipping"
     return 0
@@ -81,16 +80,33 @@ phase_adapt() {
   local failures=0
   for component in "${components[@]}"; do
     case "$component" in
+      commands)
+        for target in "${SELECTED_TARGETS[@]}"; do
+          __phase_adapt_run_target_commands "$target" || failures=1
+        done
+        ;;
+      rules|skills|agents|output_styles)
+        local target_csv
+        target_csv="$(IFS=,; printf '%s' "${SELECTED_TARGETS[*]}")"
+        local script="$CLI_ROOT/scripts/sync-taxonomy-component.sh"
+        if [[ ! -f "$script" ]]; then
+          log_warning "[adapt] Taxonomy sync script missing; skipping '$component'"
+        else
+          local args=("--target=$target_csv" "--component=$component")
+          $DRY_RUN && args+=("--dry-run")
+          $VERBOSE && args+=("--verbose")
+          log_info "[adapt] Synchronizing taxonomy component '$component' for $target_csv"
+          if ! bash "$script" "${args[@]}"; then
+            log_error "[adapt] Taxonomy sync failed for component '$component'"
+            failures=1
+          fi
+        fi
+        ;;
       permissions)
         __phase_adapt_run_permissions || failures=1
         ;;
       memory)
         __phase_adapt_run_memory || failures=1
-        ;;
-      rules|commands)
-        for target in "${SELECTED_TARGETS[@]}"; do
-          __phase_adapt_run_target_component "$target" "$component" || failures=1
-        done
         ;;
       *)
         log_warning "[adapt] Component '$component' not supported in CLI"

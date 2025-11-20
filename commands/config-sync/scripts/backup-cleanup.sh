@@ -55,27 +55,7 @@ parse_retention_settings() {
 
   local parsed
   if ! parsed="$(
-    python3 - "$settings_path" <<'PY'
-import json, sys
-path = sys.argv[1]
-defaults = {}
-try:
-    with open(path, "r", encoding="utf-8") as fh:
-        config = json.load(fh)
-        retention = config.get("backup", {}).get("retention", {})
-        max_runs = retention.get("maxRuns", 5)
-        enabled = retention.get("enabled", True)
-        dry_run = retention.get("dryRun", False)
-
-        print(str(max_runs))
-        print(str(enabled).lower())
-        print(str(dry_run).lower())
-
-except (FileNotFoundError, json.JSONDecodeError, KeyError):
-    print("5")
-    print("true")
-    print("false")
-PY
+    python3 -m config_sync.backup_retention "$settings_path"
   )"; then
     log_warning "[cleanup] Failed to parse retention settings, using defaults"
     echo "$max_runs,$enabled,$dry_run"

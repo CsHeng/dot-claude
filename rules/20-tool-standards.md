@@ -18,10 +18,10 @@ PROHIBITED: Use abbreviations except universally understood ones (`url`, `id`, `
 
 ## Structural Rules
 ### Primary Tool Manager: mise
-REQUIRED: Use mise for language version management and environment configuration
+REQUIRED: Use mise for language version management and environment configuration in development environments
 REQUIRED: Configure mise using `.mise.toml` or `.tool-versions` files
 PREFERRED: Use mise for development environment consistency across team members
-REQUIRED: Integrate mise with CI/CD pipelines for reproducible builds
+PREFERRED: Integrate mise with CI/CD pipelines for reproducible builds when appropriate
 
 ### Language-Specific Tooling
 
@@ -29,8 +29,9 @@ REQUIRED: Integrate mise with CI/CD pipelines for reproducible builds
 REQUIRED: Package Management: UV for Python package management and tool execution
 REQUIRED: Configuration: pyproject.toml with [project.dependencies] and [tool.uv.dev-dependencies]
 REQUIRED: Development Tools: Execute via `uv tool run` (ruff, pytest, etc.)
-REQUIRED: Virtual Environment: Single .venv directory at project root managed by mise
+REQUIRED: Virtual Environment: Single .venv directory at project root, typically managed by mise in development
 PREFERRED: Pre-commit Hooks: Automated code quality checks before commits
+PREFERRED: Expose frequently used automation as uv-managed scripts to avoid ad-hoc Shell wrappers
 
 #### Go Development Stack
 REQUIRED: Package Management: Go modules with go.mod and go.sum

@@ -1,12 +1,12 @@
 ---
 name: language-shell
 description: Shell scripting standards and safety practices. Use when language shell
-  guidance is required.
+  guidance is required or when selecting Shell as a thin wrapper or OS-near glue layer.
 mode: language-guidelines
 capability-level: 1
 allowed-tools:
 - Bash(shellcheck)
-source: rules/12-shell-guidelines.md
+source: rules/12-shell-guidelines.md,15-cross-language-architecture.md,rules/21-language-tool-selection.md
 ---
 
 # Shell Script Safety Standards
@@ -409,4 +409,90 @@ main() {
 }
 
 main "$@"
+```
+
+## Cross-Language Integration
+
+### Python Module Integration Standards
+PROHIBITED: Use inline Python code (`python -c` or here-doc) in shell scripts
+REQUIRED: Call Python modules using `python -m module.name` pattern
+REQUIRED: Check exit codes from Python module calls
+PREFERRED: Use `--format json` for complex data exchange with Python modules
+
+### Anti-Inline Enforcement Patterns
+ALWAYS: Scan for and reject `python -c` usage in shell scripts
+ALWAYS: Flag here-doc Python (`python <<'PY'`) as architectural violations
+ALWAYS: Replace inline Python with dedicated module calls
+REQUIRED: Use structured error handling for Python integration
+
+### Standard Python Module Calling Patterns
+
+#### Basic Module Invocation
+```bash
+# CORRECT: Use module pattern
+python3 -m lib.python.toml_validator validate "$file" --format json
+
+# INCORRECT: Inline Python (ANTI-PATTERN)
+python3 -c "
+import toml
+try:
+    with open('$file') as f:
+        data = toml.load(f)
+    print('valid')
+except Exception:
+    print('invalid')
+"
+```
+
+#### Error Handling for Python Modules
+```bash
+# Check module exit codes and handle errors
+if result=$(python3 -m lib.python.yaml_utils extract "$config_file" --field version 2>/dev/null); then
+    echo "Version: $result"
+else
+    echo "Failed to extract version" >&2
+    exit 1
+fi
+
+# Use JSON output for complex data
+config_data=$(python3 -m lib.python.config_parser parse "$config_file" --format json)
+if [[ $? -eq 0 ]]; then
+    version=$(echo "$config_data" | jq -r '.data.version')
+    echo "Parsed version: $version"
+else
+    error_msg=$(echo "$config_data" | jq -r '.error')
+    echo "Config parsing failed: $error_msg" >&2
+    exit 1
+fi
+```
+
+### Performance Considerations
+PREFERRED: Batch operations to reduce Python process startup overhead
+REQUIRED: Use long-running Python processes for repeated operations when possible
+PREFERRED: Process data in streaming mode for large datasets
+REQUIRED: Clean up temporary files and processes properly
+
+### Testing Shell-Python Integration
+```bash
+# Test script for Python module integration
+test_python_module() {
+    local module="$1"
+    local test_file="$2"
+
+    # Test successful execution
+    if python3 -m "$module" "$test_file" >/dev/null 2>&1; then
+        echo "✓ $module handles valid input"
+    else
+        echo "✗ $module failed on valid input"
+        return 1
+    fi
+
+    # Test error handling
+    if ! python3 -m "$module" "nonexistent.toml" >/dev/null 2>&1; then
+        echo "✓ $module handles invalid input correctly"
+    else
+        echo "✗ $module should fail on invalid input"
+        return 1
+    fi
+}
 ```
