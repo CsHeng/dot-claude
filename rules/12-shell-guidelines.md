@@ -2,6 +2,7 @@
 
 ## Scope
 REQUIRED: Apply these standards to all shell scripting activities, including system administration, automation scripts, CI/CD pipelines, and development tools.
+REQUIRED: Treat Shell scripts as simple glue and wrapper mechanisms around tools and Python CLIs, not as primary hosts for complex business logic.
 
 ## Absolute Prohibitions
 PROHIBITED: Use eval or exec with untrusted user input
@@ -10,6 +11,7 @@ PROHIBITED: Hardcode secrets or credentials in shell scripts
 PROHIBITED: Use shell scripts for complex business logic better suited for high-level languages
 PROHIBITED: Create scripts without proper input validation
 PROHIBITED: Use relative paths for critical system operations
+PROHIBITED: Implement multi-step data processing or validation in Shell when a Python+uv alternative is available and appropriate
 
 ## Communication Protocol
 REQUIRED: Use clear, descriptive variable and function names
@@ -92,6 +94,7 @@ PREFERRED: Use descriptive naming: `deploy.sh`, `backup.sh`, `monitor.sh`
 PREFERRED: Source shared functionality: `source "$(dirname "$0")/lib/common.sh"`
 PREFERRED: Create reusable helper functions for common operations
 REQUIRED: Use consistent parameter patterns: `script.sh <action> <target> [options]`
+PREFERRED: Implement Shell as thin wrappers that resolve SCRIPT_DIR, prepare environment variables, and delegate to Python CLIs for non-trivial logic
 
 ### Performance
 REQUIRED: Use `find -print0` and `read -r -d ''` for safe filename handling

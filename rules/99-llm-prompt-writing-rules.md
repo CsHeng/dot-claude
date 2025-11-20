@@ -139,6 +139,7 @@ REQUIRED directives starting with action verbs
 REQUIRED removal of ambiguity and soft modals  
 REQUIRED explicit REQUIRED, OPTIONAL, PROHIBITED labels  
 REQUIRED consistent terminology across all files  
+REQUIRED respect language and tool selection rules from rules/10-python-guidelines.md, rules/12-shell-guidelines.md, rules/15-cross-language-architecture.md, rules/20-tool-standards.md, and rules/21-language-tool-selection.md when describing or generating automation patterns  
 
 ## formatting-rules
 PROHIBITED markdown bold in body content  

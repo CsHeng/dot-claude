@@ -15,7 +15,7 @@ The taxonomy is derived from and aligned with external Claude Code specification
 
 ## Scope
 - Entry file: `CLAUDE.md`
-- Directories: `rules/`, `skills/`, `agents/`, `commands/`, `requirements/`, `docs/`, `output-styles/`
+- Directories: `rules/`, `skills/`, `agents/`, `commands/`, `output-styles/` (files under `docs/` remain human-facing unless they are explicitly surfaced via rules or skills)
 - Supported commands: config-sync, llm-governance:optimize-prompts, doc-gen, draft-commit-message, review-shell-syntax, etc.
 - Execution environments: Codex CLI, Claude Code, Qwen CLI, IDE/CI sync destinations
 
@@ -36,6 +36,7 @@ This taxonomy treats LLM-facing assets as a first-class domain. LLM-facing conte
 - Output style manifests under `output-styles/`
 
 Human-facing documentation (for example `docs/**`, project READMEs, and troubleshooting guides) is not governed by this taxonomy unless explicitly referenced by rules.
+Roadmap-style plans (including any copies stored under `docs/` or `requirements/`) remain human-facing background; agents and skills must rely on `rules/**` for normative language/tool requirements.
 
 The `llm-governance` domain is responsible for:
 - Defining rules and standards for all LLM-facing assets.
@@ -52,9 +53,10 @@ The `llm-governance` domain is responsible for:
 - Command: executable slash command or script that serves as a user entry point. Commands describe parameters and usage but must not embed rule logic; they route work to agents/skills.
 - Adapter: command-specific extension for particular targets (e.g., config-sync adapters).
 - Workflow: higher-order coordination across multiple commands handled by agents.
+- Language and tool selection: a governed decision step that applies rules/10-python-guidelines.md, rules/12-shell-guidelines.md, rules/15-cross-language-architecture.md, rules/20-tool-standards.md, and rules/21-language-tool-selection.md to choose Python, Shell, or hybrid wrapper implementations.
 
 There are two complementary dependency graphs:
-- Execution graph: `Memory → Output style → Agent → Skill` (commands such as `/output-style` and task-specific slash commands select an output style and then an agent/skill stack).
+- Execution graph: `Memory → Output style → Agent → Skill → Language/Tool selection` (commands such as `/output-style` and task-specific slash commands select an output style, then an agent/skill stack, then a language/tool stack for concrete implementations).
 - Policy graph: `Rule → Output-style manifest → Skill → Agent → Command` (rules define behavior; style manifests implement output-style rules; skills implement both rules and style manifests; agents orchestrate skills; commands expose capabilities to users).
 
 ## Spec Alignment (Informative)
@@ -120,55 +122,10 @@ These frameworks are optional and layered on top of the taxonomy:
 - They SHOULD be applied only where they improve clarity, robustness, or governance.
 - They MUST NOT change the fundamental relationships between Memory, Agent, Skill, Rule, Command, and Adapter.
 
-## Tooling Guidance: ast-grep vs ripgrep
-Codifying search/edit behavior as a skill requires clear defaults for when to rely on structural versus textual tooling:
-
-- Use `ast-grep` when structure matters. It parses code, ignores comments/strings, understands syntax, and can safely rewrite nodes. Reach for it when building refactors/codemods (rename APIs, change import styles, rewrite call sites), enforcing repo policies (`scan` + `test` rules), or powering editors/automation (LSP mode, `--json` output).
-- Use `ripgrep` when text is enough. It is the fastest way to scan literals/regex across files for reconnaissance (strings, TODOs, logs, config values, non-code assets) or for pre-filtering candidate files before a precise pass.
-- Rule of thumb. Prefer `ast-grep` whenever correctness matters or you plan to apply fixes; prefer `rg` when you only need quick textual hunting. A common workflow is `rg` to shortlist files, followed by `ast-grep` to match or modify with precision.
-
-### Snippets
-Find structured Go code (ignores comments/strings):
-
-```bash
-ast-grep run -l Go -p 'for $K, $V := range $MAP { $BODY }'
-```
-
-Codemod (`ioutil.ReadFile` → `os.ReadFile` only where it is an actual call):
-
-```bash
-ast-grep run -l Go -p 'ioutil.ReadFile($PATH)' -r 'os.ReadFile($PATH)' -U
-```
-
-Quick textual hunt:
-
-```bash
-rg -n 'fmt\.Printf\(' -t go
-```
-
-Combine speed and precision:
-
-```bash
-rg -l -t go 'time\.Sleep' | xargs ast-grep run -l Go -p 'time.Sleep($DUR)' -r 'testclock.Sleep($DUR)' -U
-```
-
-### Mental Model
-- Match unit: `ast-grep` operates on AST nodes; `rg` operates on lines.
-- False positives: `ast-grep` stays low; `rg` depends entirely on your regex quality.
-- Rewrite safety: `ast-grep` is first-class; `rg` rewrites require ad-hoc `sed`/`awk` logic and risk collateral edits.
-
-### fd vs find (gitignore-aware discovery)
-- Default to `fd` for file discovery so `.gitignore`, `.ignore`, and `.fdignore` are honored automatically, mirroring the ignore rules that `rg` uses for searches.
-- Reach for `fd --no-ignore` when ignored paths (vendor bundles, build output) must be inspected, or `fd --ignore-vcs` when you only want to bypass `.gitignore` but still respect `.ignore`/`.fdignore`.
-- Combine `fd` with `rg`/`ast-grep` rather than invoking legacy `find`; when `find` is unavoidable (exotic predicates), wrap the call with `git check-ignore -q "$path"` so ignored files stay filtered.
-
-```bash
-# Tracked Gradle scripts within two directory levels
-fd --type f --max-depth 2 'build\.gradle.*' android/
-
-# Inspect ignored artifacts explicitly
-fd --no-ignore --hidden --type f 'report\.json' .
-```
+## Tooling Expectations
+- `skills/environment-validation` and related language skills enforce tool availability and selection; they remain the canonical location for detailed commands and snippets. This RFC only defines when those skills should be consulted.
+- Structural editing (AST-aware tooling such as `ast-grep`) is preferred when modifying code semantics; textual search/discovery tooling (`rg`, `fd`) is used for reconnaissance. Rules/skills capture the exact heuristics so agents stay deterministic.
+- Tool usage policies (strict mode shells, uv-backed Python CLIs, etc.) live under `rules/20-tool-standards.md` and skill manifests. Agents MUST reference those rules instead of embedding ad-hoc tooling guidance here.
 
 ## Directory Layout and Sync
 ```
@@ -179,7 +136,7 @@ fd --no-ignore --hidden --type f 'report\.json' .
 ├── skills/<category>-<name>/SKILL.md
 ├── agents/<domain>-<role>/AGENT.md
 ├── commands/
-├── docs/
+├── docs/                       # background plans/reference; become governed only via skills/rules
 └── commands/agent-ops/scripts/
     ├── agent-matrix.sh
     └── skill-matrix.sh
@@ -221,7 +178,7 @@ Maintain a lightweight sync log (plan path, targets, timestamp, commit hash) so 
 - CLAUDE contains an emergency note describing how to recover if agents fail (no automatic rule loading).
 
 ## Milestones
-See `requirements/01-claude.md` for the Phase 0‑5 timeline:
+Phase 0-5 timeline (summarized for agents/skills):
 1. Phase 0: RFC and CLAUDE notice.
 2. Phase 1: `skills/` directory and core skills.
 3. Phase 2: config-sync and llm-governance agents.

@@ -18,7 +18,7 @@ capability-level: 1
 ---
 
 ## Purpose
-Establish and validate baseline toolchain requirements including version compatibility, environment management, and dependency resolution across all development tools as defined in rules/00-memory-rules.md.
+Establish and validate baseline toolchain requirements including version compatibility, environment management, and dependency resolution across all development tools as defined in rules/00-memory-rules.md. Provide explicit signals about Python+uv and Shell capabilities so language and tool selection can prefer Python-first automation with Shell as a wrapper.
 
 ## IO Semantics
 Input: Development environment, tool installations, configuration files
@@ -28,7 +28,7 @@ Side Effects: Updated tool installations, configured environment, validated depe
 ## Deterministic Steps
 
 ### 1. Version Validation Execution
-Execute `python3 --version | rg '3\\.1[3-9]'` for Python 3.13+ validation
+Execute `python3 --version | rg '3\\.1[3-9]'` for Python 3.13+ validation when Python is present
 Execute `go version | rg 'go1\\.2[3-9]'` for Go 1.23+ validation
 Execute `plantuml --version` for PlantUML availability check
 Execute `dbml2sql --version` for dbml2sql availability check
@@ -48,8 +48,8 @@ Validate ast-grep availability for structural code analysis
 Validate find availability as fallback file discovery method
 
 ### 3. Environment Management Validation
-Confirm single `.venv` managed by UV usage
-Validate mise tool installation management
+Confirm single `.venv` managed by UV usage in development environments
+Validate mise tool installation management for development tooling
 Enforce CGO_ENABLED=0 for Go builds
 Verify default interactive shell = zsh configuration
 
@@ -67,6 +67,7 @@ Verify tool version compatibility across ecosystem
 Test tool fallback mechanisms (fd -> find, rg -> grep)
 Validate performance characteristics of different tool combinations
 Ensure tool selection logic provides deterministic behavior
+Record whether Python+uv are available so downstream skills can choose Python-first automation with Shell wrappers only when appropriate
 
 ## Tool Safety
 Validate tool versions in isolated environments

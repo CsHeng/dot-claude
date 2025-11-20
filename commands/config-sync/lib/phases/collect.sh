@@ -28,25 +28,10 @@ phase_collect() {
   components_csv="$(IFS=,; printf '%s' "${SELECTED_COMPONENTS[*]}")"
   local collect_file="$RUN_METADATA_DIR/collect.json"
 
-  COLLECT_TARGETS="$targets_csv" \
-  COLLECT_COMPONENTS="$components_csv" \
-  COLLECT_ACTION="$ACTION" \
-  COLLECT_PLAN="$PLAN_FILE" \
-  COLLECT_RUNTIME="$RUN_ROOT" \
-  python3 - "$collect_file" <<'PY'
-import json, os, sys
-
-report = {
-    "action": os.environ.get("COLLECT_ACTION"),
-    "targets": [t for t in os.environ.get("COLLECT_TARGETS", "").split(",") if t],
-    "components": [c for c in os.environ.get("COLLECT_COMPONENTS", "").split(",") if c],
-    "plan_file": os.environ.get("COLLECT_PLAN"),
-    "runtime_dir": os.environ.get("COLLECT_RUNTIME"),
-}
-
-with open(sys.argv[1], "w", encoding="utf-8") as fh:
-    json.dump(report, fh, indent=2)
-PY
+  if ! python3 -m config_sync.collect_phase "$collect_file" "$ACTION" "$targets_csv" "$components_csv" "$PLAN_FILE" "$RUN_ROOT"; then
+    log_error "[collect] Failed to write metadata to $collect_file"
+    return 1
+  fi
 
   log_info "[collect] Metadata written to $collect_file"
 
@@ -68,13 +53,7 @@ PY
   done
 
   if $qwen_selected && $commands_selected; then
-    if ! python3 - <<'PY' >/dev/null 2>&1
-try:
-    import toml  # noqa: F401
-except ModuleNotFoundError:
-    raise SystemExit(1)
-PY
-    then
+    if ! python3 -m config_sync.toml_check >/dev/null 2>&1; then
       log_warning "[collect] Python module 'toml' not installed; qwen command verification will be skipped. Install via 'python3 -m pip install --user toml'."
     fi
   fi

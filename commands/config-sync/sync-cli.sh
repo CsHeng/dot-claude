@@ -103,31 +103,7 @@ load_defaults() {
 
   local parsed
   if ! parsed="$(
-    python3 - "$SETTINGS_PATH" <<'PY' 2>/dev/null
-import json, sys
-path = sys.argv[1]
-defaults = {}
-try:
-    with open(path, "r", encoding="utf-8") as fh:
-        defaults = json.load(fh).get("defaults", {})
-except FileNotFoundError:
-    defaults = {}
-
-target = defaults.get("target") or "all"
-components = defaults.get("components") or []
-if isinstance(components, list):
-    component_value = ",".join(components) if components else "all"
-else:
-    component_value = str(components)
-
-verify = defaults.get("verify", True)
-dry_run = defaults.get("dryRun", False)
-
-print(target)
-print(component_value)
-print("true" if verify else "false")
-print("true" if dry_run else "false")
-PY
+    python3 -m config_sync.settings_loader "$SETTINGS_PATH"
   )"; then
     log_warning "Failed to parse settings.json; using fallback defaults"
     return
@@ -345,7 +321,7 @@ select_phases() {
   ACTIVE_PHASES=()
   case "$ACTION" in
     sync)
-      ACTIVE_PHASES=(collect analyze plan prepare adapt execute)
+      ACTIVE_PHASES=(prepare adapt execute)
       $VERIFY_ENABLED && ACTIVE_PHASES+=(verify)
       ACTIVE_PHASES+=(cleanup report)
       ;;
@@ -353,13 +329,13 @@ select_phases() {
       ACTIVE_PHASES=(collect analyze report)
       ;;
     verify)
-      ACTIVE_PHASES=(collect verify report)
+      ACTIVE_PHASES=(verify report)
       ;;
     adapt)
-      ACTIVE_PHASES=(collect plan prepare adapt report)
+      ACTIVE_PHASES=(prepare adapt report)
       ;;
     plan)
-      ACTIVE_PHASES=(collect analyze plan)
+      ACTIVE_PHASES=(plan)
       ;;
     report)
       ACTIVE_PHASES=(report)
@@ -416,17 +392,10 @@ ensure_runtime_paths() {
   if [[ -z "$PLAN_FILE" ]]; then
     PLAN_FILE="$STATE_ROOT/plan-$PLAN_TIMESTAMP.json"
   else
-    if command -v python3 >/dev/null 2>&1; then
-      if ! PLAN_FILE="$(
-        python3 - "$PLAN_FILE_OVERRIDE" <<'PY' 2>/dev/null
-import os, sys
-print(os.path.abspath(sys.argv[1]))
-PY
-      )"; then
-        PLAN_FILE="$PLAN_FILE_OVERRIDE"
-      fi
-    else
+    if [[ "$PLAN_FILE_OVERRIDE" = /* ]]; then
       PLAN_FILE="$PLAN_FILE_OVERRIDE"
+    else
+      PLAN_FILE="$(cd "$(dirname "$PLAN_FILE_OVERRIDE")" && pwd -P)/$(basename "$PLAN_FILE_OVERRIDE")"
     fi
   fi
 

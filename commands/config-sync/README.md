@@ -50,9 +50,10 @@ commands/config-sync/
 ├── sync-cli.{md,sh}             # Unified slash command and implementation
 ├── sync-project-rules.{md,sh}   # IDE rule synchronization
 ├── adapters/                     # Target-specific automation modules
-├── lib/common.*                  # Shared utility functions
+├── lib/common.*                  # Shared shell helpers
 ├── lib/phases/                   # Phase execution runners
 ├── lib/planners/                 # Plan generation logic
+├── lib/python/config_sync/       # Python modules (validation, path resolution, converters)
 ├── scripts/                      # Reusable shell helpers
 └── settings.json                 # Default configuration and policies
 ```
@@ -66,21 +67,23 @@ commands/config-sync/
 
 ### Supported Targets
 
-| Target CLI       | Config Resolver                    | Components | Special Requirements |
-|------------------|------------------------------------|------------|----------------------|
-| Droid CLI        | `get_target_config_dir droid`      | all        | Full YAML frontmatter support |
-| Qwen CLI         | `get_target_config_dir qwen`       | all        | Python `toml` module required |
-| OpenAI Codex CLI | `get_target_config_dir codex`      | all        | Minimal configuration |
-| OpenCode         | `get_target_config_dir opencode`   | all        | JSON command format |
-| Amp CLI          | `get_target_config_dir amp`        | all        | Global memory support |
+| Target CLI       | Config Resolver                    | Components                                      | Special Requirements |
+|------------------|------------------------------------|------------------------------------------------|----------------------|
+| Droid CLI        | `get_target_config_dir droid`      | `commands`, `rules`, `skills`, `agents`, `memory` | Full YAML frontmatter support |
+| Qwen CLI         | `get_target_config_dir qwen`       | `commands`, `rules`, `skills`, `agents`, `memory` | Python `toml` module required (for commands TOML) |
+| OpenAI Codex CLI | `get_target_config_dir codex`      | `commands`, `rules`, `skills`, `agents`, `memory` | Minimal configuration |
+| OpenCode         | `get_target_config_dir opencode`   | `commands`, `rules`, `skills`, `agents`, `memory` | JSON command format |
+| Amp CLI          | `get_target_config_dir amp`        | `commands`, `rules`, `skills`, `agents`, `memory` | Global memory support via `AGENTS.md` |
 
-Components: `rules`, `permissions`, `commands`, `memory`
-
-Key Implementation Details: All target config/commands/rules directories are
-resolved via `lib/common.sh` helpers (`get_target_config_dir`,
-`get_target_commands_dir`, `get_target_rules_dir`). `adapters/` provide
-tool-specific logic and are invoked indirectly via `/config-sync/sync-cli`
-and the `skill:config-sync-target-adaptation` skill.
+Key Implementation Details:
+- All target config directories are resolved via `lib/common.sh` helpers
+  (`get_target_config_dir`, `get_target_commands_dir`, `get_target_rules_dir`,
+  `get_target_path`).
+- Taxonomy components (`rules/`, `agents/`, `skills/`, `output-styles/`) are
+  synchronized by shared Shell scripts in `scripts/` using the manifest.
+- Per-target adapters in `adapters/` are commands-only; they handle command
+  format and tool-specific nuances and are invoked indirectly via
+  `/config-sync/sync-cli` and the `skill:config-sync-target-adaptation` skill.
 
 ### Usage Examples
 
@@ -100,6 +103,54 @@ and the `skill:config-sync-target-adaptation` skill.
 # Execute from specific plan phase
 /config-sync/sync-cli --action=sync --plan-file=~/.claude/backup/plan-20250205-120210.json --from-phase=prepare
 ```
+
+## shared-utilities
+
+### Validation Helpers
+
+Use the following helper signatures across adapters and scripts:
+
+```bash
+validate_target <name>          # allowed targets: droid, qwen, codex, opencode, amp, all
+validate_component <name>       # allowed components: rules, permissions, commands, settings, memory
+check_tool_installed <tool>     # ensure required CLI exists in PATH
+```
+
+### Path Resolution
+
+All target-aware scripts should call the shared path helpers from `lib/common.sh`:
+
+```bash
+get_target_config_dir <tool>    # base config dir per target
+get_target_rules_dir <tool>     # destination for rules
+get_target_commands_dir <tool>  # destination for commands
+```
+
+### Logging and Environment Setup
+
+```bash
+log_info <message>
+log_success <message>
+log_warning <message>
+log_error <message>
+
+setup_plugin_environment        # exports shared paths, validates scripts/, prepares temp dirs
+```
+
+### Backup and Executor Utilities
+
+```bash
+create_backup <path> <dest_root>        # timestamped backups before destructive ops
+write_with_checksum <src> <dst>         # copy with checksum verification
+render_template <template> <output> <vars>
+sync_with_sanitization <src> <dst>      # rsync-like helper with sanitization hooks
+```
+
+Implementation guidelines:
+- Keep helpers language-agnostic but enforce strict exit codes (0 success, non-zero failure).
+- Resolve absolute paths, validate permissions, and keep file operations atomic.
+- Use consistent logging prefixes so `/config-sync/sync-cli` output stays machine-parseable.
+- Verify external tool dependencies before invoking helpers; integrate with `skill:environment-validation` checks.
 
 ## backup-retention
 

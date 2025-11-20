@@ -1,635 +1,370 @@
 #!/usr/bin/env bash
-
-# Config-Sync Codex Adapter
-# Handles OpenAI Codex CLI-specific configuration synchronization
+# Codex CLI configuration synchronization (Simplified with Python modules)
 
 set -euo pipefail
 
-# Import common utilities
+# Setup environment
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "$SCRIPT_DIR/../lib/common.sh"
 source "$SCRIPT_DIR/../scripts/executor.sh"
 
-# Default values
-ACTION=""
-COMPONENT_SPEC=""
+# Parse arguments
+ACTION="sync"
+COMPONENT_SPEC="all"
 DRY_RUN=false
-FORCE=false
 VERBOSE=false
 
 declare -a SELECTED_COMPONENTS=()
 COMPONENT_LABEL=""
 
-# Codex-specific paths
-CODEX_CONFIG_DIR="${HOME}/.codex"
-CODEX_COMMANDS_DIR="${CODEX_CONFIG_DIR}/commands"
-CODEX_SETTINGS_FILE="${CODEX_CONFIG_DIR}/config.toml"
-
 usage() {
-    cat << EOF
-Config-Sync Codex Adapter - OpenAI Codex CLI Configuration Synchronization
+  cat << EOF
+Usage: $0 --action=<sync|analyze|verify> --component=<commands|all> [options]
 
-USAGE:
-    codex.sh --action <sync|analyze|verify> --component <rules,permissions,commands,settings,memory|all> [OPTIONS]
+Actions:
+  sync      Synchronize configuration to Codex
+  analyze   Analyze current configuration state
+  verify    Verify synchronization completeness
 
-ARGUMENTS:
-    --action <operation>     Operation to perform (sync, analyze, verify)
-    --component <type>       Component type or "all"
+Components (comma-separated):
+  commands   Custom slash commands
+  all        All supported components (default: commands)
 
-OPTIONS:
-    --dry-run               Show what would be done without executing
-    --force                 Force overwrite existing files
-    --verbose               Enable detailed output
-    --help                  Show this help message
-
-COMPONENTS (comma-separated):
-    rules                   Sync development rules and guidelines
-    permissions             Sync permission configurations
-    commands                Sync custom slash commands
-    settings                Sync Codex configuration settings
-    memory                  Sync memory and context files
-    all                     Sync all supported components
-
-EXAMPLES:
-    codex.sh --action=sync --component=all
-    codex.sh --action=analyze --component=rules
-    codex.sh --action=verify --component=settings
-
+Options:
+  --dry-run    Show what would be done without making changes
+  --verbose    Show detailed output
+  --help       Show this help message
 EOF
 }
 
-parse_arguments() {
-    while [[ $# -gt 0 ]]; do
-        case $1 in
-            --action=*)
-                ACTION="${1#--action=}"
-                shift
-                ;;
-            --action)
-                ACTION="$2"
-                shift 2
-                ;;
-            --component=*)
-                COMPONENT_SPEC="${1#--component=}"
-                shift
-                ;;
-            --component)
-                COMPONENT_SPEC="$2"
-                shift 2
-                ;;
-            --dry-run)
-                DRY_RUN=true
-                shift
-                ;;
-            --force)
-                FORCE=true
-                shift
-                ;;
-            --verbose)
-                VERBOSE=true
-                shift
-                ;;
-            --help)
-                usage
-                exit 0
-                ;;
-            *)
-                echo "Unknown option: $1" >&2
-                usage >&2
-                exit 1
-                ;;
-        esac
-    done
+# Parse command line arguments
+while [[ $# -gt 0 ]]; do
+  case $1 in
+    --action=*)
+      ACTION="${1#--action=}"
+      shift
+      ;;
+    --action)
+      ACTION="$2"
+      shift 2
+      ;;
+    --component=*)
+      COMPONENT_SPEC="${1#--component=}"
+      shift
+      ;;
+    --component)
+      COMPONENT_SPEC="$2"
+      shift 2
+      ;;
+    --dry-run)
+      DRY_RUN=true
+      shift
+      ;;
+    --verbose)
+      VERBOSE=true
+      shift
+      ;;
+    --help)
+      usage
+      exit 0
+      ;;
+    *)
+      log_error "Unknown argument: $1"
+      usage
+      exit 1
+      ;;
+  esac
+done
 
-    # Validate required arguments
-    if [[ -z "$ACTION" ]]; then
-        echo "Error: --action is required" >&2
-        exit 1
+# Validate arguments
+case "$ACTION" in
+  sync|analyze|verify) ;;
+  *)
+    log_error "Invalid action: $ACTION"
+    usage
+    exit 1
+    ;;
+esac
+
+# Parse and validate components using common.sh functions
+if ! mapfile -t SELECTED_COMPONENTS < <(parse_component_list "$COMPONENT_SPEC"); then
+  log_error "Invalid component selection: $COMPONENT_SPEC"
+  exit 1
+fi
+
+# Restrict to commands only for this adapter
+declare -a SUPPORTED_COMPONENTS=()
+for component in "${SELECTED_COMPONENTS[@]}"; do
+  if [[ "$component" == "commands" ]]; then
+    SUPPORTED_COMPONENTS+=("commands")
+  else
+    log_warning "Component '$component' is not handled by Codex adapter (commands-only); skipping"
+  fi
+done
+
+if [[ ${#SUPPORTED_COMPONENTS[@]} -eq 0 ]]; then
+  if [[ "$ACTION" == "verify" || "$ACTION" == "analyze" ]]; then
+    log_info "No supported components selected for Codex adapter - nothing to do"
+    exit 0
+  fi
+  log_error "No supported components selected for Codex adapter"
+  exit 1
+fi
+
+COMPONENT_LABEL="$(IFS=,; printf '%s' "${SUPPORTED_COMPONENTS[@]}")"
+
+# Get paths using manifest helpers
+CLAUDE_ROOT="$(get_source_path commands)"  # Get claude root from commands path
+CODEX_ROOT="$(get_target_config_dir codex)"
+
+# Pre-flight checks
+log_info "Starting Codex configuration $ACTION for $COMPONENT_LABEL"
+
+if ! check_dependencies; then
+  log_error "Dependency check failed"
+  exit 1
+fi
+
+if ! check_target_tool "codex"; then
+  log_error "Codex target check failed"
+  exit 1
+fi
+
+if ! validate_source_config "$CLAUDE_ROOT"; then
+  log_error "Source configuration validation failed"
+  exit 1
+fi
+
+# Ensure target directories exist
+mkdir -p "$(get_target_path codex commands)" "$(get_target_path codex rules)"
+
+# Sync functions
+sync_commands() {
+  local source_commands
+  local target_commands
+  source_commands="$(get_source_path commands)"
+  target_commands="$(get_target_path codex commands)"
+
+  if [[ ! -d "$source_commands" ]]; then
+    log_warning "Source commands directory not found: $source_commands"
+    return 0
+  fi
+
+  log_info "Syncing commands to Codex (Markdown format)..."
+
+  local processed=0
+  local failed=0
+
+  # Remove excluded config-sync directory
+  local excluded_dir="$target_commands/config-sync"
+  if [[ -d "$excluded_dir" ]]; then
+    if [[ "$DRY_RUN" == "true" ]]; then
+      log_info "Would remove excluded module: $excluded_dir"
+    else
+      log_info "Removing excluded module: $excluded_dir"
+      rm -rf "$excluded_dir"
+    fi
+  fi
+
+  # Use rsync for efficient sync
+  if command -v rsync >/dev/null 2>&1; then
+    log_info "Using rsync for commands sync"
+
+    local rsync_args=("-av" "--delete" "--exclude=config-sync/**" "--include=*.md" "--include=*/" "--exclude=*")
+    if [[ "$DRY_RUN" == "true" ]]; then
+      rsync_args+=("--dry-run")
     fi
 
-    if [[ -z "$COMPONENT_SPEC" ]]; then
-        echo "Error: --component is required" >&2
-        exit 1
+    if rsync "${rsync_args[@]}" "$source_commands/" "$target_commands/"; then
+      local count
+      count=$(find "$source_commands" -name "*.md" -type f | wc -l)
+      processed=$count
+      log_info "✓ Commands synced successfully ($count files)"
+    else
+      log_error "✗ Commands sync failed"
+      failed=1
     fi
+  else
+    log_info "Using file-sync fallback for commands (rsync not available)"
 
-    # Validate action
-    if [[ ! "$ACTION" =~ ^(sync|analyze|verify)$ ]]; then
-        echo "Error: Invalid action '$ACTION'. Must be sync, analyze, or verify" >&2
-        exit 1
-    fi
+    while IFS= read -r -d '' cmd_file; do
+      local rel_path="${cmd_file#$source_commands/}"
+      local target_file="$target_commands/$rel_path"
 
-    # Validate component
-    if ! mapfile -t SELECTED_COMPONENTS < <(parse_component_list "$COMPONENT_SPEC"); then
-        log_error "Invalid component selection: $COMPONENT_SPEC"
-        exit 1
-    fi
-
-    join_by() {
-        local sep="$1"
-        shift
-        local out=""
-        for item in "$@"; do
-            if [[ -z "$out" ]]; then
-                out="$item"
-            else
-                out+="$sep$item"
-            fi
-        done
-        printf '%s' "$out"
-    }
-
-    if [[ ${#SELECTED_COMPONENTS[@]} -eq 0 ]]; then
-        log_error "No components selected for Codex adapter"
-        exit 1
-    fi
-
-    COMPONENT_LABEL="$(join_by ',' "${SELECTED_COMPONENTS[@]}")"
-}
-
-check_codex_installation() {
-    if ! command -v codex &> /dev/null; then
-        log_error "OpenAI Codex CLI is not installed or not in PATH"
-        log_info "Install Codex CLI first: https://github.com/openai/codex-cli"
-        exit 1
-    fi
-
-    if [[ "$VERBOSE" == true ]]; then
-        log_info "Codex CLI found: $(which codex)"
-    fi
-}
-
-setup_codex_directories() {
-    local dirs=("$CODEX_CONFIG_DIR" "$CODEX_COMMANDS_DIR")
-
-    for dir in "${dirs[@]}"; do
-        if [[ ! -d "$dir" ]]; then
-            if [[ "$DRY_RUN" == false ]]; then
-                log_info "Creating directory: $dir"
-                mkdir -p "$dir"
-            else
-                log_info "Would create directory: $dir"
-            fi
+      if [[ "$rel_path" == config-sync/* ]]; then
+        if [[ "$VERBOSE" == "true" ]]; then
+          log_info "Skipping config-sync command: $rel_path"
         fi
-    done
+        continue
+      fi
+
+      mkdir -p "$(dirname "$target_file")"
+
+      if [[ "$DRY_RUN" == "true" ]]; then
+        log_info "Would sync: $cmd_file -> $target_file"
+        ((processed += 1))
+      else
+        if sync_with_verification "$cmd_file" "$target_file"; then
+          if [[ "$VERBOSE" == "true" ]]; then
+            log_info "✓ Synced: $rel_path"
+          fi
+          ((processed += 1))
+        else
+          log_error "✗ Failed to sync: $rel_path"
+          ((failed += 1))
+        fi
+      fi
+    done < <(find "$source_commands" -type f -name "*.md" -print0)
+  fi
+
+  log_info "Commands sync: $processed processed, $failed failed"
+  return $failed
 }
 
 sync_rules() {
-    log_info "Syncing rules to Codex..."
+  local source_rules
+  local target_rules
+  source_rules="$(get_source_path rules)"
+  target_rules="$(get_target_path codex rules)"
 
-    local source_dir="$CLAUDE_CONFIG_DIR/rules"
-    local target_dir="$CODEX_CONFIG_DIR/rules"
-
-    if [[ ! -d "$source_dir" ]]; then
-        log_error "Source rules directory not found: $source_dir"
-        return 1
-    fi
-
-    if [[ "$DRY_RUN" == true ]]; then
-        log_info "Would sync rules from $source_dir to $target_dir"
-        return 0
-    fi
-
-    # Create target directory
-    mkdir -p "$target_dir"
-
-    # Sync and simplify rules for Codex
-    find "$source_dir" -name "*.md" -type f | while read -r rule_file; do
-        local basename=$(basename "$rule_file")
-        local target_file="$target_dir/$basename"
-
-        log_info "Processing rule: $basename"
-
-        # Convert to simple markdown (remove complex frontmatter)
-        sed '/^---$/,/^---$/d' "$rule_file" | \
-        sed 's/^# \([0-9]\{2\}-.*\)/# \1/' | \
-        sed '/^<!--/,/-->/d' > "$target_file"
-
-        log_success "Converted rule: $basename"
-    done
-
-    log_success "Rules synchronization completed"
-}
-
-sync_permissions() {
-    log_info "Codex CLI does not provide a configurable permission model; skipping permissions sync"
+  if [[ ! -d "$source_rules" ]]; then
+    log_warning "Source rules directory not found: $source_rules"
     return 0
-}
+  fi
 
-sync_commands() {
-    log_info "Syncing commands to Codex..."
+  log_info "Syncing rules to Codex..."
 
-    local source_dir="$CLAUDE_CONFIG_DIR/commands"
-    local target_dir="$CODEX_COMMANDS_DIR"
-    local excluded_dir="$target_dir/config-sync"
+  local processed=0
+  local failed=0
 
-    if [[ ! -d "$source_dir" ]]; then
-        log_error "Source commands directory not found: $source_dir"
-        return 1
+  # Use rsync if available
+  if command -v rsync >/dev/null 2>&1; then
+    log_info "Using rsync for rules sync"
+
+    local rsync_args=("-av" "--delete")
+    if [[ "$DRY_RUN" == "true" ]]; then
+      rsync_args+=("--dry-run")
     fi
 
-    if [[ "$DRY_RUN" == true ]]; then
-        log_info "Would sync commands from $source_dir to $target_dir"
-        return 0
+    if rsync "${rsync_args[@]}" "$source_rules/" "$target_rules/"; then
+      local count
+      count=$(find "$source_rules" -name "*.md" -type f | wc -l)
+      processed=$count
+      log_info "✓ Rules synced successfully ($count files)"
+    else
+      log_error "✗ Rules sync failed"
+      failed=1
     fi
+  else
+    log_info "Using file-sync fallback for rules (rsync not available)"
+    while IFS= read -r -d '' rule_file; do
+      local rel_path="${rule_file#$source_rules/}"
+      local target_file="$target_rules/$rel_path"
 
-    # Create target directory
-    mkdir -p "$target_dir"
+      mkdir -p "$(dirname "$target_file")"
 
-    if [[ -d "$excluded_dir" ]]; then
-        if [[ "$DRY_RUN" == true ]]; then
-            log_info "Would remove excluded module: $excluded_dir"
+      if [[ "$DRY_RUN" == "true" ]]; then
+        log_info "Would sync: $rule_file -> $target_file"
+        ((processed += 1))
+      else
+        if sync_with_verification "$rule_file" "$target_file"; then
+          if [[ "$VERBOSE" == "true" ]]; then
+            log_info "✓ Synced: $rel_path"
+          fi
+          ((processed += 1))
         else
-            log_info "Removing excluded module: $excluded_dir"
-            rm -rf "$excluded_dir"
+          log_error "✗ Failed to sync: $rel_path"
+          ((failed += 1))
         fi
-    fi
+      fi
+    done < <(find "$source_rules" -type f -name "*.md" -print0)
+  fi
 
-    # Sync and simplify commands for Codex
-    find "$source_dir" -name "*.md" -type f | while read -r cmd_file; do
-        local rel_path="${cmd_file#$source_dir/}"
-        if [[ "$rel_path" == config-sync/* ]]; then
-            if [[ "$VERBOSE" == true ]]; then
-                log_info "Skipping config-sync command: $rel_path"
-            fi
-            continue
-        fi
-        local basename=$(basename "$cmd_file" .md)
-        local target_file="$target_dir/$basename.md"
-
-        log_info "Processing command: $basename"
-
-        # Convert to simple markdown without frontmatter
-        sed '/^---$/,/^---$/d' "$cmd_file" | \
-        sed 's/^# /## /' | \
-        sed '/^<!--/,/-->/d' > "$target_file"
-
-        log_success "Converted command: $basename"
-    done
-
-    log_success "Commands synchronization completed"
+  log_info "Rules sync: $processed processed, $failed failed"
+  return $failed
 }
 
-sync_settings() {
-    log_info "Codex settings are user-managed; skipping settings sync"
-    return 0
+# Analyze function
+analyze_configuration() {
+  log_info "Analyzing Codex configuration..."
+
+  # Use Python module for target configuration check
+  if python3 -m config_sync.config_validator check-target --target codex; then
+    log_info "✓ Codex configuration analysis completed"
+  else
+    log_warning "Codex configuration has issues"
+  fi
 }
 
-sync_memory() {
-    log_info "Syncing memory files to Codex..."
+# Verify function - Use Python modules instead of inline Python
+verify_configuration() {
+  log_info "Verifying Codex configuration..."
 
-    local memory_file="$CODEX_CONFIG_DIR/CODEX.md"
-    local agents_file="$CODEX_CONFIG_DIR/AGENTS.md"
-    local timestamp
-    timestamp="$(date -u +"%Y-%m-%dT%H:%M:%SZ")"
+  local commands_dir
+  local rules_dir
+  commands_dir="$(get_target_path codex commands)"
+  rules_dir="$(get_target_path codex rules)"
 
-    if [[ "$DRY_RUN" == true ]]; then
-        log_info "Would copy CLAUDE.md to $memory_file and regenerate $agents_file"
-        return 0
-    fi
+  # Use Python validation modules
+  local issues=0
 
-    sync_claude_memory_file "$memory_file" "$FORCE"
+  # Verify commands using Python module
+  if ! python3 -m config_sync.config_validator validate-commands --dir "$commands_dir"; then
+    ((issues += 1))
+  fi
 
-    # Create AGENTS.md - universal agent capabilities with Codex-specific notes
-    log_info "Creating AGENTS.md with Codex-specific integration notes..."
-    cat > "$agents_file" <<EOF
-# CODEX Agent Capabilities
+  # Verify manifest structure
+  if ! python3 -m config_sync.config_validator validate-manifest; then
+    ((issues += 1))
+  fi
 
-## Available Agents
-
-### Code Generation Agent
-- CODEX Integration: OpenAI Codex API for code generation
-- Scope: Multiple programming languages and frameworks
-- Safety: Sandbox environment for secure generation
-- Format Support: Source code, documentation, configuration files
-
-### File Operations Agent
-- CODEX Integration: File read/write within sandbox boundaries
-- Scope: Workspace directory with configurable permissions
-- Safety: Read-only default, workspace-write on request
-- Format Support: Source code, markdown, JSON, TOML, configuration
-
-### Configuration Management Agent
-- CODEX Integration: TOML configuration file management
-- Permission Control: Sandbox level configuration
-- Rule Synchronization: Automatic rule loading and adaptation
-- Environment Setup: Development environment configuration
-
-### API Management Agent
-- CODEX Integration: OpenAI API key and configuration management
-- Rate Limiting: API rate limit awareness and handling
-- Model Selection: Optimal model configuration for tasks
-- Error Handling: API error recovery and retry logic
-
-## CODEX-Specific Features
-
-### Sandbox Security Integration
-- Isolation: Code generation in isolated sandbox environment
-- File System: Limited to workspace with configurable permissions
-- Network Access: Controlled network access for external resources
-- Execution Prevention: No direct code execution capabilities
-
-### API Optimization
-- Model Selection: Automatic model selection based on task type
-- Token Management: Optimal token usage for cost efficiency
-- Rate Limiting: Automatic rate limit handling and queuing
-- Error Recovery: Robust error handling and retry mechanisms
-
-### Code Generation Quality
-- Consistency: Low temperature for consistent, reliable output
-- Best Practices: Generated code follows industry best practices
-- Context Awareness: Maintains context across generation sessions
-- Language Support: Multi-language code generation capabilities
-
-## Usage Guidelines
-
-### Code Generation
-1. Specific Prompts: Use specific, detailed prompts for best results
-2. Context Provision: Provide relevant context for accurate generation
-3. Language Specification: Clearly specify target programming language
-4. Style Guidelines: Provide style preferences for consistent output
-
-### File Operations
-1. Workspace Management: Use file agents for workspace organization
-2. Configuration: Configuration agents handle TOML file management
-3. Backup: Automatic backup before destructive operations
-4. Validation: File syntax and structure validation
-
-### API Management
-1. Key Security: Ensure API key is properly secured
-2. Rate Monitoring: Monitor API usage and rate limits
-3. Cost Optimization: Optimize token usage for cost efficiency
-4. Error Handling: Implement robust error handling procedures
-
-### Development Workflow
-1. Code Generation: Use generation agents for code creation
-2. Review Process: Review generated code for quality and accuracy
-3. Integration: Integrate generated code into existing codebase
-4. Testing: Test generated code for functionality and performance
-
-## CODEX Integration Notes
-
-### API Integration
-- All code generation requests go through OpenAI Codex API
-- API rate limits are automatically respected and managed
-- Error handling includes retry logic for transient failures
-
-### Sandbox Management
-- Code generation occurs in secure sandbox environment
-- File operations are limited to configured workspace boundaries
-- Network access is controlled and monitored
-
-### Quality Assurance
-- Generated code is validated for syntax and structure
-- Best practices are enforced through rule-based checking
-- Context is maintained across multiple generation requests
-
-This agents file is synchronized from Claude Code and adapted for CODEX usage patterns.
-
-Generated: ${timestamp}
-EOF
-
-    log_success "Memory files created for CODEX: CODEX.md, AGENTS.md"
+  if [[ $issues -eq 0 ]]; then
+    log_info "✓ Configuration verification passed"
+  else
+    log_error "✗ Configuration verification failed with $issues issues"
+    return 1
+  fi
 }
 
-analyze_codex() {
-    log_info "Analyzing Codex configuration..."
-
-    echo "=== Codex CLI Analysis ==="
-    echo
-
-    # Check installation
-    if command -v codex &> /dev/null; then
-        echo "SUCCESS: Codex CLI: $(which codex)"
-        codex --version 2>/dev/null || echo "Version information not available"
-    else
-        echo "ERROR: Codex CLI: Not installed"
-    fi
-
-    echo
-    echo "=== Configuration Files ==="
-
-    # Check config directory
-    if [[ -d "$CODEX_CONFIG_DIR" ]]; then
-        echo "SUCCESS: Config directory: $CODEX_CONFIG_DIR"
-
-        # List configuration files
-        for file in "$CODEX_SETTINGS_FILE" "$CODEX_CONFIG_DIR/permissions.toml" "$CODEX_CONFIG_DIR/CODEX.md" "$CODEX_CONFIG_DIR/AGENTS.md"; do
-            if [[ -f "$file" ]]; then
-                echo "SUCCESS: $(basename "$file"): Exists ($(stat -f%z "$file" 2>/dev/null || echo "unknown") bytes)"
-            else
-                echo "ERROR: $(basename "$file"): Missing"
-            fi
-        done
-
-        # Check rules
-        if [[ -d "$CODEX_CONFIG_DIR/rules" ]]; then
-            local rule_count=$(find "$CODEX_CONFIG_DIR/rules" -name "*.md" -type f | wc -l)
-            echo "SUCCESS: Rules: $rule_count files"
-        else
-            echo "ERROR: Rules directory: Missing"
-        fi
-
-        # Check commands
-        if [[ -d "$CODEX_COMMANDS_DIR" ]]; then
-            local cmd_count=$(find "$CODEX_COMMANDS_DIR" -name "*.md" -type f | wc -l)
-            echo "SUCCESS: Commands: $cmd_count files"
-        else
-            echo "ERROR: Commands directory: Missing"
-        fi
-    else
-        echo "ERROR: Config directory: Not found"
-    fi
-
-    echo
-    echo "=== Recommendations ==="
-
-    if [[ ! -f "$CODEX_SETTINGS_FILE" ]]; then
-        echo "→ Run: codex.sh --action=sync --component=settings"
-    fi
-
-    if [[ ! -d "$CODEX_CONFIG_DIR/rules" ]] || [[ -z "$(find "$CODEX_CONFIG_DIR/rules" -name "*.md" -type f)" ]]; then
-        echo "→ Run: codex.sh --action=sync --component=rules"
-    fi
-
-    if command -v codex &> /dev/null && [[ -f "$CODEX_SETTINGS_FILE" ]]; then
-        if ! grep -q "api_key.*[^\"[:space:]]" "$CODEX_SETTINGS_FILE"; then
-            echo "WARNING:  Set your OpenAI API key in $CODEX_SETTINGS_FILE"
-        fi
-    fi
-}
-
-verify_codex() {
-    log_info "Verifying Codex configuration..."
-
-    local errors=0
-    local warnings=0
-
-    echo "=== Codex Configuration Verification ==="
-    echo
-
-    # Verify installation
-    if ! command -v codex &> /dev/null; then
-        echo "ERROR: Codex CLI is not installed"
-        ((errors += 1))
-        return $errors
-    else
-        echo "SUCCESS: Codex CLI is installed"
-    fi
-
-    # Verify config directory (optional for Codex)
-    if [[ ! -d "$CODEX_CONFIG_DIR" ]]; then
-        echo "WARNING:  Config directory missing: $CODEX_CONFIG_DIR"
-        ((warnings += 1))
-    else
-        echo "SUCCESS: Config directory exists"
-    fi
-
-    # Verify settings file (optional for Codex, user-managed)
-    if [[ ! -f "$CODEX_SETTINGS_FILE" ]]; then
-        echo "WARNING:  Settings file missing: $CODEX_SETTINGS_FILE (user-managed, not synced)"
-        ((warnings += 1))
-    else
-        echo "SUCCESS: Settings file exists"
-
-        # Check API key (best-effort only)
-        if ! grep -q "api_key.*[^\"[:space:]]" "$CODEX_SETTINGS_FILE"; then
-            echo "WARNING:  API key not configured"
-            ((warnings += 1))
-        else
-            echo "SUCCESS: API key is configured"
-        fi
-    fi
-
-    # Verify rules directory and files
-    if [[ ! -d "$CODEX_CONFIG_DIR/rules" ]]; then
-        echo "ERROR: Rules directory missing"
-        ((errors += 1))
-    else
-        local rule_count=$(find "$CODEX_CONFIG_DIR/rules" -name "*.md" -type f | wc -l)
-        if [[ $rule_count -eq 0 ]]; then
-            echo "WARNING:  No rules files found"
-            ((warnings += 1))
-        else
-            echo "SUCCESS: Rules directory: $rule_count files"
-        fi
-    fi
-
-    # Verify commands directory
-    if [[ ! -d "$CODEX_COMMANDS_DIR" ]]; then
-        echo "WARNING:  Commands directory missing"
-        ((warnings += 1))
-    else
-        local cmd_count=$(find "$CODEX_COMMANDS_DIR" -name "*.md" -type f | wc -l)
-        echo "SUCCESS: Commands directory: $cmd_count files"
-    fi
-
-    echo
-    if [[ $errors -gt 0 ]]; then
-        echo "ERROR: Verification failed with $errors error(s)"
-        echo "Run: codex.sh --action=sync --component=all"
-    elif [[ $warnings -gt 0 ]]; then
-        echo "WARNING:  Verification completed with $warnings warning(s)"
-    else
-        echo "SUCCESS: Verification completed successfully"
-    fi
-
-    return $errors
-}
-
+# Execute action components
 run_sync_components() {
-    local failures=0
+  local failures=0
 
-    for component in "${SELECTED_COMPONENTS[@]}"; do
-        case "$component" in
-            rules)
-                if ! sync_rules; then
-                    ((failures += 1))
-                fi
-                ;;
-            permissions)
-                if ! sync_permissions; then
-                    ((failures += 1))
-                fi
-                ;;
-            commands)
-                if ! sync_commands; then
-                    ((failures += 1))
-                fi
-                ;;
-            settings)
-                if ! sync_settings; then
-                    ((failures += 1))
-                fi
-                ;;
-            memory)
-                if ! sync_memory; then
-                    ((failures += 1))
-                fi
-                ;;
-            *)
-                log_error "Unexpected component '$component' during sync"
-                return 1
-                ;;
-        esac
-    done
-
-    if (( failures > 0 )); then
+  for component in "${SUPPORTED_COMPONENTS[@]}"; do
+    case "$component" in
+      commands)
+        if ! sync_commands; then
+          ((failures += 1))
+        fi
+        ;;
+      *)
+        log_error "Unexpected component '$component' during sync"
         return 1
-    fi
-
-    return 0
-}
-
-perform_action() {
-    case "$ACTION" in
-        sync)
-            setup_codex_directories
-            if ! run_sync_components; then
-                log_error "Codex sync encountered errors"
-                exit 1
-            fi
-            ;;
-        analyze)
-            analyze_codex
-            ;;
-        verify)
-            verify_codex
-            ;;
-        *)
-            log_error "Unknown action: $ACTION"
-            exit 1
-            ;;
+        ;;
     esac
+  done
+
+  if (( failures > 0 )); then
+    return 1
+  fi
+
+  return 0
 }
 
-main() {
-    parse_arguments "$@"
-
-    # Validate environment
-    validate_target "codex"
-    for component in "${SELECTED_COMPONENTS[@]}"; do
-        validate_component "$component"
-    done
-
-    # Check installation for sync operations
-    if [[ "$ACTION" == "sync" ]]; then
-        check_codex_installation
+# Execute action
+case "$ACTION" in
+  sync)
+    if ! run_sync_components; then
+      log_error "Codex sync encountered errors"
+      exit 1
     fi
+    ;;
+  analyze)
+    analyze_configuration
+    ;;
+  verify)
+    verify_configuration
+    ;;
+esac
 
-    # Setup logging
-    if [[ "$VERBOSE" == true ]]; then
-        set -x
-    fi
-
-    log_info "Starting Codex $ACTION for component(s): $COMPONENT_LABEL"
-
-    # Perform the requested action
-    perform_action
-
-    log_success "Codex $ACTION completed successfully"
-}
-
-# Run main function if script is executed directly
-if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
-    main "$@"
-fi
+log_info "Codex $ACTION for $COMPONENT_LABEL completed"

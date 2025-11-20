@@ -27,6 +27,9 @@ Persist the selected output style for all subsequent responses until the user is
 ### Baseline Skill Initialization
 Execute `skill:environment-validation` before dispatching any agent to enforce the canonical toolchain, prefer fd/rg/ast-grep automatically, and surface tool availability constraints for downstream skills.
 
+### Directory Reference Mapping
+Directory references in this document assume the canonical `~/.claude` layout. When a target CLI (for example OpenCode) consumes these instructions, translate the directories using `commands/config-sync/directory-manifest.json` before execution. As of the 2025-11-19 manifest, OpenCode maps the `commands` component to the `command/` directory and the `agents` component to `agent/`, while other components retain their canonical names. Always check the manifest for the latest per-target mapping when new CLI targets are introduced.
+
 ### Agent Selection Conditions
 Execute routing lazily: agents remain unloaded until their command pattern matches the active request, preventing unnecessary policy loading for unrelated tasks.
 Execute routing by command patterns:

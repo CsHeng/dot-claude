@@ -30,7 +30,7 @@ Execute unified configuration synchronization workflows across multiple CLI targ
   - Supported: `droid`, `qwen`, `codex`, `opencode`, `amp`
   - Default: `all`
 - `--components`: Component types (comma-separated or `all`)
-  - Supported: `rules`, `permissions`, `commands`, `memory`
+  - Supported: `commands`, `rules`, `skills`, `agents`, `output_styles`, `settings`, `permissions`, `memory`
   - Default: `all`
 - `--adapter`: Specific adapter for adapt phase (optional)
 - `--profile`: Execution profile
@@ -58,19 +58,19 @@ Execute unified configuration synchronization workflows across multiple CLI targ
 ### Phase Mapping
 | Action | Phases Executed |
 | --- | --- |
-| sync | collect → analyze → plan → prepare → adapt → execute → verify → cleanup → report |
-| analyze | collect → analyze |
-| verify | execute → verify |
-| adapt | adapt → execute |
-| plan | collect → analyze → plan → prepare |
+| sync | prepare → adapt → execute → [verify] → cleanup → report |
+| analyze | collect → analyze → report |
+| verify | verify → report |
+| adapt | prepare → adapt → report |
+| plan | plan |
 | report | report |
 
 ## DEPTH Phases
 
 ### D – Decomposition
-- Define the nine-phase pipeline: collect, analyze, plan, prepare, adapt, execute, verify, cleanup, report.
+- Define a core execution pipeline: prepare, adapt, execute, verify, cleanup, report.
+- Use collect/analyze/plan only for introspection and preflight planning.
 - Keep each phase logically isolated with clear inputs and outputs.
-- Ensure every action is assigned to a single phase without overlap.
 
 ### E – Explicit Reasoning
 - Analyze current state and target capabilities during collect and analyze.

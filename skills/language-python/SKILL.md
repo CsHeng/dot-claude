@@ -1,14 +1,14 @@
 ---
 name: language-python
 description: Python language patterns and best practices. Use when language python
-  guidance is required.
+  guidance is required or when selecting a primary language for non-trivial automation.
 mode: language-guidelines
 capability-level: 1
 allowed-tools:
 - Bash(uv)
 - Bash(ruff)
 - Bash(pytest)
-source: rules/10-python-guidelines.md
+source: rules/10-python-guidelines.md,15-cross-language-architecture.md,20-tool-standards.md,rules/21-language-tool-selection.md
 ---
 
 # Python Architecture Standards
@@ -377,4 +377,84 @@ def process_large_dataset(dataset: List[dict]) -> Iterator[dict]:
         batch = dataset[i:i + batch_size]
         for item in process_batch(batch):
             yield item
+```
+
+## Cross-Language Integration
+
+### Shell Integration Standards
+REQUIRED: When called from shell scripts, Python modules must provide CLI interfaces
+PROHIBITED: Use `python -c` for any non-trivial Python code in shell scripts
+REQUIRED: Use `python -m module.name` pattern for shell integration
+PREFERRED: Design modules as libraries first, CLI interfaces second
+
+### Module CLI Requirements
+REQUIRED: Implement argparse-based CLI interfaces for shell integration
+REQUIRED: Support `--format json|text` output options
+REQUIRED: Use proper exit codes (0=success, 1=error)
+REQUIRED: Handle errors gracefully and provide meaningful error messages
+PREFERRED: Use JSON for complex data exchange with shell scripts
+
+### Anti-Inline Enforcement
+ALWAYS: Scan for `python -c` patterns and flag as anti-patterns
+ALWAYS: Look for here-doc Python (`python <<'PY'`) as violation
+ALWAYS: Recommend module extraction for any Python code > 3 lines
+REQUIRED: Create dedicated modules instead of inline Python code
+
+### Cross-Language Testing Patterns
+REQUIRED: Test shell→Python integration end-to-end
+PREFERRED: Use subprocess in Python tests to simulate shell calls
+REQUIRED: Validate CLI interfaces with various argument combinations
+REQUIRED: Test error handling across language boundaries
+
+### Module Organization for Shell Integration
+```
+lib/python/
+├── __init__.py
+├── cli/
+│   ├── __init__.py
+│   ├── toml_validator.py      # python -m lib.python.cli.toml_validator
+│   ├── yaml_processor.py      # python -m lib.python.cli.yaml_processor
+│   └── config_parser.py       # python -m lib.python.cli.config_parser
+└── core/
+    ├── __init__.py
+    ├── file_processor.py      # Core logic (importable)
+    ├── data_validator.py      # Core logic (importable)
+    └── format_converter.py    # Core logic (importable)
+```
+
+### Standard CLI Interface Template
+```python
+#!/usr/bin/env python3
+"""CLI module for shell integration."""
+
+import argparse
+import json
+import sys
+from pathlib import Path
+
+def main() -> None:
+    parser = argparse.ArgumentParser(description='Module description')
+    parser.add_argument('input_file', help='Input file path')
+    parser.add_argument('--format', choices=['json', 'text'], default='text')
+    parser.add_argument('--quiet', action='store_true')
+
+    args = parser.parse_args()
+
+    try:
+        result = process_file(args.input_file)
+        if args.format == 'json':
+            print(json.dumps({"success": True, "data": result}, indent=2))
+        elif not args.quiet:
+            print(result)
+        sys.exit(0)
+    except Exception as e:
+        if args.format == 'json':
+            error_data = {"success": False, "error": str(e)}
+            print(json.dumps(error_data, indent=2))
+        else:
+            print(f"Error: {e}", file=sys.stderr)
+        sys.exit(1)
+
+if __name__ == "__main__":
+    main()
 ```

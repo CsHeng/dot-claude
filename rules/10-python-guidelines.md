@@ -2,6 +2,7 @@
 
 ## Scope
 REQUIRED: Apply these standards to all Python development activities, including application code, libraries, scripts, and test files.
+REQUIRED: Treat Python as the default implementation language for non-trivial automation when Python and uv are available.
 
 ## Absolute Prohibitions
 PROHIBITED: Write Python functions without type hints for parameters and return values
@@ -77,11 +78,12 @@ PREFERRED: Implement pre-commit hooks for automated code quality checks
 REQUIRED: Follow semantic versioning for releases
 REQUIRED: Maintain comprehensive logging throughout the application
 REQUIRED: Respect existing project structure and conventions
+PREFERRED: Implement reusable Python CLIs for automation instead of complex Shell scripts when business logic or structured data processing is involved
 
 ## Validation Rules
 ### Environment Management
 REQUIRED: Use UV for virtual environment and dependency management
-REQUIRED: Maintain single .venv directory at project root managed by mise when needed
+REQUIRED: Maintain single .venv directory at project root managed by mise when needed for development environments
 REQUIRED: Use `pyproject.toml` with `[project.dependencies]` and `[tool.uv.dev-dependencies]`
 REQUIRED: Use development tools via `uv tool run` (no local installation required)
 REQUIRED: Run `uv tool run ruff check` and `uv tool run ruff format` for code quality
@@ -106,3 +108,4 @@ REQUIRED: Linting: Ruff for code quality checks
 REQUIRED: Testing: pytest for testing framework
 REQUIRED: Virtual Environment: Single .venv directory at project root
 REQUIRED: Configuration: pyproject.toml for all project configuration
+PREFERRED: Expose automation entrypoints via `python -m module` or uv-managed scripts instead of relying on Shell wrappers

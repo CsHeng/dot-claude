@@ -296,109 +296,11 @@ convert_markdown_to_toml() {
     return 1
   }
 
-  # Create target directory
-  mkdir -p "$(dirname "$toml_file")"
-
-  # Use python3 for proper YAML frontmatter parsing and TOML generation
-  MD_FILE="$md_file" TOML_FILE="$toml_file" TARGET_TOOL="$target_tool" python3 <<'PY'
-import re
-import sys
-import os
-
-md_file = os.environ["MD_FILE"]
-toml_file = os.environ["TOML_FILE"]
-target_tool = os.environ.get("TARGET_TOOL", "qwen")
-
-try:
-    with open(md_file, 'r', encoding='utf-8') as f:
-        content = f.read()
-
-    # Parse YAML frontmatter
-    description = ""
-    frontmatter_match = re.match(r'^---\s*\n(.*?)\n---\s*\n(.*)$', content, re.DOTALL)
-
-    is_background = False
-
-    if frontmatter_match:
-        frontmatter, command_content = frontmatter_match.groups()
-        # Extract description from frontmatter
-        desc_match = re.search(r'description:\s*["\']?([^"\'\n]+)["\']?', frontmatter)
-        if desc_match:
-            description = desc_match.group(1).strip()
-        background_match = re.search(r'is_background:\s*([^\n]+)', frontmatter)
-        if background_match:
-            value = background_match.group(1).strip().strip('"\'').lower()
-            if value in {"true", "yes", "1"}:
-                is_background = True
-            elif value in {"false", "no", "0"}:
-                is_background = False
-        body_content = command_content.strip()
-    else:
-        # No frontmatter found, treat entire file as content
-        body_content = content.strip()
-
-    # Generate description if not found
-    if not description:
-        base_name = os.path.basename(md_file)
-        name_without_ext = os.path.splitext(base_name)[0]
-        description = f"Converted from {base_name} for {target_tool}"
-
-    # Convert content for target tool
-    if target_tool == "qwen":
-        body_content = re.sub(r'\$ARGUMENTS', '{{args}}', body_content)
-        body_content = re.sub(r'\$[0-9]+', '{{args}}', body_content)
-        body_content = re.sub(r'@CLAUDE\.md', '@QWEN.md', body_content)
-
-    description_escaped = description.replace('"', r'\"')
-
-    use_literal_prompt = "'''" not in body_content
-    if use_literal_prompt:
-        prompt_lines = [
-            "prompt = '''",
-            body_content,
-            "'''",
-            ""
-        ]
-    else:
-        body_content_escaped = (
-            body_content
-            .replace('\\', r'\\')
-            .replace('"""', r'\"\"\"')
-        )
-        prompt_lines = [
-            f'prompt = """{body_content_escaped}"""',
-            ""
-        ]
-
-    toml_lines = [
-        f"# Generated from {md_file} by Claude Code config-sync",
-        "",
-        f'description = "{description_escaped}"'
-    ]
-
-    if target_tool == "qwen":
-        toml_lines.append(f"is_background = {'true' if is_background else 'false'}")
-
-    toml_lines.append("")
-    toml_lines.extend(prompt_lines)
-
-    toml_content = "\n".join(toml_lines)
-
-    # Write TOML file
-    with open(toml_file, 'w', encoding='utf-8') as f:
-        f.write(toml_content)
-
-    print(f"[SUCCESS] Converted {md_file} to {toml_file}", file=sys.stderr)
-
-except Exception as e:
-    print(f"[ERROR] Failed to convert {md_file}: {e}", file=sys.stderr)
-    sys.exit(1)
-PY
-
-  [[ $? -eq 0 ]] || {
+  # Use Python module for YAML frontmatter parsing and TOML generation
+  if ! python3 -m config_sync.markdown_to_toml convert "$md_file" "$toml_file" --target-tool "$target_tool" 1>/dev/null; then
     echo "[ERROR] TOML conversion failed for $md_file" >&2
     return 1
-  }
+  fi
 }
 
 # Sync config-sync commands to target tool with TOML conversion
