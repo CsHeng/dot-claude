@@ -12,7 +12,6 @@ default-skills:
   - skill:environment-validation
 optional-skills:
   - skill:project-config-sync-overview
-  - skill:project-doc-gen-overview
 supported-commands:
   - /agent-ops:health-report
 inputs:
