@@ -11,7 +11,6 @@ The commands directory contains slash commands for various workflows including c
 │   ├── adapters/                  # Target-specific shell adapters (*.sh)
 │   ├── lib/                       # Shared guidance and phase runners
 │   └── scripts/                   # Bash helpers (backup cleanup, diagnostics)
-├── doc-gen/                        # Documentation generation commands
 │   ├── core/
 │   │   └── bootstrap.md           # Main documentation orchestrator
 │   └── adapters/                  # Project-specific adapters
@@ -42,12 +41,6 @@ The commands directory contains slash commands for various workflows including c
 
 | Command | Purpose | Project Types |
 |---------|---------|---------------|
-| `/doc-gen:core:bootstrap` | Documentation workflow orchestrator | Android (app/sdk), Web (admin/user), Backend (Go/PHP) |
-| `/doc-gen:adapters:backend-go` | Go backend documentation | Go projects |
-| `/doc-gen:adapters:android-sdk` | Android SDK documentation | Android SDK projects |
-| `/doc-gen:adapters:android-app` | Android app documentation | Android applications |
-| `/doc-gen:adapters:web-user` | Web frontend documentation | User-facing web apps |
-| `/doc-gen:adapters:web-admin` | Web admin documentation | Admin web interfaces |
 
 ### Review and Utility Commands
 

@@ -16,7 +16,6 @@ The taxonomy is derived from and aligned with external Claude Code specification
 ## Scope
 - Entry file: `CLAUDE.md`
 - Directories: `rules/`, `skills/`, `agents/`, `commands/`, `output-styles/` (files under `docs/` remain human-facing unless they are explicitly surfaced via rules or skills)
-- Supported commands: config-sync, llm-governance:optimize-prompts, doc-gen, draft-commit-message, review-shell-syntax, etc.
 - Execution environments: Codex CLI, Claude Code, Qwen CLI, IDE/CI sync destinations
 
 ## Goals
@@ -105,7 +104,6 @@ Agents and skills MAY additionally declare optional capability-related fields (f
 5. Review/config-sync commands read the same mapping to keep tooling consistent.
 
 ### Selection Mechanisms
-- Command prefixes (`/config-sync/*`, `/doc-gen:*`, etc.) map to agents.
 - File types (e.g., `**/*.py`) trigger language skills.
 - Metadata (security, testing, LLM-facing) activates corresponding skills.
 - If multiple agents qualify, Memory selects the higher-priority one or prompts the user.
@@ -183,7 +181,6 @@ Phase 0-5 timeline (summarized for agents/skills):
 2. Phase 1: `skills/` directory and core skills.
 3. Phase 2: config-sync and llm-governance agents.
 4. Phase 3: Updated review/config-sync tooling.
-5. Phase 4: Agents such as doc-gen and workflow-helper.
 6. Phase 5: Advanced skills, rollback validation, release notes.
 
 ## Acceptance Criteria
@@ -191,7 +188,6 @@ Phase 0-5 timeline (summarized for agents/skills):
 - At least four skills (toolchain, workflow, llm-governance, language-python) implemented with the template.
 - At least two agents (config-sync, llm-governance) defined and passing llm-governance:optimize-prompts.
 - Capability axis fields (`capability-level`, `mode`, `loop-style`) present for all core agents and key skills, consistent with `rules/96-capability-levels.md`.
-- Style labels (`style`) present for core agents and commands in major domains (config-sync, llm-governance, doc-gen, workflow-helper) using the controlled vocabulary in `rules/99-llm-prompt-writing-rules.md`.
 - llm-governance:optimize-prompts, config-sync, agent-matrix, and skill-matrix scripts updated to reflect capability and style metadata.
 - Version matrix, changelog, and regression logs available.
 

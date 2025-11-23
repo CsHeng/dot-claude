@@ -16,17 +16,16 @@ This system enables centralized management of Claude Code configurations with su
 
 ### 🤖 Agent System
 Specialized agents for different workflows:
-- `config-sync`: Configuration synchronization and management
-- `llm-governance`: LLM prompt optimization and governance
-- `doc-gen`: Documentation generation across multiple project types
-- `workflow-helper`: Draft commit messages and shell script review
-- `code-architecture-reviewer`: Architecture review and compliance
-- `code-refactor-master`: Code refactoring and restructuring
-- `plan-reviewer`: Development plan review and validation
-- `ts-code-error-resolver`: TypeScript error resolution
-- `web-research-specialist`: Research and information gathering
-- `refactor-planner`: Complex refactoring planning
-- `agent-ops`: Agent system health monitoring
+- `agent:config-sync`: Configuration synchronization and management
+- `agent:llm-governance`: LLM prompt optimization and governance
+- `agent:workflow-helper`: Draft commit messages and shell script review
+- `agent:code-architecture-reviewer`: Architecture review and compliance
+- `agent:code-refactor-master`: Code refactoring and restructuring
+- `agent:plan-reviewer`: Development plan review and validation
+- `agent:ts-code-error-resolver`: TypeScript error resolution
+- `agent:web-research-specialist`: Research and information gathering
+- `agent:refactor-planner`: Complex refactoring planning
+- `agent:agent-ops`: Agent system health monitoring
 
 ### 🛠️ Skills Framework
 Domain-specific skills providing focused expertise:
@@ -52,7 +51,6 @@ Comprehensive rule set covering:
 ├── agents/                    # Agent definitions and configurations
 │   ├── config-sync/          # Configuration sync agent
 │   ├── llm-governance/       # LLM governance agent
-│   ├── doc-gen/              # Documentation generation agent
 │   └── ...                   # Other specialized agents
 ├── commands/                 # Slash command definitions
 │   ├── config-sync/          # Config sync commands and utilities
@@ -111,7 +109,6 @@ Comprehensive rule set covering:
 
 4. **Generate documentation**:
    ```bash
-   /doc-gen:core:bootstrap --mode=bootstrap --scope=full --project-type=web-admin
    ```
 
 5. **Review shell script**:
