@@ -1,6 +1,6 @@
-# Claude Global Command Permissions Configuration
+# Claude Command Permissions Configuration
 
-Command permissions configuration documentation in `~/.claude/settings.json`. Agents should rely on `AGENTS.md` for operational guidance; this reference is for humans configuring or auditing permission layers.
+Comprehensive command permissions configuration for Claude Code settings. This document is the authoritative source for all permission-related configuration. For general settings information, see [Settings Configuration](settings.md).
 
 ## 📋 Command Categories
 
@@ -133,46 +133,37 @@ Deny (Highest Priority) > Ask > Allow (Lowest Priority)
 3. **Check allow list** - If matched, allow execution
 4. **Other cases** - Default to deny
 
-### Configuration File Merging Logic
+### Permission Merging Rules
 
-#### Layered Permission System
-1. **Enterprise policies** - Organizational security policies (highest precedence)
-2. **CLI arguments** - Runtime command-line overrides
-3. **Project settings** (`.claude/settings.json`) - Project-specific permission layer
-4. **User settings** (`~/.claude/settings.json`) - Base permission layer
-5. **Deny rules** - Highest priority within each settings layer, overrides allow rules
-6. **Ask rules** - Medium priority, requires user confirmation
+#### Permission List Integration
+- **Allow lists**: Merged together, with higher precedence taking priority in conflicts
+- **Deny rules**: Absolute priority within each settings layer
+- **Ask rules**: Medium priority, requires user confirmation
+- **Final effective permissions**: Respect the complete settings hierarchy
 
-#### Permission Merging Method
-- **Project allow list** is **merged** with User allow list, taking precedence where conflicts exist
-- **deny rules** have absolute priority within each settings layer
-- Final effective permissions respect the settings hierarchy
-- Project settings automatically override user settings
+#### Permission Configuration Examples
 
-### Practical Examples
-
-#### Example 1: Project vs User Settings
+##### Example 1: Basic Permission Structure
 ```jsonc
-// User settings (~/.claude/settings.json) - Personal preferences
+// User settings (~/.claude/settings.json) - Base permissions
 {
   "permissions": {
     "allow": [
       "Bash(ls:*)",
       "Bash(cat:*)",
-      "Bash(personal-tool:*)"  // User's personal development tool
+      "Bash(git status:*)"
     ],
     "ask": ["Bash(npm install:*)"]
   }
 }
 
-// Project settings (.claude/settings.json) - Team configuration
+// Project settings (.claude/settings.json) - Additional permissions
 {
   "permissions": {
-    "defaultMode": "plan",
     "allow": [
       "Bash(rg:*)",
       "Bash(fd:*)",
-      "Bash(project-specific-deploy:*)"  // Project deployment tool
+      "Bash(project-tool:*)"
     ],
     "ask": [
       "Bash(terraform apply:*)"
@@ -181,149 +172,35 @@ Deny (Highest Priority) > Ask > Allow (Lowest Priority)
 }
 ```
 
-**Result**:
-- User can use `personal-tool` but project settings take precedence
-- Team gets `project-specific-deploy` permission automatically
-- Both user and project ask permissions are respected
-- Project's `defaultMode: "plan"` overrides user preferences
+**Result**: All allow permissions merged, both ask permissions respected
 
-#### Example 2: Multi-Project Team Setup
+##### Example 2: Security-First Configuration
 ```jsonc
-// User settings - Base configuration for all projects
+// High-security project settings
 {
   "permissions": {
-    "allow": ["Bash(git status:*)", "Bash(ls:*)"],
-    "ask": ["Bash(npm install:*)"]
-  }
-}
-
-// Project A - Frontend development (.claude/settings.json)
-{
-  "permissions": {
-    "allow": [
-      "Bash(npm run dev:*)",
-      "Bash(npm run build:*)",
-      "Bash(yarn:*)"
-    ]
-  }
-}
-
-// Project B - Infrastructure (.claude/settings.json)
-{
-  "permissions": {
-    "allow": [
-      "Bash(terraform plan:*)",
-      "Bash(terraform validate:*)",
-      "Bash(kubectl get:*)"
-    ],
-    "ask": [
-      "Bash(terraform apply:*)",
-      "Bash(kubectl apply:*)"
-    ]
-  }
-}
-```
-
-**Result**:
-- **Project A**: Frontend team gets Node.js tools, user's base permissions
-- **Project B**: DevOps team gets infrastructure tools with safety confirmations
-- **Consistency**: User always has basic git and file operations across projects
-
-#### Example 3: Security-First Project Configuration
-```jsonc
-// Project settings - High security financial application (.claude/settings.json)
-{
-  "permissions": {
-    "defaultMode": "plan",
     "allow": [
       "Bash(git status:*)",
       "Bash(git log:*)",
       "Bash(cat:*)",
-      "Bash(rg:*)",
-      "Bash(fd:*)"
+      "Bash(rg:*)"
     ],
     "deny": [
       "Bash(rm:*)",
       "Bash(curl:*-X POST:*)",
-      "Bash(curl:*-X PUT:*)",
-      "Bash(kubectl apply:*)",
+      "Bash(kubectl apply:*)"
+    ],
+    "ask": [
       "Bash(terraform apply:*)"
     ]
   }
 }
 ```
 
-**Result**: Even if user has broad permissions locally, project security policy takes precedence and blocks destructive operations regardless of user settings.
+**Result**: Deny rules override allow rules, providing security by default
 
-## 🎯 Settings Precedence Hierarchy
+## 🔗 Related Documentation
 
-Claude Code settings follow this precedence hierarchy (highest to lowest):
-
-1. **Enterprise policies** - Organizational security policies
-2. **Command line arguments** - Runtime CLI overrides
-3. **Project settings** (`.claude/settings.json`) - Project-specific configuration
-4. **User settings** (`~/.claude/settings.json`) - Personal preferences
-
-### Project vs User Settings
-
-#### Project Settings (`.claude/settings.json`)
-- **Purpose**: Team-wide permissions and project-specific configurations
-- **Precedence**: Higher than user settings, overrides personal preferences
-- **Management**: Committed to git for team collaboration
-- **Benefits**:
-  - Consistent security posture across team members
-  - Project-tailored command access
-  - Version control for permission changes
-  - Onboarding automation for new team members
-
-#### User Settings (`~/.claude/settings.json`)
-- **Purpose**: Personal preferences and individual overrides
-- **Precedence**: Lower priority, overridden by project settings
-- **Management**: Local configuration, not committed to git
-- **Use cases**: Personal development tools, individual workflow preferences
-
-## 🤖 LLM-Driven Configuration Generation
-
-### Generate Settings from Documentation
-
-Instead of copying configuration files directly, use LLMs to generate tailored settings based on project requirements:
-
-#### Example Generation Prompt
-```
-Generate Claude Code settings.json based on docs/permissions.md with:
-1. Project-specific permissions for a web development team
-2. Focus on Node.js, React, and AWS deployments
-3. Security-conscious approach (deny by default)
-4. Use correct Bash(command:*) syntax format
-5. Separate project settings (commit to git) from personal settings
-```
-
-#### Decision Trees for Permission Selection
-
-**Consider these questions when generating settings:**
-
-1. **Team size and expertise**: More experienced teams can have broader permissions
-2. **Project criticality**: Production systems need stricter controls
-3. **Development environment**: Local vs remote development needs
-4. **Compliance requirements**: Industry regulations may dictate security levels
-5. **Technology stack**: Different tools require different permissions
-
-### Project Override
-
-Projects automatically override user settings through the precedence hierarchy. Simply create `.claude/settings.json` in your project root and commit it to git.
-
-### Adjusting Permissions
-
-**Project Settings** (`.claude/settings.json`):
-- Edit to define team-wide permissions
-- Commit to git for team synchronization
-- Override user settings automatically
-
-**User Settings** (`~/.claude/settings.json`):
-- Edit for personal preferences
-- Keep local, don't commit to git
-- Override only when project settings allow
-
-### Configuration File Locations
-- **Project**: `{project_root}/.claude/settings.json` (committed to git, higher precedence)
-- **User**: `~/.claude/settings.json` (personal config, lower precedence)
+- [Settings Configuration](settings.md) - General settings hierarchy and file locations
+- [Development Guidelines](../rules/01-development-standards.md) - Development standards
+- [Security Guidelines](../rules/03-security-standards.md) - Security best practices
