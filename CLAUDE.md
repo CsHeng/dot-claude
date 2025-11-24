@@ -28,31 +28,28 @@ Persist the selected output style for all subsequent responses until the user is
 Execute `skill:environment-validation` before dispatching any agent to enforce the canonical toolchain, prefer fd/rg/ast-grep automatically, and surface tool availability constraints for downstream skills.
 
 ### Directory Reference Mapping
-Directory references in this document assume the canonical `~/.claude` layout. When a target CLI (for example OpenCode) consumes these instructions, translate the directories using `commands/config-sync/directory-manifest.json` before execution. As of the 2025-11-19 manifest, OpenCode maps the `commands` component to the `command/` directory and the `agents` component to `agent/`, while other components retain their canonical names. Always check the manifest for the latest per-target mapping when new CLI targets are introduced.
+Directory references in this document assume the canonical `~/.claude` layout. When a target CLI (for example OpenCode) consumes these instructions, translate the directories using `.claude/commands/config-sync/directory-manifest.json` before execution. As of the 2025-11-19 manifest, OpenCode maps the `commands` component to the `command/` directory and the `agents` component to `agent/`, while other components retain their canonical names. Always check the manifest for the latest per-target mapping when new CLI targets are introduced.
 
 ### Agent Selection Conditions
 Execute routing lazily: agents remain unloaded until their command pattern matches the active request, preventing unnecessary policy loading for unrelated tasks.
 Execute routing by command patterns:
-1. Config-sync routing: `/config-sync/*` → `agent:config-sync`
-2. Workflow routing: `/draft-commit-message`, `/review-shell-syntax` → `agent:workflow-helper`
-4. LLM governance routing: `/llm-governance/optimize-prompts` → `agent:llm-governance`
+1. Workflow routing: `/draft-commit-message`, `/review-shell-syntax` → `agent:workflow-helper`
+2. LLM governance routing: `/llm-governance/optimize-prompts` → `agent:llm-governance`
    Note: Official spec-based optimization (skills→SIMPLE, commands→DEPTH, agents→COMPLEX, rules→SIMPLE)
-5. Code architecture routing: `/review-code-architecture` → `agent:code-architecture-reviewer`
-6. Refactoring routing: `/refactor-*`, `/review-refactor` → `agent:code-refactor-master`
-7. Planning routing: `/review-plan`, `/plan-*` → `agent:plan-reviewer`
-8. Error resolution routing: `/fix-*`, `/resolve-errors` → `agent:ts-code-error-resolver`
-9. Research routing: `/research-*`, `/web-search` → `agent:web-research-specialist`
-10. AgentOps routing: `/agent-ops:health-report` → `agent:agent-ops`
-11. Content-based routing: Files with specific extensions → trigger corresponding language skills
-12. Metadata routing: LLM-prompt editing → `agent:llm-governance`
+3. Code architecture routing: `/review-code-architecture` → `agent:code-architecture-reviewer`
+4. Refactoring routing: `/refactor-*`, `/review-refactor` → `agent:code-refactor-master`
+5. Planning routing: `/review-plan`, `/plan-*` → `agent:plan-reviewer`
+6. Error resolution routing: `/fix-*`, `/resolve-errors` → `agent:ts-code-error-resolver`
+7. Research routing: `/research-*`, `/web-search` → `agent:web-research-specialist`
+8. Content-based routing: Files with specific extensions → trigger corresponding language skills
+9. Metadata routing: LLM-prompt editing → `agent:llm-governance`
 
 ## Active Agents
 
 Execute agent mappings on demand; each row describes what loads once the matching command fires. `skill:environment-validation` is provisioned first so tool-choice hints are available before the agent-specific stack initializes.
 
 | Agent ID | Command Patterns | Default Skills | Optional Skills |
-| --- | --- | --- | --- |
-| `agent:config-sync` | `/config-sync/*` | `skill:environment-validation`, `skill:workflow-discipline`, `skill:security-logging`, `skill:automation-language-selection`, `skill:config-sync-cli-workflow`, `skill:config-sync-project-rules-sync`, `skill:config-sync-target-adaptation` | `skill:search-and-refactor-strategy`, `skill:project-config-sync-overview`, language skills based on target project |
+| --- | --- | --- | --- | --- |
 | `agent:llm-governance` | `/llm-governance/optimize-prompts` | `skill:llm-governance`, `skill:workflow-discipline`, `skill:environment-validation` | None |
 | `agent:workflow-helper` | `/draft-commit-message`, `/review-shell-syntax` | `skill:workflow-discipline`, `skill:automation-language-selection` | `skill:language-shell`, `skill:language-python`, `skill:language-go`, `skill:environment-validation` |
 | `agent:code-architecture-reviewer` | `/review-code-architecture` | `skill:architecture-patterns`, `skill:development-standards`, `skill:security-standards` | Language-specific skills based on codebase |
@@ -82,14 +79,6 @@ Execute optional skill loading:
 - `skill:architecture-patterns`: Optional for architectural guidance
 
 ## Agent-Skill Mappings
-
-### `agent:config-sync`
-Execute skill loading:
-- Load: `skill:environment-validation`, `skill:workflow-discipline`, `skill:security-logging`, `skill:automation-language-selection`, `skill:config-sync-cli-workflow`, `skill:config-sync-project-rules-sync`, `skill:config-sync-target-adaptation`
-- Optional load: `skill:search-and-refactor-strategy`, `skill:project-config-sync-overview`
-- Dependency: `skill:environment-validation` must be loaded before `skill:search-and-refactor-strategy`
-- Conditional load: `skill:language-*` based on target project
-- Escalation: Fallback to `agent:llm-governance` for permission violations
 
 ### `agent:llm-governance`
 Execute skill loading:
