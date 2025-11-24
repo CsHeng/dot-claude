@@ -23,8 +23,7 @@ These commands are considered safe and do not modify system state or cause destr
 
 #### Git Read-only Operations
 - `git status`, `git log`, `git diff`, `git show`
-- `git branch`, `git tag`, `git remote`, `git config`
-- `git help`, `git --version`
+- `git branch`, `git tag`, `git help`
 
 #### Basic Network Tools
 - `ping -c:*`, `ping -w:*` - Limited count ping
@@ -40,37 +39,42 @@ These commands are considered safe and do not modify system state or cause destr
 - `docker ps:*`, `docker network ls:*`, `docker volume ls:*` - Docker information viewing
 - `docker system df:*`, `docker info:*`, `docker version:*` - Docker system information
 - `kubectl config view:*`, `kubectl version:*`, `kubectl cluster-info:*` - Kubernetes configuration
-- `pip list/show/check`, `pip --:*` - Python tools (pip with -- flags)
-- `npm list/view`, `npm --:*` - Node.js tools (npm with -- flags)
-- `yarn list/info`, `yarn --:*` - Yarn tools (yarn with -- flags)
-- `go version:*`, `go mod verify:*`, `go mod tidy:*`, `go mod why:*` - Go tools (excluding downloads)
-- `rustc --:*`, `cargo --:*` - Rust tools (with -- flags)
+- `pip list`, `pip show`, `pip check`, `pip --:*` - Python package tools
+- `npm list`, `npm view`, `npm --:*` - Node.js package tools
+- `yarn list`, `yarn info`, `yarn --:*` - Yarn package tools
+- `go version:*`, `go mod verify:*`, `go mod tidy:*`, `go mod why:*` - Go tools
+- `rustc --:*`, `cargo --:*`, `cargo check:*`, `cargo tree:*` - Rust tools
+- `python --version`, `python3 --version`, `node --version` - Version checks
 - `plantuml:*` - Diagram generation tool
+- `parallel --help:*` - GNU parallel help
 
 #### Data Processing
 - `sort`, `uniq`, `cut`, `awk`, `sed -n:*`, `tr` - Text processing
 - `base64`, `xxd`, `hexdump`, `od` - Encoding and hex viewing
-- `diff:*`, `cmp`, `comm` - File comparison
+- `diff:*`, `cmp`, `comm`, `gdiff:*` - File comparison
 - `sha1sum`, `sha256sum`, `md5sum`, `cksum` - Checksum calculation
 - `xargs:*` - Execute commands from standard input
 
 #### Safe Creation Operations
-- `mkdir:*` - Create directories
+- `mkdir:*`, `mktemp:*` - Create directories and temporary files
 - `ln -s:*` - Create symbolic links
 - `tree:*` - Directory tree viewing
 
 #### Compression and Archives
 - `tar:*` - Archive operations
-- `unzip -l:*`, `unzip --:*`, `zip --:*` - Zip operations (viewing, -- flags)
+- `unzip -l:*`, `unzip --:*`, `zip --:*` - Zip operations
 
 #### Testing and Conditions
 - `test:*`, `[*`, `[[*` - Conditional testing
 - `history:*`, `fc -l:*` - History viewing
+- `shellcheck:*` - Shell script static analysis
+- `bash -n:*` - Bash syntax checking (no execution)
 
-#### Specific Tools
-- `Bash(rg:*)`, `Bash(fd:*)`, `Bash(ast-grep:*)` - Repository-aware search and refactors
-- `Bash(gdiff:*)` - GNU diff
-- `Bash(mkdir:*)`, `Bash(chmod:*)` - Directory creation and permission setting
+#### Search and Refactoring Tools
+- `rg:*`, `fd:*`, `ast-grep:*` - Repository-aware search and refactors
+
+#### File Reading and Writing
+- `Read(/tmp/**)`, `Write(/tmp/**)` - Read/write temporary files
 
 ### ❌ Explicitly Forbidden Commands (deny)
 
@@ -80,6 +84,8 @@ These commands are destructive or potentially dangerous, completely forbidden fr
 - `mkfs :*`, `format :*` - File system formatting
 - `fdisk :*`, `sfdisk :*`, `parted :*` - Disk partitioning
 - `shred :*`, `wipe :*` - Secure deletion tools
+- `Read(**/.cursor/**)`, `Read(**/.kiro/**)`, `Read(**/.github/instructions/**)` - Restricted directory access
+- `Glob(**/.cursor/**)`, `Glob(**/.kiro/**)`, `Glob(**/.github/instructions/**)` - Restricted directory globbing
 
 ### ❓ Commands Requiring Confirmation (ask)
 
@@ -87,59 +93,21 @@ These commands may modify system state, take a long time to execute, or require 
 
 #### Infrastructure as Code (Long-running operations)
 - `terraform plan:*` - Can take minutes to complete
-- `terraform apply:*`, `terraform destroy:*`, `terraform import:*`
-- `terraform taint:*`, `terraform state rm:*`
 
 #### Container Management (Potentially long operations)
 - `docker images:*` - May hang on daemon issues or large registries
-- `docker run:*`, `docker rmi:*`, `docker rm:*`
-- `docker stop:*`, `docker kill:*`, `docker build:*`
-- `docker compose up:*`, `docker compose down:*`, `docker compose restart:*`
 
 #### Kubernetes (Cluster-dependent operations)
 - `kubectl get:*` - Depends on cluster connectivity, can be slow
 - `kubectl describe:*` - Can be very verbose and slow
-- `kubectl apply:*`, `kubectl delete:*`, `kubectl create:*`
-- `kubectl edit:*`, `kubectl exec:*`, `kubectl logs:*`
 
 #### Network Operations (May hang indefinitely)
 - `curl --:*` - Network requests, may timeout or hang
 - `wget --:*` - Network downloads, may timeout or hang
 - `ssh --:*`, `scp --:*` - Remote operations, may hang
-- `rsync:*` - Remote file synchronization
 
-#### Package Management (Network-dependent)
-- `mise install:*`, `mise uninstall:*`, `mise use:*` - May hang during installation
+#### Module Management (Network-dependent)
 - `go mod download:*` - Network-dependent module downloads
-- `pip install:*`, `pip uninstall:*`, `python -m pip install:*`
-- `npm install:*`, `npm uninstall:*`, `npm run:*`
-- `yarn add:*`, `yarn remove:*`, `yarn install:*`, `yarn run:*`
-- `go get:*`, `cargo install:*`, `cargo uninstall:*`, `cargo build:*`
-
-#### Network Requests (HTTP methods)
-- `curl -X POST:*`, `curl -X PUT:*`, `curl -X DELETE:*`
-- `curl -d:*`, `curl --data:*`
-- `wget --post-data:*`, `wget --method:*`
-
-#### File System Operations
-- `Bash(java:*)` - Java program execution
-- `Bash(rm:*)`, `Bash(rmdir:*)` - Delete files and directories
-- `Bash(mv:*)`, `Bash(cp:*)` - Move and copy files
-- `Bash(chown:*)`, `Bash(chmod -R :*)` - Modify file permissions (recursive)
-
-#### Git Write Operations
-- `git add:*`, `git commit:*`, `git push:*`, `git pull:*`
-- `git merge:*`, `git rebase:*`, `git reset:*`
-- `git checkout:*`, `git switch:*`, `git restore:*`
-- `git stash:*`, `git clean:*`
-
-#### System Scripting and Tools
-- `osascript -e:*` - AppleScript execution (single line)
-- `codex:*` - Code generation tool
-- `claude --help`, `qwen --help`, `gemini --help` - AI tool help commands
-
-#### Permission Modifications
-- `chmod +x :*`, `chmod 755 :*`, `chmod 644 :*`
 
 ## 🔧 Permission System Details
 
@@ -212,6 +180,7 @@ Deny (Highest Priority) > Ask > Allow (Lowest Priority)
   }
 }
 ```
+
 **Result**:
 - User can use `personal-tool` but project settings take precedence
 - Team gets `project-specific-deploy` permission automatically
@@ -254,6 +223,7 @@ Deny (Highest Priority) > Ask > Allow (Lowest Priority)
   }
 }
 ```
+
 **Result**:
 - **Project A**: Frontend team gets Node.js tools, user's base permissions
 - **Project B**: DevOps team gets infrastructure tools with safety confirmations
@@ -282,6 +252,7 @@ Deny (Highest Priority) > Ask > Allow (Lowest Priority)
   }
 }
 ```
+
 **Result**: Even if user has broad permissions locally, project security policy takes precedence and blocks destructive operations regardless of user settings.
 
 ## 🎯 Settings Precedence Hierarchy

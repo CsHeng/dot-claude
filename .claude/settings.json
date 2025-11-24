@@ -119,6 +119,8 @@
       "Bash([[ :*)",
       "Bash(history:*)",
       "Bash(fc -l:*)",
+      "Bash(shellcheck:*)",
+      "Bash(bash -n:*)",
       "Bash(plantuml:*)"
     ],
     "deny": [
