@@ -60,11 +60,14 @@ Claude Code uses a hierarchical settings system with multiple configuration file
 
 ### Settings Merging Logic
 
+Settings at different levels merge together, with higher precedence overriding lower values where conflicts exist.
+
 #### Permission Merging
 - **Allow lists**: Merged together, with higher precedence taking priority in conflicts
 - **Deny rules**: Absolute priority within each settings layer
 - **Ask rules**: Medium priority, requires user confirmation
 - **Final effective permissions**: Respect the complete settings hierarchy
+- For detailed permission configuration, see [Permissions Configuration](permissions.md)
 
 #### Environment Variable Merging
 - Environment variables are merged with higher precedence overriding lower values
@@ -159,7 +162,13 @@ Claude Code uses a hierarchical settings system with multiple configuration file
 ## 📋 Common Configuration Sections
 
 ### Permissions Configuration
-See [docs/permissions.md](permissions.md) for comprehensive permission lists and examples.
+
+For comprehensive permission configuration, including command categories, allow/deny/ask lists, and permission rules, see the **[Permissions Configuration](permissions.md)** document.
+
+Permissions are integrated into the settings hierarchy as follows:
+- **Project settings** (`.claude/settings.json`) define team-wide security policies
+- **User settings** (`~/.claude/settings.json`) provide personal permission preferences
+- **Project permissions override** user permissions through the precedence hierarchy
 
 ### Environment Variables
 ```json
