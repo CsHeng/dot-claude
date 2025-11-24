@@ -7,7 +7,7 @@ CLI_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 readonly CLI_ROOT
 SETTINGS_PATH="$CLI_ROOT/settings.json"
 readonly SETTINGS_PATH
-STATE_ROOT="${HOME}/.claude/backup"
+STATE_ROOT="${HOME}/.claude/.claude/backup"
 mkdir -p "$STATE_ROOT"
 
 source "$CLI_ROOT/lib/common.sh"

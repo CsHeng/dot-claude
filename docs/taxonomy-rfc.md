@@ -6,7 +6,11 @@ The current CLI relies on `CLAUDE.md` and numerous `rules/*.md` files to describ
 - `rules/*` are hard to reuse and often conflict or overlap.
 - Commands such as review or config-sync cannot validate future skills or agents.
 
-This RFC defines a unified taxonomy (Memory → Output style → Agent → Skill → Command) to guide the directory refactor and supporting tooling.
+This RFC defines a unified taxonomy that operates across two distinct architectural levels:
+- **User-level** (`~/.claude/`): Global configuration, governance, and personal automation tools
+- **Project-level** (`.claude/` within each project): Project-specific management, config-sync, and agent operations
+
+The separation ensures that personal Claude configuration remains private to the user while project-specific management tools (like config-sync and agent-ops) are scoped to individual projects without leaking into other workspaces.
 
 The taxonomy is derived from and aligned with external Claude Code specifications:
 - Subagents: https://code.claude.com/docs/en/sub-agents
@@ -14,8 +18,9 @@ The taxonomy is derived from and aligned with external Claude Code specification
 - Agent skills: https://code.claude.com/docs/en/skills
 
 ## Scope
-- Entry file: `CLAUDE.md`
-- Directories: `rules/`, `skills/`, `agents/`, `commands/`, `output-styles/` (files under `docs/` remain human-facing unless they are explicitly surfaced via rules or skills)
+- Entry files: `CLAUDE.md` (user-level), `.claude/CLAUDE.md` (project-level)
+- User-level directories: `~/.claude/{rules,skills,agents,commands,output-styles,docs}/`
+- Project-level directories: `.claude/{skills,agents,commands,config-sync,agent-ops}/`
 - Execution environments: Codex CLI, Claude Code, Qwen CLI, IDE/CI sync destinations
 
 ## Goals
@@ -53,6 +58,29 @@ The `llm-governance` domain is responsible for:
 - Adapter: command-specific extension for particular targets (e.g., config-sync adapters).
 - Workflow: higher-order coordination across multiple commands handled by agents.
 - Language and tool selection: a governed decision step that applies rules/10-python-guidelines.md, rules/12-shell-guidelines.md, rules/15-cross-language-architecture.md, rules/20-tool-standards.md, and rules/21-language-tool-selection.md to choose Python, Shell, or hybrid wrapper implementations.
+
+## User vs Project Level Separation
+
+The taxonomy operates across two complementary levels:
+
+**User-Level** (`~/.claude/`):
+- Global governance, rules, and policies that apply to all projects
+- Personal automation tools, commands, and agent configurations
+- LLM-facing assets that define user preferences and default behaviors
+- Source of truth for agent routing and skill selection logic
+
+**Project-Level** (`.claude/` within projects):
+- Project-specific Claude Code management subsystems (config-sync, agent-ops)
+- Project-scoped skills and agents for local automation
+- IDE/CI synchronization targets populated by config-sync
+- Project boundaries and validation rules
+
+**Routing Behavior:**
+1. User-level `CLAUDE.md` is loaded first to establish global routing rules
+2. Project-level `CLAUDE.md` inherits user-level defaults and adds project-specific overrides
+3. Commands route to user-level agents/skills by default
+4. Project-level agents (config-sync, agent-ops) handle project-specific management tasks
+5. config-sync bridges the two levels by synchronizing user-level assets to project targets
 
 There are two complementary dependency graphs:
 - Execution graph: `Memory → Output style → Agent → Skill → Language/Tool selection` (commands such as `/output-style` and task-specific slash commands select an output style, then an agent/skill stack, then a language/tool stack for concrete implementations).
@@ -104,9 +132,11 @@ Agents and skills MAY additionally declare optional capability-related fields (f
 5. Review/config-sync commands read the same mapping to keep tooling consistent.
 
 ### Selection Mechanisms
-- File types (e.g., `**/*.py`) trigger language skills.
-- Metadata (security, testing, LLM-facing) activates corresponding skills.
-- If multiple agents qualify, Memory selects the higher-priority one or prompts the user.
+- File types (e.g., `**/*.py`) trigger language skills from user-level skills directory
+- Metadata (security, testing, LLM-facing) activates corresponding skills from user-level
+- Project-level agents (config-sync, agent-ops) are invoked for project-specific commands
+- User-level agents handle general routing and default behaviors
+- If multiple agents qualify, user-level Memory selects the higher-priority one or prompts the user
 
 ## Frameworks and Styles
 
@@ -126,22 +156,45 @@ These frameworks are optional and layered on top of the taxonomy:
 - Tool usage policies (strict mode shells, uv-backed Python CLIs, etc.) live under `rules/20-tool-standards.md` and skill manifests. Agents MUST reference those rules instead of embedding ad-hoc tooling guidance here.
 
 ## Directory Layout and Sync
+
+The taxonomy operates across two levels with distinct purposes:
+
+### User-Level (`~/.claude/`)
+Global configuration available across all projects:
 ```
 .claude/
-├── CLAUDE.md
-├── (IDE-specific memory files as needed)
-├── rules/
-├── skills/<category>-<name>/SKILL.md
-├── agents/<domain>-<role>/AGENT.md
-├── commands/
-├── docs/                       # background plans/reference; become governed only via skills/rules
-└── commands/agent-ops/scripts/
-    ├── agent-matrix.sh
-    └── skill-matrix.sh
+├── CLAUDE.md                          # User-level routing and agent declarations
+├── rules/                             # Global rules and policies
+├── skills/                            # User-level skills (e.g., environment-validation)
+├── agents/                            # User-level agents (e.g., llm-governance)
+├── commands/                          # User-level commands (e.g., draft-commit-message)
+├── output-styles/                     # Named output style manifests
+└── docs/                              # Documentation (taxonomy-rfc.md, etc.)
 ```
 
-- config-sync copies `rules/`, `skills/`, `agents/`, and `CLAUDE.md` to IDE/CI targets.
-- llm-governance:optimize-prompts expands its default targets to include the new directories and validates manifest structure.
+### Project-Level (`.claude/` within projects)
+Project-specific Claude Code management tools:
+```
+.claude/
+├── CLAUDE.md                          # Project-level routing (inherits user-level defaults)
+├── skills/                            # Project-specific skills
+├── agents/                            # Project-specific agents
+├── commands/                          # Project-level commands
+├── config-sync/                       # Config-sync subsystem
+│   ├── sync-cli.sh
+│   ├── settings.json
+│   └── lib/                           # Phase runners and planners
+└── agent-ops/                         # Agent operations subsystem
+    ├── AGENT.md
+    └── scripts/
+        ├── agent-matrix.sh
+        └── skill-matrix.sh
+```
+
+**Synchronization:**
+- User-level assets (`rules/`, `skills/`, `agents/`, `CLAUDE.md`) are synchronized to project-level IDE/CI targets via config-sync
+- Project-level `config-sync/` and `agent-ops/` subsystems remain project-scoped and do not propagate to other projects
+- LLM-governance operates across both levels, validating user-level governance rules and project-level implementations
 
 ## Conflict Handling
 - A rule section can map to only one core skill; if multiple skills need it, wrap it as a child skill or reference another skill explicitly.

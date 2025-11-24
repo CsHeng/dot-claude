@@ -94,9 +94,9 @@ Execute unified configuration synchronization workflows across multiple CLI targ
 
 ## Output
 Generated Artifacts:
-- Plan file: `~/.claude/backup/plan-<timestamp>.json`
-- Run logs: `~/.claude/backup/run-<timestamp>/logs/*.log`
-- Execution report: `~/.claude/backup/run-<timestamp>/metadata/report.json`
+- Plan file: `~/.claude/.claude/backup/plan-<timestamp>.json`
+- Run logs: `~/.claude/.claude/backup/run-<timestamp>/logs/*.log`
+- Execution report: `~/.claude/.claude/backup/run-<timestamp>/metadata/report.json`
 - Console output: Structured progress and error messages
 
 Exit Codes:
@@ -132,7 +132,7 @@ Exit Codes:
 /config-sync/sync-cli --action=sync --dry-run --target=droid,qwen
 
 # Resume execution from specific phase
-/config-sync/sync-cli --action=sync --plan-file=~/.claude/backup/plan-20250205-120210.json --from-phase=prepare
+/config-sync/sync-cli --action=sync --plan-file=~/.claude/.claude/backup/plan-20250205-120210.json --from-phase=prepare
 
 # Fast profile execution for specific components
 /config-sync/sync-cli --action=sync --profile=fast --components=commands

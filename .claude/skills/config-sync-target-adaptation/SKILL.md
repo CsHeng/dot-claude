@@ -9,7 +9,7 @@ mode: target-adaptation
 capability-level: 2
 style: tool-first
 source:
-  - docs/taxonomy-rfc.md
+  - ~/.claude/docs/taxonomy-rfc.md
   - commands/config-sync/README.md
 capability: >
   Select and execute target-specific adapter scripts to synchronize
@@ -31,7 +31,7 @@ allowed-tools:
 Coordinate target-specific adapters so that config-sync applies correct rules, permissions, commands, settings, and memory updates for each CLI environment.
 
 ## IO Semantics
-Input: Config-sync plan describing targets and components, adapter scripts under commands/config-sync/adapters, resolved target configuration and rules directories.  
+Input: Config-sync plan describing targets and components, adapter scripts under .claude/commands/config-sync/adapters, resolved target configuration and rules directories.  
 Output: Adapter execution results and updated target configuration files per environment.  
 Side Effects: Invokes adapter scripts that perform writes to target configuration directories; relies on existing backups created by higher-level workflow phases.
 

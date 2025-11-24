@@ -114,7 +114,7 @@ fi
 COMPONENT_LABEL="$(IFS=,; printf '%s' "${SUPPORTED_COMPONENTS[@]}")"
 
 # Get paths using manifest helpers
-CLAUDE_ROOT="$(get_source_path commands)"  # Get claude root from commands path
+CLAUDE_ROOT="$CLAUDE_CONFIG_DIR"  # Claude root directory
 CODEX_ROOT="$(get_target_config_dir codex)"
 
 # Pre-flight checks

@@ -9,8 +9,8 @@ mode: stateful-orchestration
 capability-level: 2
 style: tool-first
 source:
-  - docs/taxonomy-rfc.md
-  - commands/config-sync/sync-cli.md
+  - ~/.claude/docs/taxonomy-rfc.md
+  - .claude/commands/config-sync/sync-cli.md
 capability: >
   Execute the config-sync CLI workflow across supported targets using
   deterministic phases (collect, analyze, plan, prepare, adapt, execute,
@@ -19,7 +19,7 @@ usage:
   - "/config-sync/sync-cli --action=* across CLI targets."
   - "Replay existing sync plan files for CLI synchronization."
 validation:
-  - "Normalize parameters against commands/config-sync/settings.json."
+  - "Normalize parameters against .claude/commands/config-sync/settings.json."
   - "Precede all write phases with backup and permission checks."
   - "Enforce phase order and behavior defined in sync-cli.md."
 allowed-tools:

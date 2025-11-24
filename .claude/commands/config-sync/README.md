@@ -101,7 +101,7 @@ Key Implementation Details:
 /config-sync/sync-cli --action=verify --target=droid,qwen --components=commands,permissions
 
 # Execute from specific plan phase
-/config-sync/sync-cli --action=sync --plan-file=~/.claude/backup/plan-20250205-120210.json --from-phase=prepare
+/config-sync/sync-cli --action=sync --plan-file=~/.claude/.claude/backup/plan-20250205-120210.json --from-phase=prepare
 ```
 
 ## shared-utilities
@@ -174,13 +174,13 @@ Backup retention policies are configured in `commands/config-sync/settings.json`
 
 ```bash
 # Check current backup status
-~/.claude/commands/config-sync/scripts/backup-cleanup.sh --status
+~/.claude/.claude/commands/config-sync/scripts/backup-cleanup.sh --status
 
 # Preview cleanup actions without execution
-~/.claude/commands/config-sync/scripts/backup-cleanup.sh --dry-run
+~/.claude/.claude/commands/config-sync/scripts/backup-cleanup.sh --dry-run
 
 # Execute manual backup cleanup
-~/.claude/commands/config-sync/scripts/backup-cleanup.sh
+~/.claude/.claude/commands/config-sync/scripts/backup-cleanup.sh
 ```
 
 ### Pipeline Integration

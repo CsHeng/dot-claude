@@ -6,6 +6,15 @@ A comprehensive configuration management and agent orchestration system for Clau
 
 This system enables centralized management of Claude Code configurations with support for multiple target environments including Droid CLI, Qwen CLI, OpenAI Codex CLI, OpenCode, and Amp CLI. It provides automated synchronization, backup management, and governance capabilities.
 
+### Architecture: User-Level vs Project-Level
+
+The system operates across two complementary levels:
+
+- **User-Level** (`~/.claude/`): Global configuration, governance, and personal automation tools that apply to all projects
+- **Project-Level** (`.claude/` within projects): Project-specific management tools (config-sync, agent-ops) that are scoped to individual projects
+
+When Claude Code runs in the `~/.claude/` directory, it merges both levels for development purposes. In normal projects, only user-level components are available.
+
 ## Key Components
 
 ### 🔧 Configuration Synchronization (`config-sync`)
@@ -13,10 +22,12 @@ This system enables centralized management of Claude Code configurations with su
 - **Automated backup**: Built-in backup and retention policies
 - **Phase-based execution**: Structured workflow with collect → analyze → plan → prepare → adapt → execute → verify → cleanup → report
 - **Target adapters**: Specialized adapters for each CLI environment
+- **Project-level component**: Located at `~/.claude/.claude/` for project-specific management
 
 ### 🤖 Agent System
 Specialized agents for different workflows:
-- `agent:config-sync`: Configuration synchronization and management
+
+**User-Level Agents** (available globally):
 - `agent:llm-governance`: LLM prompt optimization and governance
 - `agent:workflow-helper`: Draft commit messages and shell script review
 - `agent:code-architecture-reviewer`: Architecture review and compliance
@@ -25,6 +36,9 @@ Specialized agents for different workflows:
 - `agent:ts-code-error-resolver`: TypeScript error resolution
 - `agent:web-research-specialist`: Research and information gathering
 - `agent:refactor-planner`: Complex refactoring planning
+
+**Project-Level Agents** (project-specific management):
+- `agent:config-sync`: Configuration synchronization and management
 - `agent:agent-ops`: Agent system health monitoring
 
 ### 🛠️ Skills Framework
@@ -46,41 +60,39 @@ Comprehensive rule set covering:
 
 ## Directory Structure
 
+### User-Level Structure (`~/.claude/`)
+Global configuration available across all projects:
 ```
-.
-├── agents/                    # Agent definitions and configurations
-│   ├── config-sync/          # Configuration sync agent
-│   ├── llm-governance/       # LLM governance agent
-│   └── ...                   # Other specialized agents
-├── commands/                 # Slash command definitions
-│   ├── config-sync/          # Config sync commands and utilities
-│   │   ├── adapters/         # Target-specific adapters
-│   │   ├── lib/              # Shared libraries and phases
-│   │   ├── scripts/          # Utility scripts
-│   │   └── *.md              # Command documentation
-│   ├── draft-commit-message.md
-│   └── review-shell-syntax.md
-├── skills/                    # Skill definitions
-│   ├── language-python/      # Python language expertise
-│   ├── language-shell/       # Shell scripting expertise
-│   ├── language-go/          # Go language expertise
-│   ├── architecture-patterns/
-│   ├── security-standards/
-│   └── ...                   # Other domain-specific skills
-├── rules/                     # Governance and standards rules
-│   ├── 01-development-standards.md
-│   ├── 03-security-standards.md
-│   ├── 10-python-guidelines.md
-│   ├── 12-shell-guidelines.md
-│   └── ...                   # Additional rule files
+~/.claude/
+├── CLAUDE.md                 # User-level memory configuration and routing
+├── rules/                     # Global governance and standards rules
+├── skills/                    # User-level skill definitions
+├── agents/                    # User-level agent definitions
+├── commands/                  # User-level command definitions
+├── output-styles/             # Named output style manifests
 ├── docs/                      # Documentation and philosophy
-│   ├── llm-philosophy.md     # LLM prompt design philosophy
-│   ├── permissions.md        # Permission management
-│   └── settings.md           # Configuration guide
-├── backup/                    # Automatic backup storage
 ├── settings.json             # Global configuration
-├── CLAUDE.md                 # Memory configuration and agent routing
 └── README.md                 # This file
+```
+
+### Project-Level Structure (`.claude/` within projects)
+Project-specific Claude Code management tools:
+```
+.claude/
+├── CLAUDE.md                 # Project-level routing (inherits user-level defaults)
+├── skills/                    # Project-specific skills
+├── agents/                    # Project-specific agents
+├── commands/                  # Project-level commands
+├── config-sync/               # Config-sync subsystem
+│   ├── sync-cli.sh           # Unified orchestrator
+│   ├── settings.json         # Sync configuration
+│   ├── adapters/             # Target-specific adapters
+│   ├── lib/                  # Shared libraries and phases
+│   └── scripts/              # Utility scripts
+└── agent-ops/                 # Agent operations subsystem
+    ├── health-report.md      # Health reporting commands
+    ├── agent-matrix.sh       # Agent analysis utilities
+    └── scripts/              # Operation scripts
 ```
 
 ## Quick Start
@@ -92,17 +104,17 @@ Comprehensive rule set covering:
 
 ### Basic Usage
 
-1. **Synchronize all configurations**:
+1. **Synchronize all configurations** (project-level command):
    ```bash
    /config-sync/sync-cli --action=sync
    ```
 
-2. **Analyze specific target**:
+2. **Analyze specific target** (project-level command):
    ```bash
    /config-sync/sync-cli --action=analyze --target=opencode
    ```
 
-3. **Synchronize specific components**:
+3. **Synchronize specific components** (project-level command):
    ```bash
    /config-sync/sync-cli --action=sync --target=amp --components=commands,settings
    ```
@@ -139,7 +151,7 @@ Each target CLI requires specific configuration:
 - **Amp CLI**: Global memory support
 
 ### Backup Management
-Configure backup retention in `commands/config-sync/settings.json`:
+Configure backup retention in `.claude/config-sync/settings.json` (project-level):
 ```json
 {
   "backup": {
@@ -165,20 +177,33 @@ Configure backup retention in `commands/config-sync/settings.json`:
 ## Development Guidelines
 
 ### Adding New Agents
-1. Create agent directory under `agents/`
+**User-Level Agents** (global availability):
+1. Create agent directory under `~/.claude/agents/`
 2. Define `AGENT.md` with proper frontmatter
 3. Specify required and optional skills
-4. Update agent routing in `CLAUDE.md`
+4. Update agent routing in `~/.claude/CLAUDE.md`
+
+**Project-Level Agents** (project-specific):
+1. Create agent directory under `.claude/agents/`
+2. Define `AGENT.md` with proper frontmatter
+3. Specify required and optional skills
+4. Update agent routing in `.claude/CLAUDE.md`
 
 ### Creating New Skills
-1. Create skill directory under `skills/`
+**User-Level Skills** (global availability):
+1. Create skill directory under `~/.claude/skills/`
 2. Define `SKILL.md` with skill specification
 3. Include required tools and dependencies
 4. Test with `skill:environment-validation`
 
+**Project-Level Skills** (project-specific):
+1. Create skill directory under `.claude/skills/`
+2. Define `SKILL.md` with skill specification
+3. Include required tools and dependencies
+
 ### Extending Config Sync
-1. Add target adapter in `commands/config-sync/adapters/`
-2. Update target resolver in `lib/common.sh`
+1. Add target adapter in `.claude/config-sync/adapters/`
+2. Update target resolver in `.claude/config-sync/lib/common.sh`
 3. Test with `/config-sync/sync-cli --action=analyze`
 
 ## Philosophy
@@ -188,3 +213,11 @@ This project follows the LLM Prompt Philosophy outlined in `docs/llm-philosophy.
 - **Deterministic structures**: Predictable formatting and organization
 - **Separation of concerns**: Machine-readable rules separate from human explanations
 - **Multi-AI compatibility**: Conservative structures work across different AI systems
+
+### Design Principles
+
+The system is designed according to the Taxonomy RFC (`docs/taxonomy-rfc.md`):
+- **Memory → Agent → Skill → Command**: Hierarchical execution flow
+- **User-level inheritance**: Project-level configurations inherit user-level defaults
+- **Clean separation**: User-level (global) vs project-level (scoped) components
+- **LLM-facing governance**: Structured manifests for deterministic AI behavior

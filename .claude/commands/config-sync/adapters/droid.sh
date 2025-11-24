@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# OpenCode CLI configuration synchronization (Simplified with Python modules)
+# Droid/Factory CLI configuration synchronization (Simplified with Python modules)
 
 set -euo pipefail
 
@@ -22,7 +22,7 @@ usage() {
 Usage: $0 --action=<sync|analyze|verify> --component=<commands|all> [options]
 
 Actions:
-  sync      Synchronize configuration to OpenCode
+  sync      Synchronize configuration to Droid/Factory
   analyze   Analyze current configuration state
   verify    Verify synchronization completeness
 
@@ -98,31 +98,35 @@ for component in "${SELECTED_COMPONENTS[@]}"; do
   if [[ "$component" == "commands" ]]; then
     SUPPORTED_COMPONENTS+=("commands")
   else
-    log_warning "Component '$component' is not handled by OpenCode adapter (commands-only); skipping"
+    log_warning "Component '$component' is not handled by Droid adapter (commands-only); skipping"
   fi
 done
 
 if [[ ${#SUPPORTED_COMPONENTS[@]} -eq 0 ]]; then
-  log_info "No supported components selected for OpenCode adapter - nothing to do"
-  exit 0
+  if [[ "$ACTION" == "verify" || "$ACTION" == "analyze" ]]; then
+    log_info "No supported components selected for Droid adapter - nothing to do"
+    exit 0
+  fi
+  log_error "No supported components selected for Droid adapter"
+  exit 1
 fi
 
 COMPONENT_LABEL="$(IFS=,; printf '%s' "${SUPPORTED_COMPONENTS[@]}")"
 
 # Get paths using manifest helpers
-CLAUDE_ROOT="$(get_source_path commands)"  # Get claude root from commands path
-OPENCODE_ROOT="$(get_target_config_dir opencode)"
+CLAUDE_ROOT="$CLAUDE_CONFIG_DIR"  # Claude root directory
+DROID_ROOT="$(get_target_config_dir droid)"
 
 # Pre-flight checks
-log_info "Starting OpenCode configuration $ACTION for $COMPONENT_LABEL"
+log_info "Starting Droid/Factory configuration $ACTION for $COMPONENT_LABEL"
 
 if ! check_dependencies; then
   log_error "Dependency check failed"
   exit 1
 fi
 
-if ! check_target_tool "opencode"; then
-  log_error "OpenCode target check failed"
+if ! check_target_tool "droid"; then
+  log_error "Droid/Factory target check failed"
   exit 1
 fi
 
@@ -132,21 +136,21 @@ if ! validate_source_config "$CLAUDE_ROOT"; then
 fi
 
 # Ensure target directories exist
-mkdir -p "$(get_target_path opencode commands)" "$(get_target_path opencode rules)"
+mkdir -p "$DROID_ROOT/commands" "$DROID_ROOT/rules"
 
 # Sync functions
 sync_commands() {
   local source_commands
   local target_commands
   source_commands="$(get_source_path commands)"
-  target_commands="$(get_target_path opencode commands)"
+  target_commands="$(get_target_path droid commands)"
 
   if [[ ! -d "$source_commands" ]]; then
     log_warning "Source commands directory not found: $source_commands"
     return 0
   fi
 
-  log_info "Syncing commands to OpenCode (Markdown format)..."
+  log_info "Syncing commands to Droid/Factory (Markdown format)..."
 
   local processed=0
   local failed=0
@@ -217,89 +221,26 @@ sync_commands() {
   return $failed
 }
 
-sync_rules() {
-  local source_rules
-  local target_rules
-  source_rules="$(get_source_path rules)"
-  target_rules="$(get_target_path opencode rules)"
-
-  if [[ ! -d "$source_rules" ]]; then
-    log_warning "Source rules directory not found: $source_rules"
-    return 0
-  fi
-
-  log_info "Syncing rules to OpenCode..."
-
-  local processed=0
-  local failed=0
-
-  # Use rsync if available
-  if command -v rsync >/dev/null 2>&1; then
-    log_info "Using rsync for rules sync"
-
-    local rsync_args=("-av" "--delete")
-    if [[ "$DRY_RUN" == "true" ]]; then
-      rsync_args+=("--dry-run")
-    fi
-
-    if rsync "${rsync_args[@]}" "$source_rules/" "$target_rules/"; then
-      local count
-      count=$(find "$source_rules" -name "*.md" -type f | wc -l)
-      processed=$count
-      log_info "✓ Rules synced successfully ($count files)"
-    else
-      log_error "✗ Rules sync failed"
-      failed=1
-    fi
-  else
-    log_info "Using file-sync fallback for rules (rsync not available)"
-    while IFS= read -r -d '' rule_file; do
-      local rel_path="${rule_file#$source_rules/}"
-      local target_file="$target_rules/$rel_path"
-
-      mkdir -p "$(dirname "$target_file")"
-
-      if [[ "$DRY_RUN" == "true" ]]; then
-        log_info "Would sync: $rule_file -> $target_file"
-        ((processed += 1))
-      else
-        if sync_with_verification "$rule_file" "$target_file"; then
-          if [[ "$VERBOSE" == "true" ]]; then
-            log_info "✓ Synced: $rel_path"
-          fi
-          ((processed += 1))
-        else
-          log_error "✗ Failed to sync: $rel_path"
-          ((failed += 1))
-        fi
-      fi
-    done < <(find "$source_rules" -type f -name "*.md" -print0)
-  fi
-
-  log_info "Rules sync: $processed processed, $failed failed"
-  return $failed
-}
-
 # Analyze function
 analyze_configuration() {
-  log_info "Analyzing OpenCode configuration..."
+  log_info "Analyzing Droid/Factory configuration..."
 
   # Use Python module for target configuration check
-  if python3 -m config_sync.config_validator check-target --target opencode; then
-    log_info "✓ OpenCode configuration analysis completed"
+  if python3 -m config_sync.config_validator check-target --target droid; then
+    log_info "✓ Droid/Factory configuration analysis completed"
   else
-    log_warning "OpenCode configuration has issues"
+    log_warning "Droid/Factory configuration has issues"
   fi
 }
 
 # Verify function - Use Python modules instead of inline Python
 verify_configuration() {
-  log_info "Verifying OpenCode configuration..."
+  log_info "Verifying Droid/Factory configuration..."
 
   local commands_dir
   local rules_dir
-  commands_dir="$(get_target_path opencode commands)"
-  rules_dir="$(get_target_path opencode rules)"
+  commands_dir="$(get_target_path droid commands)"
+  rules_dir="$(get_target_path droid rules)"
 
   # Use Python validation modules
   local issues=0
@@ -351,7 +292,7 @@ run_sync_components() {
 case "$ACTION" in
   sync)
     if ! run_sync_components; then
-      log_error "OpenCode sync encountered errors"
+      log_error "Droid/Factory sync encountered errors"
       exit 1
     fi
     ;;
@@ -363,4 +304,4 @@ case "$ACTION" in
     ;;
 esac
 
-log_info "OpenCode $ACTION for $COMPONENT_LABEL completed"
+log_info "Droid/Factory $ACTION for $COMPONENT_LABEL completed"

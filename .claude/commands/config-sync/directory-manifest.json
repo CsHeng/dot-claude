@@ -1,6 +1,7 @@
 {
-  "version": "1.1",
-  "updated_at": "2025-11-20T05:06:02Z",
+  "version": "1.2",
+  "updated_at": "2025-11-24",
+  "note": "Config-sync system moved to ~/.claude/.claude/commands/ for user/project level separation",
   "targets": {
     "droid": {
       "tool_name": "droid",

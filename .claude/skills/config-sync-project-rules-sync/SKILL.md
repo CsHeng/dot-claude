@@ -9,8 +9,8 @@ mode: stateful-sync
 capability-level: 2
 style: tool-first
 source:
-  - docs/taxonomy-rfc.md
-  - commands/config-sync/sync-project-rules.md
+  - ~/.claude/docs/taxonomy-rfc.md
+  - .claude/commands/config-sync/sync-project-rules.md
 capability: >
   Merge global and project-specific rule files into IDE-specific rule
   directories within a project while enforcing project boundary and
@@ -23,7 +23,7 @@ validation:
   - "Create target directories only within the resolved project tree."
   - "Validate header injection result for each processed file."
 allowed-tools:
-  - Bash(commands/config-sync/sync-project-rules.sh *)
+  - Bash(.claude/commands/config-sync/sync-project-rules.sh *)
 ---
 
 ## Purpose
@@ -48,7 +48,7 @@ Side Effects: Creates or updates files under project IDE rule directories; perfo
    - Ensure target directories reside within the resolved project tree.
 
 4. Header Injection and Copy
-   - Select header templates from `commands/config-sync/ide-headers.yaml`.
+   - Select header templates from `.claude/commands/config-sync/ide-headers.yaml`.
    - Apply headers to each rule file and copy into target directories.
 
 5. Verification

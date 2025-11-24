@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# Memory sync: copy ~/.claude/AGENTS.md (via realpath) to each
+# Memory sync: copy ~/.claude/CLAUDE.md (via realpath) to each
 # target's configured memory path (AGENTS.md) based on the manifest.
 
 set -euo pipefail
@@ -65,7 +65,7 @@ parse_args() {
 }
 
 run_sync() {
-  local agents_path="$HOME/.claude/AGENTS.md"
+  local agents_path="$HOME/.claude/CLAUDE.md"
 
   if [[ ! -f "$agents_path" ]]; then
     log_warning "Source AGENTS.md not found at $agents_path; skipping memory sync"
