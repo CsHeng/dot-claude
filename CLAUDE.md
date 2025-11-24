@@ -36,11 +36,11 @@ Execute routing by command patterns:
 1. Workflow routing: `/draft-commit-message`, `/review-shell-syntax` → `agent:workflow-helper`
 2. LLM governance routing: `/llm-governance/optimize-prompts` → `agent:llm-governance`
    Note: Official spec-based optimization (skills→SIMPLE, commands→DEPTH, agents→COMPLEX, rules→SIMPLE)
-3. Code architecture routing: `/review-code-architecture` → `agent:code-architecture-reviewer`
-4. Refactoring routing: `/refactor-*`, `/review-refactor` → `agent:code-refactor-master`
-5. Planning routing: `/review-plan`, `/plan-*` → `agent:plan-reviewer`
-6. Error resolution routing: `/fix-*`, `/resolve-errors` → `agent:ts-code-error-resolver`
-7. Research routing: `/research-*`, `/web-search` → `agent:web-research-specialist`
+3. Code architecture routing: `/review-code-architecture` → `agent:code-architecture-reviewer` (via direct agent execution)
+4. Refactoring routing: `/refactor-*`, `/review-refactor` → `agent:code-refactor-master` (via direct agent execution)
+5. Planning routing: `/review-plan`, `/plan-*` → `agent:plan-reviewer` (via direct agent execution)
+6. Error resolution routing: `/fix-*`, `/resolve-errors` → `agent:ts-code-error-resolver` (via direct agent execution)
+7. Research routing: `/research-*`, `/web-search` → `agent:web-research-specialist` (via direct agent execution)
 8. Content-based routing: Files with specific extensions → trigger corresponding language skills
 9. Metadata routing: LLM-prompt editing → `agent:llm-governance`
 
@@ -49,14 +49,14 @@ Execute routing by command patterns:
 Execute agent mappings on demand; each row describes what loads once the matching command fires. `skill:environment-validation` is provisioned first so tool-choice hints are available before the agent-specific stack initializes.
 
 | Agent ID | Command Patterns | Default Skills | Optional Skills |
-| --- | --- | --- | --- | --- |
+| --- | --- | --- | --- |
 | `agent:llm-governance` | `/llm-governance/optimize-prompts` | `skill:llm-governance`, `skill:workflow-discipline`, `skill:environment-validation` | None |
 | `agent:workflow-helper` | `/draft-commit-message`, `/review-shell-syntax` | `skill:workflow-discipline`, `skill:automation-language-selection` | `skill:language-shell`, `skill:language-python`, `skill:language-go`, `skill:environment-validation` |
-| `agent:code-architecture-reviewer` | `/review-code-architecture` | `skill:architecture-patterns`, `skill:development-standards`, `skill:security-standards` | Language-specific skills based on codebase |
-| `agent:code-refactor-master` | `/refactor-*`, `/review-refactor` | `skill:architecture-patterns`, `skill:development-standards`, `skill:testing-strategy`, `skill:search-and-refactor-strategy` | `skill:language-*` based on target code |
-| `agent:plan-reviewer` | `/review-plan`, `/plan-*` | `skill:workflow-discipline`, `skill:architecture-patterns`, `skill:testing-strategy`, `skill:search-and-refactor-strategy` | Domain-specific skills based on plan content |
-| `agent:ts-code-error-resolver` | `/fix-*`, `/resolve-errors` | `skill:error-patterns`, `skill:development-standards`, `skill:testing-strategy` | `skill:language-*` based on error context |
-| `agent:web-research-specialist` | `/research-*`, `/web-search` | `skill:search-and-refactor-strategy`, `skill:workflow-discipline` | Content-specific research skills |
+| `agent:code-architecture-reviewer` | `/review-code-architecture` (via direct agent execution) | `skill:architecture-patterns`, `skill:development-standards`, `skill:security-standards` | Language-specific skills based on codebase |
+| `agent:code-refactor-master` | `/refactor-*`, `/review-refactor` (via direct agent execution) | `skill:architecture-patterns`, `skill:development-standards`, `skill:testing-strategy`, `skill:search-and-refactor-strategy` | `skill:language-*` based on target code |
+| `agent:plan-reviewer` | `/review-plan`, `/plan-*` (via direct agent execution) | `skill:workflow-discipline`, `skill:architecture-patterns`, `skill:testing-strategy`, `skill:search-and-refactor-strategy` | Domain-specific skills based on plan content |
+| `agent:ts-code-error-resolver` | `/fix-*`, `/resolve-errors` (via direct agent execution) | `skill:error-patterns`, `skill:development-standards`, `skill:testing-strategy` | `skill:language-*` based on error context |
+| `agent:web-research-specialist` | `/research-*`, `/web-search` (via direct agent execution) | `skill:search-and-refactor-strategy`, `skill:workflow-discipline` | Content-specific research skills |
 | `agent:refactor-planner` | Refactoring tasks, complex restructuring | `skill:architecture-patterns`, `skill:development-standards`, `skill:workflow-discipline`, `skill:search-and-refactor-strategy` | `skill:language-*`, `skill:testing-strategy` |
 
 ## Skill Dependencies
