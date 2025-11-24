@@ -1,31 +1,54 @@
 # Command Layout Overview (`~/.claude/commands/`)
 
-The commands directory contains slash commands for various workflows including config-sync, documentation generation, code review, and utility operations.
+The commands directory contains slash commands for various workflows including config-sync, governance optimization, code review, security checks, and utility operations.
 
 ## Directory Structure
 ```
 ~/.claude/commands/
 ├── config-sync/                    # Config-sync command suite
-│   ├── sync-cli.md                # Main orchestrator for CLI tool sync
-│   ├── sync-project-rules.md      # Project rules sync for IDEs
-│   ├── adapters/                  # Target-specific shell adapters (*.sh)
-│   ├── lib/                       # Shared guidance and phase runners
-│   └── scripts/                   # Bash helpers (backup cleanup, diagnostics)
-│   ├── core/
-│   │   └── bootstrap.md           # Main documentation orchestrator
-│   └── adapters/                  # Project-specific adapters
-│       ├── backend-go.md
-│       ├── android-sdk.md
-│       ├── android-app.md
-│       ├── web-user.md
-│       └── web-admin.md
-├── draft-commit-message.md         # Git commit message drafting
-├── review-shell-syntax.md          # Shell script validation
-├── llm-governance/optimize-prompts.md  # LLM-facing manifest optimization
-└── agent-ops/                      # AgentOps utilities
-    ├── health-report.md            # Agent and skill health reporting
-    ├── agent-matrix.md             # Agent capability matrix view
-    └── skill-matrix.md             # Skill capability matrix view
+│   ├── README.md                   # Config-sync system reference
+│   ├── sync-cli.md/.sh             # Main orchestrator for CLI tool sync
+│   ├── sync-project-rules.md/.sh   # Project rules sync for IDEs
+│   ├── adapters/                   # Target-specific shell adapters
+│   │   ├── droid.sh
+│   │   ├── qwen.sh
+│   │   ├── codex.sh
+│   │   ├── opencode.sh
+│   │   ├── amp.sh
+│   │   ├── adapt-permissions.sh
+│   │   └── sync-memory.sh
+│   ├── lib/                        # Shared utilities
+│   │   ├── common.sh               # Shared shell helpers
+│   │   ├── phases/                 # Phase execution runners
+│   │   │   ├── collect.sh
+│   │   │   ├── analyze.sh
+│   │   │   ├── plan.sh
+│   │   │   ├── prepare.sh
+│   │   │   ├── adapt.sh
+│   │   │   ├── execute.sh
+│   │   │   ├── verify.sh
+│   │   │   ├── report.sh
+│   │   │   └── cleanup.sh
+│   │   └── planners/               # Plan generation logic
+│   │       ├── adapt_plan.sh
+│   │       └── sync_plan.sh
+│   └── scripts/                    # Bash helpers
+│       ├── backup.sh               # Backup management
+│       ├── backup-cleanup.sh       # Automatic cleanup
+│       ├── executor.sh             # Phase execution
+│       └── sync-taxonomy-component.sh
+├── llm-governance/optimize-prompts.md    # LLM-facing manifest optimization
+│   └── README.md                         # Implementation details
+├── agent-ops/                     # AgentOps utilities
+│   ├── health-report.md           # Agent and skill health reporting
+│   ├── agent-matrix.md            # Agent capability matrix view
+│   ├── skill-matrix.md            # Skill capability matrix view
+│   └── scripts/                   # Utility scripts
+│       ├── agent-matrix.sh
+│       └── skill-matrix.sh
+├── draft-commit-message.md        # Git commit message drafting
+├── review-shell-syntax.md         # Shell script validation
+└── check-secrets.md               # Security scan for credentials
 ```
 
 ## Available Commands
@@ -34,24 +57,30 @@ The commands directory contains slash commands for various workflows including c
 
 | Command | Purpose | Key Features |
 |---------|---------|--------------|
-| `claude /config-sync:sync-cli` | Main orchestrator for CLI tool synchronization | 9-phase pipeline, multi-target support, verification and cleanup |
-| `claude /config-sync:sync-project-rules` | Sync Claude rules to IDE projects | Cursor/VS Code Copilot integration, auto-detection |
+| `/config-sync:sync-cli` | Unified orchestrator for config-sync workflows | Multi-target support (droid, qwen, codex, opencode, amp), 9-phase pipeline, plan generation, verification, rollback |
+| `/config-sync:sync-project-rules` | Sync shared Claude rules to project IDE directories | Cursor (`.cursor/rules`), VS Code Copilot (`.github/instructions`), auto-detection, header processing |
 
-### Documentation Generation Commands
-
-| Command | Purpose | Project Types |
-|---------|---------|---------------|
-
-### Review and Utility Commands
+### LLM Governance Commands
 
 | Command | Purpose | Scope |
 |---------|---------|-------|
-| `/draft-commit-message` | Generate commit messages from git status | Current repository |
-| `/review-shell-syntax` | Validate shell script compliance | `rules/12-shell-guidelines.md` |
-| `/llm-governance/optimize-prompts` | Governance-driven LLM-facing file optimization | All LLM-facing files |
-| `/agent-ops:health-report` | Read-only health report for agents, skills, backups, and governance runs | `.claude/backup`, matrices, and manifests |
-| `/agent-ops:agent-matrix` | Show capability and style matrix for all agents | Current `.claude` directory or provided root |
-| `/agent-ops:skill-matrix` | Show capability and style matrix for all skills | Current `.claude` directory or provided root |
+| `/llm-governance/optimize-prompts` | Design-time audits and fixes for LLM-facing files | All LLM-facing files (commands, skills, agents, rules, settings), dependency analysis, specification validation |
+
+### AgentOps Commands
+
+| Command | Purpose | Scope |
+|---------|---------|-------|
+| `/agent-ops:health-report` | Read-only health report for agents, skills, backups, and governance runs | `.claude/backup` metadata, agent/skill matrices, governance validation |
+| `/agent-ops:agent-matrix` | Capability matrix for all agents | Agent identifiers, capability levels, loop styles, style labels, default/optional skills |
+| `/agent-ops:skill-matrix` | Capability matrix for all skills | Skill identifiers, capability levels, modes, style labels, tags |
+
+### Workflow and Review Commands
+
+| Command | Purpose | Scope |
+|---------|---------|-------|
+| `/draft-commit-message` | Generate commit messages from git status | Current repository, directory filtering, staged/unstaged change analysis |
+| `/review-shell-syntax` | Validate shell script compliance | Rules from `rules/12-shell-guidelines.md`, ShellCheck integration, auto-fix patches |
+| `/check-secrets` | Scan for credentials and sensitive data | API keys, passwords, private keys, connection strings, environment variables |
 
 ## Command Guidelines
 
@@ -61,19 +90,31 @@ Each command file must include YAML frontmatter with:
 - `description`: Brief purpose description
 - `argument-hint`: Usage syntax (optional)
 - `allowed-tools`: Permitted tool permissions (optional)
+- `style`: Output style preference (minimal-chat, tool-first, reasoning-first)
 
 ### Naming Conventions
 - Use slash-style names for top-level handlers
 - Reference other commands via published slash form, not file paths
+- Use hyphens for multi-word command names (e.g., `sync-project-rules`)
 
 ### Development Best Practices
 - Tool adapters exclude internal `config-sync/` module when syncing to external CLIs
-- Use `commands/config-sync/lib/common.md` for shared guidance
-- Include parameter tables and usage examples
+- Use `commands/config-sync/lib/common.sh` for shared utilities
+- Include parameter tables, usage examples, and error handling documentation
 - Follow `rules/99-llm-prompt-writing-rules.md` for LLM-facing content
+- Implement proper error handling with descriptive exit codes
+- Maintain strict shell mode (`set -euo pipefail`) in all bash scripts
+
+### Config-Sync System Integration
+- Target systems: Droid CLI, Qwen CLI, OpenAI Codex CLI, OpenCode, Amp CLI
+- Components: commands, rules, skills, agents, output_styles, settings, permissions, memory
+- Phase execution: collect → analyze → plan → prepare → adapt → execute → [verify] → cleanup → report
+- Backup retention: Automatic backups before modifications, configurable retention policies
 
 ## Related Documentation
 
 - **[Config-Sync Guide](./config-sync-guide.md)** - Complete sync system documentation
+- **[Config-Sync README](../commands/config-sync/README.md)** - Technical reference and architecture
+- **[LLM Governance README](../commands/llm-governance/optimize-prompts/README.md)** - Implementation details
 - **[Settings Reference](./settings.md)** - Configuration hierarchy and permissions
 - **[Directory Structure](./directory-structure.md)** - Detailed file organization
