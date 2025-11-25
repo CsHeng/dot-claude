@@ -2,10 +2,10 @@
 name: testing-strategy
 description: Comprehensive testing strategies and coverage standards. Use when testing
   strategy guidance is required.
+layer: execution
 mode: cross-cutting-testing
 capability-level: 2
 ---
-
 ## Purpose
 
 Provide comprehensive testing strategies and coverage standards that can be applied across services, including thresholds, critical path tests, and environment setup.

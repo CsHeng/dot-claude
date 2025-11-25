@@ -8,7 +8,7 @@ allowed-tools:
   - Bash(bash -n:*)
   - Bash(sh -n:*)
   - Bash(zsh -n:*)
-  - Bash(shellcheck -f gcc -S error -o null:*)
+  - Bash(shellcheck :*)
 is_background: false
 style: tool-first
 ---

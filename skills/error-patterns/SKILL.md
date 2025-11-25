@@ -2,10 +2,10 @@
 name: error-patterns
 description: Error handling patterns and logging standards. Use when error patterns
   guidance is required.
+layer: execution
 mode: cross-cutting-error-handling
 capability-level: 2
 ---
-
 # Error Handling Strategy Implementation
 
 ## Fail-Fast Pattern Enforcement

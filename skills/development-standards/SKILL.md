@@ -2,10 +2,10 @@
 name: development-standards
 description: Development standards and best practices. Use when development standards
   guidance is required.
+layer: execution
 mode: cross-cutting-standards
 capability-level: 2
 ---
-
 ## Purpose
 
 Provide development standards and best practices that can be applied consistently across languages to improve maintainability, readability, and correctness in new and existing code.

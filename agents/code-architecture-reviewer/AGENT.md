@@ -1,12 +1,11 @@
 ---
 name: "agent:code-architecture-reviewer"
 description: "Review recently written code for adherence to best practices, architectural consistency, and system integration"
-tools: []
+layer: execution
 capability-level: 2
 loop-style: DEPTH
 style: reasoning-first
 ---
-
 # Code Architecture Reviewer Agent
 
 ## Mission

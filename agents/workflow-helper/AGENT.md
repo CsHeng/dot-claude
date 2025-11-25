@@ -1,12 +1,11 @@
 ---
 name: "agent:workflow-helper"
 description: "Execute day-to-day collaboration workflows with deterministic tooling selection and permission-gated execution"
-tools: []
+layer: execution
 capability-level: 2
 loop-style: DEPTH
 style: reasoning-first
 ---
-
 # Workflow Helper Agent
 
 ## Mission

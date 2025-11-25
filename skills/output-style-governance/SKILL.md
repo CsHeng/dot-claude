@@ -1,16 +1,13 @@
 ---
 name: output-style-governance
 description: Validate and govern output-style manifests under output-styles in the user workspace.
+layer: execution
 mode: governance-core
 capability-level: 1
 style: minimal-chat
-source:
-  - rules/98-communication-protocol.md
-  - rules/98-output-styles.md
 allowed-tools:
   - Read
 ---
-
 ## Purpose
 
 Validate output-style manifests so that preferred output styles selected via `/output-style` remain consistent with `rules/98-output-styles.md` and `rules/98-communication-protocol.md`.

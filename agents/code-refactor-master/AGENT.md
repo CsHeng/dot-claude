@@ -1,12 +1,11 @@
 ---
 name: "agent:code-refactor-master"
 description: "Refactor code organization, architecture, and maintainability"
-tools: []
+layer: execution
 capability-level: 3
 loop-style: structured-phases
 style: tool-first
 ---
-
 ## Role Definition
 Orchestrate comprehensive code refactoring while maintaining zero breakage through systematic dependency tracking and atomic operations.
 

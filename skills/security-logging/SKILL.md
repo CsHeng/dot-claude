@@ -2,18 +2,18 @@
 name: security-logging
 description: Security controls and structured logging implementation. Use when security
   logging guidance is required.
+layer: execution
 mode: cross-cutting-security
 capability-level: 2
 allowed-tools:
-- Bash(shellcheck)
-- Bash(grep -E '^[[:space:]]*[^[:space:]]+[[:space:]]*=')
-- Bash(rg --pcre2 'password|secret|key|token')
+  - Bash(shellcheck)
+  - Bash(grep -E '^[[:space:]]*[^[:space:]]+[[:space:]]*=')
+  - Bash(rg --pcre2 'password|secret|key|token')
 related-skills:
-- skill:environment-validation
-- skill:development-standards
-- skill:workflow-discipline
+  - skill:environment-validation
+  - skill:development-standards
+  - skill:workflow-discipline
 ---
-
 ## Purpose
 
 Define security-focused logging and input validation standards so that services can detect, trace, and audit security-relevant events consistently.

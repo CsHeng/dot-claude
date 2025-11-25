@@ -2,10 +2,10 @@
 name: security-guardrails
 description: Comprehensive security implementation standards. Use when security guardrails
   guidance is required.
+layer: execution
 mode: cross-cutting-security
 capability-level: 2
 ---
-
 ## Purpose
 
 Provide comprehensive security implementation standards covering credential management, secret rotation, input validation, and other guardrails that can be reused across services.

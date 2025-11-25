@@ -2,11 +2,11 @@
 name: architecture-patterns
 description: Architectural pattern guidance and layering principles. Use when architecture
   patterns guidance is required.
+layer: execution
 mode: cross-cutting-architecture
 capability-level: 2
 style: reasoning-first
 ---
-
 # Core Architecture Patterns
 
 ## Layered Architecture Pattern
