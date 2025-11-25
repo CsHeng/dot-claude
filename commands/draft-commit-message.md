@@ -3,11 +3,11 @@ name: draft-commit-message
 description: Propose a commit message from current git status (no commit)
 argument-hint: '[--filter=<path>] [--summary-note=<note>]'
 allowed-tools:
-- Bash
-- Bash(git rev-parse --git-dir)
-- Bash(git status --short)
-- Bash(git diff --cached)
-- Bash(git diff)
+  - Bash
+  - Bash(git rev-parse --git-dir)
+  - Bash(git status --short)
+  - Bash(git diff --cached)
+  - Bash(git diff)
 is_background: false
 style: reasoning-first
 ---
@@ -23,7 +23,7 @@ Execute analysis of current git repository state and generate formatted commit m
 
 ## Workflow
 
-1. Repository validation: Verify current directory resides inside a git repository
+## Usage
 2. Scope resolution: Resolve target directory from `--filter` or current working directory and restrict analysis to this directory and its subdirectories
 3. Global diff analysis: Compute global staged and unstaged change sets for the repository to identify renames and moves
 4. Scoped diff analysis: Compute staged and unstaged change sets restricted to the target directory and intersect them with global results

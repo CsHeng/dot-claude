@@ -1,6 +1,7 @@
 ---
 name: config-sync-project-rules-sync
 description: Synchronize shared Claude rules into project IDE directories with IDE-specific headers.
+layer: execution
 tags:
   - workflow
   - config-sync
@@ -8,9 +9,6 @@ tags:
 mode: stateful-sync
 capability-level: 2
 style: tool-first
-source:
-  - ~/.claude/docs/taxonomy-rfc.md
-  - .claude/commands/config-sync/sync-project-rules.md
 capability: >
   Merge global and project-specific rule files into IDE-specific rule
   directories within a project while enforcing project boundary and

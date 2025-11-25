@@ -1,6 +1,7 @@
 ---
 name: config-sync-cli-workflow
 description: Orchestrate multi-target CLI configuration synchronization using config-sync phase runners and planners.
+layer: execution
 tags:
   - toolchain
   - workflow
@@ -8,9 +9,6 @@ tags:
 mode: stateful-orchestration
 capability-level: 2
 style: tool-first
-source:
-  - ~/.claude/docs/taxonomy-rfc.md
-  - .claude/commands/config-sync/sync-cli.md
 capability: >
   Execute the config-sync CLI workflow across supported targets using
   deterministic phases (collect, analyze, plan, prepare, adapt, execute,

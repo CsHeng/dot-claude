@@ -1,12 +1,11 @@
 ---
 name: "agent:ts-code-error-resolver"
 description: "Automatically fix TypeScript compilation errors"
-tools: []
+layer: execution
 capability-level: 2
 loop-style: structured-phases
 style: tool-first
 ---
-
 ## Role Definition
 Execute systematic TypeScript error resolution through automated detection, classification, and deterministic fixing of compilation issues.
 

@@ -1,6 +1,7 @@
 ---
-name: "agent:config-sync"
+name: "config-sync"
 description: "Orchestrate configuration synchronization workflows across IDE, CLI, and project environments"
+layer: execution
 tools:
   - Read
   - Write

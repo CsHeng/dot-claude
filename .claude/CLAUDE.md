@@ -4,8 +4,8 @@
 
 Execute routing lazily: agents remain unloaded until their command pattern matches the active request, preventing unnecessary policy loading for unrelated tasks.
 Execute routing by command patterns:
-1. Config-sync routing: `/config-sync/*` → `agent:config-sync`
-2. AgentOps routing: `/agent-ops:health-report` → `agent:agent-ops`
+1. Config-sync routing: `/config-sync/*` → `config-sync`
+2. AgentOps routing: `/agent-ops:health-report` → `agent-ops`
 
 ## Active Agents
 
@@ -13,8 +13,8 @@ Execute agent mappings on demand; each row describes what loads once the matchin
 
 | Agent ID | Command Patterns | Default Skills | Optional Skills |
 | --- | --- | --- | --- |
-| `agent:config-sync` | `/config-sync/*` | `skill:environment-validation`, `skill:workflow-discipline`, `skill:security-logging`, `skill:automation-language-selection`, `skill:config-sync-cli-workflow`, `skill:config-sync-project-rules-sync`, `skill:config-sync-target-adaptation` | `skill:search-and-refactor-strategy`, `skill:project-config-sync-overview`, language skills based on target project |
-| `agent:agent-ops` | `/agent-ops:health-report` | `skill:workflow-discipline`, `skill:environment-validation` | `skill:project-config-sync-overview`, `skill:project-doc-gen-overview` |
+| `config-sync` | `/config-sync/*` | `skill:environment-validation`, `skill:workflow-discipline`, `skill:security-logging`, `skill:automation-language-selection`, `skill:config-sync-cli-workflow`, `skill:config-sync-project-rules-sync`, `skill:config-sync-target-adaptation` | `skill:search-and-refactor-strategy`, `skill:project-config-sync-overview`, language skills based on target project |
+| `agent-ops` | `/agent-ops:health-report` | `skill:workflow-discipline`, `skill:environment-validation` | `skill:project-config-sync-overview`, `skill:project-doc-gen-overview` |
 
 ## Agent-Skill Mappings
 

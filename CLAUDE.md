@@ -1,5 +1,7 @@
 # Memory Configuration
 
+> Taxonomy note: for the three-layer model (UI entry, orchestration/governance, execution agents/skills/commands), see `docs/taxonomy-rfc.md`.
+
 ## Rule-Loading Conditions
 
 ### Default Conditions
@@ -19,9 +21,9 @@ Treat the following as explanation triggers that switch communication to EXPLANA
 Treat similar explicit user requests for more detail as explanation triggers
 
 ### Output Style Selection
-Initialize conversation output behavior using TERSE MODE semantics from `rules/98-communication-protocol.md` and the `default` output style from `output-styles/default.md` unless overridden by settings
+Initialize conversation output behavior using TERSE MODE semantics from `rules/98-communication-protocol.md` and the `default` output style from `governance/styles/default.md` (falling back to `output-styles/default.md` for compatibility) unless overridden by settings
 Treat explicit `/output-style <name>` commands as preferred output style selections following `rules/98-output-styles.md`
-Allow equivalent natural-language requests that unambiguously map to style identifiers (for example, "use learning mode", "讲解多一点") as output style selections
+Allow equivalent natural-language requests that unambiguously map to style identifiers (for example, "use learning mode", "讲解多一点") as output style selections. Style manifests are resolved first from `governance/styles/<name>.md` and then from `output-styles/<name>.md` for compatibility.
 Persist the selected output style for all subsequent responses until the user issues a new `/output-style <name>` command or an explicit reset such as `/output-style reset` or a project-defined default
 
 ### Baseline Skill Initialization
@@ -32,15 +34,19 @@ Directory references in this document assume the canonical `~/.claude` layout. W
 
 ### Agent Selection Conditions
 Execute routing lazily: agents remain unloaded until their command pattern matches the active request, preventing unnecessary policy loading for unrelated tasks.
-Execute routing by command patterns:
-1. Workflow routing: `/draft-commit-message`, `/review-shell-syntax` → `agent:workflow-helper`
-2. LLM governance routing: `/llm-governance/optimize-prompts` → `agent:llm-governance`
+Execute routing by command patterns (governance routers described in `governance/routers/**`, execution agents in `agents/**`):
+1. Workflow routing:
+   - `/draft-commit-message` → `router:workflow-helper` → `agent:draft-commit-message`
+   - `/review-shell-syntax` → `router:workflow-helper` → `agent:review-shell-syntax`
+   - `/check-secrets` → `router:workflow-helper` → `agent:check-secrets`
+2. LLM governance routing: `/llm-governance/optimize-prompts` → `router:llm-governance` → `agent:llm-governance`
    Note: Official spec-based optimization (skills→SIMPLE, commands→DEPTH, agents→COMPLEX, rules→SIMPLE)
-3. Code architecture routing: `/review-code-architecture` → `agent:code-architecture-reviewer` (via direct agent execution)
-4. Refactoring routing: `/refactor-*`, `/review-refactor` → `agent:code-refactor-master` (via direct agent execution)
-5. Planning routing: `/review-plan`, `/plan-*` → `agent:plan-reviewer` (via direct agent execution)
-6. Error resolution routing: `/fix-*`, `/resolve-errors` → `agent:ts-code-error-resolver` (via direct agent execution)
-7. Research routing: `/research-*`, `/web-search` → `agent:web-research-specialist` (via direct agent execution)
+3. Code architecture routing: `/review-code-architecture` → `router:code-architecture` → `agent:code-architecture-reviewer`
+4. Refactoring routing:
+   - `/refactor-*`, `/review-refactor` → `router:code-refactor` → `agent:code-refactor-master` / `agent:refactor-planner`
+5. Planning routing: `/review-plan`, `/plan-*` → `router:plan-review` → `agent:plan-reviewer`
+6. Error resolution routing: `/fix-*`, `/resolve-errors` → `router:ts-error-resolution` → `agent:ts-code-error-resolver`
+7. Research routing: `/research-*`, `/web-search` → `router:web-research` → `agent:web-research-specialist`
 8. Content-based routing: Files with specific extensions → trigger corresponding language skills
 9. Metadata routing: LLM-prompt editing → `agent:llm-governance`
 
@@ -51,7 +57,9 @@ Execute agent mappings on demand; each row describes what loads once the matchin
 | Agent ID | Command Patterns | Default Skills | Optional Skills |
 | --- | --- | --- | --- |
 | `agent:llm-governance` | `/llm-governance/optimize-prompts` | `skill:llm-governance`, `skill:workflow-discipline`, `skill:environment-validation` | None |
-| `agent:workflow-helper` | `/draft-commit-message`, `/review-shell-syntax` | `skill:workflow-discipline`, `skill:automation-language-selection` | `skill:language-shell`, `skill:language-python`, `skill:language-go`, `skill:environment-validation` |
+| `agent:draft-commit-message` | `/draft-commit-message` (via `router:workflow-helper`) | `skill:workflow-discipline`, `skill:environment-validation` | `skill:automation-language-selection` |
+| `agent:review-shell-syntax` | `/review-shell-syntax` (via `router:workflow-helper`) | `skill:workflow-discipline` | `skill:language-shell`, `skill:environment-validation` |
+| `agent:check-secrets` | `/check-secrets` (via `router:workflow-helper`) | `skill:workflow-discipline` | `skill:security-guardrails`, `skill:environment-validation` |
 | `agent:code-architecture-reviewer` | `/review-code-architecture` (via direct agent execution) | `skill:architecture-patterns`, `skill:development-standards`, `skill:security-standards` | Language-specific skills based on codebase |
 | `agent:code-refactor-master` | `/refactor-*`, `/review-refactor` (via direct agent execution) | `skill:architecture-patterns`, `skill:development-standards`, `skill:testing-strategy`, `skill:search-and-refactor-strategy` | `skill:language-*` based on target code |
 | `agent:plan-reviewer` | `/review-plan`, `/plan-*` (via direct agent execution) | `skill:workflow-discipline`, `skill:architecture-patterns`, `skill:testing-strategy`, `skill:search-and-refactor-strategy` | Domain-specific skills based on plan content |

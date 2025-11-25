@@ -1,6 +1,7 @@
 ---
-name: "agent:agent-ops"
+name: "agent-ops"
 description: "Analyze agent and skill system health, backups, and governance reports to produce operational summaries and rollback suggestions"
+layer: execution
 tools:
   - Read
   - Bash
@@ -127,4 +128,3 @@ Error Handling:
 - Risk summary listing critical and high-severity issues with pointers to source artefacts
 - Rollback candidate list with timestamps, directory paths, and affected domains
 - Sync drift summary when config-sync metadata indicates inconsistent environment states
-

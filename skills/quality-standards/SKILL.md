@@ -2,10 +2,10 @@
 name: quality-standards
 description: Code quality metrics and continuous improvement. Use when quality standards
   guidance is required.
+layer: execution
 mode: cross-cutting-quality
 capability-level: 2
 ---
-
 ## Purpose
 
 Define code quality metrics and continuous improvement guidelines that can be applied across services and languages, with explicit thresholds for complexity, maintainability, and static analysis coverage.

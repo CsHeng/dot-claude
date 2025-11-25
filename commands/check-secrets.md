@@ -1,4 +1,19 @@
+---
+name: check-secrets
+description: Check for sensitive information in code
+allowed-tools:
+  - Bash
+  - Bash(git ls-files)
+  - Bash(git diff)
+  - Bash(git diff --cached)
+  - Bash(git show :<file>)
+is_background: false
+style: reasoning-first
+---
+
 # Check for secrets in current project
+
+## Purpose
 
 Useful for security audits before commits or code reviews.
 
@@ -29,4 +44,4 @@ Useful for security audits before commits or code reviews.
 - Provides severity assessment
 - Suggests remediation steps
 
-⚠️  This is a defensive security tool for detecting accidental credential exposure.
+This is a defensive security tool for detecting accidental credential exposure.

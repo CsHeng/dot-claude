@@ -216,7 +216,7 @@ This project follows the LLM Prompt Philosophy outlined in `docs/llm-philosophy.
 
 ### Design Principles
 
-The system is designed according to the Taxonomy RFC (`docs/taxonomy-rfc.md`):
+The system is designed according to the `docs/taxonomy-rfc.md`:
 - **Memory → Agent → Skill → Command**: Hierarchical execution flow
 - **User-level inheritance**: Project-level configurations inherit user-level defaults
 - **Clean separation**: User-level (global) vs project-level (scoped) components

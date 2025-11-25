@@ -1,6 +1,7 @@
 ---
 name: "agent:llm-governance"
 description: "Execute LLM governance audits with deterministic rule validation, dependency analysis, and compliance reporting"
+layer: execution
 tools:
   - Read
   - Bash(python3 commands/llm-governance/optimize-prompts/tool_checker.py *)
@@ -33,12 +34,13 @@ permissions:
   - read-llm-facing-files
   - write-governed-files-with-backup
 ---
-
 # LLM Governance Agent
 
 ## Mission
 
-Execute LLM governance audits with deterministic rule validation, comprehensive compliance reporting, and strict read-only enforcement.
+Execute LLM governance audits with deterministic rule validation, comprehensive compliance reporting,
+and strict read-only enforcement, based on routing and rule selection performed by the governance
+layer (entrypoints and routers).
 
 ## Capability Profile
 
@@ -61,11 +63,12 @@ Execute LLM governance audits with deterministic rule validation, comprehensive 
 
 ## Implementation Toolchain
 
-- Use `tool_checker.py` to detect and select file discovery, text search, and structural analysis tools.
-- Use `llm_spec_validator.py` to validate skills, agents, commands, rules, and memory files against manifest and content rules.
-- Use `dependency_analyzer.py` to validate the `rules → skill → agent → command` dependency graph and detect cycles or invalid directions.
-- Use `system_test.py` to run end-to-end governance checks across the `.claude` directory.
-- Use `optimize-prompts.py` to combine governance validation, dependency analysis, candidate generation, backup creation, and optional writeback.
+- Tool scripts (execution layer):
+  - `commands/llm-governance/optimize-prompts/tool_checker.py`
+  - `.../llm_spec_validator.py`
+  - `.../dependency_analyzer.py`
+  - `.../system_test.py`
+  - `.../optimize-prompts.py`
 
 ## DEPTH Workflow Phases
 

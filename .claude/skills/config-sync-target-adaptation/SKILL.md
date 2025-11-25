@@ -1,6 +1,7 @@
 ---
 name: config-sync-target-adaptation
 description: Coordinate target-specific adapters for Droid, Qwen, Codex, OpenCode, and Amp CLI environments.
+layer: execution
 tags:
   - toolchain
   - config-sync
@@ -8,9 +9,6 @@ tags:
 mode: target-adaptation
 capability-level: 2
 style: tool-first
-source:
-  - ~/.claude/docs/taxonomy-rfc.md
-  - commands/config-sync/README.md
 capability: >
   Select and execute target-specific adapter scripts to synchronize
   rules, permissions, commands, settings, and memory for each supported

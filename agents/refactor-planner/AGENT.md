@@ -1,12 +1,11 @@
 ---
 name: "agent:refactor-planner"
 description: "Analyze code structure and create comprehensive refactoring plans"
-tools: []
+layer: execution
 capability-level: 2
 loop-style: structured-phases
 style: reasoning-first
 ---
-
 ## Role Definition
 Create comprehensive refactoring analysis and systematic implementation plans through deep architectural assessment and risk-based prioritization.
 
