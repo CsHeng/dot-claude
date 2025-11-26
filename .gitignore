@@ -20,6 +20,12 @@ backup/
 # macOS system files
 .DS_Store
 
+# Node tooling
+node_modules/
+.pnpm-store/
+.pnpm-home/
+.pnpm-global/
+
 # Sensitive local configuration
 /.mise.local.toml
 

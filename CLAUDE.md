@@ -39,6 +39,7 @@ Execute routing by command patterns (governance routers described in `governance
    - `/draft-commit-message` → `router:workflow-helper` → `agent:draft-commit-message`
    - `/review-shell-syntax` → `router:workflow-helper` → `agent:review-shell-syntax`
    - `/check-secrets` → `router:workflow-helper` → `agent:check-secrets`
+   - `/lint-markdown` → `router:workflow-helper` → `agent:lint-markdown`
 2. LLM governance routing: `/llm-governance/optimize-prompts` → `router:llm-governance` → `agent:llm-governance`
    Note: Official spec-based optimization (skills→SIMPLE, commands→DEPTH, agents→COMPLEX, rules→SIMPLE)
 3. Code architecture routing: `/review-code-architecture` → `router:code-architecture` → `agent:code-architecture-reviewer`
@@ -60,6 +61,7 @@ Execute agent mappings on demand; each row describes what loads once the matchin
 | `agent:draft-commit-message` | `/draft-commit-message` (via `router:workflow-helper`) | `skill:workflow-discipline`, `skill:environment-validation` | `skill:automation-language-selection` |
 | `agent:review-shell-syntax` | `/review-shell-syntax` (via `router:workflow-helper`) | `skill:workflow-discipline` | `skill:language-shell`, `skill:environment-validation` |
 | `agent:check-secrets` | `/check-secrets` (via `router:workflow-helper`) | `skill:workflow-discipline` | `skill:security-guardrails`, `skill:environment-validation` |
+| `agent:lint-markdown` | `/lint-markdown` (via `router:workflow-helper`) | `skill:lint-markdown`, `skill:workflow-discipline`, `skill:environment-validation` | `skill:search-and-refactor-strategy`, `skill:security-logging` |
 | `agent:code-architecture-reviewer` | `/review-code-architecture` (via direct agent execution) | `skill:architecture-patterns`, `skill:development-standards`, `skill:security-standards` | Language-specific skills based on codebase |
 | `agent:code-refactor-master` | `/refactor-*`, `/review-refactor` (via direct agent execution) | `skill:architecture-patterns`, `skill:development-standards`, `skill:testing-strategy`, `skill:search-and-refactor-strategy` | `skill:language-*` based on target code |
 | `agent:plan-reviewer` | `/review-plan`, `/plan-*` (via direct agent execution) | `skill:workflow-discipline`, `skill:architecture-patterns`, `skill:testing-strategy`, `skill:search-and-refactor-strategy` | Domain-specific skills based on plan content |
@@ -102,8 +104,14 @@ Execute skill loading:
 ### `agent:workflow-helper`
 Execute skill loading:
 - Load: `skill:workflow-discipline`, `skill:automation-language-selection`
-- Conditional load: `skill:language-shell` for `/review-shell-syntax` command, `skill:language-python` for Python files/tasks, `skill:language-go` for Go files/tasks, Language skills based on task context
+- Conditional load: `skill:language-shell` for `/review-shell-syntax` command, `skill:language-python` for Python files/tasks, `skill:language-go` for Go files/tasks, `skill:lint-markdown` for `/lint-markdown` command, Language skills based on task context
 - Escalation: Fallback to appropriate specialist agent
+
+### `agent:lint-markdown`
+Execute skill loading:
+- Load: `skill:lint-markdown`, `skill:workflow-discipline`, `skill:environment-validation`
+- Conditional load: `skill:search-and-refactor-strategy` for advanced pattern matching, `skill:security-logging` for audit operations
+- Escalation: Fallback to `agent:workflow-helper` for integration issues
 
 ### `agent:code-architecture-reviewer`
 Execute skill loading:
