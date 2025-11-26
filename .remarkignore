@@ -1,0 +1,26 @@
+# Human-facing documentation - skip strict LLM-facing rules
+docs/**
+README*
+commands/**/README*.md
+src/**
+examples/**
+tests/**
+ide/**
+
+# Backup and temporary directories - skip all detection
+backup/**
+.claude/backup/**
+.claude/.backup/**
+**/.backup/**
+**/backup/
+**/backups/
+**/temp/
+**/tmp/
+**/node_modules/
+.pnpm-store/
+.pnpm-home/
+.pnpm-global/
+
+# Node tooling - implementation files
+tools/**/*.mjs
+**/*.js

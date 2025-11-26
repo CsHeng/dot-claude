@@ -9,8 +9,8 @@ MANDATORY on:
 - commands/**/*.md
 - skills/**/SKILL.md
 - agents/**/AGENT.md
-- AGENTS.md
 - rules/**/*.md
+- AGENTS.md
 - CLAUDE.md
 - .claude/settings.json
 
