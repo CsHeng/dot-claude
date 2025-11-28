@@ -1,30 +1,33 @@
 ---
 name: language-python
-description: Python language patterns and best practices. Use when language python
-  guidance is required or when selecting a primary language for non-trivial automation.
-layer: execution
-mode: language-guidelines
-capability-level: 1
+description: Python language patterns and best practices. Use when language python guidance is required or when selecting a primary language for non-trivial automation.
 allowed-tools:
   - Bash(uv)
   - Bash(ruff)
   - Bash(pytest)
+metadata:
+  capability-level: 1
+  layer: execution
+  mode: language-guidelines
 ---
 ## Key Execution Capabilities
 
 ### Code Validation
+
 - Run syntax and type checking: `ruff check`, `mypy`
 - Execute linting and formatting with ruff
 - Run tests with pytest
 - Validate project structure and dependencies
 
 ### Tool Integration
+
 - Use `ruff` for linting, formatting, and code analysis
 - Leverage `uv` for package management and virtual environments
 - Apply pytest for testing frameworks
 - Execute mypy for type checking
 
 ### Execution Context
+
 - Process Python files from filesystem layer
 - Generate structured reports with findings
 - Create minimal, rule-compliant patches for violations

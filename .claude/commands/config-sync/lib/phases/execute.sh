@@ -1,3 +1,6 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
 phase_execute() {
   if $DRY_RUN; then
     log_info "[execute] Dry-run mode enabled; no filesystem changes applied"

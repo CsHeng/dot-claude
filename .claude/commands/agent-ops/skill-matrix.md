@@ -1,12 +1,13 @@
 ---
-name: "agent-ops:skill-matrix"
 description: "Print a capability matrix for all skills including capability level, mode, and style labels"
+name: agent-ops-skill-matrix
 argument-hint: "[root-dir]"
 allowed-tools:
   - Read
-  - Bash(commands/agent-ops/scripts/skill-matrix.sh *)
-is_background: false
-style: minimal-chat
+  - Bash(skills/llm-governance/scripts/skill-matrix.sh *)
+metadata:
+  is_background: false
+  style: minimal-chat
 ---
 
 ## Usage
@@ -24,7 +25,7 @@ When no root directory is provided, default to the current working directory.
 ## Workflow
 
 1. Resolve the root directory argument or default to the current directory.
-2. Invoke `commands/agent-ops/scripts/skill-matrix.sh <root-dir>` to collect skill manifests.
+2. Invoke `skills/llm-governance/scripts/skill-matrix.sh <root-dir>` to collect skill manifests.
 3. Print a tabular summary of each skill including:
    - Skill identifier
    - Capability level

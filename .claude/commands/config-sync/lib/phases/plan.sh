@@ -1,3 +1,6 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
 phase_plan() {
   if [[ ! -f "$PLAN_FILE" ]]; then
     log_error "[plan] Plan file not found at $PLAN_FILE"

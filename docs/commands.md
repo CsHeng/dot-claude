@@ -8,7 +8,6 @@ The commands directory contains slash commands for various workflows including c
 ├── config-sync/                    # Config-sync command suite
 │   ├── README.md                   # Config-sync system reference
 │   ├── sync-cli.md/.sh             # Main orchestrator for CLI tool sync
-│   ├── sync-project-rules.md/.sh   # Project rules sync for IDEs
 │   ├── adapters/                   # Target-specific shell adapters
 │   │   ├── droid.sh
 │   │   ├── qwen.sh
@@ -37,8 +36,7 @@ The commands directory contains slash commands for various workflows including c
 │       ├── backup-cleanup.sh       # Automatic cleanup
 │       ├── executor.sh             # Phase execution
 │       └── sync-taxonomy-component.sh
-├── llm-governance/optimize-prompts.md    # LLM-facing manifest optimization
-│   └── README.md                         # Implementation details
+├── llm-governance.md                    # LLM-facing manifest optimization
 ├── agent-ops/                     # AgentOps utilities
 │   ├── health-report.md           # Agent and skill health reporting
 │   ├── agent-matrix.md            # Agent capability matrix view
@@ -58,13 +56,12 @@ The commands directory contains slash commands for various workflows including c
 | Command | Purpose | Key Features |
 |---------|---------|--------------|
 | `/config-sync:sync-cli` | Unified orchestrator for config-sync workflows | Multi-target support (droid, qwen, codex, opencode, amp), 9-phase pipeline, plan generation, verification, rollback |
-| `/config-sync:sync-project-rules` | Sync shared Claude rules to project IDE directories | Cursor (`.cursor/rules`), VS Code Copilot (`.github/instructions`), auto-detection, header processing |
 
 ### LLM Governance Commands
 
 | Command | Purpose | Scope |
 |---------|---------|-------|
-| `/llm-governance/optimize-prompts` | Design-time audits and fixes for LLM-facing files | All LLM-facing files (commands, skills, agents, rules, settings), dependency analysis, specification validation |
+| `/llm-governance` | Design-time audits and fixes for LLM-facing files | All LLM-facing files (commands, skills, agents, rules, settings), dependency analysis, specification validation |
 
 ### AgentOps Commands
 
@@ -95,13 +92,13 @@ Each command file must include YAML frontmatter with:
 ### Naming Conventions
 - Use slash-style names for top-level handlers
 - Reference other commands via published slash form, not file paths
-- Use hyphens for multi-word command names (e.g., `sync-project-rules`)
+- Use hyphens for multi-word command names
 
 ### Development Best Practices
 - Tool adapters exclude internal `config-sync/` module when syncing to external CLIs
 - Use `commands/config-sync/lib/common.sh` for shared utilities
 - Include parameter tables, usage examples, and error handling documentation
-- Follow `rules/99-llm-prompt-writing-rules.md` for LLM-facing content
+- Follow `skills/llm-governance/rules/99-llm-prompt-writing-rules.md` for LLM-facing content
 - Implement proper error handling with descriptive exit codes
 - Maintain strict shell mode (`set -euo pipefail`) in all bash scripts
 
@@ -115,6 +112,6 @@ Each command file must include YAML frontmatter with:
 
 - **[Config-Sync Guide](./config-sync-guide.md)** - Complete sync system documentation
 - **[Config-Sync README](../commands/config-sync/README.md)** - Technical reference and architecture
-- **[LLM Governance README](../commands/llm-governance/optimize-prompts/README.md)** - Implementation details
+- **[LLM Governance Scripts README](../skills/llm-governance/scripts/README.md)** - Implementation details and usage
 - **[Settings Reference](./settings.md)** - Configuration hierarchy and permissions
 - **[Directory Structure](./directory-structure.md)** - Detailed file organization

@@ -1,25 +1,26 @@
 ---
-name: "agent:draft-commit-message"
-description: "Analyze git changes in the current repository and propose high-quality commit messages without executing git commit."
-layer: execution
-capability-level: 2
-loop-style: DEPTH
-style: reasoning-first
-tools:
+name: agent:draft-commit-message
+description: Analyze git changes in the current repository and propose high-quality commit messages without executing git commit.
+allowed-tools:
   - Read
   - Bash(git status)
   - Bash(git diff)
   - Bash(git diff --cached)
   - Bash(git log -1 --format='%an %ae')
-required-skills:
-  - filesystem
-  - git
+metadata:
+  capability-level: 2
+  default-skills:
+    - filesystem
+    - git
+  layer: execution
+  loop-style: DEPTH
+  style: reasoning-first
+---
 # Draft Commit Message Agent
 
 ## Mission
 
-Generate one or more commit message proposals based on the current git repository state,
-respecting directory filters and summary notes, while never running `git commit` itself.
+Generate one or more commit message proposals based on the current git repository state, respecting directory filters and summary notes, while never running `git commit` itself.
 
 ## Capability Profile
 
@@ -126,6 +127,7 @@ respecting directory filters and summary notes, while never running `git commit`
 ---
 
 ## Analysis Summary
+
 - Scope: <directory>
 - Staged files: [...]
 - Unstaged files: [...]
@@ -133,5 +135,6 @@ respecting directory filters and summary notes, while never running `git commit`
 - Renames/moves: internal / into-scope / out-of-scope
 
 ## Recommendations
+
 - <staging/splitting guidance>
 ```

@@ -1,22 +1,26 @@
 ---
 name: llm-governance
 description: LLM content governance and compliance standards. Use when llm governance guidance is required.
-layer: execution
-mode: stateful-governance
-capability-level: 2
-style: minimal-chat
 allowed-tools:
-  - Bash(python3 commands/llm-governance/optimize-prompts/tool_checker.py *)
-  - Bash(python3 commands/llm-governance/optimize-prompts/llm_spec_validator.py *)
+  - Bash(python3 skills/llm-governance/scripts/tool_checker.py *)
+  - Bash(python3 skills/llm-governance/scripts/validator.py *)
+  - Bash(skills/llm-governance/scripts/agent-matrix.sh *)
+  - Bash(skills/llm-governance/scripts/skill-matrix.sh *)
+  - Bash(skills/llm-governance/scripts/structure-check.sh *)
   - Read
   - Write
   - Edit
+metadata:
+  capability-level: 2
+  layer: execution
+  mode: stateful-governance
+  style: minimal-chat
 ---
 ## Purpose
 
 Enforce LLM content governance for all LLM-facing files using TERSE mode defaults, rule-driven validation, and deterministic tooling.
 
-Apply rules from `rules/99-llm-prompt-writing-rules.md` and related governance rule files through standardized validators instead of ad-hoc scripts.
+Apply rules from `skills/llm-governance/rules/99-llm-prompt-writing-rules.md` and related governance rule files through standardized validators instead of ad-hoc scripts. Provide operational health reporting, capability matrix generation, and structural compliance checking for agents, skills, commands, and governance files (Layer 2 and Layer 3).
 
 ## IO semantics
 
@@ -40,20 +44,22 @@ Side effects: Backups created by orchestration commands before modifications; no
   - `skills/**/SKILL.md`
   - `agents/**/AGENT.md`
   - `rules/**/*.md`
+  - `governance/**/*.md` (Layer 2: entrypoints, routers, rules, styles)
   - `CLAUDE.md`
   - `AGENTS.md`
   - `.claude/settings.json`
-- Exclude non LLM-facing directories such as documentation, examples, tests, IDE metadata, backup directories, and any file containing `dont-optimize: true` in frontmatter.
+- Exclude non LLM-facing directories such as documentation, examples, tests, IDE metadata, and backup directories.
 
 ### 3. Automated Validation
 
-- Run `python3 commands/llm-governance/optimize-prompts/llm_spec_validator.py <directory>` across the selected scope.
+- Run `python3 skills/llm-governance/scripts/validator.py <directory>` across the selected scope.
+- Validator uses `skills/llm-governance/scripts/config.yaml` as Single Source of Truth (SSOT) for all validation rules.
 - For each file, detect:
   - Body bold markers outside code blocks.
   - Emoji and decorative Unicode characters.
   - Narrative paragraphs and conversational patterns.
   - Missing or malformed frontmatter for skills, agents, commands, rules, and memory files.
-- Classify violations by severity using rule definitions from `rules/99-llm-prompt-writing-rules.md`.
+- Classify violations by severity using rule definitions from `skills/llm-governance/rules/99-llm-prompt-writing-rules.md`.
 
 ### 4. Content Normalization Guidelines
 
@@ -69,10 +75,17 @@ Side effects: Backups created by orchestration commands before modifications; no
   - Ensure required frontmatter fields and section ordering per directory classification.
   - Normalize heading levels and list formatting for clarity and determinism.
 
-### 5. Integration with Orchestration Commands
+### 5. Operational Health and Matrix Reporting
 
-- Delegate bulk analysis, candidate generation, backup creation, and writeback decisions to `/llm-governance/optimize-prompts` and `agent:llm-governance`.
+- Generate agent and skill capability matrices using `agent-matrix.sh` and `skill-matrix.sh` to snapshot capability-level, loop-style, and style coverage.
+- Run `structure-check.sh` to validate taxonomy-rfc compliance (layer: execution annotations, absence of legacy COMMAND.md files).
+- Correlate governance findings with operational metadata for health reports and rollback candidate identification.
+
+### 6. Integration with Orchestration Commands
+
+- Delegate bulk analysis, candidate generation, backup creation, and writeback decisions to `/llm-governance` and `agent:llm-governance`.
 - Use this skill to interpret validator results, derive rewrite strategies, and keep governance behavior aligned with rule files.
+- Support agent-ops health reporting by providing validation results, capability matrices, and structural compliance checks.
 
 ## Validation Criteria
 

@@ -1,14 +1,15 @@
 ---
-name: check-secrets
 description: Check for sensitive information in code
+name: check-secrets
 allowed-tools:
   - Bash
   - Bash(git ls-files)
   - Bash(git diff)
   - Bash(git diff --cached)
   - Bash(git show :<file>)
-is_background: false
-style: reasoning-first
+metadata:
+  is_background: False
+  style: reasoning-first
 ---
 
 # Check for secrets in current project

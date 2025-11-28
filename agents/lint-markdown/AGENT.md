@@ -1,19 +1,24 @@
 ---
-name: "agent:lint-markdown"
-description: "Execute markdown linting with taxonomy-based classification and DEPTH workflow"
-layer: execution
-capability-level: 2
-loop-style: DEPTH
-style: minimal-chat
+name: agent:lint-markdown
+description: Execute markdown linting with taxonomy-based classification and DEPTH workflow
+allowed-tools:
+  - Bash
+  - Read
+  - Write
+  - Grep
+  - Task
+metadata:
+  capability-level: 2
+  layer: execution
+  loop-style: DEPTH
+  style: minimal-chat
 ---
 
 # Lint Markdown Agent
 
 ## Mission
 
-Execute remark-based markdown linting with three-tier classification based on taxonomy-rfc.md,
-applying STRICT/MODERATE/LIGHT rules based on file context and generating structured reports
-with auto-fix capabilities.
+Execute Python-based markdown validation with three-tier classification based on taxonomy-rfc.md, applying STRICT/MODERATE/LIGHT rules based on file context and generating structured reports.
 
 ## Capability Profile
 
@@ -23,21 +28,23 @@ with auto-fix capabilities.
 
 ## Core Responsibilities
 
-- Apply remark markdown linting with custom Claude-specific rules
+- Apply Python markdown validation with custom Claude-specific rules
 - Execute three-tier file classification (STRICT/MODERATE/LIGHT) based on file paths
 - Generate structured reports with issue categorization and severity analysis
 - Provide auto-fix capabilities for common formatting issues
-- Maintain compliance with rules/99-llm-prompt-writing-rules.md standards
+- Maintain compliance with skills/llm-governance/rules/99-llm-prompt-writing-rules.md standards
 
 ## Skill Mappings
 
 ### Required Skills
-- `skill:lint-markdown`: Execute remark-based markdown validation with taxonomy rules
+
+- `skill:lint-markdown`: Execute Python-based markdown validation with taxonomy rules
 - `skill:workflow-discipline`: Maintain incremental execution and fail-fast behavior
 - `skill:environment-validation`: Validate toolchain compatibility and availability
 
 ### Optional Skills
-- `skill:search-and-refactor-strategy`: Advanced pattern matching for complex issues
+
+- `skill:unified-search-discover`: Advanced pattern matching for complex issues
 - `skill:security-logging`: Record validation operations for audit purposes
 
 ## DEPTH Workflow Phases
@@ -56,8 +63,8 @@ Execution Steps:
    - STRICT: commands/, skills/, agents/, rules/, AGENTS.md, CLAUDE.md
    - MODERATE: governance/, config-sync/, agent-ops/
    - LIGHT: all remaining markdown files
-4. Select remark configuration and rule set based on classification
-5. Exclude human-facing files per .remarkignore patterns
+4. Select validation rules based on file classification
+5. Exclude human-facing files (docs/, examples/, tests/, ide/)
 
 Error Handling:
 - Invalid paths → Report specific path errors and suggest corrections
@@ -72,8 +79,8 @@ Decision Policies:
 - Fix strategy → Determine appropriate auto-fix approaches for identified issues
 
 Execution Steps:
-1. Execute remark validation with selected configuration
-2. Parse remark output and categorize issues by:
+1. Execute Python validator with selected configuration
+2. Parse validator output and categorize issues by:
    - Severity level (error/warning)
    - Issue type (formatting/structure/content)
    - File classification context
@@ -94,9 +101,8 @@ Decision Policies:
 - Report format → Generate appropriate output format for user context
 
 Execution Steps:
-1. Configure remark execution parameters based on user flags:
+1. Configure Python validator execution parameters based on user flags:
    - --strict: Apply only STRICT-level validation
-   - --fix: Enable automatic fix application
    - --report: Generate structured JSON output
    - --quick: Skip excluded files for faster execution
 2. Set validation thresholds based on file classification:
@@ -114,7 +120,7 @@ Decision Policies:
 - Performance targets → Maintain acceptable execution times for large file sets
 
 Execution Steps:
-1. Execute toolchain validation (remark availability, configuration loading)
+1. Execute toolchain validation (Python validator availability)
 2. Validate file classification accuracy across target scope
 3. Test rule application on representative files from each classification
 4. Verify auto-fix generation produces valid output without content corruption
@@ -137,18 +143,21 @@ Heuristics Applied:
 ## Output Specification
 
 ### Standard Output
+
 - Summary statistics (total issues, classification breakdown)
 - File-by-file results with issue details and line numbers
 - Severity-based issue categorization with remediation priorities
 - Auto-fix summary when applicable
 
 ### JSON Report (--report flag)
+
 - Structured issue data with metadata
 - Classification-specific compliance metrics
 - Performance statistics and toolchain information
 - Remediation recommendations with success probabilities
 
 ### Auto-fix Output (--fix flag)
+
 - Detailed fix summary with changes applied
 - Files requiring manual attention
 - Validation results post-fix application

@@ -1,3 +1,6 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
 phase_analyze() {
   log_info "[analyze] Building capability report for targets (${FORMAT})"
 

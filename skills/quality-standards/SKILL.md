@@ -1,10 +1,10 @@
 ---
 name: quality-standards
-description: Code quality metrics and continuous improvement. Use when quality standards
-  guidance is required.
-layer: execution
-mode: cross-cutting-quality
-capability-level: 2
+description: Code quality metrics and continuous improvement. Use when quality standards guidance is required.
+metadata:
+  capability-level: 2
+  layer: execution
+  mode: cross-cutting-quality
 ---
 ## Purpose
 

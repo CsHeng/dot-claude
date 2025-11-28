@@ -22,7 +22,7 @@ execution agents while enforcing architecture, quality, and workflow-discipline 
   - `rule-block:development-standards`
   - `rule-block:architecture-patterns`
   - `rule-block:testing-strategy`
-  - `rule-block:search-and-refactor-strategy`
+  - `rule-block:unified-search-discover`
 - Prefer **incremental, reversible refactors** over large bang-bang changes.
 - Require explicit confirmation before destructive file operations.
 

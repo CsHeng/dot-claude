@@ -131,13 +131,7 @@
       "Bash(sfdisk :*)",
       "Bash(parted :*)",
       "Bash(shred :*)",
-      "Bash(wipe :*)",
-      "Read(**/.cursor/**)",
-      "Read(**/.kiro/**)",
-      "Read(**/.github/instructions/**)",
-      "Glob(**/.cursor/**)",
-      "Glob(**/.kiro/**)",
-      "Glob(**/.github/instructions/**)"
+      "Bash(wipe :*)"
     ],
     "ask": [
       "Bash(terraform plan:*)",

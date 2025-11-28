@@ -53,7 +53,7 @@ Comprehensive troubleshooting guide for the Claude Code configuration system, co
    ```bash
    # Use the review commands to validate
    /review-shell-syntax
-   /llm-governance/optimize-prompts
+   /llm-governance
    ```
 
 ### Environment Variables Not Working
@@ -145,55 +145,6 @@ Comprehensive troubleshooting guide for the Claude Code configuration system, co
    ```bash
    claude /config-sync:sync-cli --action=sync --plan-file=plan.json --from-phase=prepare
    ```
-
-## 📂 Project Rules Sync Issues
-
-### IDE Sync Fails
-
-**Symptoms**: `claude /config-sync:sync-project-rules` fails
-
-**Solutions**:
-1. **Check project detection**:
-   ```bash
-   # Verify git repository
-   git status
-
-   # Or set project directory manually
-   CLAUDE_PROJECT_DIR=/path/to/project claude /config-sync:sync-project-rules --all
-   ```
-
-2. **Check IDE directories**:
-   ```bash
-   # Verify IDE directories can be created
-   mkdir -p .cursor/rules .github/instructions
-   ```
-
-3. **Run verification**:
-   ```bash
-   claude /config-sync:sync-project-rules --verify-only
-   ```
-
-### Rules Not Loading in IDE
-
-**Symptoms**: IDE doesn't show Claude rules
-
-**Solutions**:
-1. **Check file locations**:
-   ```bash
-   # Cursor
-   ls -la .cursor/rules/
-
-   # VS Code Copilot
-   ls -la .github/instructions/
-   ```
-
-2. **Verify file contents**:
-   ```bash
-   # Check if files have content
-   head .cursor/rules/*.md
-   ```
-
-3. **Restart IDE** after syncing rules
 
 ## 🐛 Command Issues
 
@@ -300,7 +251,7 @@ claude /doctor
 
 # Review commands for validation
 /review-shell-syntax
-/llm-governance/optimize-prompts
+/llm-governance
 ```
 
 ### Log Locations

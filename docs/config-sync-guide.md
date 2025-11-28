@@ -56,22 +56,18 @@ claude /config-sync:sync-cli --action=sync --plan-file=~/.claude/backup/plan-202
 
 - **Primary orchestrator**: `claude /config-sync:sync-cli` - Full workflow management
 - **Adapter commands**: Tool-specific operations for targeted tasks
-- **Project integration**: `claude /config-sync:sync-project-rules` - IDE synchronization
 
 ### PlantUML Integration
 
 The system includes PlantUML sequence diagrams for workflow visualization:
 
 - **CLI Workflow**: `docs/config-sync-cli-sequence-diagram.puml`
-- **Project Rules Workflow**: `docs/config-sync-project-sequence-diagram.puml`
 
 These diagrams can be rendered to SVG for documentation:
 ```bash
 # Render CLI workflow diagram
 plantuml -tsvg docs/config-sync-cli-sequence-diagram.puml
 
-# Render project rules workflow diagram
-plantuml -tsvg docs/config-sync-project-sequence-diagram.puml
 ```
 
 ## Target Tools
@@ -163,35 +159,6 @@ claude /config-sync:sync-cli --action=sync --plan-file=~/.claude/backup/plan-202
 - **Tool adapters**: Single-tool operations, quick syncs, tool-specific issues
 - **Utility adapters**: Targeted tasks (permission mapping, command conversion, etc.)
 
-## Project Rules Integration
-
-### `claude /config-sync:sync-project-rules`
-
-Project-level helper that syncs the shared rule library into IDE assistants (Cursor, VS Code Copilot) for a specific repository.
-
-```bash
-# From inside the project (or pass --project-root / use CLAUDE_PROJECT_DIR)
-claude /config-sync:sync-project-rules --all
-
-# Limit to a single target
-claude /config-sync:sync-project-rules --target=cursor
-
-# Run from another directory
-CLAUDE_PROJECT_DIR=/path/to/project claude /config-sync:sync-project-rules --verify-only
-```
-
-#### Behavior
-
-- Copies `~/.claude/rules/*.md` into the project's AI rule directories (Cursor, VS Code Copilot) using the same numbering and filenames
-- Auto-detects the project root (or honors `--project-root`/`CLAUDE_PROJECT_DIR`) and creates `.cursor/rules` plus `.github/instructions` on demand
-- Script workflow mirrors the slash command UX and can be committed alongside project-specific settings for teams that prefer repo-local tooling
-
-#### Recommendations
-
-- Re-run whenever project rule overrides change or when onboarding new teammates
-- Use the slash command exclusively; no project-local script is required anymore
-- Combine with project-specific documentation to describe any custom rule subsets or overrides
-
 ## Configuration & Safety
 
 ### Settings and Profiles
@@ -276,7 +243,6 @@ claude /config-sync:sync-cli --action=verify --target=qwen --components=rules
 
 - **Targeted updates**: Use `--target` and `--components` flags for specific changes
 - **Regular verification**: Schedule periodic verification runs
-- **Project sync**: Use `claude /config-sync:sync-project-rules` when project rules change
 - **Monitor**: Check CLI output for warnings and recommendations
 
 ### Multi-Tool Management

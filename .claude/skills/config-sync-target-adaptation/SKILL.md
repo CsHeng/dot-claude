@@ -1,34 +1,33 @@
 ---
 name: config-sync-target-adaptation
 description: Coordinate target-specific adapters for Droid, Qwen, Codex, OpenCode, and Amp CLI environments.
-layer: execution
-tags:
-  - toolchain
-  - config-sync
-  - adapters
-mode: target-adaptation
-capability-level: 2
-style: tool-first
-capability: >
-  Select and execute target-specific adapter scripts to synchronize
-  rules, permissions, commands, settings, and memory for each supported
-  CLI environment.
-usage:
-  - "Invoked from /config-sync/sync-cli when --target is set."
-  - "Apply adapter logic for each target/component combination in the plan."
-validation:
-  - "Driver uses sync-cli plan; adapters are not invoked ad-hoc."
-  - "All target paths are resolved via get_target_config_dir/get_target_commands_dir/get_target_rules_dir in lib/common.sh, never by hard-coded home-relative paths."
-  - "Each adapter enforces documented safety and permission constraints."
-  - "Backups exist for all modified target configuration files."
 allowed-tools:
   - Bash(commands/config-sync/adapters/*.sh *)
+metadata:
+  capability-level: 2
+  layer: execution
+  mode: target-adaptation
+  style: tool-first
+  tags:
+    - toolchain
+    - config-sync
+    - adapters
+  usage:
+    - "Invoked from /config-sync/sync-cli when --target is set."
+    - "Apply adapter logic for each target/component combination in the plan."
+  validation:
+    - "Driver uses sync-cli plan; adapters are not invoked ad-hoc."
+    - "All target paths are resolved via get_target_config_dir/get_target_commands_dir/get_target_rules_dir in lib/common.sh, never by hard-coded home-relative paths."
+    - "Each adapter enforces documented safety and permission constraints."
+    - "Backups exist for all modified target configuration files."
 ---
 
 ## Purpose
+
 Coordinate target-specific adapters so that config-sync applies correct rules, permissions, commands, settings, and memory updates for each CLI environment.
 
 ## IO Semantics
+
 Input: Config-sync plan describing targets and components, adapter scripts under .claude/commands/config-sync/adapters, resolved target configuration and rules directories.  
 Output: Adapter execution results and updated target configuration files per environment.  
 Side Effects: Invokes adapter scripts that perform writes to target configuration directories; relies on existing backups created by higher-level workflow phases.

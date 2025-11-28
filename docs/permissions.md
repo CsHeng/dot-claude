@@ -84,8 +84,6 @@ These commands are destructive or potentially dangerous, completely forbidden fr
 - `mkfs :*`, `format :*` - File system formatting
 - `fdisk :*`, `sfdisk :*`, `parted :*` - Disk partitioning
 - `shred :*`, `wipe :*` - Secure deletion tools
-- `Read(**/.cursor/**)`, `Read(**/.kiro/**)`, `Read(**/.github/instructions/**)` - Restricted directory access
-- `Glob(**/.cursor/**)`, `Glob(**/.kiro/**)`, `Glob(**/.github/instructions/**)` - Restricted directory globbing
 
 ### ❓ Commands Requiring Confirmation (ask)
 

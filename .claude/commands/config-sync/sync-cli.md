@@ -1,6 +1,6 @@
 ---
-name: "config-sync:sync-cli"
 description: "Unified orchestrator for config-sync workflows across CLI targets"
+name: config-sync-sync-cli
 argument-hint: "--action=<sync|analyze|verify|adapt|plan|report> --target=<list|all> --components=<list|all>"
 allowed-tools:
   - Read
@@ -11,8 +11,9 @@ allowed-tools:
   - Bash(ls:*)
   - Bash(fd:*)
   - Bash(cat:*)
-is_background: false
-style: tool-first
+metadata:
+  is_background: false
+  style: tool-first
 ---
 
 ## Usage

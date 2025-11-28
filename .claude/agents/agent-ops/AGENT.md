@@ -1,38 +1,39 @@
 ---
-name: "agent-ops"
-description: "Analyze agent and skill system health, backups, and governance reports to produce operational summaries and rollback suggestions"
-layer: execution
+name: agent-ops
+description: Analyze agent and skill system health, backups, and governance reports to produce operational summaries and rollback suggestions
 tools:
   - Read
   - Bash
-capability-level: 3
-loop-style: structured-phases
-style: minimal-chat
-default-skills:
-  - skill:workflow-discipline
-  - skill:environment-validation
-optional-skills:
-  - skill:project-config-sync-overview
-supported-commands:
-  - /agent-ops:health-report
-inputs:
-  - backup-root
-  - run-log-scope
-  - config-sync-scope
-  - governance-report-scope
-outputs:
-  - health-report
-  - risk-summary
-  - rollback-candidates
-  - sync-drift-summary
-fail-fast:
-  - backup-root-missing
-  - backup-structure-invalid
-  - report-parse-failure
-permissions:
-  - read-backup-directories
-  - read-config-sync-metadata
-  - read-governance-reports
+metadata:
+  capability-level: 3
+  default-skills:
+    - skill:workflow-discipline
+    - skill:environment-validation
+  fail-fast:
+    - backup-root-missing
+    - backup-structure-invalid
+    - report-parse-failure
+  inputs:
+    - backup-root
+    - run-log-scope
+    - config-sync-scope
+    - governance-report-scope
+  layer: execution
+  loop_style: structured-phases
+  optional-skills:
+    - skill:config-sync-overview
+  outputs:
+    - health-report
+    - risk-summary
+    - rollback-candidates
+    - sync-drift-summary
+  permissions:
+    - read-backup-directories
+    - read-config-sync-metadata
+    - read-governance-reports
+  style: minimal-chat
+  supported-commands:
+    - /agent-ops:health-report
 ---
 
 # AgentOps Agent
@@ -50,7 +51,7 @@ Produce deterministic health reports, risk summaries, and rollback suggestions f
 ## Core Responsibilities
 
 - Aggregate recent backup, run, and rollback metadata under the configured backup root
-- Correlate config-sync runs, optimize-prompts executions, and current manifest state
+- Correlate config-sync runs, llm-governance executions, and current manifest state
 - Detect obvious drift between environments, capability annotations, and style labels
 - Surface candidate rollback points with affected files and approximate impact scope
 - Generate minimal-chat health reports suitable for both humans and automated tooling
@@ -70,7 +71,7 @@ Decision Policies:
 
 Execution Steps:
 1. Locate backup, run, and rollback directories under the configured backup root
-2. Identify recent optimize-prompts and config-sync executions with timestamps
+2. Identify recent llm-governance and config-sync executions with timestamps
 3. Capture basic counts of runs, rollbacks, and backup sets per domain
 
 Error Handling:

@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+set -euo pipefail
 
 planner_build_adapt_plan() {
   local plan_path="$1"

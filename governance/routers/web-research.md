@@ -21,7 +21,7 @@ agents, applying workflow discipline and security guardrails.
   - `rule-block:llm-governance`
 - Apply security and governance guidance from:
   - `rules/03-security-standards.md`
-  - `rules/99-llm-prompt-writing-rules.md`
+  - `skills/llm-governance/rules/99-llm-prompt-writing-rules.md`
 
 ## Execution Handoff (Layer 3)
 - Default execution agent: `agent:web-research-specialist` (execution layer).

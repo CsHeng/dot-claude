@@ -1,12 +1,13 @@
 ---
-name: "agent-ops:agent-matrix"
 description: "Print a capability matrix for all agents including capability level, loop style, and style labels"
+name: agent-ops-agent-matrix
 argument-hint: "[root-dir]"
 allowed-tools:
   - Read
-  - Bash(commands/agent-ops/scripts/agent-matrix.sh *)
-is_background: false
-style: minimal-chat
+  - Bash(skills/llm-governance/scripts/agent-matrix.sh *)
+metadata:
+  is_background: false
+  style: minimal-chat
 ---
 
 ## Usage
@@ -24,7 +25,7 @@ When no root directory is provided, default to the current working directory.
 ## Workflow
 
 1. Resolve the root directory argument or default to the current directory.
-2. Invoke `commands/agent-ops/scripts/agent-matrix.sh <root-dir>` to collect agent manifests.
+2. Invoke `skills/llm-governance/scripts/agent-matrix.sh <root-dir>` to collect agent manifests.
 3. Print a tabular summary of each agent including:
    - Agent identifier
    - Capability level

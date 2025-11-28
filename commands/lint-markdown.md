@@ -1,24 +1,22 @@
 ---
+description: Validate markdown formatting with taxonomy-based rules using Python validator
 name: lint-markdown
-description: Validate markdown formatting with taxonomy-based rules and auto-fix capabilities
 argument-hint: "[path] [--strict] [--fix] [--report] [--quick]"
 allowed-tools:
   - Bash
   - Read
-  - Bash(npm run lint:md)
-  - Bash(npm run lint:md:fix)
-  - Bash(npm run lint:md:report)
-is_background: false
-style: minimal-chat
+  - Bash(python3 skills/llm-governance/scripts/validator.py *)
+metadata:
+  is_background: False
+  style: minimal-chat
 ---
 
 # Markdown Lint Command
 
 ## Purpose
 
-Validate markdown files using remark with taxonomy-based classification rules. Perform
-STRICT checking for LLM-facing files, MODERATE for governance files, and LIGHT for
-other markdown content. Generate structured reports with auto-fix suggestions.
+Validate markdown files using Python validator with taxonomy-based classification rules. Perform
+STRICT checking for LLM-facing files, MODERATE for governance files, and LIGHT for other markdown content. Generate structured reports with validation findings.
 
 ## Usage
 
@@ -29,10 +27,10 @@ other markdown content. Generate structured reports with auto-fix suggestions.
 ## Arguments
 
 - path: File or directory to lint (default: current directory)
-- --strict: Apply only STRICT-level rules (LLM-facing files)
-- --fix: Automatically fix format issues where possible
-- --report: Generate JSON report instead of terminal output
-- --quick: Skip files matching .remarkignore, faster scanning
+- --strict: Limit scope to LLM-facing files (commands/, skills/**/SKILL.md, agents/**/AGENT.md, rules/**, AGENTS.md, CLAUDE.md)
+- --fix: Automatically fix format issues where possible (uses remark --output)
+- --report: Emit JSON statistics to stdout (temporary file under /tmp, repo stays clean)
+- --quick: Fast pass on LLM-facing + governance files only (commands/, skills/**/SKILL.md, agents/**/AGENT.md, rules/**, governance/, config-sync/, agent-ops/)
 
 ## Workflow
 
@@ -41,9 +39,9 @@ other markdown content. Generate structured reports with auto-fix suggestions.
    - skill:lint-markdown (primary)
    - skill:workflow-discipline (required)
    - skill:environment-validation (required)
-3. Execute linting with taxonomy-based file classification
+3. Execute Python validator with taxonomy-based file classification and flag-specific scopes
 4. Generate structured report with issue categorization
-5. Apply auto-fixes when --fix parameter is specified
+5. Note: Auto-fix capabilities are planned for future implementation
 
 ## What it checks
 

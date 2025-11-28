@@ -1,18 +1,18 @@
 ---
-name: config-sync/README
 description: Configuration synchronization plugin documentation and reference
+name: config-sync-readme
 argument-hint: ''
 allowed-tools: []
-is_background: false
-related-commands:
-  - /config-sync/sync-cli
-  - /config-sync/sync-project-rules
-related-agents:
-  - agent:config-sync
-related-skills:
-  - skill:environment-validation
-  - skill:workflow-discipline
-  - skill:security-logging
+metadata:
+  is_background: false
+  related-agents:
+    - agent:config-sync
+  related-commands:
+    - /config-sync/sync-cli
+  related-skills:
+    - skill:environment-validation
+    - skill:workflow-discipline
+    - skill:security-logging
 ---
 
 ## Usage
@@ -48,7 +48,6 @@ Complete reference documentation including:
 commands/config-sync/
 ├── README.md                     # This reference documentation
 ├── sync-cli.{md,sh}             # Unified slash command and implementation
-├── sync-project-rules.{md,sh}   # IDE rule synchronization
 ├── adapters/                     # Target-specific automation modules
 ├── lib/common.*                  # Shared shell helpers
 ├── lib/phases/                   # Phase execution runners
@@ -63,7 +62,6 @@ commands/config-sync/
 | Command | Purpose | Required Skills |
 | --- | --- | --- |
 | `/config-sync/sync-cli` | Unified orchestration entrypoint for CLI targets | `skill:environment-validation`, `skill:workflow-discipline`, `skill:security-logging`, `skill:config-sync-cli-workflow`, `skill:config-sync-target-adaptation` |
-| `/config-sync/sync-project-rules` | IDE rule directory synchronization for projects | `skill:workflow-discipline`, `skill:security-logging`, `skill:config-sync-project-rules-sync` |
 
 ### Supported Targets
 

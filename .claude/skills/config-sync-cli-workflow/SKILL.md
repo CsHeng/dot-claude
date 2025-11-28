@@ -1,35 +1,34 @@
 ---
 name: config-sync-cli-workflow
 description: Orchestrate multi-target CLI configuration synchronization using config-sync phase runners and planners.
-layer: execution
-tags:
-  - toolchain
-  - workflow
-  - config-sync
-mode: stateful-orchestration
-capability-level: 2
-style: tool-first
-capability: >
-  Execute the config-sync CLI workflow across supported targets using
-  deterministic phases (collect, analyze, plan, prepare, adapt, execute,
-  verify, cleanup, report) with backup and audit support.
-usage:
-  - "/config-sync/sync-cli --action=* across CLI targets."
-  - "Replay existing sync plan files for CLI synchronization."
-validation:
-  - "Normalize parameters against .claude/commands/config-sync/settings.json."
-  - "Precede all write phases with backup and permission checks."
-  - "Enforce phase order and behavior defined in sync-cli.md."
 allowed-tools:
   - Bash(commands/config-sync/sync-cli.sh *)
   - Bash(commands/config-sync/lib/phases/*.sh *)
   - Bash(commands/config-sync/lib/planners/*.sh *)
+metadata:
+  capability-level: 2
+  layer: execution
+  mode: stateful-orchestration
+  style: tool-first
+  tags:
+    - toolchain
+    - workflow
+    - config-sync
+  usage:
+    - "/config-sync/sync-cli --action=* across CLI targets."
+    - "Replay existing sync plan files for CLI synchronization."
+  validation:
+    - "Normalize parameters against .claude/commands/config-sync/settings.json."
+    - "Precede all write phases with backup and permission checks."
+    - "Enforce phase order and behavior defined in sync-cli.md."
 ---
 
 ## Purpose
+
 Drive the multi-target config-sync CLI workflow using the defined phase pipeline with consistent backup and audit behavior.
 
 ## IO Semantics
+
 Input: CLI arguments, settings.json parameters, existing plan files, target tool configuration directories.  
 Output: Execution plans, phase execution metadata, run logs, and backup records.  
 Side Effects: Writes plan files, creates backups under backup directories, updates target configuration files when write phases execute.

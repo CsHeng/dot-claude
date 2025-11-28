@@ -1,3 +1,6 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
 phase_verify() {
   if [[ "$ACTION" != "verify" && "$VERIFY_ENABLED" != true ]]; then
     log_info "[verify] Verification disabled; skipping"
