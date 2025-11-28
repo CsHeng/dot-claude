@@ -1,26 +1,26 @@
 ---
-name: "agent:check-secrets"
-description: "Scan project files for potential secrets and report suspected exposures with remediation guidance."
-layer: execution
-capability-level: 2
-loop-style: DEPTH
-style: reasoning-first
-tools:
+name: agent:check-secrets
+description: Scan project files for potential secrets and report suspected exposures with remediation guidance.
+allowed-tools:
   - Read
   - Bash(git ls-files)
   - Bash(git diff)
   - Bash(git diff --cached)
   - Bash(git show :<file>)
-required-skills:
-  - filesystem
-  - git
+metadata:
+  capability-level: 2
+  default-skills:
+    - filesystem
+    - git
+  layer: execution
+  loop-style: DEPTH
+  style: reasoning-first
 ---
 # Check Secrets Agent
 
 ## Mission
 
-Perform a defensive security scan over the current project to detect potential secrets in source
-and configuration files before commits or reviews, without writing any data back.
+Perform a defensive security scan over the current project to detect potential secrets in source and configuration files before commits or reviews, without writing any data back.
 
 ## Workflow Phases
 

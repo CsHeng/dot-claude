@@ -1,10 +1,10 @@
 ---
 name: testing-strategy
-description: Comprehensive testing strategies and coverage standards. Use when testing
-  strategy guidance is required.
-layer: execution
-mode: cross-cutting-testing
-capability-level: 2
+description: Comprehensive testing strategies and coverage standards. Use when testing strategy guidance is required.
+metadata:
+  capability-level: 2
+  layer: execution
+  mode: cross-cutting-testing
 ---
 ## Purpose
 

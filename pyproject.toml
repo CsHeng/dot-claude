@@ -1,0 +1,11 @@
+[project]
+name = "claude-config"
+version = "0.1.0"
+dependencies = [
+    "PyYAML>=6.0",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+

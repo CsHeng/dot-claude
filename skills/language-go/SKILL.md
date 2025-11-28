@@ -1,33 +1,36 @@
 ---
 name: language-go
-description: Go language patterns and best practices. Use when language go guidance
-  is required.
-layer: execution
-mode: language-guidelines
-capability-level: 1
+description: Go language patterns and best practices. Use when language go guidance is required.
 allowed-tools:
   - Bash(go version)
   - Bash(golangci-lint)
-related-skills:
-  - skill:environment-validation
-  - skill:development-standards
-  - skill:testing-strategy
+metadata:
+  capability-level: 1
+  layer: execution
+  mode: language-guidelines
+  related-skills:
+    - skill:environment-validation
+    - skill:development-standards
+    - skill:testing-strategy
 ---
-## Key Execution Capabilities
 
+## Key Execution Capabilities
 ### Code Validation
+
 - Run `go build` for compilation validation
 - Execute `golangci-lint` for comprehensive linting
 - Run tests with `go test`
 - Validate module structure and dependencies
 
 ### Tool Integration
+
 - Use `golangci-lint` for multi-linter analysis
 - Leverage `go mod` for dependency management
 - Apply `go fmt` and `go vet` for formatting and validation
 - Execute `go test` with coverage for testing
 
 ### Execution Context
+
 - Process Go files from filesystem layer
 - Generate structured reports with findings
 - Create minimal, rule-compliant patches for violations

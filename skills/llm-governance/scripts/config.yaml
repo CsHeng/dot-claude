@@ -1,0 +1,545 @@
+# LLM Governance Configuration
+# Single Source of Truth (SSOT) for all LLM-facing file validation and classification
+# Location: skills/llm-governance/scripts/config.yaml
+
+# Style labels controlled vocabulary
+style_labels:
+  allowed:
+    - reasoning-first
+    - tool-first
+    - minimal-chat
+
+# Directory-based classification rules
+# Classification based purely on directory structure, not file types
+classification:
+  skills:
+    directory_pattern: "skills/**/SKILL.md"
+    framework: "SIMPLE"
+    classification_logic: "Directory name 'skills' indicates model-invoked autonomous capabilities"
+    preserve:
+      - "name:"
+      - "description:"
+      - "Use when"
+      - "tags:"
+      - "source:"
+      - "capability:"
+    remove:
+      - "conversational content"
+      - "unnecessary complexity"
+
+  commands:
+    directory_pattern: "commands/**/*.md"
+    framework: "DEPTH"
+    classification_logic: "Directory name 'commands' indicates user-invoked slash commands"
+    preserve:
+      - "allowed-tools:"
+      - "argument-hint:"
+      - "(default:"
+      - "```bash"
+      - "Exit code:"
+    remove:
+      - "verbose explanations"
+
+  agents:
+    directory_pattern: "agents/**/*.md"
+    framework: "COMPLEX"
+    classification_logic: "Directory name 'agents' indicates subagents with delegation capabilities"
+    preserve:
+      - "name:"
+      - "description:"
+      - "tools:"
+      - "model:"
+      - "default-skills:"
+      - "optional-skills:"
+      - "supported-commands:"
+      - "routing logic"
+    remove:
+      - "redundant descriptions"
+
+  rules:
+    directory_pattern: "rules/**/*.md"
+    framework: "SIMPLE"
+    classification_logic: "Directory name 'rules' indicates imperative rule files"
+    preserve:
+      - "REQUIRED:"
+      - "PROHIBITED:"
+      - "OPTIONAL:"
+    remove:
+      - "all narrative content"
+      - "explanatory text"
+
+  core:
+    directory_pattern:
+      - "AGENTS.md"
+      - "CLAUDE.md"
+      - ".claude/settings.json"
+    framework: "MINIMAL"
+    classification_logic: "Core memory and routing manifests share global dependencies and deterministic ordering"
+    preserve:
+      - "skill:"
+      - "required-skills:"
+      - "related-skills:"
+      - "routing"
+      - "permission"
+    remove:
+      - "redundant explanations"
+
+  output-styles:
+    directory_pattern: "output-styles/**/*.md"
+    framework: "SIMPLE"
+    classification_logic: "Output style manifests that configure system-prompt presets for the main delegate agent"
+    preserve:
+      - "name:"
+      - "description:"
+      - "keep-coding-instructions:"
+    remove:
+      - "narrative content not tied to style behavior"
+
+  # Governance directory (Layer 2) classifications
+  governance-rules:
+    directory_pattern: "governance/rules/**/*.md"
+    framework: "SIMPLE"
+    classification_logic: "Directory name 'governance/rules' indicates governance rule-block files"
+    preserve:
+      - "name:"
+      - "description:"
+      - "layer:"
+      - "sources:"
+    remove:
+      - "narrative content"
+      - "explanatory text"
+
+  governance-routers:
+    directory_pattern: "governance/routers/**/*.md"
+    framework: "SIMPLE"
+    classification_logic: "Directory name 'governance/routers' indicates workflow router files"
+    preserve:
+      - "routing logic"
+      - "policy"
+      - "execution handoff"
+    remove:
+      - "narrative content"
+      - "explanatory text"
+
+  governance-entrypoints:
+    directory_pattern: "governance/entrypoints/**/*.md"
+    framework: "SIMPLE"
+    classification_logic: "Directory name 'governance/entrypoints' indicates UI entry point files"
+    preserve:
+      - "slash command"
+      - "intent"
+      - "routing"
+    remove:
+      - "narrative content"
+      - "explanatory text"
+
+  governance-styles:
+    directory_pattern: "governance/styles/**/*.md"
+    framework: "SIMPLE"
+    classification_logic: "Output style manifests in governance directory"
+    preserve:
+      - "name:"
+      - "description:"
+      - "keep-coding-instructions:"
+      - "source:"
+    remove:
+      - "narrative content not tied to style behavior"
+
+# Frontmatter schemas for different manifest types
+# Key principle: Official fields (top-level) vs Custom metadata fields (metadata section)
+frontmatter_schemas:
+  skill:
+    official_fields:
+      required:
+        - name
+        - description
+      optional:
+        - allowed-tools
+    metadata_fields:
+      - capability-level
+      - layer
+      - mode
+      - style
+      - tags
+      - related-skills
+      - usage
+      - source
+      - validation
+    validation_rules:
+      name:
+        pattern: "^[a-z0-9-]+$"
+        max_length: 64
+      description:
+        max_length: 1024
+        recommended_includes: ["Use when"]
+      allowed_tools:
+        types: [list, str]
+    structural_requirements:
+      capability_level_2_plus:
+        required_sections:
+          - "## IO Semantics"
+          - "## Deterministic Steps"
+      capability_level_3_plus: {}
+
+  command:
+    official_fields:
+      required:
+        - description
+      optional:
+        - name
+        - argument-hint
+        - allowed-tools
+        - model
+        - disable-model-invocation
+    metadata_fields:
+      - is_background
+      - style
+      - capability-level
+      - layer
+    validation_rules:
+      name:
+        pattern: "^[a-z0-9-]+$"
+        max_length: 64
+        optional: true
+      description:
+        max_length: 1024
+        optional: false
+      argument_hint:
+        type: str
+        optional: true
+      allowed_tools:
+        types: [list, str]
+        optional: true
+      model:
+        type: str
+        optional: true
+      disable_model_invocation:
+        type: bool
+        optional: true
+    structural_requirements:
+      recommended_sections:
+        - "## Usage"
+        - "## Arguments"
+        - "## Workflow"
+        - "## Output"
+
+  agent:
+    official_fields:
+      required:
+        - name
+        - description
+      optional:
+        - allowed-tools
+        - tools
+        - model
+        - permissionMode
+        - skills
+    metadata_fields:
+      - default-skills
+      - optional-skills
+      - supported-commands
+      - inputs
+      - outputs
+      - fail-fast
+      - permissions
+      - escalation
+      - capability-level
+      - loop-style
+      - style
+      - layer
+    validation_rules:
+      name:
+        pattern: "^[a-z0-9-]+$"
+        max_length: 64
+      description:
+        max_length: 1024
+      allowed_tools:
+        types: [list, str]
+        optional: true
+      tools:
+        types: [list, str]
+        optional: true
+      capability_level:
+        type: int
+        range: [0, 4]
+        optional: true
+      loop_style:
+        type: str
+        optional: true
+        required_when: "capability_level >= 3"
+    structural_requirements:
+      capability_level_3_plus:
+        required_sections:
+          - "## Capability Profile"
+        required_fields:
+          - loop_style
+
+  # Governance file types (Layer 2)
+  rule-block:
+    official_fields:
+      required:
+        - name
+        - description
+      optional: []
+    metadata_fields:
+      - layer
+      - sources
+    validation_rules:
+      name:
+        pattern: "^rule-block:[a-z0-9-]+$"
+        max_length: 64
+      description:
+        max_length: 1024
+      layer:
+        type: str
+        enum: ["governance"]
+        optional: false
+      sources:
+        type: list
+        items:
+          type: str
+        optional: true
+    structural_requirements:
+      recommended_sections:
+        - "## Purpose"
+        - "## Application"
+
+  router:
+    official_fields:
+      required: []
+      optional:
+        - description
+    metadata_fields:
+      - layer
+    validation_rules:
+      description:
+        max_length: 1024
+        optional: true
+      layer:
+        type: str
+        enum: ["governance"]
+        optional: true
+    structural_requirements:
+      recommended_sections:
+        - "## Layer"
+        - "## Purpose"
+        - "## Policy"
+        - "## Execution Handoff"
+
+  entrypoint:
+    official_fields:
+      required: []
+      optional:
+        - description
+    metadata_fields:
+      - layer
+    validation_rules:
+      description:
+        max_length: 1024
+        optional: true
+      layer:
+        type: str
+        enum: ["governance"]
+        optional: true
+    structural_requirements:
+      recommended_sections:
+        - "## Layer"
+        - "## Slash Command"
+        - "## Intent"
+        - "## Routing"
+
+  output-style:
+    official_fields:
+      required:
+        - name
+        - description
+      optional: []
+    metadata_fields:
+      - keep-coding-instructions
+      - source
+    validation_rules:
+      name:
+        pattern: "^[a-z0-9-]+$"
+        max_length: 64
+      description:
+        max_length: 1024
+      keep_coding_instructions:
+        type: bool
+        optional: true
+      source:
+        type: str
+        optional: true
+    structural_requirements:
+      recommended_sections:
+        - "## Purpose"
+        - "## Behavior"
+
+# Metadata validation rules
+# All custom metadata fields must be placed in the metadata section to avoid conflicts with Claude Code official fields
+metadata_rules:
+  # Field placement rules
+  placement:
+    official_fields_must_be_top_level:
+      - name
+      - description
+      - allowed-tools
+      - tools
+      - model
+      - permissionMode
+      - skills
+      - argument-hint
+      - disable-model-invocation
+    custom_fields_must_be_in_metadata:
+      - capability-level
+      - loop-style
+      - layer
+      - sources
+      - style
+      - mode
+      - related-skills
+      - keep-coding-instructions
+      - source
+      - default-skills
+      - optional-skills
+      - supported-commands
+      - inputs
+      - outputs
+      - fail-fast
+      - permissions
+      - escalation
+      - tags
+      - usage
+      - validation
+      - is_background
+
+  # Field-specific validation rules
+  fields:
+    capability-level:
+      type: int
+      range: [0, 4]
+      required_for: ["agent", "skill"]
+      optional: true
+      description: "Capability axis level (0-4) for agents and skills"
+
+    loop-style:
+      type: str
+      required_for: ["agent"]
+      required_when: "capability-level >= 3"
+      optional: true
+      description: "Execution loop label (e.g., DEPTH, structured-phases)"
+
+    layer:
+      type: str
+      enum: ["governance", "execution"]
+      required_for: ["rule-block", "router", "entrypoint", "agent", "skill"]
+      optional: true
+      description: "Taxonomy layer identifier (governance for Layer 2, execution for Layer 3)"
+
+    sources:
+      type: list
+      items:
+        type: str
+      required_for: ["rule-block"]
+      optional: true
+      description: "List of canonical policy file paths referenced by rule-blocks"
+
+    style:
+      type: str
+      enum: ["reasoning-first", "tool-first", "minimal-chat"]
+      required_for: ["agent", "skill", "command"]
+      optional: true
+      description: "Prompt or execution style label"
+
+    mode:
+      type: str
+      required_for: ["skill"]
+      optional: true
+      description: "Capability axis label (descriptive, implementation-defined)"
+
+    related-skills:
+      type: list
+      items:
+        type: str
+        pattern: "^skill:[a-z0-9-]+$"
+      required_for: ["skill"]
+      optional: true
+      description: "List of related skill identifiers"
+
+    keep-coding-instructions:
+      type: bool
+      required_for: ["output-style"]
+      optional: true
+      description: "Whether to keep coding instructions in output style"
+
+    source:
+      type: str
+      required_for: ["output-style"]
+      optional: true
+      description: "Source file path for output style"
+
+    default-skills:
+      type: list
+      items:
+        type: str
+        pattern: "^skill:[a-z0-9-]+$"
+      required_for: ["agent"]
+      optional: true
+      description: "List of default skill identifiers for agents"
+
+    optional-skills:
+      type: list
+      items:
+        type: str
+        pattern: "^skill:[a-z0-9-]+$"
+      required_for: ["agent"]
+      optional: true
+      description: "List of optional skill identifiers for agents"
+
+    supported-commands:
+      type: list
+      items:
+        type: str
+      required_for: ["agent"]
+      optional: true
+      description: "List of command patterns supported by agents"
+
+    is_background:
+      type: bool
+      required_for: ["command"]
+      optional: true
+      description: "Whether command runs in background"
+
+# Content validation rules
+content_rules:
+  prohibited_elements:
+    - bold_markers_in_body: true
+    - emojis: true
+    - narrative_content: true
+    - modal_verbs_in_body:
+        verbs: ["may", "might", "could"]
+        exception: "normative rule definitions may include modal verbs when required"
+  
+  required_style:
+    - imperative_or_declarative: true
+    - terse_directive: true
+    - high_density: true
+
+# Validation severity levels
+severity_levels:
+  critical:
+    - missing_required_fields
+    - invalid_field_types
+    - prohibited_elements_in_body
+    - schema_violations
+    - custom_field_in_top_level
+    - official_field_in_metadata
+  warning:
+    - missing_recommended_fields
+    - style_label_unknown
+    - missing_recommended_sections
+    - narrative_content_detected
+    - metadata_field_placement_warning
+  info:
+    - missing_optional_fields
+    - style_compatibility_hints
+

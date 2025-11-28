@@ -1,15 +1,14 @@
 ---
 name: networking-controls
-description: Network security and connectivity standards. Use when networking controls
-  guidance is required.
-layer: execution
-mode: cross-cutting-security
-capability-level: 2
+description: Network security and connectivity standards. Use when networking controls guidance is required.
+metadata:
+  capability-level: 2
+  layer: execution
+  mode: cross-cutting-security
 ---
 ## Purpose
 
-Help agents apply networking control requirements (default deny, segmentation, controlled outbound
-access) in concrete recommendations and plans, without re-encoding the full guideline text.
+Help agents apply networking control requirements (default deny, segmentation, controlled outbound access) in concrete recommendations and plans, without re-encoding the full guideline text.
 
 ### Timeout and Backoff Configuration
 

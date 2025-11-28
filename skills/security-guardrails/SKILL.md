@@ -1,10 +1,10 @@
 ---
 name: security-guardrails
-description: Comprehensive security implementation standards. Use when security guardrails
-  guidance is required.
-layer: execution
-mode: cross-cutting-security
-capability-level: 2
+description: Comprehensive security implementation standards. Use when security guardrails guidance is required.
+metadata:
+  capability-level: 2
+  layer: execution
+  mode: cross-cutting-security
 ---
 ## Purpose
 

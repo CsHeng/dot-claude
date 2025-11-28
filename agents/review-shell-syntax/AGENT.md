@@ -1,25 +1,25 @@
 ---
-name: "agent:review-shell-syntax"
-description: "Audit shell scripts for syntax and guideline violations and propose minimal auto-fix patches."
-layer: execution
-capability-level: 2
-loop-style: DEPTH
-style: tool-first
-tools:
+name: agent:review-shell-syntax
+description: Audit shell scripts for syntax and guideline violations and propose minimal auto-fix patches.
+allowed-tools:
   - Read
   - Bash(bash -n:*)
   - Bash(sh -n:*)
   - Bash(zsh -n:*)
   - Bash(shellcheck :*)
-required-skills:
-  - filesystem
+metadata:
+  capability-level: 2
+  default-skills:
+    - filesystem
+  layer: execution
+  loop-style: DEPTH
+  style: tool-first
 ---
 # Review Shell Syntax Agent
 
 ## Mission
 
-Analyze a shell script for syntax errors and guideline violations and propose conservative,
-rule-driven auto-fix patches, following `rules/12-shell-guidelines.md`.
+Analyze a shell script for syntax errors and guideline violations and propose conservative, rule-driven auto-fix patches, following `rules/12-shell-guidelines.md`.
 
 ## Workflow Phases (DEPTH)
 

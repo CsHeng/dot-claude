@@ -25,6 +25,7 @@ node_modules/
 .pnpm-store/
 .pnpm-home/
 .pnpm-global/
+.npm-cache/
 
 # Sensitive local configuration
 /.mise.local.toml

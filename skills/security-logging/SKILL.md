@@ -1,18 +1,18 @@
 ---
 name: security-logging
-description: Security controls and structured logging implementation. Use when security
-  logging guidance is required.
-layer: execution
-mode: cross-cutting-security
-capability-level: 2
+description: Security controls and structured logging implementation. Use when security logging guidance is required.
 allowed-tools:
   - Bash(shellcheck)
   - Bash(grep -E '^[[:space:]]*[^[:space:]]+[[:space:]]*=')
   - Bash(rg --pcre2 'password|secret|key|token')
-related-skills:
-  - skill:environment-validation
-  - skill:development-standards
-  - skill:workflow-discipline
+metadata:
+  capability-level: 2
+  layer: execution
+  mode: cross-cutting-security
+  related-skills:
+    - skill:environment-validation
+    - skill:development-standards
+    - skill:workflow-discipline
 ---
 ## Purpose
 

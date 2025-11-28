@@ -1,28 +1,31 @@
 ---
 name: language-shell
-description: Shell scripting standards and safety practices. Use when language shell
-  guidance is required or when selecting Shell as a thin wrapper or OS-near glue layer.
-layer: execution
-mode: language-guidelines
-capability-level: 1
+description: Shell scripting standards and safety practices. Use when language shell guidance is required or when selecting Shell as a thin wrapper or OS-near glue layer.
 allowed-tools:
   - Bash(shellcheck)
+metadata:
+  capability-level: 1
+  layer: execution
+  mode: language-guidelines
 ---
 ## Key Execution Capabilities
 
 ### Script Validation
+
 - Run syntax checking: `bash -n`, `sh -n`, `zsh -n`
 - Execute static analysis with shellcheck
 - Validate shebang lines and strict mode compliance
 - Check for security vulnerabilities and coding violations
 
 ### Tool Integration
+
 - Use `shellcheck` for comprehensive linting
 - Leverage shell-specific parameter expansion features
 - Apply POSIX vs bash vs zsh feature detection
 - Implement platform-specific compatibility checks
 
 ### Execution Context
+
 - Process script files from filesystem layer
 - Generate structured reports with line-by-line findings
 - Create minimal, rule-compliant patches for violations

@@ -79,7 +79,6 @@ Custom commands that extend Claude Code functionality:
 commands/
 ├── config-sync/                    # Multi-tool sync utilities
 │   ├── sync-cli.{md,sh}          # Unified CLI orchestrator
-│   ├── sync-project-rules.{md,sh} # IDE rules sync
 │   ├── adapters/                  # Target-specific shell adapters (*.sh)
 │   ├── lib/                       # Shared guidance and phase runners
 │   └── scripts/                   # Backup cleanup and diagnostics
@@ -89,7 +88,7 @@ commands/
 │   └── adapters/                  # Project-specific adapters
 ├── draft-commit-message.md         # Git commit helper
 ├── review-shell-syntax.md          # Shell script validation
-├── llm-governance/optimize-prompts.md  # LLM-facing manifest optimization (llm-governance:optimize-prompts)
+├── llm-governance.md                  # LLM-facing manifest optimization
 └── agent-ops/health-report.md      # AgentOps health-report command
 ```
 
@@ -102,7 +101,6 @@ docs/
 ├── commands.md                     # Command reference
 ├── config-sync-guide.md           # Complete sync system guide
 ├── config-sync-cli-sequence-diagram.puml  # CLI workflow visualization
-├── config-sync-project-sequence-diagram.puml  # IDE integration workflow
 ├── directory-structure.md         # This file
 ├── permissions.md                  # Permission system reference
 └── settings.md                     # Configuration hierarchy

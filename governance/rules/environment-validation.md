@@ -13,7 +13,7 @@ sources:
 
 Apply environment and toolchain validation rules from `rules/20-tool-standards.md` and
 `rules/21-language-tool-selection.md` before running workflows that depend on external tools and
-language runtimes, such as `/llm-governance/optimize-prompts`.
+language runtimes, such as `/llm-governance`.
 
 ## Application
 

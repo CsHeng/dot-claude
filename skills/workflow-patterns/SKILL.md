@@ -1,18 +1,16 @@
 ---
 name: workflow-patterns
-description: Apply multi-phase workflow and handoff patterns. Use when workflow patterns
-  guidance is required.
-layer: execution
-mode: cross-cutting-governance
-capability-level: 2
+description: Apply multi-phase workflow and handoff patterns. Use when workflow patterns guidance is required.
+metadata:
+  capability-level: 2
+  layer: execution
+  mode: cross-cutting-governance
 ---
 ## Purpose
 
-Help agents structure work into clear phases and handoffs once a router has decided that workflow
-patterns are relevant (e.g., multi-step refactors, complex plan reviews).
+Help agents structure work into clear phases and handoffs once a router has decided that workflow patterns are relevant (e.g., multi-step refactors, complex plan reviews).
 
 ## IO Semantics
 
 Input: Current plan or workflow description and any existing phase/handoff structure.
-Output: Adjusted or annotated workflows that make phase boundaries, handoffs, and communication
-requirements explicit.
+Output: Adjusted or annotated workflows that make phase boundaries, handoffs, and communication requirements explicit.
