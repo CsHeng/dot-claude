@@ -67,11 +67,38 @@ Rename and Move Classification:
 
 ## Output
 
-Generated Commit Message:
+**Output a multi-line git commit command with literal newlines for readability.**
+
+**CRITICAL OUTPUT RULES**:
+- Output the command as multi-line text with literal newlines inside the quoted message
+- Use double quotes `"..."` for the message argument
+- Include actual line breaks (not `\n` escape sequences) in the message body
+- The entire output block should be copy-paste executable as-is
+- Keep subject line under 50 characters
+
+**Commit Message Content Requirements**:
 - Single subject line with imperative mood (max 50 characters)
+- Blank line after subject
 - Optional detailed body with change descriptions and file references derived from staged changes under the target directory
 - Proper formatting following conventional commit standards for a single commit and focused on currently staged changes
 - Exclude raw `git status` or `git diff` sections such as "Changes not staged for commit" or "Untracked files" from the commit message content
+
+Correct output example:
+```
+git commit -m "feat: extend rime configuration with new resources
+
+- Add 12 new dictionaries (cuoyin, dikuang, diming, duoyin, jichu, lianxiang, shengwu, shici, shuxue, wu-hua-sheng-yi-yao, wuzhong, zi)
+- Add keyboard background themes (default, google_black, google_white)
+- Add new Lua modules (alt_jump, auto_phrase, kp_number_processor, super_filter, charset.bin)
+- Add iconfont for UI elements
+- Update existing dictionaries and schema configurations
+- Enhance OpenCC conversion tables (chinese_english, english_chinese, others)"
+```
+
+NEVER output this (single-line format prevents preview readability):
+```
+git commit -m $'subject\n\nbody'
+```
 
 Analysis Summary:
 - Scope: Directory used for change analysis
