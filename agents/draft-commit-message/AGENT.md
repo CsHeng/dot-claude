@@ -69,11 +69,23 @@ Generate one or more commit message proposals based on the current git repositor
 - Constraints:
   - Base the commit message on **staged** changes only.
   - Describe unstaged changes, if needed, only in analysis/guidance, not in the commit body.
+- Output format:
+  - Assemble into a multi-line git commit command with literal newlines
+  - Use double quotes `"..."` for the message argument
+  - Include actual line breaks (not `\n` escape sequences) in the message body
+  - The entire output block should be copy-paste executable as-is
+  - Keep subject line under 50 characters, add blank line after subject
 
 ### Phase 5: Reporting & Guidance
 
 - Produce:
-  - Proposed commit message (subject + body).
+  - **A multi-line git commit command** with literal newlines for readability:
+    ```
+    git commit -m "subject
+
+    - Bullet point 1
+    - Bullet point 2"
+    ```
   - Analysis summary:
     - Scope directory.
     - Affected files under scope.
@@ -82,9 +94,7 @@ Generate one or more commit message proposals based on the current git repositor
   - Next-step guidance:
     - Which files to stage or unstage.
     - Suggestions for splitting large or mixed-type changes into multiple commits.
-- Explicitly remind the user to:
-  - Review the proposed message.
-  - Run `git commit` manually if satisfied.
+- The command must be directly executable in shell without any modification
 
 ## Error Handling
 
@@ -106,15 +116,16 @@ Generate one or more commit message proposals based on the current git repositor
 - Never run `git commit`, `git push`, or destructive history commands.
 - Operate in read-only mode with respect to git history and working tree contents.
 - Respect the active governance rules for communication protocol and output styles.
+- **MANDATORY OUTPUT FORMAT**: Output ONLY a single-line executable git commit command: `git commit -m $'subject\n\nbody'`
+- **FORBIDDEN**: Never use heredoc (`<<EOF`), command substitution (`$(...)`), multi-line shell constructs, or any other shell syntax that requires parsing
+- Use `$'...'` syntax for the message argument (enables `\n` interpretation)
+- Use `\n` for line breaks within the commit message body
+- The output must be directly copy-pasteable into a shell and execute without errors
 
 ## Output Format (Example)
 
-```text
-# Proposed Commit Message
-
-<subject line>
-
-<body lines wrapped at ~72 columns>
+```bash
+git commit -m $'feat: extend rime configuration with new dictionaries\n\n- Add 8 new dictionaries (cuoyin, dikuang, diming, duoyin, jichu, lianxiang, shengwu, shici, shuxue, wu-hua-sheng-yi-yao, wuzhong, zi)\n- Add keyboard background themes (default, google_black, google_white)\n- Add new Lua modules (alt_jump, auto_phrase, kp_number_processor, super_filter)\n- Update existing dictionaries and schema configurations\n- Add iconfont for UI elements'
 
 ---
 
