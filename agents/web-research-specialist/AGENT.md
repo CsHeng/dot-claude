@@ -6,11 +6,6 @@ allowed-tools:
   - WebSearch
   - WebFetch
   - Task
-metadata:
-  capability-level: 2
-  layer: execution
-  loop-style: structured-phases
-  style: reasoning-first
 ---
 
 # Role Definition

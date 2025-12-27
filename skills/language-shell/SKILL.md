@@ -3,10 +3,6 @@ name: language-shell
 description: Shell scripting standards and safety practices. Use when language shell guidance is required or when selecting Shell as a thin wrapper or OS-near glue layer.
 allowed-tools:
   - Bash(shellcheck)
-metadata:
-  capability-level: 1
-  layer: execution
-  mode: language-guidelines
 ---
 ## Key Execution Capabilities
 

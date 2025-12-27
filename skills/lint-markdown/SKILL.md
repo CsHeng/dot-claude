@@ -6,14 +6,6 @@ allowed-tools:
   - Read
   - Glob
   - Grep
-metadata:
-  capability-level: 1
-  layer: execution
-  mode: validation-and-reporting
-  related-skills:
-    - skill:workflow-discipline
-    - skill:environment-validation
-  style: minimal-chat
 ---
 
 ## Purpose

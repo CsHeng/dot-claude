@@ -3,11 +3,6 @@ name: output-style-governance
 description: Validate and govern output-style manifests under output-styles in the user workspace.
 allowed-tools:
   - Read
-metadata:
-  capability-level: 1
-  layer: execution
-  mode: governance-core
-  style: minimal-chat
 ---
 
 ## Purpose

@@ -9,11 +9,6 @@ allowed-tools:
   - Bash
   - Grep
   - Glob
-metadata:
-  capability-level: 3
-  layer: execution
-  loop_style: structured-phases
-  style: tool-first
 ---
 
 # Role Definition

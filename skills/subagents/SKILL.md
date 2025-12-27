@@ -1,8 +1,6 @@
 ---
 name: subagents
 description: Execution-layer skill for spawning subagents via runAgent
-metadata:
-  layer: execution
 ---
 
 ## Commands

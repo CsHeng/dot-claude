@@ -4,14 +4,6 @@ description: Go language patterns and best practices. Use when language go guida
 allowed-tools:
   - Bash(go version)
   - Bash(golangci-lint)
-metadata:
-  capability-level: 1
-  layer: execution
-  mode: language-guidelines
-  related-skills:
-    - skill:environment-validation
-    - skill:development-standards
-    - skill:testing-strategy
 ---
 
 ## Key Execution Capabilities

@@ -7,14 +7,6 @@ allowed-tools:
   - Bash(git diff)
   - Bash(git diff --cached)
   - Bash(git log -1 --format='%an %ae')
-metadata:
-  capability-level: 2
-  default-skills:
-    - filesystem
-    - git
-  layer: execution
-  loop-style: DEPTH
-  style: reasoning-first
 ---
 # Draft Commit Message Agent
 

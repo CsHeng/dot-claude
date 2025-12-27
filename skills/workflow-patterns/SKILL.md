@@ -1,10 +1,6 @@
 ---
 name: workflow-patterns
 description: Apply multi-phase workflow and handoff patterns. Use when workflow patterns guidance is required.
-metadata:
-  capability-level: 2
-  layer: execution
-  mode: cross-cutting-governance
 ---
 ## Purpose
 

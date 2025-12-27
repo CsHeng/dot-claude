@@ -1,22 +1,22 @@
 # Architecture Patterns Directives
 
-## scope
+## Scope
 REQUIRED: Apply these architectural patterns to all software system designs across all programming languages and frameworks.
 
-## absolute-prohibitions
+## Absolute-Prohibitions
 PROHIBITED: Couple business logic to framework-specific code
 PROHIBITED: Create circular dependencies between modules
 PROHIBITED: Implement God objects or anti-patterns
 PROHIBITED: Ignore SOLID principles in new code
 
-## communication-protocol
+## Communication-Protocol
 REQUIRED: Apply interface-driven development with explicit dependency injection
 REQUIRED: Prioritize composition over inheritance with small, focused interfaces
 REQUIRED: Use clean architecture with clear separation of concerns
 
-## structural-rules
+## Structural-Rules
 
-### core-architectural-principles
+### Core Architectural Principles
 REQUIRED: Encourage modular design for maintainability and reusability
 REQUIRED: Keep business logic separate from framework-specific code
 REQUIRED: Use interface-driven development with explicit dependency injection
@@ -26,11 +26,11 @@ REQUIRED: Ensure compatibility with project's language/framework versions
 REQUIRED: Use dependency injection for better testability
 REQUIRED: Implement proper separation of concerns
 REQUIRED: Structure code using layered approach: handlers → services → repositories → domain models
-OPTIONAL: Apply domain-driven design principles for complex business logic
+Consider Apply domain-driven design principles for complex business logic
 REQUIRED: Use constructor functions for dependency injection
 REQUIRED: Create small, purpose-specific interfaces rather than large ones
 
-### project-structure-patterns
+### Project Structure Patterns
 REQUIRED: Use single application structure for simple projects:
 ```
 myapp/
@@ -62,9 +62,9 @@ project/
 └── tests/                 # Integration tests
 ```
 
-## language-rules
+## Language-Rules
 
-### python-project-structure
+### Python Project Structure
 REQUIRED: Use single app structure:
 ```
 app/                       # Single app structure
@@ -76,31 +76,31 @@ app/                       # Single app structure
 └── utils/                # Helper functions
 ```
 
-### flask-application
+### Flask Application
 REQUIRED: Always use application factory pattern for Flask apps
 REQUIRED: Structure: create_app(config_name=None) function in __init__.py
 REQUIRED: Register blueprints, extensions, and error handlers within the factory
 REQUIRED: Use current_app for accessing app instance in request context
 
-### go-project-organization
+### Go Project Organization
 REQUIRED: Use internal/ for private application code
 REQUIRED: Use pkg/ for reusable public libraries
 REQUIRED: Use import order: standard library → third-party → local packages
-OPTIONAL: Place binaries in ./bin/ directory
+Consider Place binaries in ./bin/ directory
 
-## formatting-rules
+## Formatting-Rules
 
-### configuration-management
+### Configuration Management
 REQUIRED: Use environment variables for configuration management
 REQUIRED: Define separate classes: DevelopmentConfig, ProductionConfig, TestingConfig
 REQUIRED: Store sensitive data in environment variables
-OPTIONAL: Use separate configuration files for different environments (dev, staging, prod)
+Consider Use separate configuration files for different environments (dev, staging, prod)
 REQUIRED: Use class-based configuration for better organization
 REQUIRED: Implement validation for configuration values
-OPTIONAL: Provide default values where appropriate
+Consider Provide default values where appropriate
 REQUIRED: Document all configuration options
 
-### api-design-patterns
+### Api Design Patterns
 REQUIRED: Use consistent JSON response structure:
 ```json
 {
@@ -117,9 +117,9 @@ REQUIRED: Use middleware for authentication/authorization checks
 REQUIRED: Implement proper request/response modification
 REQUIRED: Handle cleanup operations (database sessions, etc.)
 
-## naming-rules
+## Naming-Rules
 
-### data-layer-patterns
+### Data Layer Patterns
 REQUIRED: Abstract data access behind repository interfaces
 REQUIRED: Implement specific repositories for different data sources
 REQUIRED: Use dependency injection to provide repositories to services
@@ -133,33 +133,33 @@ REQUIRED: Use separate schemas for input validation and output serialization
 REQUIRED: Implement comprehensive validation rules
 REQUIRED: Sanitize and validate all external inputs
 
-## validation-rules
+## Validation-Rules
 
-### dependency-management
+### Dependency Management
 REQUIRED: Keep dependencies minimal and well-maintained
 REQUIRED: Use version-locked dependencies
-OPTIONAL: Prefer standard library over third-party packages when possible
+Consider Prefer standard library over third-party packages when possible
 REQUIRED: Document all external dependencies with versions
 REQUIRED: Use dependency injection containers where appropriate
 REQUIRED: Define clear interfaces between services
 REQUIRED: Implement proper service lifecycle management
 REQUIRED: Handle service failures gracefully
 
-### performance-architecture
+### Performance Architecture
 REQUIRED: Implement appropriate caching levels (application, database, CDN)
 REQUIRED: Use cache invalidation strategies
 REQUIRED: Monitor cache hit rates and performance
-OPTIONAL: Consider distributed caching for multi-instance deployments
+Consider Consider distributed caching for multi-instance deployments
 REQUIRED: Implement connection pooling
 REQUIRED: Use database indexes effectively
 REQUIRED: Optimize queries to prevent N+1 problems
-OPTIONAL: Consider read replicas for read-heavy applications
-OPTIONAL: Design for horizontal scaling where possible
-OPTIONAL: Implement load balancing strategies
-OPTIONAL: Use message queues for async processing
-OPTIONAL: Consider microservices architecture for large applications
+Consider Consider read replicas for read-heavy applications
+Consider Design for horizontal scaling where possible
+Consider Implement load balancing strategies
+Consider Use message queues for async processing
+Consider Consider microservices architecture for large applications
 
-### security-architecture
+### Security Architecture
 REQUIRED: Implement secure authentication mechanisms
 REQUIRED: Use role-based access control (RBAC)
 REQUIRED: Secure session management

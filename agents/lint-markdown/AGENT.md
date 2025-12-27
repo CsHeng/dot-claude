@@ -7,11 +7,6 @@ allowed-tools:
   - Write
   - Grep
   - Task
-metadata:
-  capability-level: 2
-  layer: execution
-  loop-style: DEPTH
-  style: minimal-chat
 ---
 
 # Lint Markdown Agent

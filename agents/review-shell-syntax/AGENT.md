@@ -7,13 +7,6 @@ allowed-tools:
   - Bash(sh -n:*)
   - Bash(zsh -n:*)
   - Bash(shellcheck :*)
-metadata:
-  capability-level: 2
-  default-skills:
-    - filesystem
-  layer: execution
-  loop-style: DEPTH
-  style: tool-first
 ---
 # Review Shell Syntax Agent
 

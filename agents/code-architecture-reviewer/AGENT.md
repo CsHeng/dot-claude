@@ -7,11 +7,6 @@ allowed-tools:
   - Bash
   - Grep
   - Glob
-metadata:
-  capability-level: 2
-  layer: execution
-  loop-style: DEPTH
-  style: reasoning-first
 ---
 
 # Code Architecture Reviewer Agent

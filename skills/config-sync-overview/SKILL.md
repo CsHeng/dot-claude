@@ -1,26 +1,6 @@
 ---
 name: config-sync-overview
 description: Provide structured config-sync system and directory overview. Use when config-sync architecture guidance is required.
-metadata:
-  capability: |
-    Summarize the config-sync phase pipeline, backup and plan layout, target tool directories, and .claude directory semantics so agents can reason about configuration flows without re-parsing documentation.
-    
-  capability-level: 1
-  layer: execution
-  mode: project-knowledge
-  style: reasoning-first
-  tags:
-    - project
-    - config-sync
-    - architecture
-    - docs
-  usage:
-    - Load with agent:config-sync when high-level config-sync architecture or directory questions must be answered.
-    - Use to resolve questions about backup locations, plan files, target config directories, and configuration precedence.
-  validation:
-    - Keep phase order and target tool tables aligned with docs/config-sync-guide.md.
-    - Keep .claude directory descriptions aligned with docs/directory-structure.md.
-    - Verify PlantUML diagram paths and example commands remain valid.
 ---
 ## Purpose
 

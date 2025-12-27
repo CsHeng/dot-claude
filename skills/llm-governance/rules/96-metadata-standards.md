@@ -3,7 +3,7 @@ file-type: rule
 ---
 
 ## scope
-REQUIRED: Apply these metadata standards to all agents, skills, commands, and governance files that declare custom metadata fields in their manifests.
+REQUIRED: Apply these metadata standards to all agents, skills, and commands that declare custom metadata fields in their manifests.
 
 ## absolute-prohibitions
 PROHIBITED: Place custom metadata fields in top-level frontmatter (must be in metadata section)
@@ -56,11 +56,10 @@ REQUIRED: For level 2 and above:
 
 ### layer-field
 REQUIRED: Use `layer` metadata field to distinguish taxonomy layers:
-- `governance`: Layer 2 (Orchestration & Governance) - for governance/rules, governance/routers, governance/entrypoints
 - `execution`: Layer 3 (Execution) - for agents, skills, commands
 
 REQUIRED: Place `layer` field in metadata section
-REQUIRED: Validate layer value matches file location (governance files should have layer: governance)
+REQUIRED: Validate layer value matches file location
 
 ### sources-field
 REQUIRED: Use `sources` metadata field for rule-blocks to reference canonical policy files
@@ -124,7 +123,6 @@ REQUIRED: For level 2 and above skills, ensure:
 
 ### layer-validation
 REQUIRED: Validate layer field matches file location:
-- Files in `governance/` should have `layer: governance`
 - Files in `agents/`, `skills/`, `commands/` should have `layer: execution` (if present)
 
 ### style-validation

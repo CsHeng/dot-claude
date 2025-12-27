@@ -8,9 +8,6 @@ allowed-tools:
   - Execute
   - Bash(python3 skills/llm-governance/scripts/optimize-prompts.py *)
   - Bash(python3 skills/llm-governance/scripts/system_test.py *)
-metadata:
-  is_background: false
-  style: minimal-chat
 ---
 
 ## Usage
@@ -31,7 +28,7 @@ metadata:
    - `skill:environment-validation`
 2. Validate the toolchain with `python3 skills/llm-governance/scripts/tool_checker.py` and select fd, rg, and ast-grep fallbacks when available.
 3. Resolve target files from the repository root using taxonomy rules and `skills/llm-governance/scripts/config.yaml`:
-   - Include `commands/**/*.md`, `skills/**/SKILL.md`, `agents/**/AGENT.md`, `rules/**/*.md`, `governance/**/*.md`, `CLAUDE.md`, `AGENTS.md`, and `.claude/settings.json`.
+   - Include `commands/**/*.md`, `skills/**/SKILL.md`, `agents/**/AGENT.md`, `rules/**/*.md`, `CLAUDE.md`, `AGENTS.md`, and `.claude/settings.json`.
    - Exclude documentation, examples, tests, IDE metadata, and backup directories.
 4. Apply governance rules from `skills/llm-governance/rules/99-llm-prompt-writing-rules.md` and related rule files through `skill:llm-governance` using `skills/llm-governance/scripts/validator.py` (which uses `config.yaml` as SSOT).
 5. Analyze cross-file dependencies with `skills/llm-governance/scripts/dependency_analyzer.py` to validate the `rules → skill → agent → command` graph and detect cycles or invalid directions.

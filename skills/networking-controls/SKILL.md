@@ -1,10 +1,6 @@
 ---
 name: networking-controls
 description: Network security and connectivity standards. Use when networking controls guidance is required.
-metadata:
-  capability-level: 2
-  layer: execution
-  mode: cross-cutting-security
 ---
 ## Purpose
 

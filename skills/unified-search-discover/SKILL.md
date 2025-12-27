@@ -10,13 +10,6 @@ allowed-tools:
   - Read
   - Write
   - Edit
-metadata:
-  capability-level: 2
-  layer: execution
-  mode: progressive-refinement
-  related-skills:
-    - skill:environment-validation
-  style: assessment-first
 ---
 
 ## Purpose
