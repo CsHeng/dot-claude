@@ -113,19 +113,21 @@ Generate one or more commit message proposals based on the current git repositor
 
 ## Safety Constraints
 
-- Never run `git commit`, `git push`, or destructive history commands.
-- Operate in read-only mode with respect to git history and working tree contents.
-- Respect the active governance rules for communication protocol and output styles.
-- **MANDATORY OUTPUT FORMAT**: Output ONLY a single-line executable git commit command: `git commit -m $'subject\n\nbody'`
-- **FORBIDDEN**: Never use heredoc (`<<EOF`), command substitution (`$(...)`), multi-line shell constructs, or any other shell syntax that requires parsing
-- Use `$'...'` syntax for the message argument (enables `\n` interpretation)
-- Use `\n` for line breaks within the commit message body
-- The output must be directly copy-pasteable into a shell and execute without errors
+- Never run `git commit`, `git push`, or destructive history commands
+- Operate in read-only mode with respect to git history and working tree
+- Output must be directly copy-pasteable into shell
 
 ## Output Format (Example)
 
-```bash
-git commit -m $'feat: extend rime configuration with new dictionaries\n\n- Add 8 new dictionaries (cuoyin, dikuang, diming, duoyin, jichu, lianxiang, shengwu, shici, shuxue, wu-hua-sheng-yi-yao, wuzhong, zi)\n- Add keyboard background themes (default, google_black, google_white)\n- Add new Lua modules (alt_jump, auto_phrase, kp_number_processor, super_filter)\n- Update existing dictionaries and schema configurations\n- Add iconfont for UI elements'
+```
+git commit -m "feat: extend rime configuration with new dictionaries
+
+- Add 8 new dictionaries (cuoyin, dikuang, diming, duoyin, jichu, lianxiang, shengwu, shici, shuxue)
+- Add keyboard background themes (default, google_black, google_white)
+- Add new Lua modules (alt_jump, auto_phrase, kp_number_processor, super_filter)
+- Update existing dictionaries and schema configurations
+- Add iconfont for UI elements"
+```
 
 ---
 
@@ -135,7 +137,6 @@ git commit -m $'feat: extend rime configuration with new dictionaries\n\n- Add 8
 - Staged files: [...]
 - Unstaged files: [...]
 - Change types: feat/fix/refactor/docs/style/test/chore
-- Renames/moves: internal / into-scope / out-of-scope
 
 ## Recommendations
 
