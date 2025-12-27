@@ -7,14 +7,6 @@ allowed-tools:
   - Bash(git diff)
   - Bash(git diff --cached)
   - Bash(git show :<file>)
-metadata:
-  capability-level: 2
-  default-skills:
-    - filesystem
-    - git
-  layer: execution
-  loop-style: DEPTH
-  style: reasoning-first
 ---
 # Check Secrets Agent
 

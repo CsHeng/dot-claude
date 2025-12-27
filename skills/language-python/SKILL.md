@@ -3,28 +3,26 @@ name: language-python
 description: Python language patterns and best practices. Use when language python guidance is required or when selecting a primary language for non-trivial automation.
 allowed-tools:
   - Bash(uv)
+  - Bash(uvx)
   - Bash(ruff)
+  - Bash(ty)
   - Bash(pytest)
-metadata:
-  capability-level: 1
-  layer: execution
-  mode: language-guidelines
 ---
 ## Key Execution Capabilities
 
 ### Code Validation
 
-- Run syntax and type checking: `ruff check`, `mypy`
-- Execute linting and formatting with ruff
-- Run tests with pytest
+- Run syntax and type checking: `uvx ruff check`, `uvx ty`
+- Execute linting and formatting with ruff: `uvx ruff format`
+- Run tests with pytest: `uvx pytest`
 - Validate project structure and dependencies
 
 ### Tool Integration
 
 - Use `ruff` for linting, formatting, and code analysis
-- Leverage `uv` for package management and virtual environments
+- Use `ty` for fast type checking
+- Leverage `uvx` for one-off tool execution without installation
 - Apply pytest for testing frameworks
-- Execute mypy for type checking
 
 ### Execution Context
 
@@ -38,7 +36,7 @@ metadata:
 This skill provides execution-layer error handling for Python code analysis:
 - Invalid Python syntax or imports
 - Missing dependencies or tools
-- Type checking failures
+- Type checking failures (ty)
 - Test execution errors
 
 ## Usage Notes

@@ -1,11 +1,6 @@
 ---
 name: architecture-patterns
 description: Architectural pattern guidance and layering principles. Use when architecture patterns guidance is required.
-metadata:
-  capability-level: 2
-  layer: execution
-  mode: cross-cutting-architecture
-  style: reasoning-first
 ---
 # Core Architecture Patterns
 

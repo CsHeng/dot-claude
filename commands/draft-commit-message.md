@@ -8,9 +8,6 @@ allowed-tools:
   - Bash(git status --short)
   - Bash(git diff --cached)
   - Bash(git diff)
-metadata:
-  is_background: False
-  style: reasoning-first
 ---
 
 ## Usage

@@ -7,9 +7,6 @@ allowed-tools:
   - Bash(git diff)
   - Bash(git diff --cached)
   - Bash(git show :<file>)
-metadata:
-  is_background: False
-  style: reasoning-first
 ---
 
 # Check for secrets in current project

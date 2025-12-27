@@ -1,8 +1,6 @@
 ---
 name: filesystem
 description: Execution-layer skill for filesystem operations
-metadata:
-  layer: execution
 ---
 
 ## Commands

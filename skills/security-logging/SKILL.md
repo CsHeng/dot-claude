@@ -5,14 +5,6 @@ allowed-tools:
   - Bash(shellcheck)
   - Bash(grep -E '^[[:space:]]*[^[:space:]]+[[:space:]]*=')
   - Bash(rg --pcre2 'password|secret|key|token')
-metadata:
-  capability-level: 2
-  layer: execution
-  mode: cross-cutting-security
-  related-skills:
-    - skill:environment-validation
-    - skill:development-standards
-    - skill:workflow-discipline
 ---
 ## Purpose
 

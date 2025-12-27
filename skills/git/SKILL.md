@@ -1,8 +1,6 @@
 ---
 name: git
 description: Execution-layer skill for git inspection and safe patching
-metadata:
-  layer: execution
 ---
 
 ## Commands

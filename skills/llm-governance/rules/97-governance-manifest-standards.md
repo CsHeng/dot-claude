@@ -1,11 +1,19 @@
 # Governance Manifest Standards
 
+**DEPRECATED**: The governance/ directory (Layer 2) has been orphaned. These standards are preserved for historical reference only.
+
 ## scope
-REQUIRED: Apply these standards to all governance manifests under `.claude/governance/**/*.md` including:
+DEPRECATED: Governance manifests under `.claude/governance/**/*.md` are no longer actively maintained:
 - `governance/rules/**/*.md` (rule-block files)
 - `governance/routers/**/*.md` (router files)
 - `governance/entrypoints/**/*.md` (entrypoint files)
 - `governance/styles/**/*.md` (output-style files)
+
+Current standards apply only to:
+- `agents/**/*.md` (AGENT.md files)
+- `skills/**/SKILL.md` (SKILL.md files)
+- `commands/**/*.md` (command files)
+- `rules/**/*.md` (rule files)
 
 ## absolute-prohibitions
 PROHIBITED: Place custom metadata fields in top-level frontmatter (must be in metadata section)

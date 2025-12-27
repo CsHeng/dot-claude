@@ -1,10 +1,6 @@
 ---
 name: automation-language-selection
 description: Choose between Shell and Python for generated automation code based on task traits. Use when automation language selection guidance is required.
-metadata:
-  capability-level: 1
-  layer: execution
-  mode: decision-support
 ---
 ## Purpose
 

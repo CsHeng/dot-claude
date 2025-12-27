@@ -8,11 +8,6 @@ allowed-tools:
   - Grep
   - WebSearch
   - WebFetch
-metadata:
-  capability-level: 2
-  layer: execution
-  loop-style: structured-phases
-  style: reasoning-first
 ---
 
 # Role Definition

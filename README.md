@@ -10,10 +10,18 @@ This system enables centralized management of Claude Code configurations with su
 
 The system operates across two complementary levels:
 
-- **User-Level** (`~/.claude/`): Global configuration, governance, and personal automation tools that apply to all projects
-- **Project-Level** (`.claude/` within projects): Project-specific management tools (config-sync, agent-ops) that are scoped to individual projects
+- **User-Level** (`~/.claude/`): Global configuration and personal automation tools that apply to all projects
+- **Project-Level** (`.claude/` within projects): Project-specific management tools (config-sync) scoped to individual projects
 
 When Claude Code runs in the `~/.claude/` directory, it merges both levels for development purposes. In normal projects, only user-level components are available.
+
+### Discovery Model
+
+Agents, skills, and commands are discovered automatically via their frontmatter - no manual registration required:
+- **Commands** (`commands/*.md`): User-visible slash commands
+- **Agents** (`agents/*/AGENT.md`): Execution units with system prompts
+- **Skills** (`skills/*/SKILL.md`): Reusable capability modules
+- **Rules** (`rules/*.md`): Development standards (auto-loaded by CLAUDE.md)
 
 ## Key Components
 
@@ -39,7 +47,6 @@ Specialized agents for different workflows:
 
 **Project-Level Agents** (project-specific management):
 - `agent:config-sync`: Configuration synchronization and management
-- `agent:agent-ops`: Agent system health monitoring
 
 ### 🛠️ Skills Framework
 Domain-specific skills providing focused expertise:
@@ -64,13 +71,14 @@ Comprehensive rule set covering:
 Global configuration available across all projects:
 ```
 ~/.claude/
-├── CLAUDE.md                 # User-level memory configuration and routing
-├── rules/                     # Global governance and standards rules
-├── skills/                    # User-level skill definitions
-├── agents/                    # User-level agent definitions
-├── commands/                  # User-level command definitions
-├── output-styles/             # Named output style manifests
-├── docs/                      # Documentation and philosophy
+├── CLAUDE.md                 # Rule-loading conditions
+├── AGENTS.md                 # Agent discovery documentation
+├── rules/                    # Development standards (auto-loaded)
+├── skills/                   # User-level skill definitions
+├── agents/                   # User-level agent definitions
+├── commands/                 # User-level command definitions
+├── output-styles/            # Named output style manifests
+├── docs/                     # Documentation
 ├── settings.json             # Global configuration
 └── README.md                 # This file
 ```
@@ -79,20 +87,16 @@ Global configuration available across all projects:
 Project-specific Claude Code management tools:
 ```
 .claude/
-├── CLAUDE.md                 # Project-level routing (inherits user-level defaults)
-├── skills/                    # Project-specific skills
-├── agents/                    # Project-specific agents
-├── commands/                  # Project-level commands
-├── config-sync/               # Config-sync subsystem
-│   ├── sync-cli.sh           # Unified orchestrator
-│   ├── settings.json         # Sync configuration
-│   ├── adapters/             # Target-specific adapters
-│   ├── lib/                  # Shared libraries and phases
-│   └── scripts/              # Utility scripts
-└── agent-ops/                 # Agent operations subsystem
-    ├── health-report.md      # Health reporting commands
-    ├── agent-matrix.sh       # Agent analysis utilities
-    └── scripts/              # Operation scripts
+├── CLAUDE.md                 # Project-level rule overrides (inherits user-level)
+├── skills/                   # Project-specific skills
+├── agents/                   # Project-specific agents
+├── commands/                 # Project-level commands
+├── config-sync/              # Config-sync subsystem
+│   ├── sync-cli.sh          # Unified orchestrator
+│   ├── settings.json        # Sync configuration
+│   ├── adapters/            # Target-specific adapters
+│   ├── lib/                 # Shared libraries and phases
+│   └── scripts/             # Utility scripts
 ```
 
 ## Quick Start
@@ -179,15 +183,15 @@ Configure backup retention in `.claude/config-sync/settings.json` (project-level
 ### Adding New Agents
 **User-Level Agents** (global availability):
 1. Create agent directory under `~/.claude/agents/`
-2. Define `AGENT.md` with proper frontmatter
-3. Specify required and optional skills
-4. Update agent routing in `~/.claude/CLAUDE.md`
+2. Define `AGENT.md` with proper frontmatter (`name`, `description`, `metadata`)
+3. Specify required and optional skills in the agent documentation
+4. Agent is automatically discovered via frontmatter
 
 **Project-Level Agents** (project-specific):
 1. Create agent directory under `.claude/agents/`
 2. Define `AGENT.md` with proper frontmatter
 3. Specify required and optional skills
-4. Update agent routing in `.claude/CLAUDE.md`
+4. Agent is automatically discovered via frontmatter
 
 ### Creating New Skills
 **User-Level Skills** (global availability):
@@ -216,8 +220,8 @@ This project follows the LLM Prompt Philosophy outlined in `docs/llm-philosophy.
 
 ### Design Principles
 
-The system is designed according to the `docs/taxonomy-rfc.md`:
-- **Memory → Agent → Skill → Command**: Hierarchical execution flow
+The system is designed according to `docs/taxonomy-rfc.md`:
+- **Frontmatter-based discovery**: No manual registration required
 - **User-level inheritance**: Project-level configurations inherit user-level defaults
 - **Clean separation**: User-level (global) vs project-level (scoped) components
-- **LLM-facing governance**: Structured manifests for deterministic AI behavior
+- **Rule auto-loading**: Context-based rule application via CLAUDE.md

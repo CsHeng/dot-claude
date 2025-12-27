@@ -8,11 +8,6 @@ allowed-tools:
   - Task
   - Bash
   - Grep
-metadata:
-  capability-level: 2
-  layer: execution
-  loop-style: structured-phases
-  style: tool-first
 ---
 
 # Role Definition

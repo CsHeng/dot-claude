@@ -8,11 +8,6 @@ allowed-tools:
   - Grep
   - Glob
   - Task
-metadata:
-  capability-level: 2
-  layer: execution
-  loop-style: DEPTH
-  style: reasoning-first
 ---
 
 # Workflow Helper Agent

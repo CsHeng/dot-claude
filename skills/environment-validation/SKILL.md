@@ -12,10 +12,6 @@ allowed-tools:
   - Bash(dbml2sql --version)
   - Bash(which *)
   - Bash(command -v *)
-metadata:
-  capability-level: 1
-  layer: execution
-  mode: stateless-validation
 ---
 ## Purpose
 

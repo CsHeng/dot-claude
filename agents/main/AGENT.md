@@ -19,15 +19,6 @@ allowed-tools:
   - WebFetch
   - KillShell
   - BashOutput
-metadata:
-  capability-level: 2
-  default-skills:
-    - filesystem
-    - git
-    - subagents
-  layer: execution
-  loop-style: DEPTH
-  style: reasoning-first
 ---
 
 # Main Agent

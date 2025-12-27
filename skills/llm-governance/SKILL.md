@@ -4,25 +4,17 @@ description: LLM content governance and compliance standards. Use when llm gover
 allowed-tools:
   - Bash(python3 skills/llm-governance/scripts/tool_checker.py *)
   - Bash(python3 skills/llm-governance/scripts/validator.py *)
-  - Bash(skills/llm-governance/scripts/agent-matrix.sh *)
-  - Bash(skills/llm-governance/scripts/skill-matrix.sh *)
-  - Bash(skills/llm-governance/scripts/structure-check.sh *)
   - Read
   - Write
   - Edit
-metadata:
-  capability-level: 2
-  layer: execution
-  mode: stateful-governance
-  style: minimal-chat
 ---
 ## Purpose
 
 Enforce LLM content governance for all LLM-facing files using TERSE mode defaults, rule-driven validation, and deterministic tooling.
 
-Apply rules from `skills/llm-governance/rules/99-llm-prompt-writing-rules.md` and related governance rule files through standardized validators instead of ad-hoc scripts. Provide operational health reporting, capability matrix generation, and structural compliance checking for agents, skills, commands, and governance files (Layer 2 and Layer 3).
+Apply rules from `skills/llm-governance/rules/99-llm-prompt-writing-rules.md` and related governance rule files through standardized validators instead of ad-hoc scripts. Provide operational health reporting, capability matrix generation, and structural compliance checking for agents, skills, commands, and rules.
 
-## IO semantics
+## IO Semantics
 
 Input: LLM-facing markdown and configuration files.
 
@@ -44,7 +36,6 @@ Side effects: Backups created by orchestration commands before modifications; no
   - `skills/**/SKILL.md`
   - `agents/**/AGENT.md`
   - `rules/**/*.md`
-  - `governance/**/*.md` (Layer 2: entrypoints, routers, rules, styles)
   - `CLAUDE.md`
   - `AGENTS.md`
   - `.claude/settings.json`
@@ -85,7 +76,6 @@ Side effects: Backups created by orchestration commands before modifications; no
 
 - Delegate bulk analysis, candidate generation, backup creation, and writeback decisions to `/llm-governance` and `agent:llm-governance`.
 - Use this skill to interpret validator results, derive rewrite strategies, and keep governance behavior aligned with rule files.
-- Support agent-ops health reporting by providing validation results, capability matrices, and structural compliance checks.
 
 ## Validation Criteria
 

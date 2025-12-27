@@ -6,9 +6,6 @@ allowed-tools:
   - Bash
   - Read
   - Bash(python3 skills/llm-governance/scripts/validator.py *)
-metadata:
-  is_background: False
-  style: minimal-chat
 ---
 
 # Markdown Lint Command
@@ -30,7 +27,7 @@ STRICT checking for LLM-facing files, MODERATE for governance files, and LIGHT f
 - --strict: Limit scope to LLM-facing files (commands/, skills/**/SKILL.md, agents/**/AGENT.md, rules/**, AGENTS.md, CLAUDE.md)
 - --fix: Automatically fix format issues where possible (uses remark --output)
 - --report: Emit JSON statistics to stdout (temporary file under /tmp, repo stays clean)
-- --quick: Fast pass on LLM-facing + governance files only (commands/, skills/**/SKILL.md, agents/**/AGENT.md, rules/**, governance/, config-sync/, agent-ops/)
+- --quick: Fast pass on LLM-facing files only (commands/, skills/**/SKILL.md, agents/**/AGENT.md, rules/)
 
 ## Workflow
 
@@ -46,7 +43,7 @@ STRICT checking for LLM-facing files, MODERATE for governance files, and LIGHT f
 ## What it checks
 
 - LLM-facing file compliance (commands/, skills/, agents/, rules/)
-- Governance file standards (governance/, config-sync/)
+- Config-sync file standards (config-sync/)
 - Basic markdown validation (all other .md files)
 - Frontmatter formatting
 - Heading order and structure

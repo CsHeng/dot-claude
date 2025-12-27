@@ -1,10 +1,6 @@
 ---
 name: error-patterns
 description: Error handling patterns and logging standards. Use when error patterns guidance is required.
-metadata:
-  capability-level: 2
-  layer: execution
-  mode: cross-cutting-error-handling
 ---
 # Error Handling Strategy Implementation
 

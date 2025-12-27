@@ -1,10 +1,6 @@
 ---
 name: development-standards
 description: Development standards and best practices. Use when development standards guidance is required.
-metadata:
-  capability-level: 2
-  layer: execution
-  mode: cross-cutting-standards
 ---
 ## Purpose
 

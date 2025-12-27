@@ -1,15 +1,10 @@
 ---
 name: workflow-discipline
 description: Maintain incremental delivery, fail-fast behavior, and structured communication. Use when workflow discipline guidance is required.
-metadata:
-  capability-level: 1
-  layer: execution
-  mode: cross-cutting-governance
-  style: reasoning-first
 ---
 ## Purpose
 
-Apply workflow-discipline rule-blocks to concrete tasks: help agents maintain incremental changes, fail-fast behavior, and structured communication once a router has decided that workflow discipline is required.
+Apply rules from rules/00-memory-rules.md and rules/23-workflow-patterns.md to maintain incremental delivery, fail-fast behavior, and structured communication.
 
 ## IO Semantics
 

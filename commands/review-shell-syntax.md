@@ -9,9 +9,6 @@ allowed-tools:
   - Bash(sh -n:*)
   - Bash(zsh -n:*)
   - Bash(shellcheck :*)
-metadata:
-  is_background: False
-  style: tool-first
 ---
 
 ## Usage
