@@ -77,19 +77,21 @@ Custom commands that extend Claude Code functionality:
 
 ```
 commands/
-├── config-sync/                    # Multi-tool sync utilities
-│   ├── sync-cli.{md,sh}          # Unified CLI orchestrator
-│   ├── adapters/                  # Target-specific shell adapters (*.sh)
-│   ├── lib/                       # Shared guidance and phase runners
-│   └── scripts/                   # Backup cleanup and diagnostics
-├── doc-gen/                        # Documentation generation
-│   ├── core/
-│   │   └── bootstrap.md           # Main orchestrator
-│   └── adapters/                  # Project-specific adapters
 ├── draft-commit-message.md         # Git commit helper
 ├── review-shell-syntax.md          # Shell script validation
-├── llm-governance.md                  # LLM-facing manifest optimization
-└── agent-ops/health-report.md      # AgentOps health-report command
+└── check-secrets.md                # Security scan for credentials
+```
+
+Project-level tooling (not synced as payload):
+```
+.claude/commands/
+├── llm-governance.md               # LLM-facing manifest audits and fixes
+├── lint-markdown.md                # Markdown validation tooling
+└── config-sync/                    # Multi-tool config sync implementation
+    ├── sync-cli.{md,sh}            # Unified CLI orchestrator
+    ├── adapters/                   # Target-specific shell adapters (*.sh)
+    ├── lib/                        # Shared helpers + phase runners + planners
+    └── scripts/                    # Backup management, cleanup, taxonomy sync
 ```
 
 ### Documentation

@@ -1,4 +1,16 @@
 {
   "version": 2,
-  "plugins": {}
+  "plugins": {
+    "development-skills@local-dev": [
+      {
+        "scope": "user",
+        "installPath": "/Users/csheng/.claude/plugins/cache/local-dev/development-skills/unknown",
+        "version": "unknown",
+        "installedAt": "2025-12-28T02:59:04.144Z",
+        "lastUpdated": "2025-12-28T02:59:04.144Z",
+        "gitCommitSha": "c1f4e2cd61139e78354e0589845f960f24f3f13f",
+        "isLocal": true
+      }
+    ]
+  }
 }

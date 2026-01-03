@@ -16,7 +16,8 @@ The system operates on a 9-phase pipeline:
 5. **Adapt** - Transform configurations for target tool formats
 6. **Execute** - Apply configurations to target tools
 7. **Verify** - Validate successful application and functionality
-8. **Report** - Generate comprehensive execution report
+8. **Cleanup** - Retain recent runs and clean up legacy/temporary artifacts
+9. **Report** - Generate comprehensive execution report
 
 ### Backup System
 
@@ -51,11 +52,17 @@ The backup system uses a unified centralized approach during the prepare and cle
 Execution can be resumed from any phase:
 ```bash
 # Resume from prepare phase using stored plan
-claude /config-sync:sync-cli --action=sync --plan-file=~/.claude/backup/plan-20250205-120210.json --from-phase=prepare
+claude /config-sync/sync-cli --action=sync --plan-file=~/.claude/backup/plan-20250205-120210.json --from-phase=prepare
 ```
 
-- **Primary orchestrator**: `claude /config-sync:sync-cli` - Full workflow management
+- **Primary orchestrator**: `claude /config-sync/sync-cli` - Full workflow management
 - **Adapter commands**: Tool-specific operations for targeted tasks
+
+### Scope Separation (Source vs Tool)
+
+- **Tool location**: project-level `.claude/commands/config-sync/` (config-sync implementation).
+- **Sync source**: user-level `~/.claude/` (rules/commands/agents/skills/output-styles + `AGENTS.md`).
+- **Invariant**: `.claude/` (project-level) must not be part of the synchronized payload.
 
 ### PlantUML Integration
 
@@ -78,19 +85,19 @@ plantuml -tsvg docs/config-sync-cli-sequence-diagram.puml
 | Qwen CLI | `~/.qwen` | `settings.json`, `permissions.json`, `QWEN.md`, `AGENTS.md`, `rules/` | TOML |
 | OpenAI Codex CLI | `~/.codex` | `config.toml`, `CODEX.md`, `AGENTS.md`, `rules/` | Markdown |
 | OpenCode | `~/.config/opencode` | `opencode.json`, optional `user-settings.json`, `AGENTS.md`, `rules/` | JSON |
-| Amp CLI | `~/.config/amp` | `settings.json`, `AGENTS.md`, global `~/.config/AGENTS.md`, `commands/`, `rules/` | Markdown + executables |
+| Amp CLI | `~/.config/amp` | `settings.json`, `AGENTS.md`, `commands/`, `rules/` | Markdown + executables |
 
 ## CLI Reference
 
-### Primary Orchestrator: `claude /config-sync:sync-cli`
+### Primary Orchestrator: `claude /config-sync/sync-cli`
 
-All operations use: `claude /config-sync:sync-cli --action=<ACTION> [FLAGS]`
+All operations use: `claude /config-sync/sync-cli --action=<ACTION> [FLAGS]`
 
 #### Actions
 
 | Action | Purpose | Key Flags |
 |--------|---------|-----------|
-| `sync` | Full workflow: collect → analyze → plan → prepare → adapt → execute → verify → report | `--target=<list|all>`, `--components=<list|all>`, `--profile=<full|fast|custom>`, `--dry-run`, `--force`, `--no-verify` |
+| `sync` | Full workflow: collect → analyze → plan → prepare → adapt → execute → verify → cleanup → report | `--target=<list|all>`, `--components=<list|all>`, `--profile=<full|fast|custom>`, `--dry-run`, `--force`, `--no-verify` |
 | `analyze` | Inspect target capabilities and emit reports | `--format=<markdown|table|json>`, `--detailed` |
 | `verify` | Run verification routines | `--components=<list|all>`, `--detailed` |
 | `adapt` | Execute a single adapter via the CLI pipeline | `--adapter=<commands|permissions|rules|memory|settings>` |
@@ -107,57 +114,39 @@ All operations use: `claude /config-sync:sync-cli --action=<ACTION> [FLAGS]`
 - **commands** - Slash command definitions, adapted per platform
 - **settings** - Tool config files, respecting force flags
 - **permissions** - Allow/ask/deny lists mapped to native formats
-- **memory** - CLAUDE.md and AGENTS.md derivatives tailored per tool
-- **styles** - Output-style manifests that define preferred output styles such as Default, Explanatory, and Learning; support is optional and adapter-specific
+- **memory** - User `AGENTS.md` synchronized to each target's configured memory path
+- **output_styles** - Output-style manifests; support is optional and adapter-specific
 
 ### Usage Examples
 
 ```bash
 # Full sync with defaults
-claude /config-sync:sync-cli --action=sync
+claude /config-sync/sync-cli --action=sync
 
 # Dry-run sync for rules + commands on Droid + Qwen
-claude /config-sync:sync-cli --action=sync --target=droid,qwen --components=rules,commands --dry-run
+claude /config-sync/sync-cli --action=sync --target=droid,qwen --components=rules,commands --dry-run
 
 # Analyze OpenCode in table format
-claude /config-sync:sync-cli --action=analyze --target=opencode --format=table --detailed
+claude /config-sync/sync-cli --action=analyze --target=opencode --format=table --detailed
 
 # Verify permissions + commands for Codex
-claude /config-sync:sync-cli --action=verify --target=codex --components=permissions,commands
+claude /config-sync/sync-cli --action=verify --target=codex --components=permissions,commands
 
 # Run only the permissions adapter for Qwen
-claude /config-sync:sync-cli --action=adapt --adapter=permissions --target=qwen --dry-run
+claude /config-sync/sync-cli --action=adapt --adapter=permissions --target=qwen --dry-run
 
 # Resume a run from prepare to verify using a stored plan
-claude /config-sync:sync-cli --action=sync --plan-file=~/.claude/backup/plan-20250205-120210.json --from-phase=prepare
+claude /config-sync/sync-cli --action=sync --plan-file=~/.claude/backup/plan-20250205-120210.json --from-phase=prepare
 ```
 
-## Adapter Commands
+## Adapters (Internal)
 
-### Tool-Specific Adapters
+Config-sync uses target adapters and helper scripts that are invoked by the main CLI:
 
-| Command | Purpose |
-|---------|---------|
-| `/config-sync/droid` | Droid CLI synchronization (sync/analyze/verify sub-flags) |
-| `/config-sync/qwen` | Qwen CLI synchronization (sync/analyze/verify sub-flags) |
-| `/config-sync/codex` | OpenAI Codex CLI synchronization (sync/analyze/verify sub-flags) |
-| `/config-sync/opencode` | OpenCode synchronization (sync/analyze/verify sub-flags) |
-| `/config-sync/amp` | Amp CLI synchronization (sync/analyze/verify sub-flags) |
+- Adapters: `.claude/commands/config-sync/adapters/`
+- Helpers: `.claude/commands/config-sync/scripts/`
 
-### Utility Adapters
-
-| Command | Purpose |
-|---------|---------|
-| `/config-sync/analyze-target-tool` | Deep analysis of a specific tool's capabilities and configuration |
-| `/config-sync/adapt-permissions` | Map Claude's allow/ask/deny sets to a target tool |
-| `/config-sync/adapt-commands` | Convert Claude markdown commands for specific targets |
-| `/config-sync/adapt-rules-content` | Normalize rules for non-Claude platforms |
-
-### When to Use Adapters vs Main CLI
-
-- **Main CLI**: Multi-tool operations, full workflow, phase gating
-- **Tool adapters**: Single-tool operations, quick syncs, tool-specific issues
-- **Utility adapters**: Targeted tasks (permission mapping, command conversion, etc.)
+Use `claude /config-sync/sync-cli` as the supported entrypoint so backups, plan files, verification, cleanup, and reporting remain consistent.
 
 ## Configuration & Safety
 
@@ -193,18 +182,18 @@ The `prepare` phase automatically creates backups unless using `fast` profile:
 
 ```bash
 # Full verification with detailed output
-claude /config-sync:sync-cli --action=verify --target=all --components=all --detailed
+claude /config-sync/sync-cli --action=verify --target=all --components=all --detailed
 
 # Verification with auto-fix
-claude /config-sync:sync-cli --action=verify --target=codex --components=permissions,commands
+claude /config-sync/sync-cli --action=verify --target=codex --components=permissions,commands
 
 # Component-specific verification
-claude /config-sync:sync-cli --action=verify --target=qwen --components=rules
+claude /config-sync/sync-cli --action=verify --target=qwen --components=rules
 ```
 
 ### Rollback Procedures
 
-1. **Use plan files**: `claude /config-sync:sync-cli --action=report --plan-file=<path>` to review changes
+1. **Use plan files**: `claude /config-sync/sync-cli --action=report --plan-file=<path>` to review changes
 2. **Manual restore**: Restore from backup directories created during `prepare` phase
 3. **Re-sync**: Run sync again with corrected configuration
 
@@ -213,7 +202,7 @@ claude /config-sync:sync-cli --action=verify --target=qwen --components=rules
 ### Common Issues
 
 - **Permission denied** - Ensure the CLI process can write to the target directory (or rerun with elevated privileges if policies permit)
-- **Missing adapter** - Verify the relevant script exists under `commands/config-sync/adapters/`
+- **Missing adapter** - Verify the relevant script exists under `.claude/commands/config-sync/adapters/`
 - **Plan mismatch** - When resuming with `--plan-file`, make sure targets/components match the original plan file
 - **Skipped verification** - Use `--no-verify` sparingly; re-run `--action=verify` to close the loop
 - **Qwen command warnings** - Install the `toml` Python module so the verify phase can parse `.toml` commands instead of skipping them
@@ -234,9 +223,9 @@ claude /config-sync:sync-cli --action=verify --target=qwen --components=rules
 
 ### Initial Setup
 
-1. **Analyze** - `claude /config-sync:sync-cli --action=analyze --target=<tool>` (understand capabilities + gaps)
-2. **Sync** - `claude /config-sync:sync-cli --action=sync --target=<tool>` (apply changes)
-3. **Verify** - `claude /config-sync:sync-cli --action=verify --target=<tool>` (ensure correctness)
+1. **Analyze** - `claude /config-sync/sync-cli --action=analyze --target=<tool>` (understand capabilities + gaps)
+2. **Sync** - `claude /config-sync/sync-cli --action=sync --target=<tool>` (apply changes)
+3. **Verify** - `claude /config-sync/sync-cli --action=verify --target=<tool>` (ensure correctness)
 4. **Report** - Re-run `--action=report` or `--action=sync` with `--plan-file` as needed
 
 ### Ongoing Maintenance

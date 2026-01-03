@@ -36,7 +36,9 @@ Constants and Configuration:
 - Use UPPER_SNAKE_CASE for constants
 - Use descriptive names for configuration values
 - Group related constants in logical structures
-- Avoid magic numbers and string literals
+- Replace magic numbers with named constants
+- Include units in constant names: TIMEOUT_SECONDS, BUFFER_SIZE_BYTES
+- Define related constants in dedicated files or at module top
 
 Perform naming consistency validation:
 - Use linters with naming convention rules

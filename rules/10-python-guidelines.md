@@ -35,6 +35,13 @@ PREFERRED: Use `TypeVar` for generic implementations when appropriate
 PREFERRED: Use `Protocol` for structural typing and duck typing interfaces
 PROHIBITED: Use `typing.Any` unless absolutely necessary
 
+### Constants
+REQUIRED: Replace magic numbers with named constants
+REQUIRED: Use UPPER_SNAKE_CASE for constants: MAX_RETRIES = 3, DEFAULT_TIMEOUT = 30
+REQUIRED: Group related constants in dedicated constants.py or at module top
+REQUIRED: Include units in constant names: TIMEOUT_SECONDS, BUFFER_SIZE_BYTES
+PROHIBITED: Use magic numbers or string literals in code logic
+
 ### Error Handling
 REQUIRED: Create custom exception classes inheriting from appropriate base exceptions
 REQUIRED: Use early returns to avoid deeply nested conditional blocks

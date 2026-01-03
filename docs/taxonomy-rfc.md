@@ -91,7 +91,7 @@ User (IDE / CLI) → Command (frontmatter) → Agent (frontmatter) → Skills (f
 
 Commands, agents, and skills declare themselves via YAML frontmatter:
 
-**Command** (`commands/lint-markdown.md`):
+**Command** (`.claude/commands/lint-markdown.md`):
 ```yaml
 ---
 name: lint-markdown
@@ -102,7 +102,7 @@ metadata:
 ---
 ```
 
-**Agent** (`agents/lint-markdown/AGENT.md`):
+**Agent** (`.claude/agents/lint-markdown/AGENT.md`):
 ```yaml
 ---
 name: agent:lint-markdown
@@ -113,7 +113,7 @@ metadata:
 ---
 ```
 
-**Skill** (`skills/lint-markdown/SKILL.md`):
+**Skill** (`.claude/skills/lint-markdown/SKILL.md`):
 ```yaml
 ---
 name: lint-markdown
@@ -146,10 +146,10 @@ rules:
 
 1. **User runs**: `/lint-markdown --strict`
 
-2. **CLI discovery**: Reads `commands/lint-markdown.md` frontmatter
+2. **CLI discovery**: Reads `.claude/commands/lint-markdown.md` frontmatter
    - Finds: `name: lint-markdown`, description, arguments
 
-3. **Direct execution**: Loads `agents/lint-markdown/AGENT.md`
+3. **Direct execution**: Loads `.claude/agents/lint-markdown/AGENT.md`
    - Agent loads required skills: `lint-markdown`, `workflow-discipline`, `environment-validation`
    - Skills apply rules from `rules/` based on context
 

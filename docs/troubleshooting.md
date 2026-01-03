@@ -84,7 +84,7 @@ Comprehensive troubleshooting guide for the Claude Code configuration system, co
 **Solutions**:
 1. **Run analysis first**:
    ```bash
-   claude /config-sync:sync-cli --action=analyze --target=<tool>
+   claude /config-sync/sync-cli --action=analyze --target=<tool>
    ```
 
 2. **Check tool installation**:
@@ -101,7 +101,7 @@ Comprehensive troubleshooting guide for the Claude Code configuration system, co
 
 4. **Use dry-run to preview**:
    ```bash
-   claude /config-sync:sync-cli --action=sync --dry-run
+   claude /config-sync/sync-cli --action=sync --dry-run
    ```
 
 ### Backup System Issues
@@ -122,8 +122,9 @@ Comprehensive troubleshooting guide for the Claude Code configuration system, co
 
 3. **Manual restore if needed**:
    ```bash
-   # Restore from backup
-   cp -r ~/.claude/backup/droid-*/ ~/.factory/
+   # Restore from a specific run backup (example: Droid rules + commands)
+   rsync -a ~/.claude/backup/run-<timestamp>/backups/droid/rules/ ~/.factory/rules/
+   rsync -a ~/.claude/backup/run-<timestamp>/backups/droid/commands/ ~/.factory/commands/
    ```
 
 ### Resume Operations Fail
@@ -138,12 +139,12 @@ Comprehensive troubleshooting guide for the Claude Code configuration system, co
 
 2. **Use correct plan file**:
    ```bash
-   claude /config-sync:sync-cli --action=sync --plan-file=~/.claude/backup/plan-20250205-120210.json
+   claude /config-sync/sync-cli --action=sync --plan-file=~/.claude/backup/plan-20250205-120210.json
    ```
 
 3. **Resume from specific phase**:
    ```bash
-   claude /config-sync:sync-cli --action=sync --plan-file=plan.json --from-phase=prepare
+   claude /config-sync/sync-cli --action=sync --plan-file=plan.json --from-phase=prepare
    ```
 
 ## 🐛 Command Issues
@@ -161,7 +162,7 @@ Comprehensive troubleshooting guide for the Claude Code configuration system, co
 2. **Validate frontmatter**:
    ```bash
    # Check YAML frontmatter in command files
-   head -10 ~/.claude/commands/*/command.md
+   head -10 ~/.claude/commands/*.md
    ```
 
 3. **Check command name**:

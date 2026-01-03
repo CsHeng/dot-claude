@@ -30,7 +30,7 @@ REQUIRED: Validate Python, uv, and shell availability via `skill:environment-val
 
 ## Taxonomy Integration
 REQUIRED: Extend the execution graph to `Memory → Output style → Agent → Skill → Language/Tool selection → Command/Script` and record the selected language in skill/agent outputs when relevant.
-REQUIRED: Ensure `skill:automation-language-selection` (or equivalent logic inside agents) loads `skills/language-python` or `skills/language-shell` according to this standard.
+REQUIRED: Language selection follows these priorities: Python for complex automation/data, Shell for simple orchestration, Go for high-performance services, documented in implementation plans or governance diffs.
 REQUIRED: When governance commands (/llm-governance, config-sync workflows, etc.) rewrite manifests or scripts, they must confirm the resulting language choice obeys these rules.
 
 ## Validation

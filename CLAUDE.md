@@ -9,8 +9,8 @@ Execute preferred output style behavior from `rules/98-output-styles.md` and the
 Execute language-specific rules based on file extensions or declared language context.
 Execute security rules for all operations involving credentials, permissions, or network access.
 Execute testing rules when operations involve test files or test execution.
-Execute directory classification from `skills/llm-governance/scripts/config.yaml` before routing `/llm-governance`.
-Execute governance exceptions from `skills/llm-governance/rules/99-llm-prompt-writing-rules.md` immediately after classification rules load.
+Execute directory classification from `.claude/skills/llm-governance/scripts/config.yaml` before routing `/llm-governance`.
+Execute governance exceptions from `.claude/skills/llm-governance/rules/99-llm-prompt-writing-rules.md` immediately after classification rules load.
 Note: llm-governance manages all LLM-facing files including commands/, skills/, agents/, and rules/ directories.
 
 ### Baseline Skill Initialization

@@ -1,52 +1,32 @@
-# Command Layout Overview (`~/.claude/commands/`)
+# Command Layout Overview
 
-The commands directory contains slash commands for various workflows including config-sync, governance optimization, code review, security checks, and utility operations.
+This repo has two command scopes:
+
+- **User-level commands**: `~/.claude/commands/` (synced to other tools)
+- **Project-level commands/tools**: `.claude/commands/` (implementation tooling; must not be part of the synced payload)
 
 ## Directory Structure
 ```
 ~/.claude/commands/
-├── config-sync/                    # Config-sync command suite
-│   ├── README.md                   # Config-sync system reference
-│   ├── sync-cli.md/.sh             # Main orchestrator for CLI tool sync
-│   ├── adapters/                   # Target-specific shell adapters
-│   │   ├── droid.sh
-│   │   ├── qwen.sh
-│   │   ├── codex.sh
-│   │   ├── opencode.sh
-│   │   ├── amp.sh
-│   │   ├── adapt-permissions.sh
-│   │   └── sync-memory.sh
-│   ├── lib/                        # Shared utilities
-│   │   ├── common.sh               # Shared shell helpers
-│   │   ├── phases/                 # Phase execution runners
-│   │   │   ├── collect.sh
-│   │   │   ├── analyze.sh
-│   │   │   ├── plan.sh
-│   │   │   ├── prepare.sh
-│   │   │   ├── adapt.sh
-│   │   │   ├── execute.sh
-│   │   │   ├── verify.sh
-│   │   │   ├── report.sh
-│   │   │   └── cleanup.sh
-│   │   └── planners/               # Plan generation logic
-│   │       ├── adapt_plan.sh
-│   │       └── sync_plan.sh
-│   └── scripts/                    # Bash helpers
-│       ├── backup.sh               # Backup management
-│       ├── backup-cleanup.sh       # Automatic cleanup
-│       ├── executor.sh             # Phase execution
-│       └── sync-taxonomy-component.sh
-├── llm-governance.md                    # LLM-facing manifest optimization
-├── agent-ops/                     # AgentOps utilities
-│   ├── health-report.md           # Agent and skill health reporting
-│   ├── agent-matrix.md            # Agent capability matrix view
-│   ├── skill-matrix.md            # Skill capability matrix view
-│   └── scripts/                   # Utility scripts
-│       ├── agent-matrix.sh
-│       └── skill-matrix.sh
 ├── draft-commit-message.md        # Git commit message drafting
 ├── review-shell-syntax.md         # Shell script validation
 └── check-secrets.md               # Security scan for credentials
+```
+
+Project-level config-sync implementation (not synced as payload):
+```
+<project>/.claude/commands/
+├── llm-governance.md              # LLM-facing manifest audits and fixes
+├── lint-markdown.md               # Markdown validation tooling
+└── config-sync/                   # Multi-target config sync implementation
+
+<project>/.claude/commands/config-sync/
+├── README.md
+├── sync-cli.md
+├── sync-cli.sh
+├── adapters/                      # Target-specific shell adapters
+├── lib/                           # Shared shell helpers + planners + Python modules
+└── scripts/                       # Backup/phase helpers + taxonomy sync
 ```
 
 ## Available Commands
@@ -55,7 +35,7 @@ The commands directory contains slash commands for various workflows including c
 
 | Command | Purpose | Key Features |
 |---------|---------|--------------|
-| `/config-sync:sync-cli` | Unified orchestrator for config-sync workflows | Multi-target support (droid, qwen, codex, opencode, amp), 9-phase pipeline, plan generation, verification, rollback |
+| `/config-sync/sync-cli` | Unified orchestrator for config-sync workflows | Multi-target support (droid, qwen, codex, opencode, amp), 9-phase pipeline, plan generation, verification, rollback |
 
 ### LLM Governance Commands
 
@@ -67,7 +47,7 @@ The commands directory contains slash commands for various workflows including c
 
 | Command | Purpose | Scope |
 |---------|---------|-------|
-| `/agent-ops:health-report` | Read-only health report for agents, skills, backups, and governance runs | `.claude/backup` metadata, agent/skill matrices, governance validation |
+| `/agent-ops:health-report` | Read-only health report for agents, skills, backups, and governance runs | `backup/` metadata, agent/skill matrices, governance validation |
 | `/agent-ops:agent-matrix` | Capability matrix for all agents | Agent identifiers, capability levels, loop styles, style labels, default/optional skills |
 | `/agent-ops:skill-matrix` | Capability matrix for all skills | Skill identifiers, capability levels, modes, style labels, tags |
 
@@ -96,9 +76,9 @@ Each command file must include YAML frontmatter with:
 
 ### Development Best Practices
 - Tool adapters exclude internal `config-sync/` module when syncing to external CLIs
-- Use `commands/config-sync/lib/common.sh` for shared utilities
+- Use `.claude/commands/config-sync/lib/common.sh` for shared utilities
 - Include parameter tables, usage examples, and error handling documentation
-- Follow `skills/llm-governance/rules/99-llm-prompt-writing-rules.md` for LLM-facing content
+- Follow `.claude/skills/llm-governance/rules/99-llm-prompt-writing-rules.md` for LLM-facing content
 - Implement proper error handling with descriptive exit codes
 - Maintain strict shell mode (`set -euo pipefail`) in all bash scripts
 
@@ -111,7 +91,7 @@ Each command file must include YAML frontmatter with:
 ## Related Documentation
 
 - **[Config-Sync Guide](./config-sync-guide.md)** - Complete sync system documentation
-- **[Config-Sync README](../commands/config-sync/README.md)** - Technical reference and architecture
-- **[LLM Governance Scripts README](../skills/llm-governance/scripts/README.md)** - Implementation details and usage
+- **[Config-Sync README](../.claude/commands/config-sync/README.md)** - Technical reference and architecture
+- **[LLM Governance Scripts README](../.claude/skills/llm-governance/scripts/README.md)** - Implementation details and usage
 - **[Settings Reference](./settings.md)** - Configuration hierarchy and permissions
 - **[Directory Structure](./directory-structure.md)** - Detailed file organization
