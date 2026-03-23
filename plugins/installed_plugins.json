@@ -1,15 +1,261 @@
 {
   "version": 2,
   "plugins": {
-    "development-skills@local-dev": [
+    "code-review@claude-plugins-official": [
+      {
+        "scope": "project",
+        "projectPath": "/Users/csheng/orbstack-docker/home/csheng",
+        "installPath": "/Users/csheng/.claude/plugins/cache/claude-plugins-official/code-review/205b6e0b3036",
+        "version": "205b6e0b3036",
+        "installedAt": "2026-01-14T02:52:22.590Z",
+        "lastUpdated": "2026-03-21T06:05:30.981Z",
+        "gitCommitSha": "f70b65538da094ff474a855e7a679fb2c2c8064f"
+      }
+    ],
+    "security-guidance@claude-plugins-official": [
+      {
+        "scope": "project",
+        "projectPath": "/Users/csheng/orbstack-docker/home/csheng",
+        "installPath": "/Users/csheng/.claude/plugins/cache/claude-plugins-official/security-guidance/205b6e0b3036",
+        "version": "205b6e0b3036",
+        "installedAt": "2026-01-14T02:52:22.627Z",
+        "lastUpdated": "2026-03-21T06:05:30.981Z",
+        "gitCommitSha": "f70b65538da094ff474a855e7a679fb2c2c8064f"
+      }
+    ],
+    "playwright@claude-plugins-official": [
+      {
+        "scope": "project",
+        "projectPath": "/Users/csheng/orbstack-docker/home/csheng",
+        "installPath": "/Users/csheng/.claude/plugins/cache/claude-plugins-official/playwright/205b6e0b3036",
+        "version": "205b6e0b3036",
+        "installedAt": "2026-01-14T02:52:22.657Z",
+        "lastUpdated": "2026-03-21T06:05:30.981Z",
+        "gitCommitSha": "f70b65538da094ff474a855e7a679fb2c2c8064f"
+      }
+    ],
+    "atlassian@claude-plugins-official": [
+      {
+        "scope": "project",
+        "projectPath": "/Users/csheng/orbstack-docker/home/csheng",
+        "installPath": "/Users/csheng/.claude/plugins/cache/claude-plugins-official/atlassian/5fa435362b2c",
+        "version": "5fa435362b2c",
+        "installedAt": "2026-01-14T02:52:23.844Z",
+        "lastUpdated": "2026-03-21T06:05:30.981Z",
+        "gitCommitSha": "fc6afe7f2ae885a54eb7fb13339add33fe0a8ff4"
+      }
+    ],
+    "agent-sdk-dev@claude-plugins-official": [
+      {
+        "scope": "project",
+        "projectPath": "/Users/csheng/orbstack-docker/home/csheng",
+        "installPath": "/Users/csheng/.claude/plugins/cache/claude-plugins-official/agent-sdk-dev/205b6e0b3036",
+        "version": "205b6e0b3036",
+        "installedAt": "2026-01-14T02:52:23.875Z",
+        "lastUpdated": "2026-03-21T06:05:30.981Z",
+        "gitCommitSha": "f70b65538da094ff474a855e7a679fb2c2c8064f"
+      }
+    ],
+    "figma@claude-plugins-official": [
+      {
+        "scope": "project",
+        "projectPath": "/Users/csheng/orbstack-docker/home/csheng",
+        "installPath": "/Users/csheng/.claude/plugins/cache/claude-plugins-official/figma/1.2.0",
+        "version": "1.2.0",
+        "installedAt": "2026-01-14T02:52:24.943Z",
+        "lastUpdated": "2026-03-21T06:05:30.981Z",
+        "gitCommitSha": "20aca44ee6ba6092037e943c151c067896828360"
+      }
+    ],
+    "ralph-loop@claude-plugins-official": [
+      {
+        "scope": "project",
+        "projectPath": "/Users/csheng/orbstack-docker/home/csheng",
+        "installPath": "/Users/csheng/.claude/plugins/cache/claude-plugins-official/ralph-loop/205b6e0b3036",
+        "version": "205b6e0b3036",
+        "installedAt": "2026-01-14T02:52:25.034Z",
+        "lastUpdated": "2026-03-21T06:05:30.981Z",
+        "gitCommitSha": "f70b65538da094ff474a855e7a679fb2c2c8064f"
+      }
+    ],
+    "code-simplifier@claude-plugins-official": [
+      {
+        "scope": "project",
+        "projectPath": "/Users/csheng/orbstack-docker/home/csheng",
+        "installPath": "/Users/csheng/.claude/plugins/cache/claude-plugins-official/code-simplifier/1.0.0",
+        "version": "1.0.0",
+        "installedAt": "2026-01-14T02:52:25.105Z",
+        "lastUpdated": "2026-03-21T06:05:30.981Z",
+        "gitCommitSha": "f70b65538da094ff474a855e7a679fb2c2c8064f"
+      }
+    ],
+    "context7@claude-plugins-official": [
+      {
+        "scope": "project",
+        "projectPath": "/Users/csheng/orbstack-docker/home/csheng",
+        "installPath": "/Users/csheng/.claude/plugins/cache/claude-plugins-official/context7/205b6e0b3036",
+        "version": "205b6e0b3036",
+        "installedAt": "2026-01-23T12:28:39.262Z",
+        "lastUpdated": "2026-03-21T06:05:30.981Z",
+        "gitCommitSha": "f70b65538da094ff474a855e7a679fb2c2c8064f"
+      }
+    ],
+    "superpowers@claude-plugins-official": [
+      {
+        "scope": "project",
+        "projectPath": "/Users/csheng/orbstack-docker/home/csheng",
+        "installPath": "/Users/csheng/.claude/plugins/cache/claude-plugins-official/superpowers/4.3.1",
+        "version": "4.3.1",
+        "installedAt": "2026-02-07T04:57:12.896Z",
+        "lastUpdated": "2026-03-21T06:05:30.981Z",
+        "gitCommitSha": "a98c5dfc9de0df5318f4980d91d24780a566ee60"
+      }
+    ],
+    "frontend-design@claude-plugins-official": [
+      {
+        "scope": "project",
+        "projectPath": "/Users/csheng/orbstack-docker/home/csheng",
+        "installPath": "/Users/csheng/.claude/plugins/cache/claude-plugins-official/frontend-design/205b6e0b3036",
+        "version": "205b6e0b3036",
+        "installedAt": "2026-02-07T04:57:20.251Z",
+        "lastUpdated": "2026-03-21T06:05:30.981Z",
+        "gitCommitSha": "27d2b86d72da27c64585150857cee8472ad47abb"
+      }
+    ],
+    "plugin-dev@claude-plugins-official": [
+      {
+        "scope": "project",
+        "projectPath": "/Users/csheng/orbstack-docker/home/csheng",
+        "installPath": "/Users/csheng/.claude/plugins/cache/claude-plugins-official/plugin-dev/205b6e0b3036",
+        "version": "205b6e0b3036",
+        "installedAt": "2026-02-28T08:47:26.695Z",
+        "lastUpdated": "2026-03-21T06:05:30.981Z",
+        "gitCommitSha": "55b58ec6e5649104f926ba7558b567dc8d33c5ff"
+      }
+    ],
+    "pyright-lsp@claude-plugins-official": [
+      {
+        "scope": "project",
+        "projectPath": "/Users/csheng/orbstack-docker/home/csheng",
+        "installPath": "/Users/csheng/.claude/plugins/cache/claude-plugins-official/pyright-lsp/1.0.0",
+        "version": "1.0.0",
+        "installedAt": "2026-03-01T06:56:00.002Z",
+        "lastUpdated": "2026-03-21T06:05:30.981Z",
+        "gitCommitSha": "55b58ec6e5649104f926ba7558b567dc8d33c5ff"
+      },
       {
         "scope": "user",
-        "installPath": "/Users/csheng/.claude/plugins/cache/local-dev/development-skills/unknown",
-        "version": "unknown",
-        "installedAt": "2025-12-28T02:59:04.144Z",
-        "lastUpdated": "2025-12-28T02:59:04.144Z",
-        "gitCommitSha": "c1f4e2cd61139e78354e0589845f960f24f3f13f",
-        "isLocal": true
+        "installPath": "/Users/csheng/.claude/plugins/cache/claude-plugins-official/pyright-lsp/1.0.0",
+        "version": "1.0.0",
+        "installedAt": "2026-03-21T06:57:47.248Z",
+        "lastUpdated": "2026-03-21T06:57:47.248Z",
+        "gitCommitSha": "205b6e0b30366a969412d9aab7b99bea99d58db1"
+      }
+    ],
+    "gopls-lsp@claude-plugins-official": [
+      {
+        "scope": "project",
+        "projectPath": "/Users/csheng/orbstack-docker/home/csheng",
+        "installPath": "/Users/csheng/.claude/plugins/cache/claude-plugins-official/gopls-lsp/1.0.0",
+        "version": "1.0.0",
+        "installedAt": "2026-03-01T06:56:02.313Z",
+        "lastUpdated": "2026-03-21T06:05:30.981Z",
+        "gitCommitSha": "55b58ec6e5649104f926ba7558b567dc8d33c5ff"
+      }
+    ],
+    "php-lsp@claude-plugins-official": [
+      {
+        "scope": "project",
+        "projectPath": "/Users/csheng/orbstack-docker/home/csheng",
+        "installPath": "/Users/csheng/.claude/plugins/cache/claude-plugins-official/php-lsp/1.0.0",
+        "version": "1.0.0",
+        "installedAt": "2026-03-01T06:56:04.265Z",
+        "lastUpdated": "2026-03-21T06:05:30.981Z",
+        "gitCommitSha": "55b58ec6e5649104f926ba7558b567dc8d33c5ff"
+      }
+    ],
+    "lua-lsp@claude-plugins-official": [
+      {
+        "scope": "project",
+        "projectPath": "/Users/csheng/orbstack-docker/home/csheng",
+        "installPath": "/Users/csheng/.claude/plugins/cache/claude-plugins-official/lua-lsp/1.0.0",
+        "version": "1.0.0",
+        "installedAt": "2026-03-01T06:56:06.131Z",
+        "lastUpdated": "2026-03-21T06:05:30.981Z",
+        "gitCommitSha": "55b58ec6e5649104f926ba7558b567dc8d33c5ff"
+      },
+      {
+        "scope": "user",
+        "installPath": "/Users/csheng/.claude/plugins/cache/claude-plugins-official/lua-lsp/1.0.0",
+        "version": "1.0.0",
+        "installedAt": "2026-03-23T01:53:51.538Z",
+        "lastUpdated": "2026-03-23T01:53:51.538Z",
+        "gitCommitSha": "205b6e0b30366a969412d9aab7b99bea99d58db1"
+      }
+    ],
+    "kotlin-lsp@claude-plugins-official": [
+      {
+        "scope": "project",
+        "projectPath": "/Users/csheng/orbstack-docker/home/csheng",
+        "installPath": "/Users/csheng/.claude/plugins/cache/claude-plugins-official/kotlin-lsp/1.0.0",
+        "version": "1.0.0",
+        "installedAt": "2026-03-01T06:56:08.048Z",
+        "lastUpdated": "2026-03-21T06:05:30.981Z",
+        "gitCommitSha": "55b58ec6e5649104f926ba7558b567dc8d33c5ff"
+      }
+    ],
+    "macos@csheng-personal": [
+      {
+        "scope": "project",
+        "projectPath": "/Users/csheng/orbstack-docker/home/csheng",
+        "installPath": "/Users/csheng/.claude/plugins/cache/csheng-personal/macos/1.0.0",
+        "version": "1.0.0",
+        "installedAt": "2026-03-18T14:30:32.084Z",
+        "lastUpdated": "2026-03-21T06:05:30.981Z",
+        "gitCommitSha": "743e54a0d16998d06b922e9e8ebbbc87d46dbfcf"
+      }
+    ],
+    "claude-md-management@claude-plugins-official": [
+      {
+        "scope": "project",
+        "projectPath": "/Users/csheng/orbstack-docker/home/csheng",
+        "installPath": "/Users/csheng/.claude/plugins/cache/claude-plugins-official/claude-md-management/1.0.0",
+        "version": "1.0.0",
+        "installedAt": "2026-03-21T06:05:30.981Z",
+        "lastUpdated": "2026-03-21T06:05:30.981Z",
+        "gitCommitSha": "205b6e0b30366a969412d9aab7b99bea99d58db1"
+      }
+    ],
+    "skill-creator@claude-plugins-official": [
+      {
+        "scope": "project",
+        "projectPath": "/Users/csheng/orbstack-docker/home/csheng",
+        "installPath": "/Users/csheng/.claude/plugins/cache/claude-plugins-official/skill-creator/205b6e0b3036",
+        "version": "205b6e0b3036",
+        "installedAt": "2026-03-21T06:05:30.981Z",
+        "lastUpdated": "2026-03-21T06:05:30.981Z",
+        "gitCommitSha": "205b6e0b30366a969412d9aab7b99bea99d58db1"
+      }
+    ],
+    "gitlab@claude-plugins-official": [
+      {
+        "scope": "project",
+        "projectPath": "/Users/csheng/orbstack-docker/home/csheng",
+        "installPath": "/Users/csheng/.claude/plugins/cache/claude-plugins-official/gitlab/205b6e0b3036",
+        "version": "205b6e0b3036",
+        "installedAt": "2026-03-21T06:05:30.981Z",
+        "lastUpdated": "2026-03-21T06:05:30.981Z",
+        "gitCommitSha": "205b6e0b30366a969412d9aab7b99bea99d58db1"
+      }
+    ],
+    "coding@csheng": [
+      {
+        "scope": "user",
+        "installPath": "/Users/csheng/.claude/plugins/cache/csheng/coding/1.0.0",
+        "version": "1.0.0",
+        "installedAt": "2026-03-23T09:05:47.387Z",
+        "lastUpdated": "2026-03-23T09:05:47.387Z",
+        "gitCommitSha": "6286c032cfdc426603e83866b4165402a6ec279d"
       }
     ]
   }

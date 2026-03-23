@@ -48,3 +48,7 @@ node_modules/
 /stats-cache.json
 /plans
 /plugins
+/backups
+/paste-cache
+/tasks
+security_warnings_state_*.json
