@@ -52,3 +52,4 @@ node_modules/
 /paste-cache
 /tasks
 security_warnings_state_*.json
+/sessions/
