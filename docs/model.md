@@ -1,89 +1,98 @@
 # Execution Model and LLM Prompt Philosophy
 
-This document explains how this repo organizes `commands/`, `agents/`, `skills/`, and `rules/`, and why
-LLM-facing files are written in a strict, deterministic style.
+This document explains how this repository organizes agents, skills, rules, and commands, and why LLM-facing files are written in a strict, deterministic style.
 
 ## Core Concepts
 
-- **Rule** (`rules/*.md`): The source of truth for constraints and standards. Keep rule text directive and stable.
-- **Skill** (`skills/*/SKILL.md`, `.claude/skills/*/SKILL.md`): Reusable workflows/capabilities. Prefer deterministic steps.
-- **Agent** (`agents/*/AGENT.md`, `.claude/agents/*/AGENT.md`): Orchestration across tools and skills.
-- **Command** (`commands/*.md`, `.claude/commands/*.md`): Slash command definition and help text (frontmatter).
+- **Rule** (`rules/*.md`): Source of truth for constraints and standards. Keep rule text directive and stable.
+- **Skill**: Reusable workflows/capabilities. Now provided via plugin system.
+- **Agent** (`agents/*/AGENT.md`): Orchestration across tools and skills.
+- **Command**: Slash command definitions. Now provided via plugin system.
 
 High-level flow:
 
 ```text
-User → Command (frontmatter) → Agent → Skills → Rules
+User → Command (via plugin) → Agent → Skills (via plugin) → Rules
 ```
 
-## Scope and Boundary Model
+## Architecture
 
-This repo uses a strict separation between **sync payload** and **project tooling**:
+This repository uses a strict separation between **user-level configuration** and **project-level tooling**:
 
-- **User-level workspace (`~/.claude/`)**: Sync payload.
-  - Expected to be synchronized to other coding agents/tools.
-  - Contains `rules/` (SSOT), plus user-level `commands/`, `agents/`, `skills/`, `output-styles/`.
-- **Project-level workspace (`.claude/`)**: Tooling only.
-  - Must not be included in synchronized payload.
-  - Contains tool implementations (for example llm-governance, lint-markdown).
+### User-Level Workspace (`~/.claude/`)
 
-## Directory Layout (Current)
-
-User-level (`~/.claude/`):
+Synchronized configuration that travels across environments:
 
 ```text
 ~/.claude/
-├── CLAUDE.md
-├── AGENTS.md
-├── commands/
-├── agents/
-├── skills/
-├── rules/
-└── output-styles/
+├── CLAUDE.md              # Symlink to AGENTS.md
+├── AGENTS.md              # AI agent instructions
+├── README.md              # Project overview
+├── RTK.md                 # RTK CLI proxy documentation
+├── agents/                # User-level agent definitions (12 agents)
+├── rules/                 # Development standards (3 files)
+├── output-styles/         # Named output style manifests
+├── plugins/               # Plugin cache and registry
+├── docs/                  # Architecture documentation
+├── commands/              # Empty (migrated to plugins)
+└── skills/                # Empty (migrated to plugins)
 ```
 
-Project-level (`.claude/`):
+### Project-Level Workspace (`.claude/`)
+
+Project-specific tooling (not synchronized):
 
 ```text
 .claude/
-├── commands/          # thin wrappers only
-├── agents/            # project-scoped tool agents
-└── skills/            # project-scoped tool implementations
+├── agents/                # Project-scoped tool agents
+├── commands/              # Project-scoped commands
+└── skills/                # Project-scoped tool implementations
 ```
+
+**Note:** `.claude/` directory should be in `.gitignore` and not tracked in version control.
+
+## Plugin System
+
+Skills and commands are now managed through the Claude Code plugin system:
+
+- **Benefits**: Hot-swappable updates, better maintainability, reusable across projects
+- **Installation**: `claude plugin install <plugin-name>`
+- **Registry**: Plugins tracked in `plugins/installed_plugins.json`
+
+See [MIGRATION.md](../MIGRATION.md) for migration details.
 
 ## Discovery Model
 
-Commands, agents, and skills are discovered via YAML frontmatter in their respective files. This repo
-avoids additional registration tables.
-
-Rules are loaded based on context described in `CLAUDE.md` and the current working set of files.
+- **Agents**: Discovered via YAML frontmatter in `agents/*/AGENT.md`
+- **Skills**: Provided by installed plugins
+- **Commands**: Provided by installed plugins
+- **Rules**: Loaded based on context in `CLAUDE.md`
 
 ## LLM Prompt Philosophy
 
 ### Purpose
 
-The goal is clarity, predictability, and safety when multiple models interpret and execute instructions.
+Clarity, predictability, and safety when multiple models interpret and execute instructions.
 
 ### Communication Style
 
-- Prefer compact, imperative language.
-- Avoid conversational filler and ambiguous phrasing.
-- Make constraints explicit and checkable.
+- Compact, imperative language
+- No conversational filler or ambiguous phrasing
+- Explicit, checkable constraints
 
 ### Determinism and Predictability
 
-- Use stable structures and section headings.
-- Prefer small, verifiable steps over large implicit leaps.
-- Keep “why” explanations out of enforceable rule/manifest files unless needed for correctness.
+- Stable structures and section headings
+- Small, verifiable steps over large implicit leaps
+- "Why" explanations in documentation, not in rule files
 
 ### File-Type Specialization
 
-- Command files define user operations and should be unambiguous about inputs/outputs.
-- Skill files should describe deterministic workflows and tool choices.
-- Agent files should orchestrate and gate tool usage.
-- Rule files should remain strict and directive.
+- **Command files**: Unambiguous about inputs/outputs
+- **Skill files**: Deterministic workflows and tool choices
+- **Agent files**: Orchestrate and gate tool usage
+- **Rule files**: Strict and directive
 
 ### Separation of Concerns
 
-Keep human context in documentation (like this file) and keep enforceable constraints in `rules/*.md`.
-
+Human context in documentation (like this file), enforceable constraints in `rules/*.md`.

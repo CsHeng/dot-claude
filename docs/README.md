@@ -1,10 +1,14 @@
-# Docs Index
+# Documentation Index
 
-This directory contains the minimal, maintained documentation set for this repo.
+This directory contains the minimal, maintained documentation set for the `~/.claude/` configuration repository.
 
 ## Start Here
 
-- `docs/model.md`: Execution model, boundaries, and why LLM-facing files are strict.
-- `docs/commands.md`: Command layout and how to extend commands/tools.
-- `docs/permissions.md`: Permissions patterns and troubleshooting.
+- **[model.md](./model.md)** - Execution model, boundaries, and LLM prompt philosophy
+- **[permissions.md](./permissions.md)** - Permission patterns and troubleshooting
 
+## Project Status
+
+This repository has migrated to a plugin-based architecture. Most skills and commands are now provided through the Claude Code plugin system rather than local files.
+
+See [MIGRATION.md](../MIGRATION.md) for details on the plugin migration.
