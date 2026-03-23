@@ -54,3 +54,7 @@ node_modules/
 security_warnings_state_*.json
 /sessions/
 /hooks/
+
+# User-specific configuration
+/RTK.md
+/rules/default.rules
