@@ -1,6 +1,6 @@
 ---
 name: agent:check-secrets
-description: Scan project files for potential secrets and report suspected exposures with remediation guidance.
+description: Scan tracked changes for likely secrets and report remediation steps (read-only)
 allowed-tools:
   - Read
   - Bash(git ls-files)
@@ -8,53 +8,24 @@ allowed-tools:
   - Bash(git diff --cached)
   - Bash(git show :<file>)
 ---
+
 # Check Secrets Agent
 
-## Mission
+## Run
 
-Perform a defensive security scan over the current project to detect potential secrets in source and configuration files before commits or reviews, without writing any data back.
+- Identify scope via `git ls-files`, plus staged and unstaged diffs.
+- Scan for high-signal secret patterns (API keys, tokens, private keys, credentials).
+- Prefer scanning diffs first; fall back to file content only when needed.
 
-## Workflow Phases
+## Safety
 
-### Phase 1: Scope and Target Discovery
+- Do not exfiltrate or repeat suspected secrets verbatim.
+- Do not write fixes unless explicitly requested; provide patch suggestions only.
 
-- Use git metadata (when available) to identify:
-  - Tracked files.
-  - Unstaged changes.
-- Include common configuration files even if gitignored (e.g., `.env`, config files).
-- Respect project-specific ignore rules where configured (e.g., `.gitignore`).
+## Output
 
-### Phase 2: Pattern-Based Scanning
+Report:
+- File path + line number (when available)
+- Why it looks sensitive
+- Minimal remediation checklist (rotate, revoke, scrub history, add ignore rules)
 
-- Apply heuristic patterns for:
-  - API keys and tokens.
-  - Passwords and credentials.
-  - Private keys and certificates.
-  - Database connection strings and similar sensitive values.
-- Classify matches by:
-  - Type of suspected secret.
-  - File path and line number.
-  - Confidence / severity level.
-
-### Phase 3: Deduplication and Filtering
-
-- Deduplicate overlapping or repeated findings.
-- Suppress clearly non-sensitive matches when possible (e.g., obvious placeholders or examples).
-- Keep a bias toward false positives rather than missing real secrets.
-
-### Phase 4: Reporting and Guidance
-
-- Produce a report that includes:
-  - Summary of suspected secrets by type and location.
-  - Severity assessment for each finding.
-  - Remediation guidance aligned with `rules/03-security-standards.md`:
-    - Move secrets to environment variables or secret managers.
-    - Rotate any exposed credentials.
-    - Update configuration and documentation accordingly.
-- Explicitly state that findings are *suspicions* and require human review.
-
-## Safety Constraints
-
-- Never write to project files or configuration while scanning.
-- Avoid displaying full secret values in logs or reports; use partial redaction where needed.
-- Prefer over-reporting (with clear caveats) to under-reporting.\n+
