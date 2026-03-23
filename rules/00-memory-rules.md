@@ -1,113 +1,61 @@
-# Memory Rules
+# Global Development Constraints
 
 ## Scope
-Define mandatory personal development preferences, tool requirements, and workflow standards synchronized across all AI tools and environments.
+Cross-cutting constraints that apply to ALL development work. Language-specific guidance lives in skills.
 
-## Absolute-Prohibitions
+## Absolute Prohibitions
 - NEVER hardcode API keys, passwords, secrets, or sensitive credentials
 - NEVER use bold markers in any documentation or comments
 - NEVER commit configuration files containing secrets to version control
 - NEVER bypass environment variable override mechanisms
+- NEVER remove existing comments when modifying code
+- NEVER implement changes without explicit user requests
 
-## Communication-Protocol
-- Use existing natural language patterns of target files for comments and documentation
-- Write concise, action-oriented communication avoiding narrative explanations
-- Focus on implementation details over explanatory text
-- Default to unordered lists unless sequential relationships exist
+## Tool Version Pins
+- Python: 3.13+ with union syntax `X | None`
+- Go: 1.23+
+- Shell: `#!/bin/zsh` for interactive dev, `#!/usr/bin/env bash` for CI
+- Lua: 5.4+ with `luac -p` validation
+- PlantUML: >=1.2025.9 with `plantuml --check-syntax` validation
 
-## Structural-Rules
+## Environment Management
+- Python: single `.venv` at project root; `uv` as package manager
+- Environment variables: MANDATORY override support on all configurations
+- Docker Compose: PROHIBITED `version` field
+- Tool versions: `mise` for management
 
-### Tool Version Requirements
-- Python: REQUIRED Python 3.13+ with modern union syntax X | None
-- Go: REQUIRED Go 1.23+ with go run for development activities
-- Shell: REQUIRED #!/bin/zsh for interactive development scripts
-- Lua: REQUIRED Lua 5.4+ with luac -p <path> for syntax validation
-- PlantUML: REQUIRED version >=1.2025.9 with plantuml --check-syntax <path> validation
+## Development Philosophy
+- Incremental: changes file by file for review
+- Explicit: only implement explicitly requested changes
+- Preservation: preserve existing code structures and comments
+- Complete: provide complete edits in single chunks per file
+- Testing: RGR when requirements clear; implement-first when exploratory
+- Behavior-first: test behavior, not implementation
 
-### Environment Management Rules
-- Python: REQUIRED single .venv directory at project root
-- Package Management: REQUIRED UV as primary package manager
-- Environment Variables: MANDATORY support for environment variable overrides on all configurations
-- Docker Compose: PROHIBITED version field in docker-compose.yml files
+## CLI Parameter Requirements
+- REQUIRED: `--parameter` format for all custom CLI scripts
+- PROHIBITED: short parameter aliases (`-x`, `-y`, `-h`) in custom scripts
+- PROHIBITED: bare parameters (`help`, `version`) in custom scripts
+- REQUIRED: third-party tools retain their native parameter styles
+- REQUIRED: write/modify/delete operations default to dry-run; require `--apply` or `--execute`
 
-## Language-Rules
+## Debug and Logging
+- Sections: `===` major, `---` sub-sections
+- Status: `SUCCESS:` / `ERROR:` prefixes with context
+- Log format: `+0800 2025-08-06 15:22:30 INFO main.go(180) | message`
+- Fail-fast: exit immediately on errors with relevant state
 
-### Python Requirements
-- Use union syntax X | None instead of Optional[X]
-- Maintain type hints for all public interfaces
-- Use f-strings for string formatting
+## Documentation
+- PlantUML for architecture diagrams; validate before committing
+- Explain rationale, not functionality
+- Minimal formatting without bold markers
 
-### Go Requirements
-- Use go run for development activities
-- Build with CGO_ENABLED=0 for static binary generation
-- Use structured error wrapping with fmt.Errorf("context: %w", err)
+## Project Structure
+- Single app: `cmd/`, `internal/`, `pkg/`, `configs/`, `tests/`
+- Multiple apps: independent `cmd/` per app with `shared/` components
+- MANDATORY: environment variable support; `.env` for local dev only
 
-### Shell Requirements
-- Use #!/bin/zsh shebang for interactive development
-- Use trap 'echo "Error on line $LINENO"' ERR for error handling
-- Fail immediately on errors with set -euo pipefail
-
-### Dbml Requirements
-- Use dbml2sql <path> for syntax validation
+## Dbml
+- Validate with `dbml2sql <path>`
 - Use original table names in Ref statements
-- PROHIBITED table aliases in reference statements
-
-## Formatting-Rules
-
-### Development Workflow Standards
-- Make incremental changes file by file for review
-- Add tests after code stabilization, not during initial development
-- Preserve existing comments when updating code
-- Exit immediately on errors (fail-fast principle)
-
-### Debug Output Format
-- Main sections: === Title
-- Sub-sections: --- Title
-- Status messages: SUCCESS: msg, ERROR: msg (context)
-
-### Documentation Standards
-- Use PlantUML for architecture diagrams
-- Explain implementation rationale, not functionality
-- Update related documentation when code or rules change
-- Use minimal formatting without bold markers
-
-### Logging Format Standard
-- REQUIRED format: +0800 2025-08-06 15:22:30 INFO main.go(180) | message
-- MANDATORY inclusion: timezone, line number, and execution context
-
-## Naming-Rules
-
-### Error Handling Requirements
-- Include relevant variables and state in all error messages
-- Use specific exception types with implementation context
-- Provide actionable error information for debugging
-
-### Project Structure Requirements
-- Single app: REQUIRED cmd/, internal/, pkg/, configs/, tests/ structure
-- Multiple apps: Independent cmd/ per app with shared/ components
-- Configuration: MANDATORY environment variable support, .env for local development only
-- Documentation: REQUIRED README.md with module overview and dependencies
-
-## Validation-Rules
-
-### Code Quality Standards
-- REQUIRED minimum 80% test coverage, 95% for critical execution paths
-- MANDATORY pre-commit hooks for all quality checks
-- PROHIBITED code that fails static analysis
-
-### Security Standards
-- MANDATORY environment variable override support for all configurations
-- REQUIRED strict validation and sanitization of all input data
-- PROHIBITED hardcoded credentials in any form
-
-### Performance Standards
-- REQUIRED performance analysis before optimization activities
-- MANDATORY inclusion of performance metrics and health checks
-- REQUIRED appropriate caching strategies for all external calls
-- REQUIRED database connection pooling and query optimization
-
-### Deployment Standards
-- Docker: REQUIRED multi-architecture builds with optimized image sizes
-- Security: REQUIRED HTTPS enforcement in production with CORS configuration
-- Logging: REQUIRED structured logging with standard format compliance
-- Host Access: REQUIRED use of 172.17.0.1 instead of host.docker.internal
+- PROHIBITED: table aliases in references
